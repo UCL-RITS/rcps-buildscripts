@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing self-contained Lmod
+#
+# by Ian Kirker, 2015 (sorry)
+#
+
+
+VERSION=${VERSION:-5.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lmod/$VERSION}
+MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles
+# ^- this might be problematic with our module directory structure
+
+set -e
+
+
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget \
+  https://downloads.sourceforge.net/project/lmod/Lmod-${VERSION}.tar.bz2 \
+  https://downloads.sourceforge.net/project/lmod/lua-5.1.4.8.tar.gz 
+
+tar -xf Lmod-${VERSION}.tar.bz2
+tar -xf lua-5.1.4.8.tar.gz
+
+cd lua-5.1.4.8
+./configure --prefix=$INSTALL_PREFIX
+make -l 12 -j && make install
+
+cd ..
+
+cd Lmod-${VERSION}
+./configure \
+  --prefix=${INSTALL_PREFIX} \
+  --with-spiderCacheDir=${INSTALL_PREFIX}/spidercache \
+  --with-updateSystemFn=${INSTALL_PREFIX}/spidercache.updb.txt \
+  --with-duplicatePaths=yes \
+  --with-module-root-path=${MODULE_ROOT_PATH} \
+  luaprog=${INSTALL_PREFIX}/bin/lua \
+  PATH_TO_LUAC=${INSTALL_PREFIX}/bin/luac
+make -l 12 -j && make install
+

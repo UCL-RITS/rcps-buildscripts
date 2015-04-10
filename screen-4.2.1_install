@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing screen 
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-4.2.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/screen/$VERSION}
+MD5=${MD5:-419a0594e2b25039239af8b90eda7d92}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.gnu.org/gnu/screen/screen-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum screen-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf screen-${VERSION}.tar.gz
+
+  cd screen-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-colors256
+  make && make install
+  mkdir -p $INSTALL_PREFIX/etc
+  cp ./etc/etcscreenrc $INSTALL_PREFIX/etc/screenrc
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

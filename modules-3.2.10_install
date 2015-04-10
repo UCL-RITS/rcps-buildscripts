@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing modules-3.2.10
+#
+# by Ian Kirker, 2015
+#
+
+
+VERSION=${VERSION:-3.2.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/modules/$VERSION}
+MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles
+
+TCL_VERSION=8.6.4
+
+
+
+set -e
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget \
+  http://downloads.sourceforge.net/project/modules/Modules/modules-${VERSION}/modules-${VERSION}.tar.gz \
+  ftp://ftp.tcl.tk/pub/tcl/tcl8_6/tcl${TCL_VERSION}-src.tar.gz
+
+tar -xf modules-${VERSION}.tar.gz
+tar -xf tcl${TCL_VERSION}-src.tar.gz
+
+cd tcl${TCL_VERSION}/unix
+
+./configure --prefix=${temp_dir}/tmp_tcl_prefix --disable-shared --enable-64bit --disable-threads
+make && make install
+# Unfortunately the build tests for Tcl require threads, which require shared libraries, which disables static library building.
+# C_C
+
+cd $temp_dir/modules-${VERSION}
+
+# Removes the default additions to the initial module search path.
+sed --in-place -e 's/^@\([^M]\)/#@\1/' init/.modulespath.in
+
+./configure \
+  --prefix=${INSTALL_PREFIX} \
+  --with-static=yes \
+  --with-tcl-inc=${temp_dir}/tmp_tcl_prefix/include \
+  --with-tcl-lib=${temp_dir}/tmp_tcl_prefix/lib \
+  --with-tcl=${temp_dir}/tmp_tcl_prefix/lib \
+  --with-tcl-ver=8.6 \
+  --with-module-path=${MODULE_ROOT_PATH} \
+  CPPFLAGS="-DUSE_INTERP_ERRORLINE" \
+  CFLAGS="-ldl"  
+  
+
+# If you don't add the CPPFLAGS definition above, you'll get a build error because 
+# a deprecated feature of Tcl is used.
+# See: http://sourceforge.net/p/modules/bugs/62/
+
+# Also, I specified a Tcl version here to stop it misdetecting and using the system Tcl libraries 
+# (which don't have a static version) because ./configure just uses tclsh instead of the config
+# file it actually detects the entry before. *sigh*
+
+make && make install
+
