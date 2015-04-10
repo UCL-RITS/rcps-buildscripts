@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OpenMPI
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1.8.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/openmpi/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-93b7ea2c4ebae76947f942579608ae4a}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.open-mpi.org/software/ompi/v1.8/downloads/openmpi-${VERSION}.tar.bz2}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum openmpi-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf openmpi-${VERSION}.tar.bz2
+
+  cd screen-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --with-sge --with-psm=/usr
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
