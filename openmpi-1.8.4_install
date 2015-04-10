@@ -28,7 +28,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -jxvf openmpi-${VERSION}.tar.bz2
 
-  cd screen-${VERSION}
+  cd openmpi-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX --with-sge --with-psm=/usr
   make && make install
 else
