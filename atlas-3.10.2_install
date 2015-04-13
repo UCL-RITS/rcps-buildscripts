@@ -30,7 +30,7 @@ wget $LAPACK_ARCHIVE
 CHECKSUM=`md5sum atlas${VERSION}.tar.bz2| awk '{print $1}'`
 LPCHECKSUM=`md5sum lapack-${LAPACK_VERSION}.tgz| awk '{print $1}'`
 
-if [[ "$MD5" == "$CHECKSUM" && "$LAPACK_MD5" == "LPCHECKSUM" ]]
+if [[ "$MD5" == "$CHECKSUM" && "$LAPACK_MD5" == "$LPCHECKSUM" ]]
 then
   tar -zxvf v${VERSION}.tar.gz
   loc = `pwd`
