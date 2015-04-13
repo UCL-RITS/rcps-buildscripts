@@ -37,7 +37,8 @@ then
   cd ATLAS
   mkdir build
   cd build
-  ../configure --prefix=${INSTALL_PREFIX} --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
+# Note -A 27 -V 448 sets architecture for Legion X/Y/Z nodes
+  ../configure --prefix=${INSTALL_PREFIX} -A 27 -V 448 --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
   make
   make check
   make time
