@@ -29,7 +29,7 @@ then
   tar -zxvf v${VERSION}.tar.gz
 
   cd OpenBLAS-${VERSION}
-  make PREFIX=${INSTALL_PREFIX} 
+  make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 LIBNAMESUFFIX=$COMPILER_TAG
   make PREFIX=${INSTALL_PREFIX}  install
 else
   echo "Hash mismatch."

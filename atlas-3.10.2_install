@@ -37,7 +37,7 @@ then
   cd ATLAS
   mkdir build
   cd build
-  ../configure --prefix=${INSTALL_PREFIX} --shared -fPIC --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
+  ../configure --prefix=${INSTALL_PREFIX} --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
   make
   make check
   make time
