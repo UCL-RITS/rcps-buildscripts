@@ -29,7 +29,8 @@ then
   tar -zxvf v${VERSION}.tar.gz
 
   cd OpenBLAS-${VERSION}
-  make PREFIX=${INSTALL_PREFIX} install
+  make PREFIX=${INSTALL_PREFIX} 
+  make PREFIX=${INSTALL_PREFIX}  install
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
