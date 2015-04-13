@@ -25,6 +25,7 @@ temp_dir=`mktemp -d`
 cd $temp_dir
 
 wget $SRC_ARCHIVE
+wget $LAPACK_ARCHIVE
 
 CHECKSUM=`md5sum atlas${VERSION}.tar.bz2| awk '{print $1}'`
 LPCHECKSUM=`md5sum lapack-${LAPACK_VERSION}.tgz| awk '{print $1}'`
