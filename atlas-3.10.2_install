@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ATLAS
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-3.10.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/atlas/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-a4e21f343dec8f22e7415e339f09f6da}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://downloads.sourceforge.net/project/math-atlas/Stable/${VERSION}/atlas${VERSION}.tar.bz2}
+
+LAPACK_VERSION=${LAPACK_VERSION:-3.5.0}
+LAPACK_ARCHIVE=${LAPACK_ARCHIVE:-http://www.netlib.org/lapack/lapack-${LAPACK_VERSION}.tgz}
+LAPACK_MD5=${LAPACK_MD5:-b1d3e3e425b2e44a06760ff173104bdf}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum atlas${VERSION}.tar.bz2| awk '{print $1}'`
+LPCHECKSUM=`md5sum lapack-${LAPACK_VERSION}.tgz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" && "$LAPACK_MD5" == "LPCHECKSUM" ]]
+then
+  tar -zxvf v${VERSION}.tar.gz
+  loc = `pwd`
+  cd ATLAS
+  mkdir build
+  cd build
+  ../configure --prefix=${INSTALL_PREFIX} --shared -fPIC --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
+  make
+  make check
+  make time
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $LAPACK_MD5"
+  echo "Got: $CHECKSUM $LPCHECKSUM"
+
+fi
