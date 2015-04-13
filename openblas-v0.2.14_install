@@ -30,7 +30,7 @@ then
 
   cd OpenBLAS-${VERSION}
   make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 LIBNAMESUFFIX=$COMPILER_TAG
-  make PREFIX=${INSTALL_PREFIX}  install
+  make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 LIBNAMESUFFIX=$COMPILER_TAG install
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
