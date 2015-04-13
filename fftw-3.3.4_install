@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FFTW
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-3.3.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/fftw/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-2edab8c06b24feeb3b82bbb3ebf3e7b3}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.fftw.org/fftw-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum fftw-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+# Single precision
+  mkdir single
+  cd single
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-float
+  make && make install
+
+  cd ../..
+
+# Double precision
+  mkdir double
+  cd double
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX 
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
