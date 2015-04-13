@@ -33,7 +33,7 @@ LPCHECKSUM=`md5sum lapack-${LAPACK_VERSION}.tgz| awk '{print $1}'`
 if [[ "$MD5" == "$CHECKSUM" && "$LAPACK_MD5" == "$LPCHECKSUM" ]]
 then
   tar -jxvf atlas${VERSION}.tar.bz2
-  loc = `pwd`
+  loc=`pwd`
   cd ATLAS
   mkdir build
   cd build
