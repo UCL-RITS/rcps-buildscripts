@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Git
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-2.3.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/git/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-be8c0bbb0c5ee6ab7cdcffd2c9375fe6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.kernel.org/pub/software/scm/git/git-${VERSION}.tar.xz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum git-${VERSION}.tar.xz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -Jxvf git-${VERSION}.tar.xz
+
+  cd git-${VERSION}
+  make prefix=$INSTALL_PREFIX
+  make prefix=$INSTALL_PREFIX install install-doc
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
