@@ -37,6 +37,7 @@ then
               --with-ensurepip
 
   make && make install
+  pip3 install --upgrade pip
   pip3 install virtualenv
 else
   echo "Hash mismatch."
