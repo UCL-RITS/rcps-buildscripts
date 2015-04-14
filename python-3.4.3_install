@@ -37,7 +37,7 @@ then
               --with-ensurepip
 
   make && make install
-  pip install virtualenv
+  pip3 install virtualenv
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
