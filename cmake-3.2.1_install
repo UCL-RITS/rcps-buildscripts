@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Cmake
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-3.2.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cmake/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-63f436aa19b5efc37017759c8d3953ca}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.cmake.org/files/v3.2/cmake-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum cmake-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf cmake-${VERSION}.tar.gz
+
+  cd cmake-${VERSION}
+  ./bootstrap.sh --prefix=$INSTALL_PREFIX 
+  make && make install
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
