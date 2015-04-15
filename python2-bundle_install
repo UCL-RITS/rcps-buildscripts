@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Python
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles/python2}
+
+set -e
+
+module load compilers/gnu/4.9.2
+module load openblas
+module load python/2.7.9
+
+rm -rf $INSTALL_PREFIX
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+virtualenv venv
+
+source venv/bin/activate
+
+export LAPACK=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
+export BLAS=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
+
+pip install nose
+pip install numpy
+pip install scipy
+pip install matplotlib
