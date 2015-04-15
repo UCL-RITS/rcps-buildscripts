@@ -6,21 +6,18 @@
 # by Owain Kenway, 2015 
 #
 
-COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-1.0.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles/python3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
+PYTHON_VERSION=${PYTHON_VERSION:-3}
+TIME_STAMP=`date +"%s"`
 
 set -e
-
-#module load compilers/gnu/4.9.2
-#module load openblas
-#module load python/3.4.3
-
-rm -rf $INSTALL_PREFIX
 
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
+mkdir $TIME_STAMP
+cd $TIME_STAMP
 
 virtualenv venv
 
@@ -29,7 +26,10 @@ source venv/bin/activate
 export LAPACK=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
 export BLAS=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
 
-pip3 install nose
-pip3 install numpy
-pip3 install scipy
-pip3 install matplotlib
+for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+do
+   pip install $a
+done
+
+cd ..
+ln -Tfs $TIME_STAMP python${PYTHON_VERSION} 
