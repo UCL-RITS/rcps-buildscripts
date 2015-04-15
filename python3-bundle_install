@@ -12,9 +12,9 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles/python3}
 
 set -e
 
-module load compilers/gnu/4.9.2
-module load openblas
-module load python/3.4.3
+#module load compilers/gnu/4.9.2
+#module load openblas
+#module load python/3.4.3
 
 rm -rf $INSTALL_PREFIX
 
