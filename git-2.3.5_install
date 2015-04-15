@@ -30,7 +30,7 @@ then
 
   cd git-${VERSION}
   make prefix=$INSTALL_PREFIX
-  make prefix=$INSTALL_PREFIX install install-doc
+  make prefix=$INSTALL_PREFIX install 
 
 else
   echo "Hash mismatch."
