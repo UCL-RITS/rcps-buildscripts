@@ -16,8 +16,8 @@ set -e
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
-mkdir $TIME_STAMP
-cd $TIME_STAMP
+mkdir $TIME_STAMP-$PYTHON_VERSION
+cd $TIME_STAMP-$PYTHON_VERSION
 
 virtualenv venv
 
@@ -32,4 +32,4 @@ do
 done
 
 cd ..
-ln -Tfs $TIME_STAMP python${PYTHON_VERSION} 
+ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION} 
