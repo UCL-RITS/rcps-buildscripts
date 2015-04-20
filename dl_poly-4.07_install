@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing DL_POLY
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-dl_poly}
+COMPILER_TAG=${COMPILER_TAG:-intel-2015-update2}
+VERSION=${VERSION:-4.07}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-4ed14b9f02c19ddfcbceb4cea739a0c6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.dl.ac.uk/ccp5/DL_POLY/TRANSFERS/${NAME}_${VERSION}.zip}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/execute:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${NAME}_${VERSION}.zip| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip ${NAME}_${VERSION}.zip
+
+  cd ${NAME}_${VERSION}/source
+  cp ../build/Makefile_MPI Makefile
+  make hpc
+
+  mkdir -p $INSTALL_PREFIX
+  cp -R ../execute $INSTALL_PREFIX
+  # other should have no permissions for the whole directory
+  chmod -R o-rwx $INSTALL_PREFIX/execute
+
+  echo "    Now create a legdlp group for this version and"
+  echo "    chgrp/check permissions on $INSTALL_PREFIX/execute"
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
