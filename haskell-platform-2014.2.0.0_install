@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing screen 
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-2014.2.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/haskell-platform/$VERSION}
+MD5=${MD5:-13606bed486e73dfe383d4e154fe60d2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.haskell.org/platform/download/2014.2.0.0/haskell-platform-${VERSION}-srcdist.tar.xz}
+GHC_VERSION=${GHC_VERSION:-7.8.3}
+GHC_ARCHIVE=${GHC_ARCHIVE:-https://www.haskell.org/ghc/dist/${GHC_VERSION}/ghc-${GHC_VERSION}-x86_64-unknown-linux-centos65.tar.xz}
+GHC_MD5=${GHC_MD5:-6dc53db4d713836e04848d77f07a6e3e}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum haskell-platform-${VERSION}-srcdist.tar.xz| awk '{print $1}'`
+GHCCHECKSUM=`md5sum ghc-${GHC_VERSION}-x86_64-unknown-linux-centos65.tar.xz |  awk '{print $1}'`
+
+
+if [[ "$MD5" == "$CHECKSUM" && "$GHC_MD5" == "$GHCCHECKSUM" ]]
+then
+  tar -Zxvf haskell-platform-${VERSION}-srcdist.tar.xz
+
+  cd haskell-platform-${VERSION}
+  ./platform.sh ../ghc-${GHC_VERSION}-x86_64-unknown-linux-centos65.tar.xz  --prefix=$INSTALL_PREFIX
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
