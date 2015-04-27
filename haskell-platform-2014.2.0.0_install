@@ -55,9 +55,12 @@ then
 
 # To build haskell-platform we need some stuff.
 # Get user's stuff out of the way
-  mv ~/.cabal ~/.cabal.old
-  mv ~/.ghc ~/.ghc.old
- 
+  if [ -d ~/.cabal ]
+  then 
+     mv ~/.cabal ~/.cabal.old
+     mv ~/.ghc ~/.ghc.old
+  fi 
+
   export PATH=${HOME}/.cabal/bin:$PATH
 
   cabal update
@@ -78,9 +81,12 @@ then
   ./platform.sh  ../ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz --prefix=$INSTALL_PREFIX
 
 # Put user's stuff back
-  rm -rf ~/.ghc ~/.cabal
-  mv ~/.cabal.old ~/.cabal
-  mv ~/.ghc.old ~/.ghc
+  rm -rf ~/.ghc ~/.cabal 
+  if [ -d ~/.cabal.old ]
+  then
+     mv ~/.cabal.old ~/.cabal
+     mv ~/.ghc.old ~/.ghc
+  fi
 
 # OK, now we have to actually install the thing we built.
 
