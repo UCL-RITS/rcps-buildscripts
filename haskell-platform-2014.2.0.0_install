@@ -25,7 +25,7 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-temp_dir=`mktemp -d`
+temp_dir=`mktemp -d -p /dev/shmem`
 
 cd $temp_dir
 
