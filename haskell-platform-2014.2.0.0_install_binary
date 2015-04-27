@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Haskell Platform
+#
+# by Owain Kenway, 2015 
+#
+
+# incidentally, this doesn't actually work yet.
+
+VERSION=${VERSION:-2014.2.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/haskell-platform/$VERSION}
+MD5=${MD5:-a3514479d334b1c0702638250d7848be}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.haskell.org/platform/download/${VERSION}/haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+export INSTALL_PREFIX
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+   tar -zxvf haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz
+
+   mkdir -p $INSTALL_PREFIX
+   cd usr/local/haskell/ghc-7.8.3-x86_64/bin
+
+# Fix the hard-coded paths.
+   for a in `file * | grep Bourne | awk '{print $1}'`
+   do
+      b=${a::-1}
+      sed "s|/usr/local/haskell/|$INSTALL_PREFIX/|g" $b > $b.fixed
+      chmod +x $b.fixed
+      mv $b.fixed $b
+   done
+
+# Move into /shared
+   cd $temp_dir
+   cd usr/local/haskell
+   mv ghc-7.8.3-x86_64 $INSTALL_PREFIX/ghc-7.8.3-x86_64
+
+else
+   echo "Hash mismatch."
+   echo "Expected: $MD5"
+   echo "Got: $CHECKSUM"
+fi
