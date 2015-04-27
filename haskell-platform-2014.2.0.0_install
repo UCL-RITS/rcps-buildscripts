@@ -91,7 +91,7 @@ then
 # OK, now we have to actually install the thing we built.
 
   cd $temp_dir
-  tar Jxvf haskell-platform-${VERSION}/build/product/haskell-platform-${VERSION}-unknown-posix-x86_64.tar.gz
+  tar zxvf haskell-platform-${VERSION}/build/product/haskell-platform-${VERSION}-unknown-posix-x86_64.tar.gz
 
   cd ${INSTALL_PREFIX:1}
   mkdir -p $INSTALL_PREFIX
