@@ -88,6 +88,9 @@ then
   mkdir -p $INSTALL_PREFIX
   cp -vR ghc-${GHC_VERSION}-x86_64 $INSTALL_PREFIX/ghc-${GHC_VERSION}-x86_64
 
+# Tidy up
+  cd $temp_dir
+  rm -rf ${INSTALL_PREFIX:1}
 
 else
   echo "Hash mismatch."
