@@ -58,6 +58,7 @@ then
   mv ~/.cabal ~/.cabal.old
   mv ~/.ghc ~/.ghc.old
 
+  cabal update
   cabal install haddock hscolour
 
   tar -zxvf haskell-platform-${VERSION}-srcdist.tar.gz
