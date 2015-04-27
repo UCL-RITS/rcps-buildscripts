@@ -1,0 +1,11 @@
+--- hptool.cabal	2014-07-31 20:03:34.000000000 +0100
++++ hptool.cabal.new	2015-04-27 16:11:58.297559405 +0100
+@@ -51,7 +51,7 @@
+     containers,
+     directory,
+     hastache >=0.6.0,
+-    shake,
++    shake < 0.15,
+     split,
+     text,
+     transformers
