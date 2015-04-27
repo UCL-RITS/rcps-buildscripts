@@ -45,7 +45,7 @@ then
 # Move into /shared
    cd $temp_dir
    cd usr/local/haskell
-   mv ghc-7.8.3-x86_64 $INSTALL_DIR/ghc-7.8.3-x86_64
+   mv ghc-7.8.3-x86_64 $INSTALL_PREFIX/ghc-7.8.3-x86_64
 
 else
    echo "Hash mismatch."
