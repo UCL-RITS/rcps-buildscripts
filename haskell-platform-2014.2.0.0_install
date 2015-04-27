@@ -48,18 +48,19 @@ then
 
   export PATH=${BROOT}/ghcbootstrap/bin:${PATH}
 
-  tar -zxvf cabal-install-${CABAL_VERSION}.tar.gz
-  cd cabal-install-${CABAL_VERSION}
-  PREFIX=${BROOT}/ghcbootstrap ./bootstrap.sh
-  cd ..
-
-# To build haskell-platform we need some stuff.
 # Get user's stuff out of the way
   if [ -d ~/.cabal ]
   then 
      mv ~/.cabal ~/.cabal.old
      mv ~/.ghc ~/.ghc.old
   fi 
+
+  tar -zxvf cabal-install-${CABAL_VERSION}.tar.gz
+  cd cabal-install-${CABAL_VERSION}
+  PREFIX=${BROOT}/ghcbootstrap ./bootstrap.sh
+  cd ..
+
+# To build haskell-platform we need some stuff.
 
   export PATH=${HOME}/.cabal/bin:$PATH
 
