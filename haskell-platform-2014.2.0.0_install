@@ -53,10 +53,21 @@ then
   PREFIX=${BROOT}/ghcbootstrap ./bootstrap.sh
   cd ..
 
+# To build haskell-platform we need some stuff.
+# Get user's stuff out of the way
+  mv ~/.cabal ~/.cabal.old
+  mv ~/.ghc ~/.ghc.old
+
+  cabal install haddock hscolour
+
   tar -zxvf haskell-platform-${VERSION}-srcdist.tar.gz
 
   cd haskell-platform-${VERSION}
   ./platform.sh  --prefix=$INSTALL_PREFIX
+
+# Put user's stuff back
+  mv ~/.cabal.old ~/.cabal
+  mv ~/.ghc.old ~/.ghc
 else
   echo "Hash mismatch."
   echo "Expected: $MD5 $GHC_MD5 $CABAL_MD5"
