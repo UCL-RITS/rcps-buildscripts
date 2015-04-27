@@ -12,8 +12,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/haskell-platform/$VERSION}
 MD5=${MD5:-13606bed486e73dfe383d4e154fe60d2}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.haskell.org/platform/download/${VERSION}/haskell-platform-${VERSION}-srcdist.tar.gz}
 GHC_VERSION=${GHC_VERSION:-7.8.3}
-GHC_ARCHIVE=${GHC_ARCHIVE:-https://www.haskell.org/ghc/dist/${GHC_VERSION}/ghc-${GHC_VERSION}-x86_64-unknown-linux-centos65.tar.xz}
-GHC_MD5=${GHC_MD5:-6dc53db4d713836e04848d77f07a6e3e}
+GHC_ARCHIVE=${GHC_ARCHIVE:-https://www.haskell.org/ghc/dist/${GHC_VERSION}/ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz}
+GHC_MD5=${GHC_MD5:-4dd880afc51c6ba6126e26d17b6340d9}
 
 set -e
 
@@ -27,11 +27,20 @@ wget $SRC_ARCHIVE
 wget $GHC_ARCHIVE
 
 CHECKSUM=`md5sum haskell-platform-${VERSION}-srcdist.tar.gz| awk '{print $1}'`
-GHCCHECKSUM=`md5sum ghc-${GHC_VERSION}-x86_64-unknown-linux-centos65.tar.xz |  awk '{print $1}'`
+GHCCHECKSUM=`md5sum ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz |  awk '{print $1}'`
 
 
 if [[ "$MD5" == "$CHECKSUM" && "$GHC_MD5" == "$GHCCHECKSUM" ]]
 then
+  BROOT=`pwd`
+  tar -Jxvf ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz 
+  cd ghc-7.8.3
+  ./configure --prefix=${BROOT}/ghcbootstrap
+  make install
+  cd ..
+
+  export PATH=${BROOT}/ghcbootstrap/bin:${PATH}
+
   tar -zxvf haskell-platform-${VERSION}-srcdist.tar.gz
 
   cd haskell-platform-${VERSION}
