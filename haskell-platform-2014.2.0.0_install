@@ -6,7 +6,6 @@
 # by Owain Kenway, 2015 
 #
 
-# incidentally, this doesn't actually work yet.
 
 VERSION=${VERSION:-2014.2.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/haskell-platform/$VERSION}
