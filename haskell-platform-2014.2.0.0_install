@@ -75,8 +75,20 @@ then
   ./platform.sh  ../ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz --prefix=$INSTALL_PREFIX
 
 # Put user's stuff back
+  rm -rf ~/.ghc ~/.cabal
   mv ~/.cabal.old ~/.cabal
   mv ~/.ghc.old ~/.ghc
+
+# OK, now we have to actually install the thing we built.
+
+  cd $temp_dir
+  tar Jxvf haskell-platform-${VERSION}/build/product/haskell-platform-${VERSION}-unknown-posix-x86_64.tar.gz
+
+  cd ${INSTALL_PREFIX:1}
+  mkdir -p $INSTALL_PREFIX
+  cp -vR ghc-${GHC_VERSION}-x86_64 $INSTALL_PREFIX/ghc-${GHC_VERSION}-x86_64
+
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5 $GHC_MD5 $CABAL_MD5"
