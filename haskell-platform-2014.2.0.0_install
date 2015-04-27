@@ -10,55 +10,45 @@
 
 VERSION=${VERSION:-2014.2.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/haskell-platform/$VERSION}
-MD5=${MD5:-13606bed486e73dfe383d4e154fe60d2}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.haskell.org/platform/download/${VERSION}/haskell-platform-${VERSION}-srcdist.tar.gz}
-
-GHC_VERSION=${GHC_VERSION:-7.8.3}
-GHC_ARCHIVE=${GHC_ARCHIVE:-https://www.haskell.org/ghc/dist/${GHC_VERSION}/ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz}
-GHC_MD5=${GHC_MD5:-4dd880afc51c6ba6126e26d17b6340d9}
-
-CABAL_VERSION=${CABAL_VERSION:-1.22.3.0}
-CABAL_ARCHIVE=${CABAL_ARCHIVE:-https://www.haskell.org/cabal/release/cabal-install-${CABAL_VERSION}/cabal-install-${CABAL_VERSION}.tar.gz}
-CABAL_MD5=${CABAL_MD5:-03e8a00b302326397e9b52b5a1a6a599}
+MD5=${MD5:-a3514479d334b1c0702638250d7848be}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.haskell.org/platform/download/${VERSION}/haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz}
 
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
+export INSTALL_PREFIX
 
 temp_dir=`mktemp -d`
 
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-wget $GHC_ARCHIVE
-wget $CABAL_ARCHIVE
 
-CHECKSUM=`md5sum haskell-platform-${VERSION}-srcdist.tar.gz| awk '{print $1}'`
-GHCCHECKSUM=`md5sum ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz |  awk '{print $1}'`
-CABALCHECKSUM=`md5sum cabal-install-${CABAL_VERSION}.tar.gz | awk '{print $1}'`
+CHECKSUM=`md5sum haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz| awk '{print $1}'`
 
-if [[ "$MD5" == "$CHECKSUM" && "$GHC_MD5" == "$GHCCHECKSUM" && "$CABAL_MD5" == "$CABALCHECKSUM" ]]
+if [ "$MD5" == "$CHECKSUM" ]
 then
-  BROOT=`pwd`
-  tar -Jxvf ghc-${GHC_VERSION}-x86_64-unknown-linux-deb7.tar.xz 
-  cd ghc-7.8.3
-  ./configure --prefix=${BROOT}/ghcbootstrap
-  make install
-  cd ..
+   tar -zxvf haskell-platform-${VERSION}-unknown-linux-x86_64.tar.gz
 
-  export PATH=${BROOT}/ghcbootstrap/bin:${PATH}
+   mkdir -p $INSTALL_PREFIX
+   cd usr/local/haskell/ghc-7.8.3-x86_64/bin
 
-  tar -zxvf cabal-install-${CABAL_VERSION}.tar.gz
-  cd cabal-install-${CABAL_VERSION}
-  PREFIX=${BROOT}/ghcbootstrap ./bootstrap.sh
-  cd ..
+# Fix the hard-coded paths.
+   for a in `file * | grep Bourne | awk '{print $1}'`
+   do
+      b=${a::-1}
+      sed "s|/usr/local/haskell/|$INSTALL_PREFIX/|g" $b > $b.fixed
+      chmod +x $b.fixed
+      mv $b.fixed $b
+   done
 
-  tar -zxvf haskell-platform-${VERSION}-srcdist.tar.gz
+# Move into /shared
+   cd $temp_dir
+   cd usr/local/haskell
+   mv ghc-7.8.3-x86_64 $INSTALL_DIR/ghc-7.8.3-x86_64
 
-  cd haskell-platform-${VERSION}
-  ./platform.sh  --prefix=$INSTALL_PREFIX
 else
-  echo "Hash mismatch."
-  echo "Expected: $MD5 $GHC_MD5 $CABAL_MD5"
-  echo "Got: $CHECKSUM $GHCCHECKSUM $CABALCHECKSUM"
+   echo "Hash mismatch."
+   echo "Expected: $MD5"
+   echo "Got: $CHECKSUM"
 fi
