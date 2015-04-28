@@ -38,7 +38,7 @@ then
 
    cd ..
 
-   tar -zxvf libgdiplus-${LIBGIDPLUS_VERSION}.tar.gz
+   tar -zxvf libgdiplus-${LIBGDIPLUS_VERSION}.tar.gz
    cd libgdiplus-${LIBGDIPLUS_VERSION}
    ./configure --prefix=${INSTALL_PREFIX}
    make
