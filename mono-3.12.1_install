@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Mono Platform
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-3.12.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/mono/$VERSION}
+MD5=${MD5:-ccab015f0c54ffeccd2924b44885809c}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://download.mono-project.com/sources/mono/mono-${VERSION}.tar.bz2}
+
+LIBGDIPLUS_VERSION=${LIBGDIPLUS_VERSION:-3.12}
+LIBGDIPLUS_MD5=${LIBGDIPLUS_MD5:-b8fd78c2adce16498354c2476a248d98}
+LIBGDIPLUS_ARCHIVE=${LIBGDIPLUS_ARCHIVE:-http://download.mono-project.com/sources/libgdiplus/libgdiplus-${LIBGDIPLUS_VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $LIBGDIPLUS_ARCHIVE
+
+CHECKSUM=`md5sum mono-${VERSION}.tar.bz2| awk '{print $1}'`
+LIBGDIPLUSCHECKSUM=`md5sum libgdiplus-${LIBGDIPLUS_VERSION}.tar.gz |  awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" && "$LIBGDIPLUS_MD5" == "$LIBGDIPLUSCHECKSUM" ]]
+then
+   tar -jxvf mono-${VERSION}.tar.bz2
+   cd mono-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX}
+   make
+   make install
+
+   cd ..
+
+   tar -zxvf libgdiplus-${LIBGIDPLUS_VERSION}.tar.gz
+   cd libgdiplus-${LIBGDIPLUS_VERSION}
+   ./configure --prefix=${INSTALL_PREFIX}
+   make
+   make install
+   
+
+
+else
+   echo "Hash mismatch."
+   echo "Expected: $MD5 $GHC_MD5 $CABAL_MD5"
+   echo "Got: $CHECKSUM $GHCCHECKSUM $CABALCHECKSUM"
+fi
