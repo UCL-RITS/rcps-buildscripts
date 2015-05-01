@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OpenFOAM
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-2.3.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/OpenFOAM}
+MD5=${MD5:-686f541586a44210a21e513c755765b7}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/foam/OpenFOAM-${VERSION}.tgz}
+
+THIRDPARTY_VERSION=${THIRDPARTY_VERSION:-2.3.1}
+THIRDPARTY_ARCHIVE=${THIRDPARTY_ARCHIVE:-http://downloads.sourceforge.net/foam/ThirdParty-${THIRDPARTY_VERSION}.tgz}
+THIRDPARTY_MD5=${THIRDPARTY_VERSION:-2446c1c8a86a6662871639899c977ffb}
+
+QT_VERSION=${QT_VERSION:-4.8.6}
+QT_ARCHIVE=${QT_ARCHIVE:-http://download.qt-project.org/official_releases/qt/4.8/${QT_VERSION}/qt-everywhere-opensource-src-${QT_VERSION}.tar.gz}
+QT_MD5=${QT_MD5:-2edbe4d6c2eff33ef91732602f3518eb}
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+wget $THIRDPARTY_ARCHIVE
+wget $QT_ARCHIVE
+
+CHECKSUM=`md5sum OpenFOAM-${VERSION}.tgz| awk '{print $1}'`
+THIRDPARTYCHECKSUM=`md5sum ThirdParty-${THIRDPARTY_VERSION}.tgz |  awk '{print $1}'`
+QTCHECKSUM=`md5sum qt-everywhere-opensource-src-${QT_VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" && "$THIRDPARTY_MD5" == "$THIRDPARTYCHECKSUM" && "$QT_MD5" == "$QTCHECKSUM" ]]
+then
+   tar zxvf OpenFOAM-${VERSION}.tgz
+   tar zxvf ThirdParty-${THIRDPARTY_VERTSION}.tgz
+   cd OpenFOAM-${VERSION}/etc
+   cp /shared/ucl/apps/build_scripts/openfoam-patches/bashrc.patch .
+   patch < bashrc.patch
+   source bashrc
+
+   cd $INSTALL_PREFIX
+   cd ThirdParty-${THIRDPARTY_VERSION}
+   cp /shared/ucl/apps/build_scripts/openfoam-patches/makeQt.patch .
+   patch < makeQt.patch
+
+   rm -rf openmpi-* cmake-*
+
+   tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
+
+   ./makeQt
+
+   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export QTINC=${INSTALL_PR:w
+EFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
+   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
+   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
+
+   cd ../OpenFOAM-${VERSION}
+   ./Allwmake
+
+# Step above breaks these
+
+   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
+   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
+   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
+
+   cd ../ThirdParty-${THIRDPARTY_VERSION} 
+   ./makeParaView
+
+   export ParaView_DIR=${INSTALL_PREFIX/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/paraview-4.1.0
+   export PATH=$ParaView_DIR/bin:$PATH
+   export PV_PLUGIN_PATH=$FOAM_LIBBIN/paraview-4.1.0
+   cd $FOAM_UTILITIES/postProcessing/graphics/PV3Readers
+   wmSET 
+
+   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
+   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
+   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
+   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
+
+
+   ./Allwclean
+   ./Allwmake
+   ./Allwmake
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $THIRDPARTY_MD5 $QT_MD5"
+  echo "Got: $CHECKSUM $THIRDPARTYCHECKSUM $QTCHECKSUM"
+fi
