@@ -22,6 +22,7 @@ QT_MD5=${QT_MD5:-2edbe4d6c2eff33ef91732602f3518eb}
 
 set -e
 
+mkdir -p /dev/shm/openfoam
 temp_dir=`mktemp -d -p /dev/shm/openfoam`
 
 ln -s $temp_dir $INSTALL_PREFIX
