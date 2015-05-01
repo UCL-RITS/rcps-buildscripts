@@ -26,7 +26,7 @@ CHECKSUM=`md5sum lammps-stable.tar.gz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf ../lammps-stable.tar.gz
+  tar -zxvf lammps-stable.tar.gz
 
   cd lammps-${VERSION}/src
   cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
