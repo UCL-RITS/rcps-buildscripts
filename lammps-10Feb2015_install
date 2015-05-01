@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-10Feb2015}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-25a432713a3ad4969fdaaa2551d517ef} 
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-stable.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum lammps-stable.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+# Single precision
+  mkdir single
+  cd single
+  tar -zxvf ../lammps-stable.tar.gz
+
+  cd lammps-${VERSION}/src
+  cp /shared/ucl/apps/build_scripts/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
+
+# Add some necessary packages that aren't included by default for some reason
+  make yes-kspace
+  make yes-replica
+  make yes-rigid
+
+# Make binaries, libraries
+  make legion
+  make legion mode=lib
+  make legion mode=shlib
+
+# Put them outside the source tree
+  mkdir ../bin
+  mv lmp_legion ../bin
+  mkdir ../lib64
+  mv liblammps* ../lib64
+
+# Wipe out our old object files.
+  make clean-all
+  
+# Move install into /shared
+  cd ../..
+  mv lammps-${VERSION} $INSTALL_PREFIX
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
