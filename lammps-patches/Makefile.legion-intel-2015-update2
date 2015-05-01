@@ -51,7 +51,7 @@ MPI_LIB =
 # PATH = path for FFT library
 # LIB = name of FFT library
 
-FFT_INC =       -DFFT_MKL -DFFT_DOUBLE
+FFT_INC =       -DFFT_MKL 
 FFT_PATH = 
 FFT_LIB =       -L$MKLROOT/lib/intel64/ -lmkl_intel_ilp64 \
                 -lmkl_intel_thread -lmkl_core	
