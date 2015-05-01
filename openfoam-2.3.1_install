@@ -14,7 +14,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/foam/OpenFOAM-${VERS
 
 THIRDPARTY_VERSION=${THIRDPARTY_VERSION:-2.3.1}
 THIRDPARTY_ARCHIVE=${THIRDPARTY_ARCHIVE:-http://downloads.sourceforge.net/foam/ThirdParty-${THIRDPARTY_VERSION}.tgz}
-THIRDPARTY_MD5=${THIRDPARTY_VERSION:-2446c1c8a86a6662871639899c977ffb}
+THIRDPARTY_MD5=${THIRDPARTY_MD5:-2446c1c8a86a6662871639899c977ffb}
 
 QT_VERSION=${QT_VERSION:-4.8.6}
 QT_ARCHIVE=${QT_ARCHIVE:-http://download.qt-project.org/official_releases/qt/4.8/${QT_VERSION}/qt-everywhere-opensource-src-${QT_VERSION}.tar.gz}
@@ -54,8 +54,7 @@ then
    ./makeQt
 
    export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export QTINC=${INSTALL_PR:w
-EFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
+   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
    export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
    export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
    export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
