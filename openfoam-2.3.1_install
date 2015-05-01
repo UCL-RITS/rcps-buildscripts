@@ -57,7 +57,7 @@ then
    tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
 
 # Compiling QT with Intel compilers breaks in all kinds of fun ways.
-   ./makeQt -gcc
+   ./makeQt 
 
    export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
    export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
