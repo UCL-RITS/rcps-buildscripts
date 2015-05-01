@@ -20,6 +20,8 @@ QT_VERSION=${QT_VERSION:-4.8.6}
 QT_ARCHIVE=${QT_ARCHIVE:-http://download.qt-project.org/official_releases/qt/4.8/${QT_VERSION}/qt-everywhere-opensource-src-${QT_VERSION}.tar.gz}
 QT_MD5=${QT_MD5:-2edbe4d6c2eff33ef91732602f3518eb}
 
+export MPI_ROOT=${MPI_ROOT:-$I_MPI_ROOT}
+
 set -e
 
 mkdir -p /dev/shm/openfoam
@@ -54,7 +56,8 @@ then
 
    tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
 
-   ./makeQt
+# Compiling QT with Intel compilers breaks in all kinds of fun ways.
+   ./makeQt -gcc
 
    export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
    export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include

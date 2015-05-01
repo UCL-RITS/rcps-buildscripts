@@ -1,5 +1,5 @@
 --- makeQt	2014-02-06 15:31:37.000000000 +0000
-+++ makeQt.new	2015-05-01 14:28:13.785241415 +0100
++++ makeQt.new	2015-05-01 16:04:40.472929075 +0100
 @@ -29,7 +29,7 @@
  #     Build script for qt-everywhere-opensource-src
  #
@@ -9,3 +9,12 @@
  qtTYPE=qt-everywhere-opensource-src
  #------------------------------------------------------------------------------
  # run from third-party directory only
+@@ -121,7 +121,7 @@
+ 
+     # compile as opensource, accepting LGPL conditions
+     echo "yes" | \
+-    $sourceDIR/configure \
++    $sourceDIR/configure --no-pch \
+         --prefix=$prefixDIR \
+         -opensource \
+         -nomake demos \
