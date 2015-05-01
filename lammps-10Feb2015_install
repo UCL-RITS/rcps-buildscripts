@@ -38,16 +38,10 @@ then
 
 # Make binaries, libraries
   make legion
-  make clean-all
-  make legion mode=lib
-  make clean-all
-  make legion mode=shlib
 
 # Put them outside the source tree
   mkdir ../bin
   mv lmp_legion ../bin
-  mkdir ../lib64
-  mv liblammps* ../lib64
 
 # Wipe out our old object files.
   make clean-all
