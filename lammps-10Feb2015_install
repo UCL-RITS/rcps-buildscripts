@@ -32,7 +32,7 @@ then
   tar -zxvf ../lammps-stable.tar.gz
 
   cd lammps-${VERSION}/src
-  cp /shared/ucl/apps/build_scripts/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
+  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
 
 # Add some necessary packages that aren't included by default for some reason
   make yes-kspace
