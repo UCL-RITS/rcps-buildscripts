@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TeX Live 2014
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0
+#
+# Note: Mounting the ISO image will need root access.
+
+VERSION=${VERSION:-2014}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
+MD5=${MD5:-265fe061aaac6a9e39aa84384fb0b486}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ox.ac.uk/sites/ctan.org/systems/texlive/Images/texlive${VERSION}.iso}
+INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-${VERSION}_legion.profile
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum texlive${VERSION}.iso| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    # These need to be run as root so:
+    sudo mkdir -p /mnt/texlive
+    sudo mount -o loop texlive2014.iso /mnt/texlive
+
+    cd /mnt/texlive
+    ./install-tl -profile $INSTALL_PROFILE
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

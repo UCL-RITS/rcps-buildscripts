@@ -34,6 +34,11 @@ wget $SRC_ARCHIVE
 wget $THIRDPARTY_ARCHIVE
 wget $QT_ARCHIVE
 
+export VERSION
+export QT_VERSION
+export THIRDPARTY_VERSION
+export INSTALL_PREFIX
+
 CHECKSUM=`md5sum OpenFOAM-${VERSION}.tgz| awk '{print $1}'`
 THIRDPARTYCHECKSUM=`md5sum ThirdParty-${THIRDPARTY_VERSION}.tgz |  awk '{print $1}'`
 QTCHECKSUM=`md5sum qt-everywhere-opensource-src-${QT_VERSION}.tar.gz | awk '{print $1}'`
@@ -45,7 +50,8 @@ then
    cd OpenFOAM-${VERSION}/etc
    cp /shared/ucl/apps/build_scripts/openfoam-patches/bashrc.patch .
    patch < bashrc.patch
-   source bashrc
+
+   source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd $INSTALL_PREFIX
    cd ThirdParty-${THIRDPARTY_VERSION}
@@ -59,22 +65,14 @@ then
 # Compiling QT with Intel compilers breaks in all kinds of fun ways.
    ./makeQt 
 
-   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
-   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
-   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
+   source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd ../OpenFOAM-${VERSION}
    ./Allwmake
 
 # Step above breaks these
 
-   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
-   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
-   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
+   source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd ../ThirdParty-${THIRDPARTY_VERSION} 
    ./makeParaView4
@@ -83,14 +81,8 @@ then
    export PATH=$ParaView_DIR/bin:$PATH
    export PV_PLUGIN_PATH=$FOAM_LIBBIN/paraview-4.1.0
    cd $FOAM_UTILITIES/postProcessing/graphics/PV4Readers
-   wmSET 
 
-   export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
-   export QTLIB=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/lib
-   export QT_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
-   export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
-
+   source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    ./Allwclean
    ./Allwmake

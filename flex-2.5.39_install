@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing flex
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-2.5.39}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/flex/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-477679c37ff8b28248a9b05f1da29a82}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/flex/files/flex-${VERSION}.tar.xz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum flex-${VERSION}.tar.xz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -Jxvf flex-${VERSION}.tar.xz
+
+  cd flex-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install 
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
