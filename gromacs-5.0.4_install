@@ -1,0 +1,61 @@
+###############################################
+# Installing GROMACS
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-gromacs}
+VERSION=${VERSION:-5.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-c177ae5fd6d71e2bec7369bc66cd082e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
+
+set -e
+
+# ready for testing
+export PATH=$INSTALL_PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$PATH
+
+#temp_dir=`mktemp -d`
+temp_dir=/dev/shm
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ${NAME}-${VERSION}
+  mkdir build
+  cd build
+  
+  echo "Building and installing full, serial, single precision GROMACS"
+  cmake .. -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  make
+  make install
+  
+  echo "Building and installing full, serial, double precision GROMACS"
+  cmake .. -DGMX_DOUBLE=on -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  make
+  make install
+  
+  echo "Building and installing mdrun-only, MPI, single precision GROMACS"
+  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  make
+  make install
+
+  echo "Building and installing mdrun-only, MPI, double precision GROMACS"
+  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
