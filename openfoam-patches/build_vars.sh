@@ -3,6 +3,9 @@
 # This script re-sets some variables that keep getting unset by the various 
 # OpenFOAM config scripts.
 
+# OpenFOAM config
+source ${INSTALL_PREFIX}/OpenFOAM-${VERSION}/etc/bashrc
+
 # QT variables
 export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
 export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
