@@ -77,12 +77,12 @@ then
    export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/bin:$PATH
 
    cd ../ThirdParty-${THIRDPARTY_VERSION} 
-   ./makeParaView
+   ./makeParaView4
 
    export ParaView_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/paraview-4.1.0
    export PATH=$ParaView_DIR/bin:$PATH
    export PV_PLUGIN_PATH=$FOAM_LIBBIN/paraview-4.1.0
-   cd $FOAM_UTILITIES/postProcessing/graphics/PV3Readers
+   cd $FOAM_UTILITIES/postProcessing/graphics/PV4Readers
    wmSET 
 
    export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
