@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Ghostscript 9.16
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-9.16}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Ghostscript/$VERSION}
+MD5=${MD5:-818c87e31f7562aaa97397d3d0cc20a1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.ghostscript.com/public/ghostscript-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ghostscript-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf ghostscript-${VERSION}.tar.gz
+   cd ghostscript-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX}
+   make
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
