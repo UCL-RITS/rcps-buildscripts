@@ -83,7 +83,10 @@ then
    export PATH=$ParaView_DIR/bin:$PATH
    export PV_PLUGIN_PATH=$FOAM_LIBBIN/paraview-4.1.0
    cd $FOAM_UTILITIES/postProcessing/graphics/PV4Readers
-   wmSET 
+
+# wmSET is an alias to '. $WM_PROJECT_DIR/etc/bashrc'
+#   wmSET 
+   source ${INSTALL_PREFIX}/OpenFOAM-${VERSION}/etc/bashrc
 
    export QTDIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}
    export QTINC=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/qt-${QT_VERSION}/include
