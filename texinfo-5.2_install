@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GNU texinfo 5.2
+#
+# by Brian Alston, May 2015 
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-5.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/texinfo/$VERSION}
+MD5=${MD5:-1b8f98b80a8e6c50422125e07522e8db}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/texinfo/texinfo-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum texinfo-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf texinfo-${VERSION}.tar.gz
+   cd texinfo-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX}
+   make
+   make check
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
