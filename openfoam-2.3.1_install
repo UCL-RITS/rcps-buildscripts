@@ -47,6 +47,8 @@ if [[ "$MD5" == "$CHECKSUM" && "$THIRDPARTY_MD5" == "$THIRDPARTYCHECKSUM" && "$Q
 then
    tar zxvf OpenFOAM-${VERSION}.tgz
    tar zxvf ThirdParty-${THIRDPARTY_VERSION}.tgz
+   find . -name "Allwmake" | xargs -Ifile sed -i -e "1s_\#\!/bin/sh_\#\!/bin/sh\nset +e\n_" file
+
    cd OpenFOAM-${VERSION}/etc
    cp /shared/ucl/apps/build_scripts/openfoam-patches/bashrc.patch .
    patch < bashrc.patch
