@@ -13,7 +13,7 @@ VERSION=${VERSION:-2014}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
 MD5=${MD5:-265fe061aaac6a9e39aa84384fb0b486}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ox.ac.uk/sites/ctan.org/systems/texlive/Images/texlive${VERSION}.iso}
-INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-${VERSION}_legion.profile
+INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-patches/texlive-${VERSION}_legion.profile
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
