@@ -2,3 +2,10 @@ nose
 numpy
 scipy
 matplotlib
+biopython
+acora
+python-Levenshtein
+pandas
+ephem
+pyMinuit2
+bzr

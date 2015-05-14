@@ -26,6 +26,8 @@ source venv/bin/activate
 export LAPACK=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
 export BLAS=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
 
+pip install --upgrade pip
+
 for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
    pip install $a
