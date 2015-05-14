@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing BOOST
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-boost}
+VERSION=${VERSION:-1_54_0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-15cb8c0803064faef0c4ddf5bc5ca279}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/boost/files/boost/1.54.0/${NAME}_${VERSION}.tar.bz2}
+MPI=${MPI:-yes}
+
+set -e
+
+# test module prereqs
+export PATH=/shared/ucl/apps/rcops_scripts/:$PATH
+module-loaded compilers
+module-loaded mpi
+module-loaded python
+
+#temp_dir=`mktemp -d`
+temp_dir=/dev/shm
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ${NAME}-${VERSION}
+  ./bootstrap.sh --with-libraries=all --with-python=python --prefix=$INSTALL_PREFIX
+
+  if [ "$MPI" == "yes" ]
+  then
+    # enable mpi support by adding "using mpi ;" to the end of user-config.jam
+
+    cp tools/build/v2/user-config.jam .
+    cat <<EOT >> user-config.jam
+
+# -----------------
+# MPI configuration.
+# -----------------
+
+using mpi ;
+EOT
+
+  fi  
+
+  # Build, install and log (if any components fail, it doesn't tell you which at the end)
+  # You can redo individual ones with ./bjam --with-xxxx install
+  ./b2 install 2>&1 | tee build.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
