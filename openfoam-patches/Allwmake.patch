@@ -1,0 +1,6 @@
+--- Allwmake    2014-12-04 17:52:43.000000000 +0000
++++ Allwmake.new        2015-05-14 15:53:25.607325310 +0100
+@@ -1,2 +1,3 @@
+ #!/bin/sh
++set -e
+ cd ${0%/*} || exit 1    # run from this directory
