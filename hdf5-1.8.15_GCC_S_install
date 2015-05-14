@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HDF5 1.8.15 Serial Version with GCC
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-5-1.8.15}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}-gcc.4.9.2 }
+MD5=${MD5:-03cccb5b33dbe975fdcd8ae9dc021f24}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.hdfgroup.org/ftp/HDF5/current/src/hdf${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum hdf${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf hdf${VERSION}.tar.gz
+   cd hdf${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} --enable-fortran \
+               --enable-fortran2003 --enable-cxx
+   make
+   make check-s
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
