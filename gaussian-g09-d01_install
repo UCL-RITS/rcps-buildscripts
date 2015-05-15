@@ -17,9 +17,7 @@ GROUP=${GROUP:-legg03}
 
 set -e
 
-temp_dir=/dev/shm
-#temp_dir=`mktemp -d`
-#cd $temp_dir
+temp_dir=`mktemp -d -p /dev/shm`
 
 export PATH=$INSTALL_PREFIX/g09:$PATH
 export g09root=$temp_dir
