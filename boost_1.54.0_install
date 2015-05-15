@@ -59,7 +59,7 @@ EOT
 
   if [ "${COMPILER_TAG:0:5}" == "intel"] 
   then
-     b2opts="--toolset=intel"
+     b2opts="--toolset=intel-linux"
   fi
 
   ./b2 install $b2opts 2>&1 | tee build.log
