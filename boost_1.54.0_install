@@ -56,7 +56,13 @@ EOT
 
   # Build, install and log (if any components fail, it doesn't tell you which at the end)
   # You can redo individual ones with ./bjam --with-xxxx install
-  ./b2 install 2>&1 | tee build.log
+
+  if [ "${COMPILER_TAG:0:5}" == "intel"] 
+  then
+     b2opts="--toolset=intel"
+  else
+
+  ./b2 install $b2opts 2>&1 | tee build.log
 
 else
   echo "Hash mismatch."
