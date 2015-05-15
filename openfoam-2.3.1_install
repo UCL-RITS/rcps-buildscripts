@@ -62,7 +62,8 @@ then
    source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd $INSTALL_PREFIX
-   cd OpenFOAM-${VERSION}/src/OpenFOAM/lnInclude
+
+   cd OpenFOAM-${VERSION}/src/OpenFOAM/include
    ln -s /shared/ucl/apps/flex/2.5.39/gnu-4.9.2/include/FlexLexer.h .
 
    cd $INSTALL_PREFIX
