@@ -55,6 +55,10 @@ then
    cp /shared/ucl/apps/build_scripts/openfoam-patches/bashrc.patch .
    patch < bashrc.patch
 
+   cd config
+   cp /shared/ucl/apps/build_scripts/openfoam-patches/CGAL.patch .
+   patch < CGAL.patch
+
    source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd $INSTALL_PREFIX
@@ -72,6 +76,11 @@ then
 
 # Compiling QT with Intel compilers breaks in all kinds of fun ways.
    ./makeQt 
+
+# Make CGAL
+   cp /shared/ucl/apps/build_scripts/openfoam-patches/makeCGAL.patch .
+   patch < makeCGAL.patch
+   ./makeCGAL
 
    source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
