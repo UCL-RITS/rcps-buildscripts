@@ -16,10 +16,10 @@ MPI=${MPI:-yes}
 set -e
 
 # test module prereqs
-export PATH=/shared/ucl/apps/rcops_scripts/:$PATH
-module-loaded compilers
-module-loaded mpi
-module-loaded python
+#export PATH=/shared/ucl/apps/rcops_scripts/:$PATH
+#module-loaded compilers
+#module-loaded mpi
+#module-loaded python
 
 #temp_dir=`mktemp -d`
 temp_dir=/dev/shm
