@@ -17,3 +17,7 @@ export PATH=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64
 
 # Fix LD_LIBRARY_PATH - otherwise libstdc++ breaks
 export LD_LIBRARY_PATH=/shared/ucl/apps/gcc/4.9.2/lib64:${LD_LIBRARY_PATH}
+
+# Fix CC/CXX 
+export WM_CXX=$CXX
+export WM_CC
