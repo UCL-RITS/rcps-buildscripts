@@ -22,7 +22,7 @@ set -e
 #module-loaded python
 
 #temp_dir=`mktemp -d`
-temp_dir=/dev/shm
+temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 
