@@ -109,7 +109,7 @@ then
    rm $INSTALL_PREFIX
    cd $temp_dir
    mkdir $INSTALL_PREFIX
-   cp -Rv OpenFoam-${VERSION} $INSTALL_PREFIX/OpenFoam-${VERSION} 
+   cp -Rv OpenFOAM-${VERSION} $INSTALL_PREFIX/OpenFOAM-${VERSION} 
    cp -Rv ThirdParty-${THIRDPARTY_VERSION} $INSTALL_PREFIX/ThirdParty-${THIRDPARTY_VERSION}
 
 else
