@@ -76,7 +76,7 @@ then
    tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
 
 # Compiling QT with Intel compilers breaks in all kinds of fun ways.
-   ./makeQt 
+   ./makeQt -gcc
 
 # Make CGAL
    cp /shared/ucl/apps/build_scripts/openfoam-patches/makeCGAL.patch .
