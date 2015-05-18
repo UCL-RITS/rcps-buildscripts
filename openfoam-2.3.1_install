@@ -27,7 +27,7 @@ set -e
 mkdir -p /dev/shm/openfoam
 temp_dir=`mktemp -d -p /dev/shm/openfoam`
 
-ln -s $temp_dir $INSTALL_PREFIX
+ln -fs $temp_dir $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
