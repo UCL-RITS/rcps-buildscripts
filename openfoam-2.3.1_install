@@ -108,6 +108,9 @@ then
 
    rm $INSTALL_PREFIX
    cd $temp_dir
+
+# Fix permissions on ThirdParty directory so that our users can actually run stuff.
+   chmod -R o+rX ThirdParty-${THIRDPARTY_VERSION} 
    mkdir $INSTALL_PREFIX
    cp -Rv OpenFOAM-${VERSION} $INSTALL_PREFIX/OpenFOAM-${VERSION} 
    cp -Rv ThirdParty-${THIRDPARTY_VERSION} $INSTALL_PREFIX/ThirdParty-${THIRDPARTY_VERSION}
