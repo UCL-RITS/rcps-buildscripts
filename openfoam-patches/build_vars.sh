@@ -21,3 +21,4 @@ export LD_LIBRARY_PATH=/shared/ucl/apps/gcc/4.9.2/lib64:${LD_LIBRARY_PATH}
 # Fix CC/CXX 
 export WM_CXX=$CXX
 export WM_CC=$CC
+export FOAM_SIGFPE=1
