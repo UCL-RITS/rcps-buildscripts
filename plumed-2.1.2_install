@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PLUMED
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-plumed}
+VERSION=${VERSION:-2.1.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/$BLAS_TAG}
+MD5=${MD5:-562a4692fd185f0b144b07b1e7bc70fa}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/plumed/plumed2/archive/v${VERSION}.zip}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip $archive
+
+  cd ${NAME}2-${VERSION}
+  if [ "${BLAS_TAG}" == "openblas" ]
+  then
+    ./configure --prefix=$INSTALL_PREFIX CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L${OPENBLASROOT}/lib LIBS="-lopenblas -lifcore"
+  elif [ "${BLAS_TAG}" == "atlas" ]
+  then
+    ./configure --prefix=$INSTALL_PREFIX CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L${ATLASROOT}/lib LIBS=-lsatlas
+  elif [ "${BLAS_TAG}" == "mkl" ]
+  then
+    echo "------------------------------------------------"
+    echo "ALERT ALERT, using MKL has previously not worked"
+    echo "------------------------------------------------"
+    echo ""
+    ./configure --prefix=$INSTALL_PREFIX CXX=mpicxx CC=mpicc FC=mpif90 LIBS="${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm" CFLAGS="-I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include"
+  else
+    echo "Not using external BLAS"
+    ./configure --prefix=$INSTALL_PREFIX CXX=mpicxx CC=mpicc FC=mpif90
+  fi
+
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
