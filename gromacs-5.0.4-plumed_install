@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GROMACS with PLUMED
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-gromacs}
+VERSION=${VERSION:-5.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/plumed/$COMPILER_TAG}
+MD5=${MD5:-c177ae5fd6d71e2bec7369bc66cd082e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
+
+set -e
+
+# Check if PLUMED_KERNEL is empty or unset, returns error if it is
+: ${PLUMED_KERNEL:?"parameter null or not set, need to load a plumed module"}
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ${NAME}-${VERSION}
+
+  echo "Running PLUMED's interactive patch tool"
+  plumed patch -p
+
+  mkdir build
+  cd build
+  
+  # Only build the MPI versions of GROMACS with PLUMED
+  # need to tell it to build shared libs or it won't since it didn't do a serial build first
+
+  # PLUMED 2 always uses double precision, even if GROMACS is running in single
+  echo "Building and installing MPI, single precision GROMACS"
+  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
+  make
+  make install
+
+  echo "Building and installing mdrun-only, MPI, double precision GROMACS"
+  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
