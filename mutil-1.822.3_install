@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MUtils
+#
+# by Ian Kirker, 2015 
+#
+
+# MUtils patches coreutils to add parallelism to cp and md5sum.
+# It comes as a patch to a specific version of the coreutils source bundle.
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1.822.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/mutils/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-5d5fb10870bd32b14a2c34db632c10f6}
+SRC_URL=${SRC_URL:-http://downloads.sourceforge.net/project/mutil/mutil-${VERSION}.tgz}
+# Despite being written by NASA, it's stored on SourceForge, the website that bundles malware and has no HTTPS downloads. Whoop-de-doo.
+SRC_FILE=${SRC_FILE:-${SRC_URL##*/}}
+MODE=${MODE:-install}
+
+#####
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d $SRC_FILE.XXXXXX`
+
+cd $temp_dir
+
+wget $SRC_URL
+
+if which md5sum 2>/dev/null >/dev/null; then
+  checksum=$(md5sum ${SRC_FILE}| awk '{print $1}')
+elif which md5 2>/dev/null >/dev/null; then
+  checksum=$(md5 ${SRC_FILE} | grep -o '[^ ]*$')
+else
+  echo "No checksum could be calculated: md5 or md5sum required." >&2
+  exit 1
+fi
+
+if [ "$MD5" != "$checksum" ]; then
+  echo "Hash mismatch for $SRC_FILE"
+  echo "Expected: $MD5"
+  echo "Got:      $checksum"
+  exit 2
+fi
+
+tar -xf $SRC_FILE
+
+unpack_dir=$(tar -tf $SRC_FILE | head -n 1)
+unpack_dir=${unpack_dir%/}
+
+matching_coreutils_version=$(grep '^[ ]*cd coreutils-[0-9.]*$' $unpack_dir/INSTALL | head -n 1 | grep -o '[0-9.]*$')
+
+coreutils_src_file=coreutils-$matching_coreutils_version.tar.xz
+coreutils_src_url=https://ftp.gnu.org/gnu/coreutils/$coreutils_src_file
+coreutils_unpack_dir=${coreutils_src_file%\.tar\.xz}
+
+wget $coreutils_src_url
+tar -xf $coreutils_src_file
+
+cd $coreutils_unpack_dir
+patch -p1 < ../$unpack_dir/patch/coreutils-${matching_coreutils_version}.patch
+
+# See mutils dir INSTALL file for more options
+# DEFAULT_BUFFER_SIZE is in MB, I guess should be set to the stripe size on Lustre?
+export CFLAGS="-DDEFAULT_BUFFER_SIZE=1"
+./configure --prefix=$INSTALL_PREFIX 
+make
+set +e # IGNORE FAILURE
+make check
+set -e
+# On my OS X system:
+# TOTAL: 551
+# PASS:  382
+# SKIP:  149
+# XFAIL: 0
+# FAIL:  17
+# XPASS: 0
+# ERROR: 3
+
+# On login99
+# TOTAL: 551
+# PASS:  407
+# SKIP:  119
+# XFAIL: 0
+# FAIL:  24
+# XPASS: 0
+# ERROR: 1
+
+if [[ "$MODE" == "install" ]]; then
+  # The install directory warns against using 'make install', and instead 
+  #   recommends manual copying of the few modified files.
+  mkdir -p $INSTALL_PREFIX/{bin,man/man1}
+  cp src/cp $INSTALL_PREFIX/bin/mcp
+  cp src/md5sum $INSTALL_PREFIX/bin/msum
+  cp man/cp.1 $INSTALL_PREFIX/man/man1/mcp.1
+  cp man/md5sum.1 $INSTALL_PREFIX/man/man1/msum.1
+fi
+
+
