@@ -33,7 +33,7 @@ then
   cd ${NAME}-${VERSION}
 
   echo "Running PLUMED's interactive patch tool"
-  plumed patch -p
+  plumed patch -p --shared
 
   mkdir build
   cd build
@@ -41,14 +41,14 @@ then
   # Only build the MPI versions of GROMACS with PLUMED
   # need to tell it to build shared libs or it won't since it didn't do a serial build first
 
-  # PLUMED 2 always uses double precision, even if GROMACS is running in single
-  echo "Building and installing MPI, single precision GROMACS"
-  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
+  echo "Building and installing MPI, double precision GROMACS"
+  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
   make
   make install
 
-  echo "Building and installing mdrun-only, MPI, double precision GROMACS"
-  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
+  # PLUMED 2 always uses double precision, even if GROMACS is running in single
+  echo "Building and installing MPI, single precision GROMACS"
+  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
   make
   make install
 
