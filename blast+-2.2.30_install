@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing BLAST+
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-blast+}
+VERSION=${VERSION:-2.2.30}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-f8e9a5eb368173142fe6867208b73715}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-$(VERSION)+-src.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ncbi-blast-${VERSION}+-src/c++
+  ../configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+  # BLASTDB location
+  mkdir $INSTALL_PREFIX/data
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
