@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Apache portable runtime
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-1.5.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/apr/$VERSION}
+MD5=${MD5:-4e9769f3349fe11fc0a5e1b224c236aa}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.mirrorservice.org/sites/ftp.apache.org//apr/apr-${VERSION}.tar.bz2}
+
+#`ftp://ftp.mirrorservice.org/sites/ftp.apache.org//apr/apr-1.5.2.tar.gz
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum apr-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf apr-${VERSION}.tar.bz2
+
+  cd apr-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
