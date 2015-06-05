@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing subversion
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-1.8.13}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/subversion/$VERSION}
+MD5=${MD5:-4413417b529d7bdf82f74e50df02e88b}
+SRC_ARCHIVE=${SRC_ARCHIVE:--ftp://ftp.mirrorservice.org/sites/ftp.apache.org/subversion/subversion-${VERSION}.tar.bz2}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum subversion-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf subversion-${VERSION}.tar.bz2
+
+  cd subversion-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
