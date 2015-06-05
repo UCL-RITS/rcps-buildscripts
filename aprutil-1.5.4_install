@@ -30,7 +30,7 @@ then
   tar -jxvf apr-util-${VERSION}.tar.bz2
 
   cd apr-util-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --with-apr=/shared/ucl/apps/apr/1.5.2 --prefix=$INSTALL_PREFIX
   make && make install
 else
   echo "Hash mismatch."
