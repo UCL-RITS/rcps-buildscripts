@@ -10,7 +10,7 @@
 VERSION=${VERSION:-1.8.13}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/subversion/$VERSION}
 MD5=${MD5:-4413417b529d7bdf82f74e50df02e88b}
-SRC_ARCHIVE=${SRC_ARCHIVE:--ftp://ftp.mirrorservice.org/sites/ftp.apache.org/subversion/subversion-${VERSION}.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.mirrorservice.org/sites/ftp.apache.org/subversion/subversion-${VERSION}.tar.bz2}
 
 set -e
 
