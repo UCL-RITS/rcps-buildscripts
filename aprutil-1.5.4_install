@@ -7,10 +7,11 @@
 #
 
 
-VERSION=${VERSION:-1.5.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/apr/$VERSION}
-MD5=${MD5:-4e9769f3349fe11fc0a5e1b224c236aa}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.mirrorservice.org/sites/ftp.apache.org//apr/apr-${VERSION}.tar.bz2}
+VERSION=${VERSION:-1.5.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/apr-util/$VERSION}
+MD5=${MD5:-2202b18f269ad606d70e1864857ed93c}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.mirrorservice.org/sites/ftp.apache.org//apr/apr-util-${VERSION}.tar.bz2}
+
 
 set -e
 
@@ -22,13 +23,13 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum apr-${VERSION}.tar.bz2| awk '{print $1}'`
+CHECKSUM=`md5sum apr-util-${VERSION}.tar.bz2| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -jxvf apr-${VERSION}.tar.bz2
+  tar -jxvf apr-util-${VERSION}.tar.bz2
 
-  cd apr-${VERSION}
+  cd apr-util-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX
   make && make install
 else
