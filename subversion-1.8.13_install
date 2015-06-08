@@ -43,7 +43,7 @@ then
   tar -jxvf subversion-${VERSION}.tar.bz2
 
   cd subversion-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX
   make && make install
 else
   echo "Hash mismatch."
