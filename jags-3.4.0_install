@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing JAGS built with with GCC
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and atlas/3.10.2/gnu.4.9.2
+
+VERSION=${VERSION:-3.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}}
+MD5=${MD5:-03cccb5b33dbe975fdcd8ae9dc021f24}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mcmc-jags/JAGS/3.x/Source/JAGS-${VERSION}.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmcmc-jags%2Ffiles%2FJAGS%2F3.x%2FSource%2F&ts=1433519396&use_mirror=heanet}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum JAGS-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf JAGS-${VERSION}.tar.gz
+   cd JAGS-${VERSION}
+   LDFLAGS="-L/shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/lib" ./configure --prefix=/shared/ucl/apps/JAGS/3.4.0 \
+           --with-blas="-lptf77blas -lptcblas -lpthread -latlas" \
+           --with-lapack="-llapack -lptf77blas -lptcblas -lpthread -latlas"
+   make
+   make install
+   ( cd $INSTALL_PREFIX; ln -s lib lib64 )
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
