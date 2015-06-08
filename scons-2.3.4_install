@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing scons
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-2.3.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/scons/$VERSION}
+MD5=${MD5:-91fbbb67c2c65b03c746601baac4a6a5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://prdownloads.sourceforge.net/scons/scons-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum scons-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf scons-${VERSION}.tar.gz
+
+  cd scons-${VERSION}
+  python setup.py install --prefix=${INSTALL_PREFIX}
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
