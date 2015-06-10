@@ -1,14 +1,5 @@
 #! /bin/csh -f
 
-#-------------------------------------------------------------------------------
-# GENERIC_USER
-# Platform-specific software versions/locations are set here.  This
-# might be done via modules or updates to the user PATH.  Some env
-# variables might also be set here for use in the Macros file.  Some
-# of the things that might be important here are compiler versions or
-# mpi and netcdf paths.  Samples are commented out below.
-#-------------------------------------------------------------------------------
-
 #--- set modules
 source /etc/profile.d/modules.csh
 module purge
