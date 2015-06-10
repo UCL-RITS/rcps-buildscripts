@@ -14,7 +14,7 @@
 
 VERSION=${VERSION:-1_0_6}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/cesm/cesm-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/cesm/cesm${VERSION}.tar.gz}
 
 set -e
 
