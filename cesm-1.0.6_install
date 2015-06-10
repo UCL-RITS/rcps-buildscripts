@@ -18,7 +18,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/cesm/cesm-${VERSION}.tar.gz}
 
 set -e
 
-mkdir $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 tar zxvf $SRC_ARCHIVE
