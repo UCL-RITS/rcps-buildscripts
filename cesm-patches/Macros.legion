@@ -45,8 +45,7 @@ CC            := mpicc
 # Also, review the relative paths of the INC_, LIB_, and MOD_ paths
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
-# TODO: Fix this path
-#NETCDF_PATH   := /cm/shared/apps/netcdf/intel/64/4.1.1
+NETCDF_PATH   := /shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include
