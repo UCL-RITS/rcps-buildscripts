@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CESM
+#
+# by Owain Kenway, 2015 
+#
+
+# NOTE THIS DOESN'T WORK YET!
+
+# You need to register for CESM and check out the appropriate version from
+# their password protected SVN.  I then tar them up and put them on the NFS
+# share so that I can re-install from a known good tarball.
+
+VERSION=${VERSION:-1_0_6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/cesm/cesm-${VERSION}.tar.gz}
+
+set -e
+
+mkdir $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+tar zxvf $SRC_ARCHIVE
+cd cesm${VERSION}/scripts
+cp /shared/ucl/apps/build_scripts/cesm-patches/legion_cesm_setup.sh .
+cd ccsm_utils/Machines
+cp /shared/ucl/apps/build_scripts/cesm-patches/*.legion .
+
