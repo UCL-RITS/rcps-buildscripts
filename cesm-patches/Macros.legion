@@ -45,14 +45,15 @@ CC            := mpicc
 # Also, review the relative paths of the INC_, LIB_, and MOD_ paths
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
-NETCDF_PATH   := /cm/shared/apps/netcdf/intel/64/4.1.1
+# TODO: Fix this path
+#NETCDF_PATH   := /cm/shared/apps/netcdf/intel/64/4.1.1
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include
-MPICH_PATH    := /usr/mpi/qlogic
+MPICH_PATH    := /shared/ucl/apps/intel/2015/impi/5.0.3.048/intel64
 INC_MPI       := $(MPICH_PATH)/include
 LIB_MPI       := $(MPICH_PATH)/lib64
-MPI_LIB_NAME  := mpich
+MPI_LIB_NAME  := mpi
 PNETCDF_PATH  :=
 INC_PNETCDF   :=
 LIB_PNETCDF   := 
