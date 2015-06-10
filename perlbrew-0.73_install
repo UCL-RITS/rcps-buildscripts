@@ -41,7 +41,7 @@ then
  
   # copy the example cpan config in, then set the prefixes correctly
   cp /shared/ucl/apps/build_scripts/files/perlbrew_cpan_MyConfig.pm ~/.cpan/CPAN/MyConfig.pm
-  sed -i -e 's|/shared/ucl/apps/perl/perlbrewsupport|${SUPPORT_PREFIX}|' ~/.cpan/CPAN/MyConfig.pm
+  sed -i -e "s|/shared/ucl/apps/perl/perlbrewsupport|${SUPPORT_PREFIX}|" ~/.cpan/CPAN/MyConfig.pm
   
   # Paths to where the dependencies will end up
   export PERL5LIB=${SUPPORT_PREFIX}:${SUPPORT_PREFIX}/lib:${SUPPORT_PREFIX}/lib/perl5:${SUPPORT_PREFIX}/lib64/perl5:${SUPPORT_PREFIX}/share/perl5/:$PERL5LIB
@@ -55,7 +55,7 @@ then
 
   # local::lib needs cpan to not have any prefixes set in MyConfig.pm
   # make backup of MyConfig.pm and replace prefix lines with empty.
-  sed -i.perlbrew -e 's|PREFIX=${SUPPORT_PREFIX}||' -e 's|--install_base ${SUPPORT_PREFIX}||' ~/.cpan/CPAN/MyConfig.pm
+  sed -i.perlbrew -e "s|PREFIX=${SUPPORT_PREFIX}||' -e 's|--install_base ${SUPPORT_PREFIX}||" ~/.cpan/CPAN/MyConfig.pm
 
   wget https://cpan.metacpan.org/authors/id/H/HA/HAARG/${LOCALLIB_NAME}.tar.gz
   tar -xvf ${LOCALLIB_NAME}.tar.gz
