@@ -25,8 +25,8 @@ if [[ "$SHA1" == "$CHECKSUM" ]]
 then
    tar xvzf netcdf-fortran-${VERSION}.tar.gz
    cd netcdf-fortran-${VERSION}
-   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/include -I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include
-   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/lib -L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib
+   export CPPFLAGS="-I/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/include -I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include"
+   export LDFLAGS="-L/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/lib -L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
 
    ./configure --prefix=${INSTALL_PREFIX}
    make
