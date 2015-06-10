@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Perlbrew
+# (After the first install, perlbrew can be used to upgrade itself).
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-perlbrew}
+VERSION=${VERSION:-0.73}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/perl/perlbrewroot}
+MD5=${MD5:-0e83b5ba0e7e65c3f8d1b25fa7f35a97}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://cpan.metacpan.org/authors/id/G/GU/GUGOD/App-$NAME-$VERSION.tar.gz}
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-/shared/ucl/apps/perl/perlbrewsupport}
+LOCALLIB_NAME=${LOCALLIB_NAME:-local-lib-2.000015}
+
+set -e
+
+export PERLBREW_ROOT=$INSTALL_PREFIX
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  # If cpan's config exists, back it up
+  if [ -f ~/.cpan/CPAN/MyConfig.pm ]
+  then
+    mv ~/.cpan/CPAN/MyConfig.pm ~/.cpan/CPAN/MyConfig.pm.orig
+  # if it doesn't, make sure the cpan directories are created ready for the copy
+  else
+    mkdir -p ~/.cpan/CPAN
+  fi
+ 
+  # copy the example cpan config in, then set the prefixes correctly
+  cp /shared/ucl/apps/build_scripts/files/perlbrew_cpan_MyConfig.pm ~/.cpan/CPAN/MyConfig.pm
+  sed -i -e 's|/shared/ucl/apps/perl/perlbrewsupport|${SUPPORT_PREFIX}|' ~/.cpan/CPAN/MyConfig.pm
+  
+  # Paths to where the dependencies will end up
+  export PERL5LIB=${SUPPORT_PREFIX}:${SUPPORT_PREFIX}/lib:${SUPPORT_PREFIX}/lib/perl5:${SUPPORT_PREFIX}/lib64/perl5:${SUPPORT_PREFIX}/share/perl5/:$PERL5LIB
+
+  # install currently-known dependencies
+  # Add any new ones to the list.
+  for a in `cat /shared/ucl/apps/build_scripts/lists/perlbrew_prereq.list`
+  do
+    cpan $a
+  done
+
+  # local::lib needs cpan to not have any prefixes set in MyConfig.pm
+  # make backup of MyConfig.pm and replace prefix lines with empty.
+  sed -i.perlbrew -e 's|PREFIX=${SUPPORT_PREFIX}||' -e 's|--install_base ${SUPPORT_PREFIX}||' ~/.cpan/CPAN/MyConfig.pm
+
+  wget https://cpan.metacpan.org/authors/id/H/HA/HAARG/${LOCALLIB_NAME}.tar.gz
+  tar -xvf ${LOCALLIB_NAME}.tar.gz
+  cd $temp_dir/${LOCALLIB_NAME}
+  perl Makefile.PL PREFIX=$SUPPORT_PREFIX
+  make
+  make install
+
+  # put perlbrew cpan config back
+  cp ~/.cpan/CPAN/MyConfig.pm.perlbrew ~/.cpan/CPAN/MyConfig.pm
+
+  # build perlbrew
+  cd $temp_dir
+  tar -xvf $archive
+  cd App-$NAME-$VERSION
+  perl Makefile.PL PREFIX=$INSTALL_PREFIX
+  make
+  make install
+
+  export PATH=$INSTALL_PREFIX/bin:$PATH
+  export PERL5LIB=$INSTALL_PREFIX/share/perl5:$PERL5LIB
+  
+  # make perlbrew ready to use
+  perlbrew init
+  source $INSTALL_PREFIX/etc/bashrc
+
+  # put cpan config back again if there was an original
+  if [ -f ~/.cpan/CPAN/MyConfig.pm.orig ]
+  then
+    mv ~/.cpan/CPAN/MyConfig.pm.orig ~/.cpan/CPAN/MyConfig.pm
+  fi
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
