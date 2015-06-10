@@ -8,7 +8,7 @@
 # Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and hdf/5-1.8.15/gnu.4.9.2
 
 VERSION=${VERSION:-4.3.3.1
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-gcc.4.9.2 }
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-${COMPILER_TAG} }
 MD5=${MD5:-5c9dad3705a3408d27f696e5b31fb88c}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${VERSION}.tar.gz}
 
@@ -26,8 +26,8 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf netcdf-${VERSION}.tar.gz
    cd netcdf-${VERSION}
-   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/include
-   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/lib
+   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/include
+   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/lib
 
    ./configure --prefix=${INSTALL_PREFIX} 
    make
