@@ -55,7 +55,7 @@ then
 
   # local::lib needs cpan to not have any prefixes set in MyConfig.pm
   # make backup of MyConfig.pm and replace prefix lines with empty.
-  sed -i.perlbrew -e "s|PREFIX=${SUPPORT_PREFIX}||' -e 's|--install_base ${SUPPORT_PREFIX}||" ~/.cpan/CPAN/MyConfig.pm
+  sed -i.perlbrew -e "s|PREFIX=${SUPPORT_PREFIX}||" -e "s|--install_base ${SUPPORT_PREFIX}||" ~/.cpan/CPAN/MyConfig.pm
 
   wget https://cpan.metacpan.org/authors/id/H/HA/HAARG/${LOCALLIB_NAME}.tar.gz
   tar -xvf ${LOCALLIB_NAME}.tar.gz
