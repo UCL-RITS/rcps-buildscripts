@@ -33,7 +33,7 @@ then
   # If cpan's config exists, back it up
   if [ -f ~/.cpan/CPAN/MyConfig.pm ]
   then
-    mv ~/.cpan/CPAN/MyConfig.pm ~/.cpan/CPAN/MyConfig.pm.orig
+    cp ~/.cpan/CPAN/MyConfig.pm $temp_dir/MyConfig.pm.orig
   # if it doesn't, make sure the cpan directories are created ready for the copy
   else
     mkdir -p ~/.cpan/CPAN
@@ -83,9 +83,9 @@ then
   source $INSTALL_PREFIX/etc/bashrc
 
   # put cpan config back again if there was an original
-  if [ -f ~/.cpan/CPAN/MyConfig.pm.orig ]
+  if [ -f $temp_dir/MyConfig.pm.orig ]
   then
-    mv ~/.cpan/CPAN/MyConfig.pm.orig ~/.cpan/CPAN/MyConfig.pm
+    cp $temp_dir/MyConfig.pm.orig ~/.cpan/CPAN/MyConfig.pm
   fi
 
 else
