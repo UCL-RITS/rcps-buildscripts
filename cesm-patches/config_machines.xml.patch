@@ -1,0 +1,26 @@
+--- config_machines.xml	2015-06-08 14:34:14.000000000 +0100
++++ config_machines.xml.new	2015-06-10 12:11:09.000000000 +0100
+@@ -376,6 +376,23 @@
+          PES_PER_NODE="16" />
+ 
+ 
++<machine MACH="legion"
++         DESC="UCL Legion, os is Linux, batch system is SGE, user-defined"
++         EXEROOT="/home/$CCSMUSER/Scratch/cesm/cases/$CASE"
++         OBJROOT="$EXEROOT"
++         LIBROOT="$EXEROOT/lib"
++         INCROOT="$EXEROOT/lib/include"
++         DIN_LOC_ROOT_CSMDATA="/home/$CCSMUSER/Scratch/cesm/inputdata"
++         DIN_LOC_ROOT_CLMQIAN="/home/$CCSMUSER/Scratch/cesm/inputdata/atm/datm7/atm_forcing.datm7.Qian.T62.c080727"
++         DOUT_S_ROOT="/home/$CCSMUSER/Scratch/cesm/archive/$CASE"
++         DOUT_L_HTAR="FALSE"
++         DOUT_L_MSROOT="UNSET"
++         OS="Linux"
++         BATCHQUERY="qstat"
++         BATCHSUBMIT="qsub"
++         GMAKE_J="1"
++         MAX_TASKS_PER_NODE="4"
++         MPISERIAL_SUPPORT="FALSE" />
+ 
+ 
+ </config_machines>
