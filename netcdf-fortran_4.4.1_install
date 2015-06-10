@@ -11,6 +11,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF-fortran/${VERSION}-${CO
 SHA1=${SHA1:-452a1b7ef12cbcace770dcc728a7b425cf7fb295}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${VERSION}.tar.gz}
 
+set -e
+
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 temp_dir=`mktemp -d -p /dev/shm`

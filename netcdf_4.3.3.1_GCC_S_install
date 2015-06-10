@@ -7,10 +7,12 @@
 #
 # Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and hdf/5-1.8.15/gnu.4.9.2
 
-VERSION=${VERSION:-4.3.3.1
+VERSION=${VERSION:-4.3.3.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-${COMPILER_TAG} }
 MD5=${MD5:-5c9dad3705a3408d27f696e5b31fb88c}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${VERSION}.tar.gz}
+
+set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
