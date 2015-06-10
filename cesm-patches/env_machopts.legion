@@ -1,0 +1,39 @@
+#! /bin/csh -f
+
+#-------------------------------------------------------------------------------
+# GENERIC_USER
+# Platform-specific software versions/locations are set here.  This
+# might be done via modules or updates to the user PATH.  Some env
+# variables might also be set here for use in the Macros file.  Some
+# of the things that might be important here are compiler versions or
+# mpi and netcdf paths.  Samples are commented out below.
+#-------------------------------------------------------------------------------
+
+#--- set modules
+source /etc/profile.d/modules.csh
+module purge
+#module load ucl
+module load compilers/intel/11.1/072
+module load mkl/10.2.5/035
+module load mpi/qlogic/1.2.7/intel
+module load sge/6.2u3
+module load netcdf/4.1.1/intel
+#module list
+
+#--- set paths
+#setenv INTEL_PATH /cm/shared/apps/intel/toolkit/Compiler/11.1/072
+#setenv MPICH_PATH /usr/mpi/qlogic
+#setenv PATH ${INTEL_PATH}/bin/intel64:${INTEL_PATH}/bin:${MPICH_PATH}/bin:${PATH}
+#setenv LD_LIBRARY_PATH ${INTEL_PATH}/lib/intel64:${LD_LIBRARY_PATH}
+
+#--- set env variables for Macros if needed
+#setenv NETCDF_PATH /cm/shared/apps/netcdf/intel/64/4.1.1
+
+#-------------------------------------------------------------------------------
+# GENERIC_USER
+# Machine specific environment variables are set here.  This might be needed
+# to set MPI, core file, IO,  memory or many other things.  
+#-------------------------------------------------------------------------------
+
+#setenv P4_GLOBMEMSIZE 500000000
+
