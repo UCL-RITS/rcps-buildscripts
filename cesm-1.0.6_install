@@ -29,6 +29,9 @@ cp /shared/ucl/apps/build_scripts/cesm-patches/*.legion .
 cp /shared/ucl/apps/build_scripts/cesm-patches/config_machines.xml.patch .
 patch < config_machines.xml.patch 
 
+cp /shared/ucl/apps/build_scripts/cesm-patches/modules.csh ${INSTALL_PREFIX}/modules.csh
+
+
 # uncomment when groups set on build system
 #cd $INSTALL_PREFIX
 #chgrp -R legcesm cesm${VERSION}
