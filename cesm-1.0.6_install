@@ -30,7 +30,7 @@ cp /shared/ucl/apps/build_scripts/cesm-patches/config_machines.xml.patch .
 patch < config_machines.xml.patch 
 
 mkdir -p $INSTALL_PREFIX/support
-cp /shared/ucl/apps/build_scripts/cesm-patches/modules.csh ${INSTALL_PREFIX}support/modules.csh
+cp /shared/ucl/apps/build_scripts/cesm-patches/modules.csh ${INSTALL_PREFIX}/support/modules.csh
 
 
 # uncomment when groups set on build system
