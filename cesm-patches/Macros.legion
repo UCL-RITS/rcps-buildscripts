@@ -25,7 +25,7 @@
 #===============================================================================
 
 # Note that CPPDEFS is set in Macros.cppdefs
-CPPDEFS += -DLINUX -DSEQ_$(FRAMEWORK) -DFORTRANUNDERSCORE -DNO_R16 -DNO_SHR_VMATH -DNO_MPI2
+CPPDEFS += -DLINUX -DSEQ_$(FRAMEWORK) -DFORTRANUNDERSCORE -DNO_R16 -DNO_SHR_VMATH
 
 ifeq ($(compile_threaded), true)
    CPPDEFS += -DTHREADED_OMP
@@ -45,7 +45,7 @@ CC            := mpicc
 # Also, review the relative paths of the INC_, LIB_, and MOD_ paths
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
-NETCDF_PATH   := /shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015
+NETCDF_PATH   := /shared/ucl/apps/cesm/support/netcdf
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include
