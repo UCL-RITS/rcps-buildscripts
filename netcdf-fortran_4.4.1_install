@@ -15,7 +15,8 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-
 SPECIAL=${SPECIAL:-NO}
 
 if [[ "$SPECIAL" == "cesm" ]]
-   INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm/support/netcdf }
+then
+   INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm/support/netcdf}
 fi
 
 set -e
