@@ -14,6 +14,10 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-
 # We need to support installing this into a variety of non standard locations with non-standard builds.
 SPECIAL=${SPECIAL:-NO}
 
+if [[ "$SPECIAL" == "cesm" ]]
+   INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm/support/netcdf }
+fi
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
