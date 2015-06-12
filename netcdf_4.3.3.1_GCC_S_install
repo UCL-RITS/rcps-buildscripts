@@ -24,12 +24,19 @@ wget $SRC_ARCHIVE
 
 CHECKSUM=`md5sum netcdf-${VERSION}.tar.gz| awk '{print $1}'`
 
+HDF_TAG=$COMPILER_TAG
+
+if [[ "$COMPILER_TAG" == "intel-2015-update2" ]]
+then
+   HDF_TAG="Intel_2015"
+fi
+
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf netcdf-${VERSION}.tar.gz
    cd netcdf-${VERSION}
-   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/include
-   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/lib
+   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.8.15-${HDF_TAG}/include
+   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.8.15-${HDF_TAG}/lib
 
    ./configure --prefix=${INSTALL_PREFIX} 
    make
