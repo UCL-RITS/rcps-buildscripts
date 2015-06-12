@@ -11,6 +11,9 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF-fortran/${VERSION}-${CO
 SHA1=${SHA1:-452a1b7ef12cbcace770dcc728a7b425cf7fb295}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${VERSION}.tar.gz}
 
+# We need to support installing this into a variety of non standard locations with non-standard builds.
+SPECIAL=${SPECIAL:-NO}
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -27,8 +30,17 @@ if [[ "$SHA1" == "$CHECKSUM" ]]
 then
    tar xvzf netcdf-fortran-${VERSION}.tar.gz
    cd netcdf-fortran-${VERSION}
-   export CPPFLAGS="-I/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/include -I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include"
-   export LDFLAGS="-L/shared/ucl/apps/HDF/5-1.8.15-${COMPILER_TAG}/lib -L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
+
+   if [[ "$SPECIAL" == "NO" ]] 
+   then 
+      export CPPFLAGS="-I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include"
+      export LDFLAGS="-L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
+   elif [[ "$SPECIAL" == "cesm" ]]
+   then
+      export CPPFLAGS="-I/shared/ucl/apps/cesm/support/netcdf/include"
+      export LDFLAGS="-L/shared/ucl/apps/cesm/support/lib"
+     
+   fi 
 
    ./configure --prefix=${INSTALL_PREFIX} 
    make
