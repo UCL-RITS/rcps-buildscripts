@@ -16,7 +16,7 @@ SPECIAL=${SPECIAL:-NO}
 
 if [[ "$SPECIAL" == "cesm" ]]
 then
-   INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cesm/support/netcdf}
+   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf
 fi
 
 set -e
