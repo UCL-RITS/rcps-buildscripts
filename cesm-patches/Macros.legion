@@ -57,7 +57,7 @@ PNETCDF_PATH  :=
 INC_PNETCDF   :=
 LIB_PNETCDF   := 
 LAPACK_LIBDIR := 
-PIO_CONFIG_OPTS := --disable-mpi2
+PIO_CONFIG_OPTS := --enable-mpi2
 
 #=====================================================
 
@@ -166,6 +166,12 @@ ifeq ($(MODEL),pio)
   endif 
   CONFIG_ARGS += CC="$(CC)" F90="$(FC)" NETCDF_PATH="$(NETCDF_PATH)" MPI_INC="-I$(INC_MPI)"
 endif
+
+#=====================================================
+# Modern NetCDF splits off the fortran parts.
+
+SLIBS += -lnetcdff
+
 #=====================================================
 
 # Append user defined compiler and load flags to Makefile defaults
