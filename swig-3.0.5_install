@@ -10,7 +10,7 @@ NAME=${NAME:-swig}
 VERSION=${VERSION:-3.0.5}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-dcb9638324461b9baba8e044fe59031d}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://prdownloads.sourceforge.net/swig/$(NAME)-$(VERSION).tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://prdownloads.sourceforge.net/swig/${NAME}-${VERSION}.tar.gz}
 
 set -e
 
@@ -27,7 +27,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -xvf $archive
 
-  cd $(NAME)-$(VERSION)
+  cd ${NAME}-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX
   make 2>&1 | tee make.log
   make install
