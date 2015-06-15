@@ -3,7 +3,9 @@
 ###############################################
 # Installing Ghostscript 9.16
 #
-# by Brian Alston, 2015 
+# by Brian Alston, 2015
+#
+# Updated June 2015 to additionaly build shared object support. 
 #
 # Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
 
@@ -26,9 +28,11 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf ghostscript-${VERSION}.tar.gz
    cd ghostscript-${VERSION}
-   ./configure --prefix=${INSTALL_PREFIX}
+   ./configure --prefix=${INSTALL_PREFIX} --enable-dynamic
    make
    make install
+   make so
+   make soinstall
 
 else
    echo "***** Hash mismatch,"
