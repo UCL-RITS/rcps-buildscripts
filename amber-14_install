@@ -52,7 +52,7 @@ ln -fsT `pwd`/${ABNAME} $AMBERHOME
 
 cd $AMBERHOME
 
-./configure $PARALLEL $COMPILER
+./configure $PARALLEL --with-python `which python` $COMPILER
 source amber.sh
 make install
 
