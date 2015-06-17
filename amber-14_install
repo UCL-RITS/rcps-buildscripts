@@ -48,7 +48,7 @@ tar jxvf $TOOLS_SRC_ARCHIVE
 
 mv amber${VERSION} ${ABNAME}
 
-ln -s `pwd`/${ABNAME} $AMBERHOME
+ln -fsT `pwd`/${ABNAME} $AMBERHOME
 
 cd $AMBERHOME
 
