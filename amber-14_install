@@ -41,7 +41,7 @@ mkdir -p $INSTALL_PREFIX
 mkdir -p /dev/shm/amber
 temp_dir=`mktemp -d -p /dev/shm/amber`
 
-cd temp_dir
+cd $temp_dir
 
 tar jxvf $SRC_ARCHIVE
 tar jxvf $TOOLS_SRC_ARCHIVE
