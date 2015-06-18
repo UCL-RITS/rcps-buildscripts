@@ -28,7 +28,7 @@ temp_dir=`mktemp -d -p /dev/shm/namd`
 
 cd $temp_dir
 
-tar jxvf $SRC_ARCHIVE
+tar zxvf $SRC_ARCHIVE
 
 ln -fsT `pwd`/${NANAME} ${INSTALL_PREFIX}/${NANAME}
 
