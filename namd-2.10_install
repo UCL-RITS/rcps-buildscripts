@@ -12,7 +12,7 @@
 
 VERSION=${VERSION:-2.10}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd}
-NANAME=${NANAME:-NAMD-${VERSION}_Source}
+NANAME=${NANAME:-NAMD_${VERSION}_Source}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
 
 CHARMVER=${CHARMVER:-6.6.1}
