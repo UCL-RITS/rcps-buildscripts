@@ -34,7 +34,7 @@ ln -fsT `pwd`/${NANAME} ${INSTALL_PREFIX}/${NANAME}
 
 cd ${INSTALL_PREFIX}/${NANAME}
 
-tar xvf charm-${CHARMVER}
+tar xvf charm-${CHARMVER}.tar
 export MPICXX=mpicxx
 
 cd charm-${CHARMVER}
