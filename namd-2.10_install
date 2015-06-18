@@ -34,6 +34,11 @@ ln -fsT `pwd`/${NANAME} ${INSTALL_PREFIX}/${NANAME}
 
 cd ${INSTALL_PREFIX}/${NANAME}
 
+# Fix for charm not being able to find f90
+mkdir uclbuildsupport
+ln -s `which $FC` uclbuildsupport/f90
+export PATH=`pwd`/uclbuildsupport:$PATH
+
 tar xvf charm-${CHARMVER}.tar
 export MPICXX=mpicxx
 
