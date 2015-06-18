@@ -37,6 +37,9 @@ cd ${INSTALL_PREFIX}/${NANAME}
 # Fix for charm not being able to find f90
 mkdir uclbuildsupport
 ln -s `which $FC` uclbuildsupport/f90
+ln -s `which $FC` uclbuildsupport/f77
+ln -s `which $FC` uclbuildsupport/g77
+
 export PATH=`pwd`/uclbuildsupport:$PATH
 
 tar xvf charm-${CHARMVER}.tar
