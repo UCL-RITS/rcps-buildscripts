@@ -45,6 +45,29 @@ then
   cd fftw-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX 
   make && make install
+
+  cd ../..
+
+# Single precision
+  mkdir single-shared
+  cd single-shared
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-float --enable-shared
+  make && make install
+
+  cd ../..
+
+# Double precision
+  mkdir double-shared
+  cd double-shared
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-shared
+  make && make install
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
