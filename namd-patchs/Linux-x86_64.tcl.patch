@@ -1,0 +1,15 @@
+--- Linux-x86_64.tcl.old	2015-06-18 11:38:44.000000000 +0100
++++ Linux-x86_64.tcl	2015-06-18 11:41:42.000000000 +0100
+@@ -1,9 +1,7 @@
+ 
+-#TCLDIR=/Projects/namd2/tcl/tcl8.5.9-linux-x86_64
+-TCLDIR=/Projects/namd2/tcl/tcl8.5.9-linux-x86_64-threaded
+-TCLINCL=-I$(TCLDIR)/include
+-#TCLLIB=-L$(TCLDIR)/lib -ltcl8.5 -ldl
+-TCLLIB=-L$(TCLDIR)/lib -ltcl8.5 -ldl -lpthread
++TCLDIR=/usr
++TCLINCL=-I/usr/include
++TCLLIB=-ltcl8.5 -ldl -lpthread
+ TCLFLAGS=-DNAMD_TCL
+ TCL=$(TCLINCL) $(TCLFLAGS)
+ 

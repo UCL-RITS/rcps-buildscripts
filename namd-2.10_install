@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NAMD
+#
+# by Owain Kenway, 2015 
+#
+
+# You need to register and download a copy of NAMD and put the tar file 
+# somehwere. 
+
+
+VERSION=${VERSION:-2.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd}
+NANAME=${NANAME:-NAMD-${VERSION}_Source}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
+
+CHARMVER=${CHARMVER:-6.6.1}
+CHARMARC=${CHARMARC:-"mpi-linux-x86_64"}
+
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+
+mkdir -p /dev/shm/namd
+temp_dir=`mktemp -d -p /dev/shm/namd`
+
+cd $temp_dir
+
+tar jxvf $SRC_ARCHIVE
+
+ln -fsT `pwd`/${NANAME} ${INSTALL_PREFIX}/${NANAME}
+
+cd ${INSTALL_PREFIX}/${NANAME}
+
+tar xvf charm-${CHARMVER}
+export MPICXX=mpicxx
+
+cd charm-${CHARMVER}
+./build charm++ ${CHARMARC} --no-build-shared --with-production
+
+cd ..
+
+# Overwrite make.charm with the real location
+echo "CHARMBASE = ${INSTALL_PREFIX}/${NANAME}/charm-${CHARMVER}" > Make.charm
+
+cd arch
+cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
+patch < Linux-x86_64.tcl.patch
+patch < Linux-x86_64.fftw.patch
+
+cd ..
+./config Linux-x86_64-icc --charm-arch ${CHARMARC}
+
+cd Linux-x86_64-icc
+make
+
+cd $temp_dir
+rm ${INSTALL_PREFIX}/${NANAME}
+mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
+for a in flipbinpdb flipdcd namd2 psfgen
+do
+  echo "Installing $a"
+  cp $a ${INSTALL_PREFIX}/${NANAME}/bin
+done
