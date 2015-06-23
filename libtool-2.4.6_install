@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libtool
+#
+# by Ian Kirker, 2015 
+#
+
+VERSION=${VERSION:-2.4.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/libtool/$VERSION}
+
+set -e
+
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget \
+  http://ftp.heanet.ie/mirrors/gnu/libtool/libtool-${VERSION}.tar.xz
+
+tar -xf libtool-${VERSION}.tar.xz
+
+cd libtool-${VERSION}
+./configure --prefix=$INSTALL_PREFIX
+make -l 12 -j && make check 
+
+make install
+
