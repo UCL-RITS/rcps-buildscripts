@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Trimmomatic
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-Trimmomatic}
+VERSION=${VERSION:-0.33}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-924fc8eb38fdff71740a0e05d32d6a2b}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.usadellab.org/cms/uploads/supplementary/${NAME}/${NAME}-${VERSION}.zip}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  unzip $archive
+  cp -r ${NAME}-${VERSION}/* $INSTALL_PREFIX
+  
+  cd $INSTALL_PREFIX
+  # make wrapper to go in PATH
+  mkdir jar
+  # jar is lowercase name
+  jarname="$(echo $NAME | tr '[:upper:]' '[:lower:]')"
+  mv $jarname-$VERSION.jar jar/
+  cat <<EOF > $jarname-$VERSION.jar
+#!/bin/bash
+
+java -Xmx2g -jar $INSTALL_PREFIX/jar/$jarname-$VERSION.jar \$*
+
+EOF
+  chmod a+x $jarname-$VERSION.jar
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
