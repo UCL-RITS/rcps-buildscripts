@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gperf
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-gperf}
+VERSION=${VERSION:-3.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-c1f1db32fb6598d6a93e6e88796a8632}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/pub/gnu/${NAME}/${NAME}-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
