@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing BWA
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-bwa}
+VERSION=${VERSION:-0.7.12}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-56bdbef216551c22d79e86cc88b7304c}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lh3/${NAME}/archive/${VERSION}.zip}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip $archive
+
+  cd ${NAME}-${VERSION}
+  make
+
+  # If that worked, build it again in the install directory (no make install).
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  unzip $temp_dir/$archive
+  mv ${NAME}-${VERSION}/* .
+  rm -r ${NAME}-${VERSION}
+  make
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
