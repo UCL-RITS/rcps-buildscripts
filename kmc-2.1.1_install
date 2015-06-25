@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing KMC
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-KMC}
+VERSION=${VERSION:-2.1.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-396b9981545e0fe4f40c7a13f449b88f}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/marekkokot/${NAME}/archive/${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  mkdir -p $INSTALL_PREFIX
+  cp -r ${NAME}-${VERSION}/* $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  make
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
