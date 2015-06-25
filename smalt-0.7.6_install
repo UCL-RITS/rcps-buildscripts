@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing smalt
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-smalt}
+VERSION=${VERSION:-0.7.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-57ed011836fda8fb5e34604dd1858b5e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/${NAME}/files/${NAME}-${VERSION}-static.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
