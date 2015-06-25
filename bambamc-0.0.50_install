@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bambamc
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-bambamc}
+VERSION=${VERSION:-0.0.50}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-fef1a1e845dd4cdc1e066cc5f89d31e4}
+RELEASE=${RELEASE:-20140430085950}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/gt1/${NAME}/archive/${VERSION}-release-${RELEASE}.zip}
+
+set -e
+
+# libtool must be available
+hash libtool 2>/dev/null || { echo >&2 "bambamc needs libtool to be loaded. Aborting."; exit 1; }
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip $archive
+
+  cd ${NAME}-${VERSION}-release-${RELEASE}
+  autoreconf -i -f
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
