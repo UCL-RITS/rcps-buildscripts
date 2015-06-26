@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MUMmer
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-MUMmer}
+VERSION=${VERSION:-3.23}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-f2422b3d2638dba4baedb71b1acdffa2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/mummer/files/mummer/3.23/${NAME}${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}${VERSION}
+  make check
+  # everything ok, so install. It expects to be in a MUMmer3.23 directory or it breaks.
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xvf $temp_dir/$archive
+  cd ${NAME}${VERSION}
+  make check
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
