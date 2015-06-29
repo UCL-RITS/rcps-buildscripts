@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Qt
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-qt}
+VERSION=${VERSION:-5.4.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-fa1c4d819b401b267eb246a543a63ea5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://download.qt.io/official_releases/qt/5.4/${VERSION}/single/${NAME}-everywhere-opensource-src-${VERSION}.tar.gz}
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
+XKB_CONF=${XKB_CONF:-/etc/X11/xorg.conf.d}
+
+set -e
+
+# libxcb must have been installed in $SUPPORT_PREFIX
+# libxcb environment variables
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$SUPPORT_PREFIX/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$SUPPORT_PREFIX/lib/python2.7/site-packages:$PYTHONPATH
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+export CPATH=$SUPPORT_PREFIX/include:$CPATH
+
+# Bison and gperf must be available.
+hash bison 2>/dev/null || { echo >&2 "Qt needs bison to be loaded. Aborting."; exit 1; }
+hash gperf 2>/dev/null || { echo >&2 "Qt needs gperf to be loaded. Aborting."; exit 1; }
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  cd $temp_dir
+  tar -xvf $archive
+  cd ${NAME}-everywhere-opensource-src-${VERSION}
+  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -qt-xcb -xkb-config-root $XKB_CONF -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
+  gmake -j 4 2>&1 | tee make.log
+  gmake install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
