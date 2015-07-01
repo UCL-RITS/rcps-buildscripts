@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing flex
+#
+# by Owain Kenway, 2015 
+#
+VERSION=${VERSION:-0.11.16}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva-$VERSION}
+
+# Note, you need the following packages loaded to build this:
+# python3/recommended
+# compilers/gnu
+# smalt
+# kmc
+# mummer
+# trimmomatic
+# samtools
+
+pip3 install --install-option="--prefix=$INSTALL_PREFIX" iva
+
