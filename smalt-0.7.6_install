@@ -9,8 +9,8 @@
 NAME=${NAME:-smalt}
 VERSION=${VERSION:-0.7.6}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-c3215d70ba960c8fdc8e80191695c60b}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/${NAME}/files/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-57ed011836fda8fb5e34604dd1858b5e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/${NAME}/files/${NAME}-${VERSION}-static.tar.gz}
 BAMBAMC_INSTALL_DIR=${BAMBAMC_INSTALL_DIR:-/shared/ucl/apps/bambamc/0.0.50/gnu-4.9.2}
 
 set -e
