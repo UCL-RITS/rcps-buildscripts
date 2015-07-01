@@ -7,3 +7,6 @@ acora
 python-Levenshtein
 pandas
 ephem
+networkx
+pysam
+pyfastq
