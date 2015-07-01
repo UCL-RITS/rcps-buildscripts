@@ -12,6 +12,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-57ed011836fda8fb5e34604dd1858b5e}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/${NAME}/files/${NAME}-${VERSION}-static.tar.gz}
 
+#export BAMBAMC_INSTALL_DIR=/shared/ucl/apps/bambamc/0.0.50/gnu-4.9.2
+
 set -e
 
 temp_dir=`mktemp -d -p /dev/shm`
@@ -28,7 +30,10 @@ then
   tar -xvf $archive
 
   cd ${NAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX --with-bambamc=yes 
+
+#BAMBAMC_CFLAGS="-I$BAMBAMC_INSTALL_DIR/include" BAMBAMC_LIBS="-L$BAMBAMC_INSTALL_DIR/lib -lbambamc"
+  make clean
   make
   make install
 
