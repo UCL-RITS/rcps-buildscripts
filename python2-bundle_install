@@ -33,5 +33,11 @@ do
    pip install $a
 done
 
+for a in `cat /shared/ucl/apps/build_scripts/lists/python-2.list`
+do
+   pip install $a
+done
+
+
 cd ..
 ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION} 
