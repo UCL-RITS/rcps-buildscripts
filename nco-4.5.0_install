@@ -29,7 +29,9 @@ export NETCDF_ROOT
 export NETCDF_INC
 export NETCDF_LIB 
 
-export PATH=$INSTALL_PREFIX/bin:$PATH
+export PATH=$INSTALL_PREFIX/antlr-${ANTLR_VERSION}/bin:$PATH
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/antlr-${ANTLR_VERSION}/lib:$LD_LIBRARY_PATH
+
 
 temp_dir=`mktemp -d -p /dev/shm`
 
