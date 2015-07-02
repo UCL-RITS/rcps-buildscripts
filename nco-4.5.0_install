@@ -33,7 +33,7 @@ ANTLRCHECKSUM=`md5sum antlr-${ANTLR_VERSION}.tar.gz |  awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" && "$ANTLR_MD5" == "$ANTLRCHECKSUM" ]]
 then
-  tar zxvf antlr-${ANTLR_VERSION}
+  tar zxvf antlr-${ANTLR_VERSION}.tar.gz
   cd antlr-${ANTLR_VERSION}
 
   ./configure --prefix=${INSTALL_PREFIX}/antlr-${ANTLR_VERSION}
