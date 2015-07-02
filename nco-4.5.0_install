@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NCO Platform
+#
+# by Owain Kenway, 2015 
+#
+# Note we are installing antlr too as NCO needs an amazingly out of date 
+# version.
+
+VERSION=${VERSION:-4.5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/nco}
+MD5=${MD5:-cc387b92e796a778bddefab79cda0a34 }
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://nco.sourceforge.net/src/nco-${VERSION}.tar.gz}
+
+ANTLR_VERSION=${ANTLR_VERSION:-2.7.7}
+ANTLR_ARCHIVE=${ANTLR_ARCHIVE:-http://www.antlr2.org/download/antlr-${ANTLR_VERSION}.tar.gz}
+ANTLR_MD5=${ANTLR_MD5:-01cc9a2a454dd33dcd8c856ec89af090}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $ANTLR_ARCHIVE
+
+CHECKSUM=`md5sum nco-${VERSION}.tar.gz| awk '{print $1}'`
+ANTLRCHECKSUM=`md5sum antlr-${ANTLR_VERSION}.tar.gz |  awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" && "$ANTLR_MD5" == "$ANTLRCHECKSUM" ]]
+then
+  tar zxvf antlr-${ANTLR_VERSION}
+  cd antlr-${ANTLR_VERSION}
+
+  ./configure --prefix=${INSTALL_PREFIX}/antlr-${ANTLR_VERSION}
+  make
+  make install
+
+  cd ..
+  tar zxvf nco-${VERSION}.tar.gz
+  cd nco-${VERSION}
+  ./configure --prefix=${INSTALL_PREFIX}/nco-${VERSION}
+  make
+  make install
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $ANTLR_MD5"
+  echo "Got: $CHECKSUM $ANTLRCHECKSUM"
+fi
