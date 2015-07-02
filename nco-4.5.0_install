@@ -21,6 +21,7 @@ UDUNITS2_PATH=${UDUNITS2_PATH:-/shared/ucl/apps/udunits/2.2.19}
 NETCDF_ROOT=${NETCDF_ROOT:-/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2}
 NETCDF_INC=${NETCDF_INC:-${NETCDF_ROOT}/include}
 NETCDF_LIB=${NETCDF_LIB:-${NETCDF_ROOT}/lib}
+ANTLR_ROOT=${ANTLR_ROOT:-${INSTALL_PREFIX}/antlr-${ANTLR_VERSION}}
 
 set -e
 
@@ -28,9 +29,10 @@ export UDUNITS2_PATH
 export NETCDF_ROOT
 export NETCDF_INC
 export NETCDF_LIB 
+export ANTLR_ROOT
 
-export PATH=$INSTALL_PREFIX/antlr-${ANTLR_VERSION}/bin:$PATH
-export LD_LIBRARY_PATH=$INSTALL_PREFIX/antlr-${ANTLR_VERSION}/lib:$LD_LIBRARY_PATH
+export PATH=${ANTLR_ROOT}/bin:$PATH
+export LD_LIBRARY_PATH=${ANTLR_ROOT}lib:$LD_LIBRARY_PATH
 
 
 temp_dir=`mktemp -d -p /dev/shm`
