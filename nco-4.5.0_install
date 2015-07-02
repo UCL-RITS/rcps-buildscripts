@@ -36,6 +36,12 @@ then
   tar zxvf antlr-${ANTLR_VERSION}.tar.gz
   cd antlr-${ANTLR_VERSION}
 
+# Patch issue with modern G++
+  cd lib/cpp/antlr
+  cp /shared/ucl/apps/build_scripts/nco-patches/CharScanner.patch .
+  patch < CharScanner.patch
+  cd ../../..
+
   ./configure --prefix=${INSTALL_PREFIX}/antlr-${ANTLR_VERSION}
   make
   make install

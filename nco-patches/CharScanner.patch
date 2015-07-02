@@ -1,0 +1,15 @@
+--- CharScanner.hpp.old	2015-07-02 11:18:39.334231616 +0100
++++ CharScanner.hpp	2015-07-02 11:28:12.970243488 +0100
+@@ -22,8 +22,12 @@
+ // VC6 seems to need this
+ // note that this is not a standard C++ include file.
+ # include <stdio.h>
++
+ #endif
+ 
++#include <stdio.h>
++#include <strings.h>
++
+ #include <antlr/TokenStream.hpp>
+ #include <antlr/RecognitionException.hpp>
+ #include <antlr/SemanticException.hpp>
