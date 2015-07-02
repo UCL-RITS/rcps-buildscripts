@@ -10,7 +10,7 @@
 
 VERSION=${VERSION:-4.5.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/nco}
-MD5=${MD5:-cc387b92e796a778bddefab79cda0a34 }
+MD5=${MD5:-cc387b92e796a778bddefab79cda0a34}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://nco.sourceforge.net/src/nco-${VERSION}.tar.gz}
 
 ANTLR_VERSION=${ANTLR_VERSION:-2.7.7}
