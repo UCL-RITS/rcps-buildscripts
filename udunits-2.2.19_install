@@ -26,7 +26,7 @@ wget $SRC_ARCHIVE
 
 CHECKSUM=`sha256sum udunits-${VERSION}.tar.gz| awk '{print $1}'`
 
-if [ "$SHA255" == "$CHECKSUM" ]
+if [ "$SHA256" == "$CHECKSUM" ]
 then
   tar -zxvf udunits-${VERSION}.tar.gz
 
