@@ -17,7 +17,17 @@ ANTLR_VERSION=${ANTLR_VERSION:-2.7.7}
 ANTLR_ARCHIVE=${ANTLR_ARCHIVE:-http://www.antlr2.org/download/antlr-${ANTLR_VERSION}.tar.gz}
 ANTLR_MD5=${ANTLR_MD5:-01cc9a2a454dd33dcd8c856ec89af090}
 
+UDUNITS2_PATH=${UDUNITS2_PATH:-/shared/ucl/apps/udunits/2.2.19}
+NETCDF_ROOT=${NETCDF_ROOT:-/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2}
+NETCDF_INC=${NETCDF_INC:-${NETCDF_ROOT}/include}
+NETCDF_LIB=${NETCDF_LIB:-${NETCDF_ROOT}/lib}
+
 set -e
+
+export UDUNITS2_PATH
+export NETCDF_ROOT
+export NETCDF_INC
+export NETCDF_LIB 
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
