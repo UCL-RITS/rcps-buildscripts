@@ -5,6 +5,8 @@
 #
 # by Brian Alston, 2015 
 #
+# Modified to add thread safe support
+#
 # Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
 
 VERSION=${VERSION:-5-1.8.15}
@@ -26,8 +28,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf hdf${VERSION}.tar.gz
    cd hdf${VERSION}
-   ./configure --prefix=${INSTALL_PREFIX} --enable-fortran \
-               --enable-fortran2003 --enable-cxx
+   ./configure --prefix=${INSTALL_PREFIX} --enable-threadsafe  
    make
    make check-s
    make install
