@@ -14,7 +14,7 @@ set -e
 
 VERSION=${VERSION:-1.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/pyngl/$VERSION}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pynio/source/PyNGL-$VERSION.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pyngl/source/PyNGL-$VERSION.tar.gz}
 
 temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
