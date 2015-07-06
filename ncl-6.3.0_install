@@ -29,12 +29,15 @@ tar zxvf $SRC_ARCHIVE
 
 export NCARG=$temp_dir/ncl_ncarg-$VERSION
 cd $NCARG/config
+
 make -f Makefile.ini
 ./ymake -config `pwd`
 
 cp /shared/ucl/apps/build_scripts/ncl-patches/Site.local .
 
 cd $NCARG
+./config/ymkmf
+
 make Info
 
 make Everything
