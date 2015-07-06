@@ -10,6 +10,7 @@
 # slow, and also requires authentication for some files.
 # So you need to download the source and put it somewhere.
 
+set -e
 
 VERSION=${VERSION:-1.4.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/pynio/$VERSION}
@@ -26,7 +27,7 @@ export NETCDF_PREFIX=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2
 temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
 
-tar zxbf $SRC_ARCHIVE
+tar zxvf $SRC_ARCHIVE
 
 cd PyNIO-1.4.1
 python setup.py install --prefix=$INSTALL_PREFIX
