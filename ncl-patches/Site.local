@@ -9,7 +9,7 @@
 
 #ifdef SecondSite
 
-#define YmakeRoot /shared/ucl/apps/ncl/6.0.0
+#define YmakeRoot UCLINSTALLPREFIX
 
 #define LibSearch -L/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/lib -L/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/lib -L/shared/ucl/apps/udunits/2.2.19/lib
 #define IncSearch -I/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/include -I/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/include -I/shared/ucl/apps/udunits/2.2.19/include -I/usr/include/freetype2

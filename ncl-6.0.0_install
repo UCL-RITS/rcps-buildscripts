@@ -12,7 +12,7 @@
 
 
 VERSION=${VERSION:-6.0.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ncl/6.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ncl/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/ncl/source/ncl_ncarg-${VERSION}.tar.gz}
 
 set -e
@@ -33,7 +33,7 @@ cd $NCARG/config
 make -f Makefile.ini
 ./ymake -config `pwd`
 
-cp /shared/ucl/apps/build_scripts/ncl-patches/Site.local .
+sed -e "s|UCLINSTALLPREFIX|/${INSTALL_PREFIX}|" /shared/ucl/apps/build_scripts/ncl-patches/Site.local > Site.local
 
 cd $NCARG
 ./config/ymkmf
