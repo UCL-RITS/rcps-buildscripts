@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PyNGL
+#
+# by Owain Kenway, 2015 
+#
+
+# The source for PyNGL is distributed through Earth System Grid which is pretty
+# slow, and also requires authentication for some files.
+# So you need to download the source and put it somewhere.
+
+set -e
+
+VERSION=${VERSION:-1.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/pyngl/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pynio/source/PyNGL-$VERSION.tar.gz}
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+tar zxvf $SRC_ARCHIVE
+
+cd PyNGL-1.4.0
+python setup.py install --prefix=$INSTALL_PREFIX
