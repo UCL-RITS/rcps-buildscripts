@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PyNio
+#
+# by Owain Kenway, 2015 
+#
+
+# The source for PyNIO is distributed through Earth System Grid which is pretty
+# slow, and also requires authentication for some files.
+# So you need to download the source and put it somewhere.
+
+
+VERSION=${VERSION:-1.4.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/pynio/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pynio/source/PyNIO-$VERSION.tar.gz}
+
+export HAS_GDAL=0
+export HAS_GRIB2=0
+export HAS_HDFEOS=0
+export HAS_HDFEOS5=0
+export HAS_NETCDF4=0
+export HAS_OPENDAP=1
+export NETCDF_PREFIX=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+tar zxbf $SRC_ARCHIVE
+
+cd PyNIO-1.4.1
+python setup.py install --prefix=$INSTALL_PREFIX
