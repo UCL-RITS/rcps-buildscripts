@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Qt
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-qt}
+VERSION=${VERSION:-4.8.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-2edbe4d6c2eff33ef91732602f3518eb}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://download.qt.io/archive/qt/4.8/${VERSION}/${NAME}-everywhere-opensource-src-${VERSION}.tar.gz}
+ALSA_PREFIX=${ALSA_PREFIX:-/shared/ucl/apps/alsa/1.0.29/gnu-4.9.2}
+
+set -e
+
+export CPATH=$ALSA_PREFIX/include:$CPATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  cd $temp_dir
+  tar -xvf $archive
+  cd ${NAME}-everywhere-opensource-src-${VERSION}
+  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -L $ALSA_PREFIX/lib 2>&1 | tee config.log
+  gmake -j 4 2>&1 | tee make.log
+  gmake install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
