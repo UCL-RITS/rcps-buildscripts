@@ -1,0 +1,35 @@
+/*
+ *	This file was created by the Configure script.
+ */
+
+#ifdef FirstSite
+
+#endif /* FirstSite */
+
+
+#ifdef SecondSite
+
+#define YmakeRoot /shared/ucl/apps/ncl/6.3.0
+
+#define LibSearch -L/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/lib -L/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/lib -L/shared/ucl/apps/udunits/2.2.19/lib
+#define IncSearch -I/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/include -I/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/include -I/shared/ucl/apps/udunits/2.2.19/include
+
+
+
+#define BuildRasterHDF 0
+#define HDFlib
+#define BuildHDF4 0
+#define HDFlib
+#define BuildNetCDF4 0
+#define NetCDF4lib
+#define BuildTRIANGLE 0
+#define BuildHDFEOS 0
+#define HDFEOSlib
+#define BuildHDFEOS5 0
+#define HDFEOS5lib
+#define BuildGRIB2 0
+#define GRIB2lib
+
+#define NoMakeDepend
+
+#endif /* SecondSite */
