@@ -27,7 +27,7 @@ cd $temp_dir
 tar zxvf $SRC_ARCHIVE
 
 
-export NCARG=$temp_dir
+export NCARG=$temp_dir/ncl_ncarg-$VERSION
 cd $NCARG/config
 make -f Makefile.ini
 ./ymake -config `pwd`
