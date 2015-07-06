@@ -33,7 +33,7 @@ cd $NCARG/config
 make -f Makefile.ini
 ./ymake -config `pwd`
 
-sed -e "s|UCLINSTALLPREFIX|/${INSTALL_PREFIX}|" /shared/ucl/apps/build_scripts/ncl-patches/Site.local > Site.local
+sed -e "s|UCLINSTALLPREFIX|${INSTALL_PREFIX}|" /shared/ucl/apps/build_scripts/ncl-patches/Site.local > Site.local
 
 cd $NCARG
 ./config/ymkmf
