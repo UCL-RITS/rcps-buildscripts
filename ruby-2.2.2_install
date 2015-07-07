@@ -6,12 +6,6 @@
 # by Ian Kirker, 2015 
 #
 
-# Currently breaks during ffi make with error:
-#linking shared-object fiddle.so
-#/usr/bin/ld: ./libffi-3.2.1/.libs/libffi.a(raw_api.o): relocation R_X86_64_32S against `.rodata' can not be used when making a shared object; recompile with -fPIC
-#./libffi-3.2.1/.libs/libffi.a: could not read symbols: Bad value
-#collect2: error: ld returned 1 exit status
-
 set -e
 
 PACKAGE_NAME="ruby"
