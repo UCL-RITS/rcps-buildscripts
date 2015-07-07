@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ruby
+#
+# by Ian Kirker, 2015 
+#
+
+set -e
+
+PACKAGE_NAME="ruby"
+
+_env_setup() {
+  RUBY_VERSION=${RUBY_VERSION:-${VERSION:-2.2.2}}
+  RUBY_GEMS_VERSION=${RUBY_GEMS_VERSION:-2.4.8}
+  FFI_VERSION=${FFI_VERSION:-3.2.1}
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ruby/$RUBY_VERSION}
+  EXTRA_GEMS="bundler"
+  export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+  export PATH=$INSTALL_PREFIX/bin:$PATH
+}
+
+
+_file_setup() {
+  temp_dir=`mktemp -d`
+  cd $temp_dir
+
+  wget \
+    https://cache.ruby-lang.org/pub/ruby/${RUBY_VERSION%\.*}/ruby-${RUBY_VERSION}.tar.gz \
+    http://production.cf.rubygems.org/rubygems/rubygems-${RUBY_GEMS_VERSION}.tgz \
+    ftp://sourceware.org/pub/libffi/libffi-${FFI_VERSION}.tar.gz
+
+  # lol no verification
+
+  tar -xf ruby-${RUBY_VERSION}.tar.gz
+  tar -xf rubygems-${RUBY_GEMS_VERSION}.tgz
+  tar -xf libffi-${FFI_VERSION}.tar.gz
+}
+
+_build_ffi() {
+  cd libffi-${FFI_VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --with-pic 
+  # ^-- If you don't have with-pic, ruby compilation fails. 
+  # See: http://stackoverflow.com/questions/27881263/ruby-2-2-0-fails-to-build-on-ubuntu-14-04-1-lts
+  make -l 12 -j && make install
+  cd ..
+}
+
+_build_ruby() {
+  cd ruby-${RUBY_VERSION}
+  #./configure --prefix=$INSTALL_PREFIX --disable-rubygems
+  # I tried disabling ruby gems install here, because a bug in 2.4.<6 means that installing fails on NFS.
+  # It didn't seem effective, though. So, let's try gutting out the included rubygems version and replacing it.
+  rm -Rf ./lib/rubygems*
+  mv ../rubygems-${RUBY_GEMS_VERSION}/lib/rubygems* ./lib
+  ./configure --prefix=$INSTALL_PREFIX
+  make -l 12 -j && make install
+  cd ..
+}
+
+_extra() {
+  $INSTALL_PREFIX/bin/gem install $EXTRA_GEMS
+}
+
+_build() {
+  _build_ffi
+  _build_ruby
+}
+
+_report() {
+  cat <<EOF
+######################################
+Built $PACKAGE_NAME:
+  Versions:
+    ruby       $RUBY_VERSION
+    ruby gems  $RUBY_GEMS_VERSION
+    libffi     $FFI_VERSION
+  Prefix:
+    $INSTALL_PREFIX
+  Extra gems:
+    $EXTRA_GEMS
+EOF
+}
+
+_clean_up() {
+  rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+}
+
+_env_setup
+_file_setup
+_build
+_extra
+_report
+_clean_up
+
