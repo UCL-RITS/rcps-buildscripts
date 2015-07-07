@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing VTK
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-6.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/vtk/${VERSION}/{$COMPILER_TAG}}
+MD5=${MD5:-4790f8b3acdbc376997fbdc9d203f0b7}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.vtk.org/files/release/6.2/VTK-6.2.0.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum VTK-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+   tar zxvf VTK-${VERSION}.tar.gz
+   mkdir build
+   cd build
+   cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+         -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/bundles/python2/venv/bin/python \ 
+         -DPYTHON_INCLUDE_DIR=/shared/ucl/apps/python/2.7.9/gnu-4.9.2/include/python2.7 \ 
+         -DPYTHON_LIBRARY=/shared/ucl/apps/python/2.7.9/gnu-4.9.2/lib/libpython2.7.so \ 
+         -DVTK_USE_SYSTEM_JPEG=ON \
+         -DVTK_USE_SYSTEM_FREETYPE=ON \ 
+         -DModule_vtkWrappingJava=ON \ 
+         -DModule_vtkWrappingPythonCore=ON \ 
+         -DVTK_WRAP_JAVA=ON \ 
+         -DVTK_WRAP_PYTHON=ON \
+         -DCMAKE_BUILD_TYPE=Release \
+         -DVTK_Group_Qt=Off \
+         -DModule_vtkGUISupportQt=ON \
+         -DModule_vtkGUISupportQtOpenGL=ON \
+         -DVTK_JAVA_INSTALL=On \
+         -DQT_QMAKE_EXECUTABLE=`which qmake` \
+         ../VTK-${VERSION}/
+
+   make && make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
