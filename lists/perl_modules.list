@@ -29,7 +29,6 @@ WWW::RobotRules
 HTTP::Negotiate
 HTTP::Daemon
 Net::HTTP
-Bundle::LWP
 Algorithm::Munkres
 Types::Standard
 Exporter::Tiny
