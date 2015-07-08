@@ -31,7 +31,7 @@ then
   tar -xvf $archive
 
   cd ${NAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX 2>&1
+  ./configure --prefix=$INSTALL_PREFIX
   make 2>&1 | tee make.log
   make install
 
