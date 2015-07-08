@@ -29,7 +29,7 @@ WWW::RobotRules
 HTTP::Negotiate
 HTTP::Daemon
 Net::HTTP
-libwww-perl-6.13
+Bundle::LWP
 Algorithm::Munkres
 Types::Standard
 Exporter::Tiny

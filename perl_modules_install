@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Perl modules with Perlbrew
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-perl}
+VERSION=${VERSION:-5.22.0}
+
+set -e
+
+# perlbrew must be loaded
+hash perlbrew 2>/dev/null || { echo >&2 "Perlbrew must be loaded. Aborting."; exit 1; }
+
+source $PERLBREWROOT/etc/bashrc
+perlbrew use ${NAME}-${VERSION}
+
+# need to unset PERL5LIB because perlbrew's support files were built with an older perl
+# and there will be symbol lookup errors from Perl_xs_apiversion_bootcheck otherwise.
+export PERL5LIB=$PERLBREWROOT/share/perl5
+
+for a in `cat /shared/ucl/apps/build_scripts/lists/perl_modules.list`
+do
+    cpanm $a
+done
