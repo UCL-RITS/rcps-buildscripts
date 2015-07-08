@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing VASP
+#  using Intel compilers, MKL, FFTW->MKL wrapper, and Intel MPI.
+# 
+#  if you don't add the patch, remember to switch back to OpenMPI for VASP 5.4.1. *twitch* *twitch*
+#
+# by Ian Kirker, 2015 
+#
+
+set -e
+
+PACKAGE_NAME="vasp"
+
+_env_setup() {
+  BASE_VASP_VERSION=${VASP_VERSION:-${VERSION:-5.4.1-24jun15}}
+  VASP_VERSION=$BASE_VASP_VERSION
+  VASP_PACK_URL=https://vasp.at/index.php/download1/category/5-src?download=20:vasp-$BASE_VASP_VERSION
+  VASP_PACK_FILE=vasp-${BASE_VASP_VERSION}.tgz
+  VASP_UNPACK_DIR=vasp.${BASE_VASP_VERSION%-*}
+
+  # Only patch versions we know about.
+  if [ "${BASE_VASP_VERSION%-*}" == "5.4.1" ]; then
+    VASP_PATCH_URL=${VASP_PATCH_URL:-https://vasp.at/index.php/download1/category/5-src?download=22:patch-5-4-1-08072015}
+    VASP_PATCH_FILE=${VASP_PATCH_FILE:-"patch.5.4.1.08072015.gz"}
+    VASP_VERSION=${VASP_VERSION}-p${VASP_PATCH_URL##*-}
+  else
+    unset VASP_PATCH_URL
+    unset VASP_PATCH
+  fi
+
+  POTENTIAL_URLS="https://vasp.at/index.php/download1/category/3-lda?download=1:lda-paw-datasets-old"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/3-lda?download=16:uspp-lda-potentials"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/3-lda?download=2:lda-paw-datasets-version-52"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/4-pbe?download=3:pbe-paw-datasets-old"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/4-pbe?download=4:pbe-paw-datasets-version-52"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/10-pw91?download=17:pw91-uspp-potentials"
+  POTENTIAL_URLS="$POTENTIAL_URLS https://vasp.at/index.php/download1/category/10-pw91?download=18:pw91-paw-datasets"
+
+  VASP_ACCESS_GROUP=legg03
+
+
+  MODULE_INIT_PATH=/shared/ucl/apps/bin/defmods
+  source $MODULE_INIT_PATH
+  module load \
+    compilers/intel/2015/update2          \
+    mpi/intel/2015/update3/intel          \
+    ruby
+
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/$VASP_VERSION}/${COMPILER_TAG}
+  export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+  export PATH=$INSTALL_PREFIX/bin:$PATH
+
+  if [ -z "$VASP_USERNAME" -o -z "$VASP_PASSWORD" ]; then
+    echo "Error in $0: You must provide VASP web account credentials to download the VASP source: set the VASP_USERNAME and VASP_PASSWORD variables." >&2
+    exit 2
+  fi
+
+}
+
+
+_file_setup() {
+  temp_dir=`mktemp -d`
+  cd $temp_dir
+
+  cat >>Gemfile <<EOF
+source 'https://rubygems.org'
+gem 'mechanize'
+EOF
+
+  bundle config build.nokogiri --use-system-libraries 
+  bundle install --path=./vendor/bundle
+
+  mkdir potentials
+
+  cat >download_src.rb <<EOF
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'bundler/setup'
+require 'mechanize'
+
+a = Mechanize.new
+a.verify_mode = OpenSSL::SSL::VERIFY_NONE
+a.pluggable_parser.default = Mechanize::Download
+
+a.get('http://vasp.at/') do |page|
+  logged_in_page = page.form_with(:action => 'https://vasp.at/index.php/component/comprofiler/login') do |f|
+    f.username = "$VASP_USERNAME"
+    f.passwd = "$VASP_PASSWORD"
+  end.submit
+  a.get('${VASP_PACK_URL}').save("${VASP_PACK_FILE}")
+  if ( "${VASP_PATCH_URL}" != "" ) then
+    a.get('${VASP_PATCH_URL}').save("${VASP_PATCH_FILE}")
+  else
+    puts "NOTE: No patch known about, none downloaded."
+  end
+  "$POTENTIAL_URLS".split(" ").each do |url|
+    a.get(url).save("potentials/" + url.split(":").last + ".tgz")
+  end
+end
+EOF
+
+  gem env
+
+  chmod +x download_src.rb 
+  bundle exec ./download_src.rb
+
+  # no verification :(
+
+  tar -xf $VASP_PACK_FILE
+  
+  if [ -n "$VASP_PATCH_FILE" ]; then
+    gunzip $VASP_PATCH_FILE
+  fi
+
+}
+
+_build() {
+  cd $VASP_UNPACK_DIR
+  make
+  cd ..
+}
+
+_pre_build() {
+  if [ -n "$VASP_PATCH_FILE" ]; then
+    cd $VASP_UNPACK_DIR
+    patch -p1 <../${VASP_PATCH_FILE%.gz}
+    cd ..
+  fi
+
+  cd $VASP_UNPACK_DIR
+  cp arch/makefile.include.linux_intel ./makefile.include
+  cd ..
+}
+
+_post_build() {
+  mkdir -p $INSTALL_PREFIX
+  chgrp -R "$VASP_ACCESS_GROUP" $INSTALL_PREFIX
+  mkdir -p $INSTALL_PREFIX/bin
+  'cp' -v $VASP_UNPACK_DIR/bin/vasp* $INSTALL_PREFIX/bin
+  mkdir -p $INSTALL_PREFIX/potentials
+  'cp' -v potentials/* $INSTALL_PREFIX/potentials/
+}
+
+_report() {
+  cat <<EOF
+######################################
+Built $PACKAGE_NAME:
+  Versions:
+    $VASP_VERSION with $COMPILER_TAG
+  Prefix:
+    $INSTALL_PREFIX
+
+EOF
+}
+
+_clean_up() {
+  rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_report
+_clean_up
+
