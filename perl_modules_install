@@ -19,5 +19,5 @@ perlbrew use ${NAME}-${VERSION}
 
 for a in `cat /shared/ucl/apps/build_scripts/lists/perl_modules.list`
 do
-    cpanm a
+    cpanm $a
 done
