@@ -1,0 +1,42 @@
+--- qscintilla.pro.old	2015-07-08 15:16:50.000000000 +0100
++++ qscintilla.pro	2015-07-08 15:24:48.000000000 +0100
+@@ -50,34 +50,21 @@
+ #DEFINES += SCI_NAMESPACE
+ 
+ # Handle both Qt v4 and v3.
+-target.path = $$[QT_INSTALL_LIBS]
+-isEmpty(target.path) {
+-	target.path = $(QTDIR)/lib
+-}
++target.path = /shared/ucl/apps/compucell3d/support/lib
+ 
+-header.path = $$[QT_INSTALL_HEADERS]
++header.path = /shared/ucl/apps/compucell3d/support/include
+ header.files = Qsci
+-isEmpty(header.path) {
+-	header.path = $(QTDIR)/include/Qsci
+-	header.files = Qsci/qsci*.h
+-}
+ 
+-trans.path = $$[QT_INSTALL_TRANSLATIONS]
++trans.path = /shared/ucl/apps/compucell3d/support/translations
+ trans.files = qscintilla_*.qm
+-isEmpty(trans.path) {
+-	trans.path = $(QTDIR)/translations
+-}
+ 
+-qsci.path = $$[QT_INSTALL_DATA]
++qsci.path = /shared/ucl/apps/compucell3d/support
+ qsci.files = ../qsci
+-isEmpty(qsci.path) {
+-	qsci.path = $(QTDIR)
+-}
+ 
+ INSTALLS += header trans qsci target
+ 
+ greaterThan(QT_MAJOR_VERSION, 3) {
+-    features.path = $$[QT_INSTALL_DATA]/mkspecs/features
++    features.path = /shared/ucl/apps/compucell3d/support/mkspecs/features
+     features.files = $$PWD/features/qscintilla2.prf
+     INSTALLS += features
+ }
