@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing Graphviz
+# Installing HTSlib (used to be part of samtools)
 #
 # by Heather Kelly, 2015
 #
 
-# modules:    swig/3.0.5/gnu.4.9.2 qt/4.8.6/gnu.4.9.2 ghostscript/9.16/gnu_4.9.2
-#             python/2.7.9 lua/5.3.1 perl/5.22.0 
-
-NAME=${NAME:-graphviz}
-VERSION=${VERSION:-2.38.0}
+NAME=${NAME:-htslib}
+VERSION=${VERSION:-1.2.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-5b6a829b2ac94efcd5fa3c223ed6d3ae}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.graphviz.org/pub/graphviz/stable/SOURCES/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-88eec909855abd98032bc2f9c3e83271}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/samtools/htslib/releases/download/${VERSION}/${NAME}-${VERSION}.tar.bz2}
 
 set -e
 

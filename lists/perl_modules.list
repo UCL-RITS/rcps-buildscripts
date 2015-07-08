@@ -1,5 +1,4 @@
 Module::Build
-Test::Most
 Exception::Class
 Class::Data::Inheritable
 Devel::StackTrace
@@ -12,10 +11,10 @@ Capture::Tiny
 Test::Warn
 Sub::Uplevel
 Test::Exception
+Test::Most
 URI::Escape
 IO::String
 Data::Stag
-LWP::UserAgent
 LWP::MediaTypes
 HTTP::Cookies
 HTTP::Date
@@ -29,6 +28,7 @@ WWW::RobotRules
 HTTP::Negotiate
 HTTP::Daemon
 Net::HTTP
+LWP::UserAgent
 Algorithm::Munkres
 Types::Standard
 Exporter::Tiny
