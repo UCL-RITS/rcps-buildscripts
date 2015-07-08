@@ -53,6 +53,8 @@ then
    make
    make install
 
+   cd ..
+
 # PYQT
    tar zxvf PyQt-x11-gpl-${PYQT_VERSION}.tar.gz
    cd PyQt-x11-gpl-${PYQT_VERSION}
