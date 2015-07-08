@@ -65,7 +65,7 @@ then
 # PYQT
    tar zxvf PyQt-x11-gpl-${PYQT_VERSION}.tar.gz
    cd PyQt-x11-gpl-${PYQT_VERSION}
-   python configure.py -d $SUPPORT_PREFIX/lib/python2.7/site-packages -b $SUPPORT_PREFIX/bin
+   python configure.py -d $SUPPORT_PREFIX/lib/python2.7/site-packages -b $SUPPORT_PREFIX/bin -v $SUPPORT_PREFIX/share/sip/PyQt4
    make
    make install
 
@@ -73,7 +73,7 @@ then
 
 # QSCINTILLA
    tar zxvf  QScintilla-gpl-${QSCINT_VERSION}.tar.gz
-   cd QScintilla-gpl-${QSCINT_VERSION}.tar.gz
+   cd QScintilla-gpl-${QSCINT_VERSION}
    cd QT4Qt5
    cp /shared/ucl/apps/compucell3d-patches/qscintilla.pro.patch .
    patch < qscintilla.pro.patch
@@ -81,6 +81,11 @@ then
    make
    make install
    
+   cd ../Python
+   python configure.py -d $SUPPORT_PREFIX/lib/python2.7/site-packages -n $SUPPORT_PREFIX/include -o $SUPPORT_PREFIX/lib --sip-incdir=$SUPPORT_PREFIX/include --pyqt-sipdir=$SUPPORT_PREFIX/share/sip/PyQt4 -v $SUPPORT_PREFIX/share/sip/PyQt4
+   make
+   make install
+
    cd ../..
  
 # QWT
