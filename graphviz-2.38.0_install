@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Graphviz
+#
+# by Heather Kelly, 2015
+#
+
+# modules:    swig/3.0.5/gnu.4.9.2 qt/4.8.6/gnu.4.9.2 ghostscript/9.16/gnu_4.9.2
+#             python/2.7.9 lua/5.3.1 perl/5.22.0 
+
+NAME=${NAME:-graphviz}
+VERSION=${VERSION:-2.38.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-5b6a829b2ac94efcd5fa3c223ed6d3ae}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.graphviz.org/pub/graphviz/stable/SOURCES/${NAME}-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX 2>&1
+  make 2>&1 | tee make.log
+  make install
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
