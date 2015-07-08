@@ -22,6 +22,10 @@ PYQT_VERSION=${PYQT_VERSION:-4.11.4}
 PYQT_ARCHIVE=${PYQT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-${PYQT_VERSION}/PyQt-x11-gpl-${PYQT_VERSION}.tar.gz}
 PYQT_MD5=${PYQT_MD5:-2fe8265b2ae2fc593241c2c84d09d481}
 
+QSCINT_VERSION=${QSCINT_VERSION:-2.9}
+QSCINT_ARCHIVE=${QSCINT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-${QSCINT_VERSION}/QScintilla-gpl-${QSCINT_VERSION}.tar.gz}
+QSCINT_MD5=${QSCINT_MD5:-24659879edf9786f41a9b9268ce3c817}
+
 export PYTHONPATH=${SUPPORT_PREFIX}/lib/python2.7/site-packages:$PYTHONPATH
 export PATH=${SUPPORT_PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${SUPPORT_PREFIX}/lib:$LD_LIBRARY_PATH
@@ -35,15 +39,18 @@ cd $temp_dir
 wget $SRC_ARCHIVE
 wget $SIP_ARCHIVE
 wget $PYQT_ARCHIVE
+wget $QSCINT_ARCHIVE
 
 CHECKSUM=`md5sum ${VERSION}.zip| awk '{print $1}'`
-SIPTCS=`md5sum sip-${SIP_VERSION}.tar.gz| awk '{print $1}'`
+SIPCS=`md5sum sip-${SIP_VERSION}.tar.gz| awk '{print $1}'`
 PYQTCS=`md5sum PyQt-x11-gpl-${PYQT_VERSION}.tar.gz| awk '{print $1}'`
+QCCS=`md5sum QScintilla-gpl-${QSCINT_VERSION}.tar.gz| awk '{print $1}'`
 
 
 
 
-if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" = "$SIPTCS" && "$PYQT_MD5" == "$PYQTCS" ]]
+
+if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" = "$SIPCS" && "$PYQT_MD5" == "$PYQTCS" && "$QSCINT_MD5" == "$QCCS" ]]
 then
 
 # SIP
@@ -62,8 +69,20 @@ then
    make
    make install
 
-# QSCINTILLA
+   cd ..
 
+# QSCINTILLA
+   tar zxvf  QScintilla-gpl-${QSCINT_VERSION}.tar.gz
+   cd QScintilla-gpl-${QSCINT_VERSION}.tar.gz
+   cd QT4Qt5
+   cp /shared/ucl/apps/compucell3d-patches/qscintilla.pro.patch .
+   patch < qscintilla.pro.patch
+   qmake qscintilla.pro
+   make
+   make install
+   
+   cd ../..
+ 
 # QWT
 
 # PyQWT
@@ -72,6 +91,6 @@ then
 
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5"
-  echo "Got: $CHECKSUM $SIPTCS $PYQTCS"
+  echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5 $QSCINT_MD5"
+  echo "Got: $CHECKSUM $SIPCS $PYQTCS $QCCS"
 fi
