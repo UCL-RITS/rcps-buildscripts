@@ -26,6 +26,8 @@ CHECKSUM=`md5sum $ARCHIVENAME| awk '{print $1}'`
 if [ "$MD5" == "$CHECKSUM" ]
 then
 
+   mkdir -p $INSTALL_PREFIX/lib/python2.7/site-packages/
+   export PYTHONPATH=$INSTALL_PREFIX/lib/python2.7/site-packages:$PYTHONPATH
    tar zxvf $ARCHIVENAME
    mkdir build
    cd build
