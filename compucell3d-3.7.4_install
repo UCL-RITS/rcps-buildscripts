@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CompuCell3D
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-3.7.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/compucell3d/$VERSION}
+MD5=${MD5:-0790c644eddb87b951d1b9ded2ee7acf}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/CompuCell3D/CompuCell3D/archive/${VERSION}.zip}
+
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-/shared/ucl/apps/compucell3d/support}
+
+SIP_VERSION=${SIP_VERSION:-4.16.8}
+SIP_ARCHIVE=${SIP_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/sip/sip-${SIP_VERSION}/sip-${SIP_VERSION}.tar.gz}
+SIP_MD5=${SIP_MD5:-8e48cd78bcd31f9310a701a4111c2739}
+
+PYQT_VERSION=${PYQT_VERSION:-4.11.4}
+PYQT_ARCHIVE=${PYQT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-${PYQT_VERSION}/PyQt-x11-gpl-${PYQT_VERSION}.tar.gz}
+PYQT_MD5=${PYQT_MD5:-2fe8265b2ae2fc593241c2c84d09d481}
+
+export PYTHONPATH=${SUPPORT_PREFIX}/lib/python2.7/site-packages:$PYTHONPATH
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $SIP_ARCHIVE
+wget $PYQT_ARCHIVE
+
+CHECKSUM=`md5sum ${VERSION}.zip| awk '{print $1}'`
+SIPTCS=`md5sum sip-${SIP_VERSION}.tar.gz| awk '{print $1}'`
+PYQTCS=`md5sum PyQt-x11-gpl-${PYQT_VERSION}.tar.gz| awk '{print $1}'`
+
+
+
+
+if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" = "$SIPTCS" && "$PYQT_MD5" == "$PYQTCS" ]]
+then
+
+# SIP
+   tar zxvf sip-${SIP_VERSION}.tar.gz
+   cd sip-${SIP_VERSION}
+   python configure.py -d $SUPPORT_PREFIX/lib/python2.7/site-packages -b $SUPPORT_PREFIX/bin -e $SUPPORT_PREFIX/include
+   make
+   make install
+
+# PYQT
+
+# QSCINTILLA
+
+# QWT
+
+# PyQWT
+
+# CompuCell3d
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5"
+  echo "Got: $CHECKSUM $SIPTCS $PYQTCS"
+fi
