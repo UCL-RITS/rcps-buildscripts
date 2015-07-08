@@ -74,7 +74,7 @@ then
 # QSCINTILLA
    tar zxvf  QScintilla-gpl-${QSCINT_VERSION}.tar.gz
    cd QScintilla-gpl-${QSCINT_VERSION}
-   cd QT4Qt5
+   cd Qt4Qt5
    cp /shared/ucl/apps/compucell3d-patches/qscintilla.pro.patch .
    patch < qscintilla.pro.patch
    qmake qscintilla.pro
