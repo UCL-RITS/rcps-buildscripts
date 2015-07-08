@@ -23,6 +23,8 @@ PYQT_ARCHIVE=${PYQT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/PyQt4/Py
 PYQT_MD5=${PYQT_MD5:-2fe8265b2ae2fc593241c2c84d09d481}
 
 export PYTHONPATH=${SUPPORT_PREFIX}/lib/python2.7/site-packages:$PYTHONPATH
+export PATH=${SUPPORT_PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${SUPPORT_PREFIX}/lib:$LD_LIBRARY_PATH
 
 set -e
 
@@ -52,6 +54,11 @@ then
    make install
 
 # PYQT
+   tar zxvf PyQt-x11-gpl-${PYQT_VERSION}.tar.gz
+   cd PyQt-x11-gpl-${PYQT_VERSION}
+   python configure.py -d $SUPPORT_PREFIX/lib/python2.7/site-packages -b $SUPPORT_PREFIX/bin
+   make
+   make install
 
 # QSCINTILLA
 
