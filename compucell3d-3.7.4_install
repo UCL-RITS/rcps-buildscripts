@@ -32,7 +32,8 @@ export LD_LIBRARY_PATH=${SUPPORT_PREFIX}/lib:$LD_LIBRARY_PATH
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/compucell3d
+temp_dir=`mktemp -d -p /dev/shm/compucell3d`
 
 cd $temp_dir
 
