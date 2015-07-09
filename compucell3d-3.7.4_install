@@ -71,7 +71,7 @@ QWTCS=`sha1sum qwt-${QWT_VERSION}.tar.bz2| awk '{print $1}'`
 PQWTCS=`md5sum PyQwt-${PYQWT_VERSION}.tar.gz| awk '{print $1}'`
 
 
-if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" == "$SIPCS" && "$PYQT_MD5" == "$PYQTCS" && "$QSCINT_MD5" == "$QCCS" && "$QWT_SAH1" == "$QWTCS" && "$PYQWT_MD5" == "$PQWTCS" ]]
+if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" == "$SIPCS" && "$PYQT_MD5" == "$PYQTCS" && "$QSCINT_MD5" == "$QCCS" && "$QWT_SHA1" == "$QWTCS" && "$PYQWT_MD5" == "$PQWTCS" ]]
 then
 
 # SIP
@@ -134,4 +134,5 @@ else
   echo "Hash mismatch."
   echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5 $QSCINT_MD5 $QWT_SHA1 $PYQWT_MD5"
   echo "Got: $CHECKSUM $SIPCS $PYQTCS $QCCS $QWTCS $PQWTCS"
+
 fi
