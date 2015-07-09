@@ -1,0 +1,13 @@
+--- qwtconfig.pri.old	2015-07-09 10:25:46.000000000 +0100
++++ qwtconfig.pri	2015-07-09 10:26:21.000000000 +0100
+@@ -19,8 +19,9 @@
+ QWT_INSTALL_PREFIX = $$[QT_INSTALL_PREFIX]
+ 
+ unix {
+-    QWT_INSTALL_PREFIX    = /usr/local/qwt-$$QWT_VERSION
++#    QWT_INSTALL_PREFIX    = /usr/local/qwt-$$QWT_VERSION
+     # QWT_INSTALL_PREFIX = /usr/local/qwt-$$QWT_VERSION-qt-$$QT_VERSION
++    QWT_INSTALL_PREFIX    = /shared/ucl/apps/compucell3d/support
+ }
+ 
+ win32 {

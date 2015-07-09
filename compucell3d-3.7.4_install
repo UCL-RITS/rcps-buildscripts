@@ -37,6 +37,14 @@ QSCINT_VERSION=${QSCINT_VERSION:-2.9}
 QSCINT_ARCHIVE=${QSCINT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-${QSCINT_VERSION}/QScintilla-gpl-${QSCINT_VERSION}.tar.gz}
 QSCINT_MD5=${QSCINT_MD5:-24659879edf9786f41a9b9268ce3c817}
 
+QWT_VERSION=${QWT_VERSION:-6.1.2}
+QWT_ARCHIVE=${QWT_ARCHIVE:-http://downloads.sourceforge.net/project/qwt/qwt/${QWT_VERSION}/qwt-${QWT_VERSION}.tar.bz2}
+QWT_SHA1=${QWT_SHA1:-6af82b6ee4132f779d1c8c2db872f01463b0d61c}
+
+PYQWT_VERSION=${PYQWT_VERSION:-5.2.0}
+PYQWT_ARCHIVE=${PYQWT_ARCHIVE:-http://downloads.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-${PYQWT_VERSION}/PyQwt-${PYQWT_VERSION}.tar.gz}
+PYQWT_MD5=${PYQWT_MD5:-fcd6c6029090d473dcc9df497516eae7}
+
 export PYTHONPATH=${SUPPORT_PREFIX}/lib/python2.7/site-packages:$PYTHONPATH
 export PATH=${SUPPORT_PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${SUPPORT_PREFIX}/lib:$LD_LIBRARY_PATH
@@ -52,17 +60,18 @@ wget $SRC_ARCHIVE
 wget $SIP_ARCHIVE
 wget $PYQT_ARCHIVE
 wget $QSCINT_ARCHIVE
+wget $QWT_ARCHIVE
+wget $PYQWT_ARCHIVE
 
 CHECKSUM=`md5sum ${VERSION}.zip| awk '{print $1}'`
 SIPCS=`md5sum sip-${SIP_VERSION}.tar.gz| awk '{print $1}'`
 PYQTCS=`md5sum PyQt-x11-gpl-${PYQT_VERSION}.tar.gz| awk '{print $1}'`
 QCCS=`md5sum QScintilla-gpl-${QSCINT_VERSION}.tar.gz| awk '{print $1}'`
+QWTCS=`sha1sum qwt-${QWT_VERSION}.tar.bz2| awk '{print $1}'`
+PQWTCS=`md5sum PyQwt-${PYQWT_VERSION}.tar.gz| awk '{print $1}'`
 
 
-
-
-
-if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" = "$SIPCS" && "$PYQT_MD5" == "$PYQTCS" && "$QSCINT_MD5" == "$QCCS" ]]
+if [[ "$MD5" == "$CHECKSUM" && "$SIP_MD5" == "$SIPCS" && "$PYQT_MD5" == "$PYQTCS" && "$QSCINT_MD5" == "$QCCS" && "$QWT_SAH1" == "$QWTCS" && "$PYQWT_MD5" == "$PQWTCS" ]]
 then
 
 # SIP
@@ -101,13 +110,28 @@ then
    cd ../..
  
 # QWT
+   tar jxvf qwt-${QWT_VERSION}.tar.bz2
+   cd qwt-${QWT_VERSION}
+   cp /shared/ucl/apps/build_scripts/compucell3d-patches/qwtconfig.pri.patch .
+   patch < qwtconfig.pri.patch
+   qmake qwt.pro
+   make
+   make install
+
+   cd ..
 
 # PyQWT
+   tar zxvf PyQwt-${PYQWT_VERSION}.tar.gz
+   cd PyQwt-${PYQWT_VERSION}
+   cd configure
+   python configure.py -4 --module-install-path=${SUPPORT_PREFIX}/lib/python2.7/site-packages -I${SUPPORT_PREFIX}/include -L${SUPPORT_PREFIX}/lib -lqwt 
+   make
+   make install
 
 # CompuCell3d
 
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5 $QSCINT_MD5"
-  echo "Got: $CHECKSUM $SIPCS $PYQTCS $QCCS"
+  echo "Expected: $MD5 $SIP_MD5 $PYQT_MD5 $QSCINT_MD5 $QWT_SHA1 $PYQWT_MD5"
+  echo "Got: $CHECKSUM $SIPCS $PYQTCS $QCCS $QWTCS $PQWTCS"
 fi
