@@ -128,7 +128,16 @@ then
    make
    make install
 
+   cd ..
+
 # CompuCell3d
+   unzip ${VERSION}.zip
+   cd CompuCell3D-${VERSION}
+   mkdir build
+   cd build
+   cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DPYTHON_INCLUDE_DIR=/shared/ucl/apps/python/2.7.9/gnu-4.9.2/include -DPYTHON_LIBRARY=/shared/ucl/apps/python/2.7.9/gnu-4.9.2/lib/libpython2.7.so ../CompuCell3D/
+   make
+   make install
 
 else
   echo "Hash mismatch."
