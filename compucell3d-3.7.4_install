@@ -129,7 +129,7 @@ then
    make
    make install
 
-   cd ..
+   cd ../..
 
 # CompuCell3d
    unzip ${VERSION}.zip
