@@ -37,9 +37,9 @@ QSCINT_VERSION=${QSCINT_VERSION:-2.9}
 QSCINT_ARCHIVE=${QSCINT_ARCHIVE:-http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-${QSCINT_VERSION}/QScintilla-gpl-${QSCINT_VERSION}.tar.gz}
 QSCINT_MD5=${QSCINT_MD5:-24659879edf9786f41a9b9268ce3c817}
 
-QWT_VERSION=${QWT_VERSION:-6.1.2}
+QWT_VERSION=${QWT_VERSION:-5.2.3}
 QWT_ARCHIVE=${QWT_ARCHIVE:-http://downloads.sourceforge.net/project/qwt/qwt/${QWT_VERSION}/qwt-${QWT_VERSION}.tar.bz2}
-QWT_SHA1=${QWT_SHA1:-6af82b6ee4132f779d1c8c2db872f01463b0d61c}
+QWT_SHA1=${QWT_SHA1:-ff81595a1641a8b431f98d6091bb134bc94e0003}
 
 PYQWT_VERSION=${PYQWT_VERSION:-5.2.0}
 PYQWT_ARCHIVE=${PYQWT_ARCHIVE:-http://downloads.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-${PYQWT_VERSION}/PyQwt-${PYQWT_VERSION}.tar.gz}
@@ -112,7 +112,7 @@ then
 # QWT
    tar jxvf qwt-${QWT_VERSION}.tar.bz2
    cd qwt-${QWT_VERSION}
-   cp /shared/ucl/apps/build_scripts/compucell3d-patches/qwtconfig.pri.patch .
+   cp /shared/ucl/apps/build_scripts/compucell3d-patches/qwtconfig.pri.patch.${QWT_VERSION} ./qwtconfig.pri.patch
    patch < qwtconfig.pri.patch
    qmake qwt.pro
    make
