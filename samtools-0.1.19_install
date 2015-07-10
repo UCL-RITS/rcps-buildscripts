@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Samtools 0.1.19 (final older version)
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-samtools}
+VERSION=${VERSION:-0.1.19}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-1229dc88487a49b03e69a5c0aa2f8a1e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/samtools/samtools/archive/${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xvf $temp_dir/$archive
+
+  cd ${NAME}-${VERSION}
+  # back up and edit Makefile to add -fPIC
+  sed -i.bak -e "s|CFLAGS=[ \t]*-g -Wall -O2|CFLAGS= -g -Wall -O2 -fPIC|" Makefile
+  make 2>&1 | tee make.log
+  
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
