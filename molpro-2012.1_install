@@ -24,7 +24,7 @@ cd $temp_dir
 tar zxvf $SRC_ARCHIVE
 cd Molpro
 
-./configure -gcc -gfortran -mpp -mppbase /shared/ucl/apps/openmpi/1.8.4/gnu-4.9.2/include -prefix $INSTALL_PREFIX -var LAUNCHER=/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun -openmpi -var BLASLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -var LAPACKLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -batch
+./configure -gcc -gfortran -mpp -mppbase /shared/ucl/apps/openmpi/1.8.4/gnu-4.9.2/include -prefix $INSTALL_PREFIX -var LAUNCHER=/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun -openmpi -var BLASLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -var LAPACKLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -batch -i8
 
 make
 
