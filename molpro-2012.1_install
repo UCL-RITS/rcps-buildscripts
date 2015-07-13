@@ -30,6 +30,7 @@ make
 
 make tuning
 
-make test
+# Do manually
+#make test
 
 make install
