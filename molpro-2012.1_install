@@ -10,6 +10,9 @@
 # from their licensee website.  Then put the source code somewhere, and the
 # token in ~/.molpro/token. Token is necessary to build. 
 
+# You should manually make test in the build dir to test the build if this 
+# is a new combination of compilers etc.
+
 VERSION=${VERSION:-2012.1.25}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/molpro/sources/molpro.${VERSION}.tar.gz}
@@ -24,16 +27,11 @@ cd $temp_dir
 tar zxvf $SRC_ARCHIVE
 cd Molpro
 
-#./configure -gcc -gfortran -mpp -mppbase /shared/ucl/apps/openmpi/1.8.4/gnu-4.9.2/include -prefix $INSTALL_PREFIX -var LAUNCHER=/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun -openmpi -var BLASLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -var LAPACKLIB="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" -batch -i8
-
 ./configure -gcc -gfortran -mpp -mppbase /shared/ucl/apps/openmpi/1.8.4/gnu-4.9.2/include -prefix $INSTALL_PREFIX -var LAUNCHER=/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun -openmpi -batch -i8
 
 
 make
 
 make tuning
-
-# Do manually
-#make test
 
 make install
