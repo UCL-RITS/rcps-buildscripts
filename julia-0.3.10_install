@@ -17,7 +17,8 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-temp_dir=`mktemp -d`
+mkdir -p /dev/shm/julia
+temp_dir=`mktemp -d -p /dev/shm/julia`
 
 cd $temp_dir
 
