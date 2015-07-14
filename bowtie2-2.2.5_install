@@ -16,6 +16,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/bowtie-bio/files/bowt
 
 set -e
 
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
