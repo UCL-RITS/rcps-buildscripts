@@ -23,7 +23,7 @@ cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum blast-${VERSION}-x64-linux.tar | awk '{print $1}'`
+CHECKSUM=`md5sum blast-${VERSION}-x64-linux.tar.gz | awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
