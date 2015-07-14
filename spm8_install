@@ -3,20 +3,25 @@
 # This script installs SPM8
 # Owain Kenway 2015
 
-# You need to register and download the spm8.zip file and place it somewhere
-# in your file-system and set the SRC_ARCHIVE variable appropriately.
+# You need to register and download the spm8.zip file and the most up to date 
+# patch zip and place it somewhere in your file-system and set the SRC_ARCHIVE 
+# variable appropriately.
 
 VERSION=${VERSION:-spm8}
+RELEASE=${RELEASE:-r6313}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/spm}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/spm/sources/${VERSION}.zip}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/spm/sources}
 
 set -e
 
 cd $INSTALL_PREFIX
-unzip $SRC_ARCHIVE
-cd ${VERSION}
+unzip $SRC_ARCHIVE/${VERSION}.zip
+unzip $SRC_ARCHIVE/${VERSION}_updates_${RELEASE}.zip
 
-export MATLABPATH=${INSTALL_PREFIX}/${VERSION}:${MATLABPATH}
+mv ${VERSION} ${VERSION}-${RELEASE}
+cd ${VERSION}-${RELEASE}
+
+export MATLABPATH=${INSTALL_PREFIX}/${VERSION}-${RELEASE}:${MATLABPATH}
 
 make distclean
 make 
