@@ -16,7 +16,10 @@ set -e
 
 cd $INSTALL_PREFIX
 unzip $SRC_ARCHIVE/${VERSION}.zip
+
+cd $VERSION
 unzip $SRC_ARCHIVE/${VERSION}_updates_${RELEASE}.zip
+cd ..
 
 mv ${VERSION} ${VERSION}-${RELEASE}
 cd ${VERSION}-${RELEASE}/src
