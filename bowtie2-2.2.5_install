@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bowtie2
+#
+# by Owain Kenway, 2015 
+#
+
+
+VERSION=${VERSION:-2.2.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/bowtie2}
+MD5=${MD5:-51fa97a862d248d7ee660efc1147c75f}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/bowtie-bio/files/bowtie2/${VERSION}/bowtie2-${VERSION}-source.zip}
+
+
+
+set -e
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum bowtie2-${VERSION}-source.zip| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip -o bowtie2-${VERSION}-source.zip
+
+  cd bowtie2-${VERSION}
+  make
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
