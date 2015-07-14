@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing blast
+#
+# by Owain Kenway, 2015 
+#
+
+# This is a binary package which makes me unhappy.  People should use blast+
+# but we provide legacy blast to help people out.
+
+VERSION=${VERSION:-2.2.26}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/blast}
+MD5=${MD5:-809798a912f4fb37f62406201456df67}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-${VERSION}-x64-linux.tar.gz}
+
+
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum blast-${VERSION}-x64-linux.tar | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar zxvf blast-${VERSION}-x64-linux.tar.gz
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
