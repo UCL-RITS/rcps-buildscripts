@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This script installs SPM8
+# Owain Kenway 2015
+
+# You need to register and download the spm8.zip file and place it somewhere
+# in your file-system and set the SRC_ARCHIVE variable appropriately.
+
+VERSION=${VERSION:-spm8}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/spm}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/spm/sources/${VERSION}.zip}
+
+set -e
+
+cd $INSTALL_PREFIX
+unzip $SRC_ARCHIVE
+cd ${VERSION}
+
+export MATLABPATH=${INSTALL_PREFIX}/${VERSION}:${MATLABPATH}
+
+make distclean
+make 
+make install
+make toolbox-distclean
+make toolbox 
+make toolbox-install
+make external-distclean
+make external 
+make external-install
