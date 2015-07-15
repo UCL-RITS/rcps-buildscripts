@@ -16,7 +16,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://cole-trapnell-lab.github.io/cufflinks/assets/d
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
-export LD_LIBNARY_PATH=/shared/ucl/apps/boost/1_54_0/${COMPILER_TAG}/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/shared/ucl/apps/boost/1_54_0/${COMPILER_TAG}/lib:$LD_LIBRARY_PATH
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
