@@ -16,7 +16,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://cole-trapnell-lab.github.io/cufflinks/assets/d
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
-
+export LD_LIBNARY_PATH=/shared/ucl/apps/boost/1_54_0/${COMPILER_TAG}/lib:$LD_LIBRARY_PATH
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
@@ -31,7 +31,7 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  ./configure --prefix=${INSTALL_PREFIX} --with-boost=/shared/ucl/apps/boost/1_54_0/${COMPILER_TAG} --with-eigen=/shared/ucl/apps/eigen/3.2.5/gnu-4.9.2/eigen3 --with-bam=/shared/ucl/apps/samtools/0.1.19/gnu-4.9.2/samtools-0.1.19
+  ./configure --prefix=${INSTALL_PREFIX} --with-boost=/shared/ucl/apps/boost/1_54_0/${COMPILER_TAG} --with-eigen=/shared/ucl/apps/eigen/3.2.5/gnu-4.9.2/include/eigen3 --with-bam=/shared/ucl/apps/samtools/0.1.19/gnu-4.9.2/samtools-0.1.19
 
   make && make install
 else
