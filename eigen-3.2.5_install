@@ -37,6 +37,12 @@ then
   make
   make DESTDIR="" install
 
+# Fix for cufflinks.
+  cd $INSTALL_PREFIX
+  mkdir cufflinks
+  cd cufflinks
+  ln -s $INSTALL_PREFIX/include/eigen3 ./include
+
 else
   echo "Hash mismatch."
   echo "Expected: $SHA1"
