@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-eigen}
+VERSION=${VERSION:-3.2.5}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-aa4667f0b134f5688c5dff5f03335d9a19aa9b3d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://bitbucket.org/eigen/eigen/get/${VERSION}.tar.bz2}
+RELEASE=${RELEASE:-bdd17ee3b1b3}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -jxvf ${VERSION}.tar.bz2
+
+  mkdir build
+  cd build
+  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../eigen-eigen-${RELEASE}
+  make
+  make DESTDIR="" install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi
