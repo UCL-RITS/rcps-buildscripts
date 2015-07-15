@@ -5,6 +5,7 @@
 #
 # by Heather Kelly, 2015
 #
+# Modified to make building Cufflinks work, by Owain Kenway, 2015
 
 NAME=${NAME:-samtools}
 VERSION=${VERSION:-0.1.19}
@@ -34,6 +35,12 @@ then
   # back up and edit Makefile to add -fPIC
   sed -i.bak -e "s|CFLAGS=[ \t]*-g -Wall -O2|CFLAGS= -g -Wall -O2 -fPIC|" Makefile
   make 2>&1 | tee make.log
+
+  mkdir lib
+  cp libbam.a lib
+
+  mkdir -p include/bam
+  cp *.h include/bam
   
 else
   echo "Hash mismatch."
