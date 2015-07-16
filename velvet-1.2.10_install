@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing velvet
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-velvet}
+VERSION=${VERSION:-1.2.10}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-216f0941609abf3a73adbba19ef1f364df489d18}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.ebi.ac.uk/%7Ezerbino/velvet/velvet_$VERSION.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}_${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/${APPNAME}_${VERSION}.tar.gz
+
+  cd ${APPNAME}_${VERSION}
+  make
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi
