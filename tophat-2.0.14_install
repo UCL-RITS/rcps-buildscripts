@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing tophat
+#
+# by Owain Kenway, 2015 
+#
+
+# This is a binary package which makes me unhappy.  
+
+# This is necessary because:
+# 1. Source builds of Tophat include a copy of SeqAn 1.3
+# 2. SeqAn 1.3 WILL NOT BUILD with any modern C++ compiler (GNU/Intel)
+# 3. SeqAn 1.4 is completely unlike SeqAn 1.3 (completely different structure).
+# 3a. so you can't reverse engineer the fix.
+# 4. 1.3 doesn't seem to be available from the developers either, for reasons.
+
+VERSION=${VERSION:-2.0.14}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/tophat/$VERSION}
+SHA512=${SHA512:-e0d808966890973ecbfe6ff2a6f871a61b14d3c265203da9c31c4895058a1efaf3f0ff2c4184e987ae71307a21b08d558313ec68ed3e26fc338f22da565a5fbd}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ccb.jhu.edu/software/tophat/downloads/tophat-${VERSION}.Linux_x86_64.tar.gz}
+
+
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha512sum tophat-${VERSION}.Linux_x86_64.tar.gz | awk '{print $1}'`
+
+if [ "$SHA512" == "$CHECKSUM" ]
+then
+  tar zxvf tophat-${VERSION}.Linux_x86_64.tar.gz
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA512"
+  echo "Got: $CHECKSUM"
+fi
