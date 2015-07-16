@@ -32,7 +32,14 @@ then
   tar -zxvf $temp_dir/${APPNAME}_${VERSION}.tgz
 
   cd ${APPNAME}_${VERSION}
+  make OPENMP=1
+  make OPENMP=1 color
+  for a in velvetg velveth velvetg_de velveth_de
+  do
+     mv $a $a-omp
+  done
   make
+  make color
 else
   echo "Hash mismatch."
   echo "Expected: $SHA1"
