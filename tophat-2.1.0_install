@@ -15,7 +15,10 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://ccb.jhu.edu/software/tophat/downloads/tophat-$
 
 set -e
 
-export BOOST_ROOT=${BOOST_ROOT:-/shared/ucl/apps/boost/1_54_0/nompi/$COMPILER_TAG}
+#export BOOST_ROOT=${BOOST_ROOT:-/shared/ucl/apps/boost/1_54_0/nompi/$COMPILER_TAG}
+
+export BOOST_ROOT=${BOOST_ROOT:-/shared/ucl/apps/boost/1_54_0/nompi/gnu-4.9.2}
+
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 export LD_LIBRARY_PATH=${BOOST_ROOT}/lib:$LD_LIBRARY_PATH
