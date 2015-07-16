@@ -15,8 +15,8 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.ebi.ac.uk/%7Ezerbino/velvet/velvet_$VERSIO
 
 set -e
 
-export PATH=$INSTALL_PREFIX/bin:$PATH
 
+mkdir -p $INSTALL_PREFIX
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
