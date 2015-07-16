@@ -37,7 +37,7 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX --with-boost=${BOOST_ROOT} --with-bam=/shared/ucl/apps/samtools/0.1.19/gnu-4.9.2/samtools-0.1.19
+  ./configure --prefix=$INSTALL_PREFIX --with-boost=${BOOST_ROOT} 
 
   make && make install
 else
