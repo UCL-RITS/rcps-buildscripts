@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NWChem
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-nwchem}
+VERSION=${VERSION:-6.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-39f4c5974367f47e08328f442833e0f9}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nwchem-sw.org/images/Nwchem-6.5.revision26243-src.2014-09-10.tar.gz}
+
+FL=${FL:-ifort}
+# stop it using -xhost
+FOPTIMIZE=${FOPTIMIZE:-'-O3'}
+NWCHEM_TARGET=${NWCHEM_TARGET:-LINUX64}
+NWCHEM_MODULES=${NWCHEM_MODULES:-'all python'}
+NWCHEM_LONG_PATHS=${NWCHEM_LONG_PATHS:-Y}
+LARGE_FILES=${LARGE_FILES:-TRUE}
+# NOIO recommended on clusters
+USE_NOIO=${USE_NOIO:-TRUE}
+
+USE_MPI=${USE_MPI:-y}
+USE_MPIF=${USE_MPIF:-y}
+USE_MPIF4=${USE_MPIF4:-y}
+MPI_LOC=${MPI_LOC:-$MPI_HOME}
+# can run contrib/distro-tools/getmpidefs_nwchem to get these
+MPI_INCLUDE=${MPI_INCLUDE:-"-I$MPI_HOME/intel64/include"}
+MPI_LIB=${MPI_LIB:-"-L$MPI_HOME/intel64/lib/release_mt -L$MPI_HOME/intel64/lib"}
+#export LIBMPI='-lmpichf90 -lmpich -lmpichabiglue_intel11'
+LIBMPI=${LIBMPI:-'-lmpifort -lmpi -lmpigi -ldl -lrt -lpthread'}
+
+MPI_F90=${mpif90}
+MPI_CC=${mpicc}
+MPI_CXX=${mpicxx}
+
+ARMCI_NETWORK=${ARMCI_NETWORK:-OPENIB}
+MSG_COMMS=${MSG_COMMS:-MPI}
+IB_HOME=${IB_HOME:-/usr}
+IB_INCLUDE=${IB_INCLUDE:-$IB_HOME/include}
+IB_LIB=${IB_LIB:-$IB_HOME/lib64}
+IB_LIB_NAME=${IB_LIB_NAME:-"-libverbs"}
+
+PYTHONHOME=${PYTHONHOME:-/shared/ucl/apps/python/2.7.9/gnu-4.9.2/}
+PYTHONVERSION=${PYTHONVERSION:-2.7}
+
+# If we don't want to use MKL, need not to set some of these at all. 
+# Can't pass them in as empty if they have a default value, but the default is still handy.
+if [ "$BLAS_TAG" == "mkl" ]
+then
+  BLASOPT=${BLASOPT:-"${MKLROOT}/lib/intel64/libmkl_blas95_ilp64 -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"}
+  LAPACK_LIB=${LAPACK_LIB:-"${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64"}
+  USE_SCALAPACK=${USE_SCALAPACK:-y}
+  SCALAPACK_SIZE=${SCALAPACK_SIZE:-8}
+  SCALAPACK=${SCALAPACK:-"-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lmkl_blacs_intelmpi_ilp64 -lpthread -lm"}
+
+# Default for ATLAS. 
+elif [ "$BLAS_TAG" == "atlas" ]
+then
+  BLASOPT=${BLASOPT:-"-L$ATLASROOT/lib -lsatlas"}
+fi
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive
+
+  # strip off the extraneous bits around the directory name
+  dirname=${archive#download.php?f=}
+  dirname=${dirname%.tar.gz}
+
+  export FL
+  export FOPTIMIZE
+
+  export NWCHEM_TOP=$temp_dir/$dirname
+  export NWCHEM_TARGET
+  export NWCHEM_MODULES
+  export NWCHEM_LONG_PATHS
+  export LARGE_FILES
+
+  export USE_MPI
+  export USE_MPIF
+  export USE_MPIF4
+  export MPI_LOC
+  export MPI_INCLUDE
+  export MPI_LIB
+  export LIBMPI
+
+  export MPI_F90=mpif90
+  export MPI_CC=mpicc
+  export MPI_CXX=mpicxx
+
+  export ARMCI_NETWORK
+  export MSG_COMMS
+  export IB_HOME
+  export IB_INCLUDE
+  export IB_LIB
+  export IB_LIB_NAME
+
+  export PYTHONHOME
+  export PYTHONVERSION
+
+  export BLASOPT
+  export LAPACK_LIB
+  export USE_SCALAPACK
+  export SCALAPACK_SIZE
+  export SCALAPACK
+
+  # make nwchem
+  cd $NWCHEM_TOP/src
+  make nwchem_config 2>&1 | tee ../nwchem_config.log
+  make 2>&1 | tee ../nwchem_make.log
+
+  # install
+
+  mkdir -p $INSTALL_PREFIX/bin
+  cp $NWCHEM_TOP/bin/${NWCHEM_TARGET}/nwchem $INSTALL_PREFIX/bin
+  chmod 755 $INSTALL_PREFIX/bin/nwchem
+  cd $NWCHEM_TOP/src/
+  cp -r data $INSTALL_PREFIX
+  cd $NWCHEM_TOP/src/basis
+  cp -r libraries $INSTALL_PREFIX/data
+  cd $NWCHEM_TOP/src/nwpw
+  cp -r libraryps $INSTALL_PREFIX/data
+  chmod -R a+rx $INSTALL_PREFIX/data
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
