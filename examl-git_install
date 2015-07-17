@@ -21,10 +21,11 @@ cd $temp_dir
 git clone  $SRC_ARCHIVE
 
 cd ExaML
-cd ..
 
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+cd ..
 
 mkdir -p $INSTALL_PREFIX
 
