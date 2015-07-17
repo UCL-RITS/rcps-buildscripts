@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing examl.
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-examl}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/stamatak/ExaML.git}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone  $SRC_ARCHIVE
+
+cd ExaML
+cd ..
+
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+mkdir -p $INSTALL_PREFIX
+
+cp -R ExaML $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX/ExaML
+cd parser
+make -f Makefile.SSE3.gcc
+
+cd ../examl
+make -f Makefile.SSE3.gcc
+
+echo "Installed version $VERSION in $INSTALL_PREFIX"
