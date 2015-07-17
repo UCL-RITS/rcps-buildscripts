@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ea-utils.
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-ea-utils}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ea-utils.googlecode.com/svn/trunk/}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+svn checkout $SRC_ARCHIVE ea-utils-googlecode
+
+cd ea-utils-googlecode/clipper
+
+VERSION=${VERSION:-`svn info | grep Revision | awk '{print $2}'`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+PREFIX=$INSTALL_PREFIX make install
+
+echo "Installed version $VERSION in $INSTALL_PREFIX"
