@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing exonerate
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-exonerate}
+VERSION=${VERSION:-2.2.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-0ea2720b1388fa329f889522f43029b416ae311f57b229129a65e779616fe5ff}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.ebi.ac.uk/~guy/exonerate/exonerate-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
