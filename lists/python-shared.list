@@ -10,3 +10,5 @@ ephem
 networkx
 pysam
 obspy
+cvxopt
+cutadapt
