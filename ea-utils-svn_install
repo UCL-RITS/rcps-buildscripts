@@ -25,6 +25,9 @@ cd ea-utils-googlecode/clipper
 VERSION=${VERSION:-`svn info | grep Revision | awk '{print $2}'`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
 
+cp /shared/ucl/apps/build_scripts/ea-utils-patches/Makefile.patch .
+patch < Makefile.patch
+
 PREFIX=$INSTALL_PREFIX make install
 
 echo "Installed version $VERSION in $INSTALL_PREFIX"

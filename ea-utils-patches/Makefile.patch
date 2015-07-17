@@ -1,0 +1,11 @@
+--- Makefile.old	2015-07-17 12:02:38.095108300 +0100
++++ Makefile	2015-07-17 12:02:57.491108702 +0100
+@@ -91,7 +91,7 @@
+ ifeq ($(OS),Windows_NT)
+ 	echo varcall: not supported yet
+ else
+-	$(CC) $(CFLAGS) fastq-lib.cpp tidx/tidx-lib.cpp -o $@ $< -lgsl -lgslcblas
++	$(CC) $(CFLAGS) fastq-lib.cpp tidx/tidx-lib.cpp -o $@ $< -L/shared/ucl/apps/gsl/1.16/gcc/lib -lgsl -lgslcblas
+ endif
+ 
+ fastq-stats: fastq-stats.cpp fastq-lib.cpp gcModel.cpp sparsehash
