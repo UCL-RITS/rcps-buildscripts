@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing figtree
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-figtree}
+VERSION=${VERSION:-1.4.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SHA256=${SHA256:-5064509fbe8cf069c6b0f8fdacf8c3f651971b11956484ce98a18a114ce1a096}
+SRC_ARCHIVE=${SRC_ARCHIVE:-"http://tree.bio.ed.ac.uk/download.php?id=90&num=3"}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget -O ${APPNAME}-${VERSION}.tar.gz "$SRC_ARCHIVE"
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
