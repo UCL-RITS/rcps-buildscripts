@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing BEAST
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-beast}
+VERSION=${VERSION:-2.3.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+MD5=${MD5:-7d12227e44f2610ed7ea3798c01600ca}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/CompEvol/beast2/releases/download/v${VERSION}/BEAST.v.${VERSION}.Linux.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum BEAST.v.${VERSION}.tgz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/BEAST.v.${VERSION}.tgz
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
