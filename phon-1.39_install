@@ -17,7 +17,7 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-mkdir $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
