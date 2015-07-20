@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-picard-tools}
+VERSION=${VERSION:-1.136}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+MD5=${MD5:-f07f4e92787419c7d51ab09601d9c8e3}
+SHA1=${SHA1:-REPLACE}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/picard/releases/download/${VERSION}/picard-tools-${VERSION}.zip}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.zip| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip -o ${APPNAME}-${VERSION}.zip
+  cd ${APPNAME}-${VERSION}
+  mkdir bin
+  cd bin
+  cp /shared/ucl/apps/build_scripts/picard-patches/picard .
+  for a in `cat /shared/ucl/apps/build_scripts/picard-patches/commandlist.list`
+  do
+cat > $a <<EOF
+#!/bin/bash
+
+${INSTALL_PREFIX}/${APPNAME}-${VERSION}/bin/picard $a \$\*
+EOF
+  chmod +x $a
+  done
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
