@@ -23,12 +23,12 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum BEAST.v${VERSION}.tgz| awk '{print $1}'`
+CHECKSUM=`md5sum BEAST.v${VERSION}.Linux.tgz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
   cd $INSTALL_PREFIX
-  tar -zxvf $temp_dir/BEAST.v${VERSION}.tgz
+  tar -zxvf $temp_dir/BEAST.v${VERSION}.Linux.tgz
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
