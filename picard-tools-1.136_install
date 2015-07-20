@@ -13,6 +13,9 @@ MD5=${MD5:-f07f4e92787419c7d51ab09601d9c8e3}
 SHA1=${SHA1:-REPLACE}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/picard/releases/download/${VERSION}/picard-tools-${VERSION}.zip}
 
+# Use Intel defate library
+NATIVE_LIB=${NATIVE_LIB:-NO}
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -31,7 +34,13 @@ then
   cd ${APPNAME}-${VERSION}
   mkdir bin
   cd bin
-  cp /shared/ucl/apps/build_scripts/picard-patches/picard .
+  if [ "$NATIVE_LIB" == "NO" ]
+  then
+     cp /shared/ucl/apps/build_scripts/picard-patches/picard.nonative ./picard
+     rm ../libIntelDeflater.so
+  else
+     cp /shared/ucl/apps/build_scripts/picard-patches/picard .
+  fi
   for a in `cat /shared/ucl/apps/build_scripts/picard-patches/commandlist.list`
   do
 cat > $a <<EOF
