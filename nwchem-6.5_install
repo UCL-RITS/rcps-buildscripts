@@ -138,6 +138,20 @@ then
   cp -r libraryps $INSTALL_PREFIX/data
   chmod -R a+rx $INSTALL_PREFIX/data
 
+  # create .nwchemrc
+  cat <<EOT >> $INSTALL_PREFIX/.nwchemrc
+nwchem_basis_library $INSTALL_PREFIX/data/libraries/
+nwchem_nwpw_library $INSTALL_PREFIX/data/libraryps/
+ffield amber
+amber_1 $INSTALL_PREFIX/data/amber_s/
+amber_2 $INSTALL_PREFIX/data/amber_q/
+amber_3 $INSTALL_PREFIX/data/amber_x/
+amber_4 $INSTALL_PREFIX/data/amber_u/
+spce    $INSTALL_PREFIX/data/solvents/spce.rst
+charmm_s $INSTALL_PREFIX/data/charmm_s/
+charmm_x $INSTALL_PREFIX/data/charmm_x/
+EOT
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
