@@ -37,5 +37,6 @@ make
 cp HOPSPACK_main_serial $INSTALL_PREFIX/bin
 cd ../build-mpi
 cmake ../ -Dmpi=ON -Ddebug=OFF -DLAPACK_LIBS=/shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/lib/libsatlas.so
+make
 cp HOPSPACK_main_mpi $INSTALL_PREFIX/bin
 
