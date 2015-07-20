@@ -27,6 +27,7 @@ CHECKSUM=`md5sum BEAST.v${VERSION}.Linux.tgz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
+  mkdir -p $INSTALL_PREFIX
   cd $INSTALL_PREFIX
   tar -zxvf $temp_dir/BEAST.v${VERSION}.Linux.tgz
 else
