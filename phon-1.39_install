@@ -27,7 +27,7 @@ CHECKSUM=`md5sum ${APPNAME}.${VERSION}.tar.Z| awk '{print $1}'`
 if [ "$MD5" == "$CHECKSUM" ]
 then
   
-  tar -xvf ${APPNAME}.${VERSION}.tar.Z|
+  tar -xvf ${APPNAME}.${VERSION}.tar.Z
 
   cp /shared/ucl/apps/build_scripts/phon-patches/make.inc.patch .
   patch < make.inc.patch
