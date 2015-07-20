@@ -1,0 +1,11 @@
+{Parallel`Palette`paletteConfig["Local Kernels"] -> {"UseLicense" -> False}, 
+ "Version" -> 3.01, Parallel`Palette`paletteConfig["compute kernel"] -> 
+  {ClusterIntegration`Palette`ComputeKernels[ClusterIntegration`SGE, "", 1, 
+    {"EnginePath" -> "/opt/sge", "KernelOptions" -> "-subkernel -mathlink \
+-LinkMode Connect -LinkProtocol TCPIP -LinkName `linkname`", 
+     "KernelProgram" -> 
+      "/usr/local/Wolfram/Mathematica/7.0/Executables/math", 
+     "NativeSpecification" -> "", "NetworkInterface" -> "", 
+     "ToQueue" -> False}, {"Legion", False, False}]}, 
+ Parallel`Palette`paletteConfig["enabledImplementations"] -> 
+  {"SubKernels`LocalKernels`"}}
