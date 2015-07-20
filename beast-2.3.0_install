@@ -32,9 +32,9 @@ then
   cd $INSTALL_PREFIX
   tar -zxvf $temp_dir/BEAST.v${VERSION}.Linux.tgz
 
-  addonmanager -dir $INSTALL_PREFIX/addons -add SNAPP
-  addonmanager -dir $INSTALL_PREFIX/addons -add DISSECT
-  addonmanager -dir $INSTALL_PREFIX/addons -add MODEL_SELECTION
+  addonmanager -dir $INSTALL_PREFIX/BEAST/addons -add SNAPP
+  addonmanager -dir $INSTALL_PREFIX/BEAST/addons -add DISSECT
+  addonmanager -dir $INSTALL_PREFIX/BEAST/addons -add MODEL_SELECTION
 
 else
   echo "Hash mismatch."
