@@ -23,9 +23,9 @@ cd $temp_dir
 
 wget -O ${APPNAME}-${VERSION}.tar.gz "$SRC_ARCHIVE"
 
-CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`sha256sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
 
-if [ "$MD5" == "$CHECKSUM" ]
+if [ "$SHA256" == "$CHECKSUM" ]
 then
   mkdir -p $INSTALL_PREFIX
   cd $INSTALL_PREFIX
@@ -33,6 +33,6 @@ then
 
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5"
+  echo "Expected: $SHA256"
   echo "Got: $CHECKSUM"
 fi
