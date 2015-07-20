@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing figtree
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-tracer}
+VERSION=${VERSION:-1.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SHA256=${SHA256:-0fc9b8f174b2e6c44f6c2f4be30ca5c39b356d0ba7156961db14074d673f70b7}
+SRC_ARCHIVE=${SRC_ARCHIVE:-"http://tree.bio.ed.ac.uk/download.php?id=88&num=3"}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget -O ${APPNAME}-${VERSION}.tar.gz "$SRC_ARCHIVE"
+
+CHECKSUM=`sha256sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
