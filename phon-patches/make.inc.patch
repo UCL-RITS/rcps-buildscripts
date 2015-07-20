@@ -1,0 +1,9 @@
+--- make.old	2015-07-20 15:31:23.000000000 +0100
++++ make.inc	2015-07-20 15:32:13.000000000 +0100
+@@ -1,5 +1,5 @@
+ .SUFFIXES: .inc .f 
+-FC = g95
++FC= $(F90)
+ FREE =  -ffree-form
+ 
+ # optimization
