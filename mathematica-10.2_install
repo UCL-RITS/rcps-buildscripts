@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# This script installs Mathematica 10.2 
+# Brian Alston July 2015
+# Based on spm12_install by Owain Kenway
+
+# You need to download the Mathematica installer from the Wolfram User Portal
+# (https://user.wolfram.com/portal/login.html) using a UCL site admin login.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE & MATH_INSTALLER 
+# variables appropriately.
+
+VERSION=${VERSION:-10.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Mathematica}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Mathematica/installers}
+MATH_INSTALLER=${MATH_INSTALLER:-Mathematica_10.2.0_LINUX.sh}
+EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
+
+set -e
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$MATH_INSTALLER ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find Mathematica installer"
+    echo ""
+    echo "You need to download the Mathematica installer from the Wolfram User Portal"
+    echo "(https://user.wolfram.com/portal/login.html) using a UCL site admin login or"
+    echo "from the UCL Software Database (https://swdb.ucl.ac.uk) using your UCL login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & MATH_INSTALLER" 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+# Run the installer.
+
+cd $SRC_ARCHIVE
+./$MATH_INSTALLER -- -auto -createdir=y -targetdir=$INSTALL_PREFIX/$VERSION \
+  -execdir=$INSTALL_PREFIX/$VERSION/bin
+
+# install UCL mathpass file
+
+cd $INSTALL_PREFIX/$VERSION
+mkdir -p share/Licensing
+cd share/Licensing
+cp $EXTRA_FILES/mathpass-UCL mathpass
+
+# install Legion Kernel startup file
+
+cd ..
+mkdir -p Kernel
+cd Kernel
+cp $EXTRA_FILES/init.m .
+
+# install Legion Default Parallel Kernels Prefs file
+
+cd $INSTALL_PREFIX
+mkdir -p UCL
+cd UCL
+cp $EXTRA_FILES/Parallel_Preferences.m_UCL .
+
+cd $startDir
