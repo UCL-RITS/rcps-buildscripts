@@ -37,5 +37,7 @@ sed ''"$REDEC_BUG"'d' src/mat/matBlackBoardVars.c.old > src/mat/matBlackBoardVar
 
 ./configure --prefix=$INSTALL_PREFIX --enable-xpm --enable-zlib --enable-png --enable-xft --enable-optim=2 --with-matlab=/shared/ucl/apps/Matlab/R2015a/full
 make 
-make check
+
+# This step needs X11
+#make check
 make install
