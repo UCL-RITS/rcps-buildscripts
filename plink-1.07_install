@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing plink
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-plink}
+VERSION=${VERSION:-1.07}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-4566376791df4e69459b849bd7078fa3}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://pngu.mgh.harvard.edu/%7Epurcell/plink/dist/plink-1.07-src.zip}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.zip| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  unzip $temp_dir/${APPNAME}-${VERSION}-src.zip
+
+  cd ${APPNAME}-${VERSION}-src
+  make
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
