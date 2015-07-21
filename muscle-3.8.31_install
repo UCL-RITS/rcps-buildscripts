@@ -30,7 +30,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   mkdir -p ${INSTALL_PREFIX}
   cd ${INSTALL_PREFIX}
-  tar -zxvf ${APPNAME}${VERSION}_src.tar.gz
+  tar -zxvf $temp_dir/${APPNAME}${VERSION}_src.tar.gz
   cd ${APPNAME}${VERSION}/src
   make
   chmod -x mk 
