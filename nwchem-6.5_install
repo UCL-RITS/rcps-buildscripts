@@ -14,8 +14,9 @@ MD5=${MD5:-39f4c5974367f47e08328f442833e0f9}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nwchem-sw.org/images/Nwchem-6.5.revision26243-src.2014-09-10.tar.gz}
 
 FL=${FL:-ifort}
-# stop it using -xhost
-FOPTIMIZE=${FOPTIMIZE:-'-O3'}
+# stop it using -xhost. SSE4.1 for Nehalem
+FOPTIMIZE=${FOPTIMIZE:-'-O3 -xSSE4.1'}
+COPTIMIZE=${COPTIMIZE:-'-O3 -xSSE4.1'}
 NWCHEM_TARGET=${NWCHEM_TARGET:-LINUX64}
 NWCHEM_MODULES=${NWCHEM_MODULES:-'all python'}
 NWCHEM_LONG_PATHS=${NWCHEM_LONG_PATHS:-Y}
@@ -85,6 +86,7 @@ then
 
   export FL
   export FOPTIMIZE
+  export COPTIMIZE
 
   export NWCHEM_TOP=$temp_dir/$dirname
   export NWCHEM_TARGET
