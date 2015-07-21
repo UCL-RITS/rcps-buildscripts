@@ -54,6 +54,23 @@ make_module() {
     esac
   done
 
+  module_maker_help_file="module_maker_inc.sh: makes modules
+
+  In shell, so as to not add extra dependencies.
+
+  Options:
+    -p   prefix dir: allows quick configuration of all \$prefix/bin, \$prefix/lib paths
+    -o   where to write modulefile -- directories will be created if necessary
+    -n   module name
+    -v   variables to set, as \"variable=value\". Use multiple times if nec.
+    -a   variables to append, as \"variable:value\". Ditto.
+    -e   variables to prepend, as \"variable:value\". Ditto.
+    -w   module whatis information. A brief description.
+    -c   modules this module conflicts with. Space separate, quote.
+    -r   modules this module depends on. Space separate, quote.
+    -h   print this.
+  "
+
   #Send the help message and exit if -h was specified.
   if [[ "$send_help_and_quit" == "y" ]]; then
     echo -e "$module_maker_help_file"
