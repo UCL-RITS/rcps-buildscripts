@@ -33,6 +33,11 @@ then
   unzip $temp_dir/${APPNAME}-${VERSION}-src.zip
 
   cd ${APPNAME}-${VERSION}-src
+  cp /shared/ucl/apps/build_scripts/plink-patches/*.patch .
+  for a in `ls *.patch`
+  do
+    patch < $a
+  done
   make
 else
   echo "Hash mismatch."

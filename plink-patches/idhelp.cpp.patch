@@ -1,0 +1,19 @@
+--- idhelp.cpp.old	2015-07-21 13:04:26.000000000 +0100
++++ idhelp.cpp	2015-07-21 13:09:25.000000000 +0100
+@@ -772,12 +772,12 @@
+       for (int j = 0 ; j < jointField.size(); j++ )
+ 	{
+ 	  set<IDField*> & jf = jointField[j];
+-	  set<IDField*>::iterator j = jf.begin();
++	  set<IDField*>::iterator it1 = jf.begin();
+ 	  PP->printLOG(" { ");
+-	  while ( j != jf.end() )
++	  while ( it1 != jf.end() )
+ 	    {
+-	      PP->printLOG( (*j)->name + " " );
+-	      ++j;
++	      PP->printLOG( (*it1)->name + " " );
++	      ++it1;
+ 	    }
+ 	  PP->printLOG(" }");
+ 	}

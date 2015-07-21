@@ -1,0 +1,11 @@
+--- Makefile.old	2015-07-21 13:23:55.000000000 +0100
++++ Makefile	2015-07-21 13:15:01.000000000 +0100
+@@ -27,7 +27,7 @@
+ FORCE_32BIT = 
+ WITH_ZLIB = 1
+ WITH_LAPACK = 
+-FORCE_DYNAMIC = 
++FORCE_DYNAMIC = 1
+ 
+ # Put C++ compiler here; Windows has it's own specific version
+ CXX_UNIX = g++

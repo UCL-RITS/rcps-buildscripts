@@ -1,0 +1,18 @@
+--- sets.cpp.old	2015-07-21 12:58:06.000000000 +0100
++++ sets.cpp	2015-07-21 13:01:36.000000000 +0100
+@@ -768,11 +768,11 @@
+       //////////////////////////////////////////////
+       // Reset original missing status
+ 
+-      vector<Individual*>::iterator i = PP->sample.begin();
+-      while ( i != PP->sample.end() )
++      vector<Individual*>::iterator it2 = PP->sample.begin();
++      while ( it2 != PP->sample.end() )
+ 	{
+-	  (*i)->missing = (*i)->flag;
+-	  ++i;
++	  (*it2)->missing = (*it2)->flag;
++	  ++it2;
+ 	}
+ 
+       ////////////////////////////////////////////////
