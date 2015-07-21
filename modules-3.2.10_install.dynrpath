@@ -9,7 +9,7 @@
 
 VERSION=${VERSION:-3.2.10}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/modules/$VERSION}
-MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles
+MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles/applications:/shared/ucl/apps/modulefiles/bundles:/shared/ucl/apps/modulefiles/compilers:/shared/ucl/apps/modulefiles/core:/shared/ucl/apps/modulefiles/development:/shared/ucl/apps/modulefiles/libraries
 
 TCL_VERSION=8.6.4
 
