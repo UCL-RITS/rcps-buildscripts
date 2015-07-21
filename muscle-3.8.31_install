@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing muscle
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-muscle}
+VERSION=${VERSION:-3.8.31}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-f767f00fd15f0c5db944d41936779e10}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.drive5.com/muscle/downloads${VERSION}/muscle${VERSION}_src.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}${VERSION}_src.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p ${INSTALL_PREFIX}
+  cd ${INSTALL_PREFIX}
+  tar -zxvf ${APPNAME}${VERSION}_src.tar.gz
+  cd ${APPNAME}${VERSION}/src
+  make
+  chmod -x mk 
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
