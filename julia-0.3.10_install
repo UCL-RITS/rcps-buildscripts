@@ -30,11 +30,12 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${ARCHIVENAME}
 
+  echo JULIA_CPU_TARGET=nehalem > Make.user
+
   cd julia
   make
 
-  echo prefix=${INSTALL_PREFIX} > Make.user
-  echo JULIA_CPU_TARGET=core2 >> Make.user
+  echo prefix=${INSTALL_PREFIX} >> Make.user
 
   make install
 
