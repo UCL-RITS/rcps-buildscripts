@@ -54,8 +54,8 @@ PYTHONVERSION=${PYTHONVERSION:-2.7}
 # Can't pass them in as empty if they have a default value, but the default is still handy.
 if [ "$BLAS_TAG" == "mkl" ]
 then
-  BLASOPT=${BLASOPT:-"${MKLROOT}/lib/intel64/libmkl_blas95_ilp64 -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"}
-  LAPACK_LIB=${LAPACK_LIB:-"${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64"}
+  BLASOPT=${BLASOPT:-"${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"}
+  LAPACK_LIB=${LAPACK_LIB:-"${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a"}
   USE_SCALAPACK=${USE_SCALAPACK:-y}
   SCALAPACK_SIZE=${SCALAPACK_SIZE:-8}
   SCALAPACK=${SCALAPACK:-"-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lmkl_blacs_intelmpi_ilp64 -lpthread -lm"}
