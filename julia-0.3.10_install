@@ -33,10 +33,11 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${ARCHIVENAME}
 
+  cd julia
+
   echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
   echo "MARCH = ${TARGET_ARCH}" >> Make.user
 
-  cd julia
   make
 
   echo prefix=${INSTALL_PREFIX} >> Make.user
