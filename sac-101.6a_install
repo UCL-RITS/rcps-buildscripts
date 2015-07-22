@@ -41,7 +41,7 @@ sed ''"$REDEC_BUG"'d' src/mat/matBlackBoardVars.c.old > src/mat/matBlackBoardVar
 make 
 
 # This step needs X11
-if [ "$TEST" == "yes" ]
+if [ "$TESTS" == "yes" ]
 then
    # We have to set TERM to rxvt as the output files that the pytest test
    # uses have rxvt control characters embedded in them and one of the tests 
