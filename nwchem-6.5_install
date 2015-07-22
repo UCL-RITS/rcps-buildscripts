@@ -17,6 +17,8 @@ FL=${FL:-ifort}
 # stop it using -xhost. SSE4.1 for Nehalem
 FOPTIMIZE=${FOPTIMIZE:-'-O3 -xSSE4.1'}
 COPTIMIZE=${COPTIMIZE:-'-O3 -xSSE4.1'}
+# -xHost is altered to FOPTIMIZE_ADD in makefile.h: only for Intel
+FOPTIMIZE_ADD=${FOPTIMIZE_ADD:-'-xSSE4.1'}
 NWCHEM_TARGET=${NWCHEM_TARGET:-LINUX64}
 NWCHEM_MODULES=${NWCHEM_MODULES:-'all python'}
 NWCHEM_LONG_PATHS=${NWCHEM_LONG_PATHS:-Y}
@@ -124,6 +126,8 @@ then
 
   # make nwchem
   cd $NWCHEM_TOP/src
+  # Back up into makefile.h.bak and replace the Intel xHost line.
+  sed -i.bak -e "s|FOPTIMIZE += -xHost|FOPTIMIZE += $FOPTIMIZE_ADD|" $NWCHEM_TOP/src/config/makefile.h
   make nwchem_config 2>&1 | tee ../nwchem_config.log
   make 2>&1 | tee ../nwchem_make.log
 
