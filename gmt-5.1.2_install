@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gmt
+#
+# by Owain Kenway, 2015 
+#
+
+# NOTE: WORK IN PROGRESS!
+
+APPNAME=${APPNAME:-gmt}
+VERSION=${VERSION:-5.1.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-66212f2f237843a448fa9c0ec6cfb86d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://gmt.soest.hawaii.edu/files/download?name=gmt-$VERSION-src.tar.bz2}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf ${APPNAME}-${VERSION}-src.tar.bz2
+
+  cd ${APPNAME}-${VERSION}
+
+  mkdir build
+  cd build
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release 
+
+  make 
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
