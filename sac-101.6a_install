@@ -43,7 +43,12 @@ make
 # This step needs X11
 if [ "$TEST" == "yes" ]
 then
-   make check
+   # We have to set TERM to rxvt as the output files that the pytest test
+   # uses have rxvt control characters embedded in them and one of the tests 
+   # will fail file comparison as a result.
+   # The test suite reports this as 65 errors, when it means 65 lines of
+   # errors from one test.
+   TERM=rxvt make check
 fi
 
 make install
