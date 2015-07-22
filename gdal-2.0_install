@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gdal
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-gdal}
+VERSION=${VERSION:-2.0.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-53761563ff53c5bf27bff7c4d6cab8bb1634baccefda05348e0f3b7acaf4c9e6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://download.osgeo.org/gdal/${VERSION}/gdal-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --with-netdf --with-hdf5
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
