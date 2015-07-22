@@ -33,7 +33,6 @@ MPI_LOC=${MPI_LOC:-$MPI_HOME}
 # can run contrib/distro-tools/getmpidefs_nwchem to get these
 MPI_INCLUDE=${MPI_INCLUDE:-"-I$MPI_HOME/intel64/include"}
 MPI_LIB=${MPI_LIB:-"-L$MPI_HOME/intel64/lib/release_mt -L$MPI_HOME/intel64/lib"}
-#export LIBMPI='-lmpichf90 -lmpich -lmpichabiglue_intel11'
 LIBMPI=${LIBMPI:-'-lmpifort -lmpi -lmpigi -ldl -lrt -lpthread'}
 
 MPI_F90=${mpif90}
@@ -104,9 +103,9 @@ then
   export MPI_LIB
   export LIBMPI
 
-  export MPI_F90=mpif90
-  export MPI_CC=mpicc
-  export MPI_CXX=mpicxx
+  export MPI_F90
+  export MPI_CC
+  export MPI_CXX
 
   export ARMCI_NETWORK
   export MSG_COMMS
