@@ -31,7 +31,7 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX --with-netdf --with-hdf5
+  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2
   make && make install
 else
   echo "Hash mismatch."
