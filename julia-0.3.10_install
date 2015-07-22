@@ -34,7 +34,7 @@ then
   make
 
   echo prefix=${INSTALL_PREFIX} > Make.user
-  echo JULIA_CPU_TARGET=nehalem >> Make.user
+  echo JULIA_CPU_TARGET=core2 >> Make.user
 
   make install
 
