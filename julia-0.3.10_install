@@ -13,6 +13,9 @@ MD5=${MD5:-c463f0470229e55c0f83df9dfb2d5614}
 ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}_c8ceeefcc1.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
 
+# Target architecture
+TARGET_ARCH=${TARGET_ARCH:-nehalem}
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -30,7 +33,8 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${ARCHIVENAME}
 
-  echo JULIA_CPU_TARGET=nehalem > Make.user
+  echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
+  echo "MARCH = ${TARGET_ARCH}" >> Make.user
 
   cd julia
   make
