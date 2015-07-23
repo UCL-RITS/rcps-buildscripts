@@ -55,7 +55,7 @@ then
 
   mkdir build
   cd build
-  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release 
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release ../
 
   make 
   make install
