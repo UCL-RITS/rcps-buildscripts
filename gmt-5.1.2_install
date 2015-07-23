@@ -43,7 +43,7 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+wget -O ${APPNAME}-${VERSION}-src.tar.bz2 $SRC_ARCHIVE 
 
 CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.tar.bz2| awk '{print $1}'`
 
