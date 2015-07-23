@@ -36,6 +36,16 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TA
 MD5=${MD5:-66212f2f237843a448fa9c0ec6cfb86d}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gmt-${VERSION}-src.tar.bz2}
 
+DATA_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/data}
+
+DCW_VERSION=${VERSION:-1.1.1}
+DCW_MD5=${MD5:-f37787b207006708d7385722066817c7}
+DCW_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/dcw-gmt-${DCW_VERSION}.tar.gz}
+
+GSHHG_VERSION=${VERSION:-2.3.4}
+GSHHG_MD5=${MD5:-80947a92cc88927aff070556ca5ab133}
+GSHHG_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
+
 set -e
 
 mkdir -p /dev/shm/$APPNAME
@@ -43,24 +53,37 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget -O ${APPNAME}-${VERSION}-src.tar.bz2 $SRC_ARCHIVE 
+wget $SRC_ARCHIVE 
+wget $DCW_ARCHIVE
+wget $GSHHG_ARCHIVE
 
 CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.tar.bz2| awk '{print $1}'`
+DCWCHECK=`md5sum dcw-gmt-${DCW_VERSION}.tar.gz | awk '{print $1}'`
+GSHHGCHECH=`md5sum gshhg-gmt-${GSHHG_VERSION}.tar.gz | awk '{print $1}'`
 
-if [ "$MD5" == "$CHECKSUM" ]
+if [[ "$MD5" == "$CHECKSUM"  && "$DCW_MD5" == "$DCWCHECK" && "$GSHHG_MD5" == "$GSHHGCHECK" ]]
 then
+
+# Datasets
+  mkdir -p $DATA_PREFIX
+  cd $DATA_PREFIX
+  tar -zxvf $temp_dir/dcw-gmt-${DCW_VERSION}.tar.gz
+  tar -zxvf $temp_dir/gshhg-gmt-${GSHHG_VERSION}.tar.gz
+
+  cd $temp_dir
+
   tar -jxvf ${APPNAME}-${VERSION}-src.tar.bz2
 
   cd ${APPNAME}-${VERSION}
 
   mkdir build
   cd build
-  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release ../
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3F_LIBRARY=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3f.so -DFFTW3_INCLUDE_DIR=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/include -DDCW_PATH=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_PATH=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} ../
 
   make 
   make install
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5"
-  echo "Got: $CHECKSUM"
+  echo "Expected: $MD5 $DCW_MD5 $GSHHG_MD5"
+  echo "Got: $CHECKSUM $DCWCHECK $GSHHGCHECK"
 fi
