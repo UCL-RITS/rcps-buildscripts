@@ -38,13 +38,13 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gmt-${VERSION}-src.t
 
 DATA_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/data}
 
-DCW_VERSION=${VERSION:-1.1.1}
-DCW_MD5=${MD5:-f37787b207006708d7385722066817c7}
-DCW_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/dcw-gmt-${DCW_VERSION}.tar.gz}
+DCW_VERSION=${DCW_VERSION:-1.1.1}
+DCW_MD5=${DCW_MD5:-f37787b207006708d7385722066817c7}
+DCW_ARCHIVE=${DCW_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/dcw-gmt-${DCW_VERSION}.tar.gz}
 
-GSHHG_VERSION=${VERSION:-2.3.4}
-GSHHG_MD5=${MD5:-80947a92cc88927aff070556ca5ab133}
-GSHHG_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
+GSHHG_VERSION=${GSHHG_VERSION:-2.3.4}
+GSHHG_MD5=${GSHHG_MD5:-80947a92cc88927aff070556ca5ab133}
+GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
 
 set -e
 
