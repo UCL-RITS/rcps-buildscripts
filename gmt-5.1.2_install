@@ -34,7 +34,7 @@ VERSION=${VERSION:-5.1.2}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-66212f2f237843a448fa9c0ec6cfb86d}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://gmt.soest.hawaii.edu/files/download?name=gmt-$VERSION-src.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gmt-${VERSION}-src.tar.bz2}
 
 set -e
 
