@@ -59,7 +59,7 @@ wget $GSHHG_ARCHIVE
 
 CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.tar.bz2| awk '{print $1}'`
 DCWCHECK=`md5sum dcw-gmt-${DCW_VERSION}.tar.gz | awk '{print $1}'`
-GSHHGCHECH=`md5sum gshhg-gmt-${GSHHG_VERSION}.tar.gz | awk '{print $1}'`
+GSHHGCHECK=`md5sum gshhg-gmt-${GSHHG_VERSION}.tar.gz | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM"  && "$DCW_MD5" == "$DCWCHECK" && "$GSHHG_MD5" == "$GSHHGCHECK" ]]
 then
