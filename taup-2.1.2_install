@@ -25,7 +25,7 @@ CHECKSUM=`md5sum TauP-${VERSION}.tgz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  mkdir $INSTALL_PREFIX
+  mkdir -p $INSTALL_PREFIX
   cd $INSTALL_PREFIX
   tar -zxvf $temp_dir/TauP-${VERSION}.tgz
 
