@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing DL_POLY Classic
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-dl_poly}
+VERSION=${VERSION:-1.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/classic/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-66e40eccc6d3f696c8e3654b5dd2de54}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ccpforge.cse.rl.ac.uk/gf/download/frsrelease/255/4726/dl_class_$VERSION.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/execute:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+
+  tar -xvf $archive
+
+  cp -r dl_class_$VERSION/* $INSTALL_PREFIX
+
+  cd $INSTALL_PREFIX/source
+  cp ../build/MakePAR Makefile
+  if [[ $COMPILER_TAG == intel* ]]
+  then
+    make woodcrest 2>&1 | tee make.log
+  elif [[ $COMPILER_TAG == gnu* ]]
+  then
+    make gfortran 2>&1 | tee make.log
+  fi
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
