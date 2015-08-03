@@ -16,6 +16,7 @@
 VERSION=${VERSION:-2012.1.25}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/molpro/sources/molpro.${VERSION}.tar.gz}
+MPI_WRAPPER=${MPI_WRAPPER:-/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun}
 
 set -e
 
@@ -27,7 +28,7 @@ cd $temp_dir
 tar zxvf $SRC_ARCHIVE
 cd Molpro
 
-./configure -gcc -gfortran -mpp -mppbase /shared/ucl/apps/openmpi/1.8.4/gnu-4.9.2/include -prefix $INSTALL_PREFIX -var LAUNCHER=/shared/ucl/apps/openmpi/ucl-wrapper/bin/mpirun -openmpi -batch -i8
+./configure -gcc -gfortran -mpp -mppbase $MPI_HOME/include -prefix $INSTALL_PREFIX -var LAUNCHER=$MPI_WRAPPER -openmpi -batch -i8
 
 
 make
@@ -35,3 +36,7 @@ make
 make tuning
 
 make install
+
+# Now need to edit bin/molpro wrapper script to tell it to use $MPI_WRAPPER
+# or it won't work on the non-Infiniband nodes.
+sed -i -e "s|$MPI_HOME/bin/mpirun|$MPI_WRAPPER|" $INSTALL_PREFIX/bin/molpro
