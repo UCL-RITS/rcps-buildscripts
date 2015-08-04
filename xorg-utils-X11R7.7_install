@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing xorg-utils
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-xorg}
+VERSION=${VERSION:-X11R7.7}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/xorg/utils/$VERSION/$COMPILER_TAG}
+
+XUTILMACROS_NAME=${XUTILMACROS_NAME:-util-macros-1.17}
+XUTILMACROS_SRC_ARCHIVE=${XUTILMACROS_SRC_ARCHIVE:-http://www.x.org/releases/X11R7.7/src/util/${XUTILMACROS_NAME}.tar.gz}
+XUTILMACROS_MD5=${XUTILMACROS_MD5:-e162e8921cd08c50bf17b9de5131b3f1}
+
+MAKEDEPEND_NAME=${MAKEDEPEND_NAME:-makedepend-1.0.5}
+MAKEDEPEND_SRC_ARCHIVE=${MAKEDEPEND_SRC_ARCHIVE:-http://www.x.org/releases/individual/util/${MAKEDEPEND_NAME}.tar.bz2}
+MAKEDEPEND_MD5=${MAKEDEPEND_MD5:-0475638eb40a3920d0d3f14482c924a4}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $XUTILMACROS_SRC_ARCHIVE
+xutilmacros_archive=$(basename "${XUTILMACROS_SRC_ARCHIVE}")
+XUTILMACROS_CHECKSUM=`md5sum $xutilmacros_archive| awk '{print $1}'`
+
+if [ "$XUTILMACROS_MD5" != "$XUTILMACROS_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xutilmacros_archive."
+  echo "Expected: $XUTILMACROS_MD5"
+  echo "Got: $XUTILMACROS_CHECKSUM"
+  exit 1;
+fi
+
+wget $MAKEDEPEND_SRC_ARCHIVE
+makedepend_archive=$(basename "${MAKEDEPEND_SRC_ARCHIVE}")
+MAKEDEPEND_CHECKSUM=`md5sum $makedepend_archive| awk '{print $1}'`
+
+if [ "$MAKEDEPEND_MD5" != "$MAKEDEPEND_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $makedepend_archive."
+  echo "Expected: $MAKEDEPEND_MD5"
+  echo "Got: $MAKEDEPEND_CHECKSUM"
+  exit 1;
+fi
+
+# install xorg/util/macros
+tar -xvf $xutilmacros_archive
+cd $XUTILMACROS_NAME
+./configure --prefix=$INSTALL_PREFIX
+make 2>&1 | tee make.log
+make install
+
+export PKG_CONFIG_PATH=$INSTALL_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+
+# install xorg/util/makedepend
+cd $temp_dir
+tar -xvf $makedepend_archive
+cd $MAKEDEPEND_NAME
+./configure --prefix=$INSTALL_PREFIX
+make 2>&1 | tee make.log
+make install
