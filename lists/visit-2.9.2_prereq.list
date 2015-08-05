@@ -1,7 +1,6 @@
 adios-1.7.0.tar.gz
 AdvIO-1.2.tar.gz
 cfitsio3006.tar.gz
-cgm-12.2.0b1.tar.gz
 cmake-3.0.2.tar.gz
 EAVL-4593630.tar.gz
 fastbit-ibis1.2.0.tar.gz
@@ -25,7 +24,6 @@ seedme-seedme-python-client-0a365da9c861.tar.gz
 silo-4.10.1.tar.gz
 szip-2.1.tar.gz
 visit2.9.2.tar.gz
-ViSUS-ad09cb8-Linux.tgz
 VTK-6.1.0.tar.gz
 Xdmf-2.1.1.tar.gz
 zlib-1.2.7.tar.gz
