@@ -13,3 +13,4 @@ obspy
 cvxopt
 cutadapt
 misopy
+lxml
