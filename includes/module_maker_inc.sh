@@ -147,7 +147,4 @@ EOF
 
 if [ "$(basename $0)" == "module_maker_inc.sh" ]; then
   make_module "$@"
-else
-  echo "\$0: $0"
-  echo "$(basename $0)"
 fi
