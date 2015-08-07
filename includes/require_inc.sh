@@ -2,6 +2,7 @@
 # ^-- mostly for syntax highlighting. This isn't intended to be run.
 
 ERR_MODULES_BROKEN=3
+ERR_MODULE_NOT_LOADED=4
 
 require() {
   if declare -f module >/dev/null; then
@@ -26,13 +27,9 @@ require() {
 
   while [ -n "$1" ]; do
     module load $1
-    # Note: this check will fail in certain cases:
-    #  * where one module's name contains the entire name of another, e.g.
-    #     `module load abc` if a module is loaded called 'abcd'
-    #  * where a module's name similarly conflicts with 'Currently Loaded Modulefiles:'
-    if ! (module list -t >&1 | grep "^$1"); then
+    if ! (module list -t 2>&1 | grep -P "^$1($|/)" >/dev/null 2>/dev/null ); then
       echo "Error: could not load module: $1" >&2
-      exit 3
+      exit $ERR_MODULE_NOT_LOADED
     fi
     shift
   done
