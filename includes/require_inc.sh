@@ -26,6 +26,14 @@ require() {
 
   while [ -n "$1" ]; do
     module load $1
+    # Note: this check will fail in certain cases:
+    #  * where one module's name contains the entire name of another, e.g.
+    #     `module load abc` if a module is loaded called 'abcd'
+    #  * where a module's name similarly conflicts with 'Currently Loaded Modulefiles:'
+    if ! (module list -t >&1 | grep "^$1"); then
+      echo "Error: could not load module: $1" >&2
+      exit 3
+    fi
     shift
   done
 }

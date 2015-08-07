@@ -39,10 +39,18 @@ make_module() {
         module_whatis="$OPTARG"
         ;;
       "c")
-        module_conflicts="$module_conflicts $OPTARG"
+        if [ -z "$module_conflicts" ]; then
+          module_conflicts="conflict $OPTARG"
+        else
+          module_conflicts="$module_conflicts $OPTARG"
+        fi
         ;;
       "r")
-        module_prereqs="$module_prereqs $OPTARG"
+        if [ -z "$module_prereqs" ]; then
+          module_prereqs="prereq $OPTARG"
+        else
+          module_prereqs="$module_prereqs $OPTARG"
+        fi
         ;;
       "h")
         send_help_and_quit="y"
