@@ -1,0 +1,11 @@
+--- itaps/iGeom_CGMA.cc.old     2011-06-06 18:44:53.000000000 +0100
++++ itaps/iGeom_CGMA.cc 2015-08-10 11:32:04.025940052 +0100
+@@ -6787,7 +6787,7 @@
+ iGeom_get_vtx_to_uv(RefVertex* vertex, RefFace* face, double& u, double& v)
+ {
+   DLIList<RefVertex*> pts;
+-  TopologyEntity *topo_ent = dynamic_cast<const TopologyEntity*>(face);
++  TopologyEntity *topo_ent = dynamic_cast<TopologyEntity*>(face);
+   topo_ent->ref_vertices(pts);
+ 
+   pts.reset();
