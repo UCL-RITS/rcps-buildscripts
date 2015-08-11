@@ -40,11 +40,11 @@ then
 # Note -A 27 -V 448 sets architecture for Legion X/Y/Z nodes
   if [[ $COMPILER_TAG == gnu* ]]
   then
-    ../configure --prefix=${INSTALL_PREFIX} -A 27 -V 448 --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz"
+    ../configure --prefix=${INSTALL_PREFIX} -A 27 -V 448 --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz" -Si latune 1
   elif [[ $COMPILER_TAG == intel* ]]
   then
     # It uses gcc for the kernel and icc/ifort for the interfaces
-    ../configure --prefix=${INSTALL_PREFIX} -A 27 -V 448 --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz" -Ss kern gcc -C ic $CC -F ic '-fp-model strict -fpic' -C if $F90 -F if '-fp-model strict -fpic'
+    ../configure --prefix=${INSTALL_PREFIX} -A 27 -V 448 --shared --with-netlib-lapack-tarfile="$loc/lapack-${LAPACK_VERSION}.tgz" -Ss kern gcc -C ic $CC -F ic '-fp-model strict -fpic' -C if $F90 -F if '-fp-model strict -fpic' -Si latune 1
   fi
   make
   make check
