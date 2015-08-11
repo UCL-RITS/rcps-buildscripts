@@ -29,7 +29,7 @@ then
   tar -zxvf cmake-${VERSION}.tar.gz
 
   cd cmake-${VERSION}
-  ./bootstrap --prefix=$INSTALL_PREFIX 
+  ./bootstrap --prefix=$INSTALL_PREFIX --system-curl
   make && make install
 
 
