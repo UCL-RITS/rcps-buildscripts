@@ -48,7 +48,8 @@ _build() {
   # enable-fortran2003 is also dependent on enable-fortran
   # enable-cxx is also mutually exclusive with enable-parallel, *sigh*
   make
-  make check-s check-p
+  make check-s check-p RUNPARALLEL='mpirun -n $${NPROCS:=6}'
+  # If you don't set RUNPARALLEL here, it tries to use mpiexec instead of mpirun and everything breaks
   cd $OWD
 }
 
