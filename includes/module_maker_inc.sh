@@ -137,6 +137,10 @@ if { [file isdirectory \$prefix/lib64] } then {
   prepend-path      LD_LIBRARY_PATH      \$prefix/lib64
 }
 
+if { [file isdirectory \$prefix/lib/pkgconfig] } then {
+  prepend-path      PKG_CONFIG_PATH      \$prefix/lib/pkgconfig
+}
+
 if { [file isdirectory \$prefix/include] } then {
   prepend-path      CPATH                \$prefix/include
   prepend-path      INCLUDE_PATH         \$prefix/include
