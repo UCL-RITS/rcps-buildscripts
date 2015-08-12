@@ -6,6 +6,7 @@
 # by Owain Kenway, 2015 
 #
 
+APPNAME=${APPNAME:-atlas}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-3.10.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/atlas/$VERSION/$COMPILER_TAG}
@@ -20,7 +21,9 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-temp_dir=`mktemp -d`
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
 
 cd $temp_dir
 
