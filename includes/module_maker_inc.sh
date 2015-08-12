@@ -110,7 +110,8 @@ proc ModulesHelp { } {
 }
 
 module-whatis {${module_whatis}}
-${module_prereqs}${module_conflicts}
+${module_prereqs}
+${module_conflicts}
 
 set              prefix               $module_prefix
 ${variables_to_import}${variables_to_prepend}${variables_to_append}
