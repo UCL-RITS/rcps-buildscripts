@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-varscan}
+VERSION=${VERSION:-2.3.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+MD5=${MD5:-d01b2a86068ffb01d60e1a492e377c53}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/varscan/VarScan.v2.3.9.jar}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum VarScan.v${VERSION}.jar | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  cp $temp_dir/VarScan.v${VERSION}.jar .
+  cat > $APPNAME << EOF
+#!/bin/bash
+
+install_loc=${INSTALL_PREFIX}
+
+java -Xmx2g ${install_loc}/VarScan.v${VERSION}.jar $*
+EOF
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
