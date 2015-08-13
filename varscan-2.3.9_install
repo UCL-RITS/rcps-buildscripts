@@ -33,9 +33,7 @@ then
   cat > $APPNAME << EOF
 #!/bin/bash
 
-install_loc=${INSTALL_PREFIX}
-
-java -Xmx2g ${install_loc}/VarScan.v${VERSION}.jar $*
+java -Xmx2g ${INSTALL_PREFIX}/VarScan.v${VERSION}.jar $*
 EOF
 
 else

@@ -34,9 +34,7 @@ tar jxvf $SRC_ARCHIVE
 cat > GenomeAnalysisTK <<EOF
 #!/bin/bash
 
-install_loc=$INSTALL_PREFIX
-
-java -Xmx2g $install_loc/GenomeAnalysisTK.jar $*
+java -Xmx2g $INSTALL_PREFIX/GenomeAnalysisTK.jar $*
 EOF
 
 chmod +x GenomeAnalysisTK

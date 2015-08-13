@@ -27,9 +27,7 @@ unzip -o $SRC_ARCHIVE
 cat > $APPNAME << EOF
 #!/bin/bash
 
-install_loc=${INSTALL_PREFIX}
-
-java -Xmx2g ${install_loc}/${APPNAME}-${VERSION}.jar $*
+java -Xmx2g ${INSTALL_PREFIX}/${APPNAME}-${VERSION}.jar $*
 EOF
 
 chmod +x $APPNAME
