@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+# Users need to accept the Mutect license, so you need to do so, download the
+# package and put it in $SRC_ARCHIVE.
+# License is enforced by adding users to a unix group.
+
+APPNAME=${APPNAME:-mutect}
+VERSION=${VERSION:-1.1.7}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/mutect/source/${APPNAME}-${VERISON}.jar.zip}
+MUTECT_GROUP=${MUTECT_GROUP:-legmutect}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+unzip -o $SRC_ARCHIVE
+
+cat > $APPNAME << EOF
+!/bin/bash
+
+install_loc=${INSTALL_PREFIX}
+
+java -Xmx2g ${install_loc}/${APPNAME}-${VERSION}.jar $*
+EOF
+
+chmod +x $APPNAME
+
+chmod o-rwx *
+chgrp ${MUTECT_GROUP} *
