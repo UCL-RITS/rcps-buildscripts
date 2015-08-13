@@ -13,7 +13,7 @@
 APPNAME=${APPNAME:-mutect}
 VERSION=${VERSION:-1.1.7}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/mutect/source/${APPNAME}-${VERISON}.jar.zip}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/mutect/source/${APPNAME}-${VERSION}.jar.zip}
 MUTECT_GROUP=${MUTECT_GROUP:-legmutect}
 
 set -e
