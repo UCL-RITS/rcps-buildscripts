@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing C++ NetCDF 4.2
+#
+# by Owain Kenway, 2015 
+#
+
+VERSION=${VERSION:-4.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF-c++/${VERSION}-${COMPILER_TAG} }
+SHA1=${SHA1:-59628c9f06c211a47517fc00d8b068da159ffa9d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-cxx4-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/netcdf
+
+temp_dir=`mktemp -d -p /dev/shm/netcdf`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum netcdf-cxx4-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$SHA1" == "$CHECKSUM" ]]
+then
+   tar xvzf netcdf-cxx4-${VERSION}.tar.gz
+   cd netcdf-cxx4-${VERSION}
+
+   export CPPFLAGS="-I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include"
+   export LDFLAGS="-L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
+
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $SHA1"
+   echo "	Got:      $CHECKSUM"
+fi
