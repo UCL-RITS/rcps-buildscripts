@@ -25,7 +25,7 @@ cd $INSTALL_PREFIX
 unzip -o $SRC_ARCHIVE
 
 cat > $APPNAME << EOF
-!/bin/bash
+#!/bin/bash
 
 install_loc=${INSTALL_PREFIX}
 
