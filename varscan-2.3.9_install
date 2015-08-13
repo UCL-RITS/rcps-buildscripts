@@ -36,6 +36,8 @@ then
 java -Xmx2g ${INSTALL_PREFIX}/VarScan.v${VERSION}.jar $*
 EOF
 
+chmod +x $APPNAME
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
