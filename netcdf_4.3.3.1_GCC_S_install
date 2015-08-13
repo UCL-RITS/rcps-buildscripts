@@ -11,7 +11,7 @@ VERSION=${VERSION:-4.3.3.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-${COMPILER_TAG} }
 MD5=${MD5:-5c9dad3705a3408d27f696e5b31fb88c}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${VERSION}.tar.gz}
-NETCDF_OPTIONS=${NETCDF_OPTIONS:-""}
+NETCDF_OPTIONS=${NETCDF_OPTIONS:-"--enable-netcdf4"}
 
 set -e
 
