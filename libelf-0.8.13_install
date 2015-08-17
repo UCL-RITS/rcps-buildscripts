@@ -55,9 +55,9 @@ _install() {
   make_module -p $INSTALLATION_PREFIX \
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
-              -r "compilers/intel/2015/update2" \
+              -r "gcc-libs/4.9.2" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
-              -w "Adds libelf 0.8.13 (built using Intel compilers) to your environment."
+              -w "Adds libelf 0.8.13 to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
 }
 
