@@ -13,13 +13,13 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require compilers/intel/2015/update2
+require compilers/gnu/4.9.2
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION/atch/}-impi/${COMPILER_TAG}}
-  MODULE_STAGE=$(mktemp -d /tmp/module_stage.XXXXXXXXXX)
-  BUILD_DIR=$(mktemp -d)
+  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS=http://www.mr511.de/software/libelf-${PACKAGE_VERSION}.tar.gz
   BASENAME=libelf-0.8.13
 }
@@ -56,9 +56,9 @@ _install() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "compilers/intel/2015/update2" \
-              -o $MODULE_STAGE/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
+              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
               -w "Adds libelf 0.8.13 (built using Intel compilers) to your environment."
-  echo "Module files put in: $MODULE_STAGE" >&2
+  echo "Module files put in: $MODULE_DIR" >&2
 }
 
 _clean_up() {
