@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# This script installs NAG Fortran Library Mark 24 for the NAF Fortran Compiler.
+# Brian Alston August 2015
+# Based on spm12_install by Owain Kenway
+
+# fll6a24d9l
+
+VERSION=${VERSION:-24}
+PRODUCT=${PRODUCT:-fll6a24d9l}
+DOC=${DOC:-mk${VERSION}_doc}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-library}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$PRODUCT.tgz}
+DOC_ARCHIVE=${DOC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$DOC.tgz}
+# MD5_SRC=${MD5_SRC:-1c370fe9eec4e4ea210e566f388018cd}
+# MD5_DOC=${MD5_DOC:-d5d88b864f9e2ea7d19770a19c766d1b}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+wget $DOC_ARCHIVE
+
+tar xvzf $PRODUCT.tgz
+gunzip $DOC.tgz
+
+./install.sh -accept -installdir=$INSTALL_PREFIX \
+   -docinstalldir=$INSTALL_PREFIX/doc
+
