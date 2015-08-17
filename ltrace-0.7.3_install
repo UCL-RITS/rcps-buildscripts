@@ -16,7 +16,7 @@ require libelf
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION/atch/}-impi/${COMPILER_TAG}}
+  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS=http://ltrace.org/ltrace_${PACKAGE_VERSION}.orig.tar.bz2
@@ -58,6 +58,7 @@ _install() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
+              -r "libelf" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
               -w "Adds ltrace 0.7.3 to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
