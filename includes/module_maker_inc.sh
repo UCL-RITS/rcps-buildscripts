@@ -39,18 +39,10 @@ make_module() {
         module_whatis="$OPTARG"
         ;;
       "c")
-        if [ -z "$module_conflicts" ]; then
-          module_conflicts="conflict $OPTARG"
-        else
-          module_conflicts="$module_conflicts $OPTARG"
-        fi
+        printf -v module_conflicts "conflict %s\n%s" "$OPTARG" "$module_conflicts"
         ;;
       "r")
-        if [ -z "$module_prereqs" ]; then
-          module_prereqs="prereq $OPTARG"
-        else
-          module_prereqs="$module_prereqs $OPTARG"
-        fi
+        printf -v module_prereqs "prereq %s\n%s" "$OPTARG" "$module_prereqs"
         ;;
       "h")
         send_help_and_quit="y"
