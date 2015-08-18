@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing VisIt
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-visit}
+VERSION=${VERSION:-2.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-b8a9730f2d7d11dea2d407822eb08dfa}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://portal.nersc.gov/project/visit/releases/$VERSION/build_visit2_9_2}
+THIRD_PARTY_ROOT=${THIRD_PARTY_ROOT:-http://portal.nersc.gov/svn/visit/tags/$VERSION/third_party}
+VISIT_CHECKSUMS=${VISIT_CHECKSUMS:-http://portal.nersc.gov/project/visit/releases/$VERSION/visit_md5_checksums}
+PREREQ_LIST=${PREREQ_LIST:-/shared/ucl/apps/build_scripts/lists/visit-2.9.2_prereq.list}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $VISIT_CHECKSUMS
+all_checksums=$(basename "${VISIT_CHECKSUMS}")
+
+# download all archives in the prereq list if we haven't done that already
+# and checksum
+for archive in $(cat $PREREQ_LIST)
+do
+  if [ ! -e $archive ]
+  then
+    wget $THIRD_PARTY_ROOT/$archive
+  fi
+
+  archive_sum=`md5sum $archive| awk '{print $1}'`
+  # the md5sum is the first column in $all_checksums
+  supplied_checksum=$(grep $archive $all_checksums | cut -d' ' -f1)
+  if  [ "$archive_sum" == "$supplied_checksum" ] 
+  then
+    echo "$archive checksum matches"
+  else
+    echo "$archive checksum doesn't match"
+    echo "Expected: $supplied_checksum"
+    echo "Got: $archive_sum"
+    exit 1
+  fi
+
+done
+
+wget $SRC_ARCHIVE
+script=$(basename "${SRC_ARCHIVE}")
+CHECKSUM=`md5sum $script| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  chmod u+x $script
+  build_name=${HOSTNAME%%.*}
+ 
+  # build only third party libs and create config-site file first
+  ./$script --java --no-boost --no-visit --no-mesa --prefix $INSTALL_PREFIX --required --adios --advio --boxlib --cfitsio --eavl --fastbit --gdal --h5part --hdf5 --no-itaps --mfem --mxml --netcdf --pyside --silo --silex --szip --visus --xdmf --zlib --build-mode Release
+  
+  # copy host.cmake to config-site directory
+  cp $build_name.cmake $temp_dir/visit$VERSION/src/config-site/
+
+  # build VisIt itself with mesa and mpi
+  cd visit$VERSION/src
+  cmake -DVISIT_MESA_DIR=/shared/ucl/apps/mesa/10.6.3/gnu-4.9.2 -DVISIT_PARALLEL=ON -DVISIT_C_COMPILER=mpicc -DVISIT_CXX_COMPILER=mpic++ -DCMAKE_VERBOSE_MAKEFILE=ON 2>&1 | tee cmake_config.log
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
