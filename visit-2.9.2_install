@@ -14,6 +14,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://portal.nersc.gov/project/visit/releases/$VERSI
 THIRD_PARTY_ROOT=${THIRD_PARTY_ROOT:-http://portal.nersc.gov/svn/visit/tags/$VERSION/third_party}
 VISIT_CHECKSUMS=${VISIT_CHECKSUMS:-http://portal.nersc.gov/project/visit/releases/$VERSION/visit_md5_checksums}
 PREREQ_LIST=${PREREQ_LIST:-/shared/ucl/apps/build_scripts/lists/visit-2.9.2_prereq.list}
+CUSTOM_FILES=${CUSTOM_FILES:-/shared/ucl/apps/build_scripts/files/visit}
 
 set -e
 
@@ -69,6 +70,10 @@ then
   cmake -DVISIT_MESA_DIR=/shared/ucl/apps/mesa/10.6.3/gnu-4.9.2 -DVISIT_PARALLEL=ON -DVISIT_C_COMPILER=mpicc -DVISIT_CXX_COMPILER=mpic++ -DCMAKE_VERBOSE_MAKEFILE=ON 2>&1 | tee cmake_config.log
   make 2>&1 | tee make.log
   make install
+
+  # copy customlauncher and hostfile in
+  cp $CUSTOM_FILES/customlauncher $INSTALL_PREFIX/2.9.2/bin/
+  cp $CUSTOM_FILES/host_legion.xml $INSTALL_PREFIX/
 
 else
   echo "Hash mismatch."
