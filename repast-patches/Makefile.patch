@@ -1,0 +1,36 @@
+--- Makefile.orig	2015-08-19 14:52:55.000000000 +0100
++++ Makefile	2015-08-19 15:06:15.000000000 +0100
+@@ -3,13 +3,15 @@
+ # VARIABLES (Supply values for these; for definitions and examples, see INSTALL)
+ CXX=mpicxx
+ CXXLD=mpicxx
+-BOOST_INCLUDE_DIR=/usr/local/include
+-BOOST_LIB_DIR=/usr/local/lib
+-BOOST_INFIX=-mt
+-NETCDF_INCLUDE_DIR=/usr/local/include
+-NETCDF_LIB_DIR=/usr/local/lib
+-CURL_INCLUDE_DIR=./
+-CURL_LIB_DIR=./
++BOOST_INCLUDE_DIR=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2/include
++BOOST_LIB_DIR=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2/lib
++BOOST_INFIX=-
++NETCDF_INCLUDE_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/include
++NETCDF_LIB_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/lib
++NETCDFCXX_INCLUDE_DIR=/shared/ucl/apps/NetCDF-c++/4.2-gnu-4.9.2/include
++NETCDFCXX_LIB_DIR=/shared/ucl/apps/NetCDF-c++/4.2-gnu-4.9.2/lib
++CURL_INCLUDE_DIR=/usr/include
++CURL_LIB_DIR=/usr/lib64
+ 
+ # DIRECTORIES 
+ SRC_DIR=../src
+@@ -23,8 +25,8 @@
+ I_BOOST=-I$(BOOST_INCLUDE_DIR)
+ L_BOOST=-L$(BOOST_LIB_DIR)
+ l_BOOST=-lboost_mpi$(BOOST_INFIX) -lboost_serialization$(BOOST_INFIX) -lboost_system$(BOOST_INFIX) -lboost_filesystem$(BOOST_INFIX)
+-I_NETCDF=-I$(NETCDF_INCLUDE_DIR)
+-L_NETCDF=-L$(NETCDF_LIB_DIR)
++I_NETCDF=-I$(NETCDF_INCLUDE_DIR) -I$(NETCDFCXX_INCLUDE_DIR)
++L_NETCDF=-L$(NETCDF_LIB_DIR) -L$(NETCDFCXX_LIB_DIR)
+ l_NETCDF=-lnetcdf_c++ -lnetcdf
+ I_CURL=-I$(CURL_INCLUDE_DIR)
+ L_CURL=-L$(CURL_LIB_DIR)

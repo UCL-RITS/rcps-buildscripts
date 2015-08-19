@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-repast_hpc}
+VERSION=${VERSION:-2.1.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-4e90b950d1ccec1fe63006b2cc2d8712}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/repast/files/Repast%20HPC/Repast%20HPC%202.1/repast_hpc-2.1.0.tar.gz}
+
+set -e
+
+
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+
+
+  tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+
+# Fix Makefile
+  cd INSTALLATION
+
+  cp /shared/ucl/apps/build_scripts/repast-patches/Makefile.patch .
+  patch < Makefile.patch
+
+  ./install.sh rhpc
+
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
