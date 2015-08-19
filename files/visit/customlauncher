@@ -72,16 +72,16 @@ class JobSubmitter_qsub_UCL(JobSubmitter_qsub):
         tuser = self.launcher.username()
         tfile.write("#$ -S /bin/bash\n")
         tfile.write("#$ -N VisIt\n")
-        tfile.write("#$ -pe openmpi "+self.parallel.np+"\n")
+        tfile.write("#$ -pe qlc "+self.parallel.np+"\n")
         tfile.write("#$ -wd /home/%s/Scratch/visit\n" % (tuser))
 
 
     # Load the correct modules
     def TFileLoadModules(self, tfile):
         tfile.write("module unload compilers mpi\n")
-        tfile.write("module load compilers/gnu/4.6.3\n")
-        tfile.write("module load mpi/openmpi/1.6.5/gnu.4.6.3\n")
-        tfile.write("module load visit/2.8.1/gnu.4.6.3\n")
+        tfile.write("module load compilers/gnu/4.9.2\n")
+        tfile.write("module load mpi/openmpi/1.8.4/gnu.4.9.2\n")
+        tfile.write("module load visit/2.9.2\n")
 
     # Execute VisIt
     # mpirun should not use -ppn. OpenMPI so no machinefile
