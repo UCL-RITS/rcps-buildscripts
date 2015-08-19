@@ -52,8 +52,8 @@ do
 done
 
 wget $SRC_ARCHIVE
-script=$(basename "${SRC_ARCHIVE}")
-CHECKSUM=`md5sum $script| awk '{print $1}'`
+archive=$(basename "${SRC_ARCHIVE}")
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
 
 wget $VISIT_SCRIPT
 script=$(basename "${VISIT_SCRIPT}")
@@ -66,6 +66,8 @@ then
  
   # build only third party libs and create config-site file first
   ./$script --java --no-boost --no-visit --no-mesa --prefix $INSTALL_PREFIX --required --adios --advio --boxlib --cfitsio --eavl --fastbit --gdal --h5part --hdf5 --no-itaps --mfem --mxml --netcdf --pyside --silo --silex --szip --visus --xdmf --zlib --build-mode Release
+
+  tar -xvf $archive
   
   # copy host.cmake to config-site directory
   cp $HOSTNAME.cmake $temp_dir/visit$VERSION/src/config-site/
