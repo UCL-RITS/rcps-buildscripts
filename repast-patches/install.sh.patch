@@ -1,0 +1,11 @@
+--- install.sh.orig	2015-08-19 15:48:44.449054882 +0100
++++ install.sh	2015-08-19 15:48:59.376344415 +0100
+@@ -7,7 +7,7 @@
+ BASE_DIR=$PWD/ext
+ cd INSTALLATION
+ 
+-MPI_COMPILER_INVOCATION=$BASE_DIR/MPICH/bin/mpicxx
++MPI_COMPILER_INVOCATION=`which mpicxx`
+ 
+ 
+ # cURL
