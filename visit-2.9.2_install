@@ -72,7 +72,7 @@ then
 
   # build VisIt itself with mesa and mpi
   cd visit$VERSION/src
-  cmake -DVISIT_MESA_DIR=/shared/ucl/apps/mesa/10.6.3/gnu-4.9.2 -DVISIT_PARALLEL=ON -DVISIT_MPI_COMPILER=mpic++ -DCMAKE_VERBOSE_MAKEFILE=ON 2>&1 | tee cmake_config.log
+  cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DVISIT_MESA_DIR=/shared/ucl/apps/mesa/10.6.3/gnu-4.9.2 -DVISIT_PARALLEL=ON -DVISIT_MPI_COMPILER=mpic++ -DCMAKE_VERBOSE_MAKEFILE=ON 2>&1 | tee cmake_config.log
   make 2>&1 | tee make.log
   make install
 
