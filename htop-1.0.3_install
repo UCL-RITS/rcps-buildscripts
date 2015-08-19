@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-PACKAGE_NAME="ltrace"
-PACKAGE_VERSION="0.7.3"
+PACKAGE_NAME="htop"
+PACKAGE_VERSION="1.0.3"
 
 
 set -e
@@ -12,27 +12,26 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
-require libelf
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
+  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION/atch/}/${COMPILER_TAG}}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
-  SRC_URLS=http://ltrace.org/ltrace_${PACKAGE_VERSION}.orig.tar.bz2
-  BASENAME=ltrace-0.7.3
+  SRC_URLS=http://hisham.hm/htop/releases/1.0.3/htop-${PACKAGE_VERSION}.tar.gz
+  BASENAME=htop-${PACKAGE_VERSION}
 }
 
 _fetch_files() {
   cd $BUILD_DIR
   wget $SRC_URLS
-  md5sum -c <<<"b3dd199af8f18637f7d4ef97fdfb9d14 ltrace_0.7.3.orig.tar.bz2"
+  md5sum -c <<<"e768b9b55c033d9c1dffda72db3a6ac7  htop-1.0.3.tar.gz"
   cd $OWD
 }
 
 _setup_files() {
   cd $BUILD_DIR
-  tar -xf ltrace_0.7.3.orig.tar.bz2
+  tar -xf htop-${PACKAGE_VERSION}.tar.gz
   cd $OWD
 }
 
@@ -40,10 +39,7 @@ _setup_files() {
 _build() {
   cd $BUILD_DIR
   cd ${BASENAME}
-  ./configure --prefix=$INSTALLATION_PREFIX --disable-werror
-  # I found Werror (which is enabled by default) was making it stop on
-  #  a warning that a macro was declared but not used, which really
-  #  doesn't seem like a problem.
+  ./configure --prefix=$INSTALLATION_PREFIX
   make
   make check
   cd $OWD
@@ -58,9 +54,8 @@ _install() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -r "libelf" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
-              -w "Adds ltrace 0.7.3 to your environment."
+              -w "Adds htop 1.0.3 to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
 }
 

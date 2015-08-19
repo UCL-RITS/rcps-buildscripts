@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing emacs
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-emacs}
+VERSION=${VERSION:-24.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-50560ee00bac9bb9cf0e822764cd0832}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.heanet.ie/mirrors/gnu/emacs/emacs-${VERSION}.tar.xz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

@@ -27,30 +27,22 @@ make_module() {
         module_name="$OPTARG"
         ;;
       "v")
-        variables_to_import="$variables_to_import\nsetenv $OPTARG"
+        printf -v variables_to_import "%s\nsetenv %s" "$variables_to_import" "${OPTARG/=/ }"
         ;;
       "a")
-        variables_to_append="$variables_to_append\nappend-path ${OPTARG/:/ }"
+        printf -v variables_to_append "%s\nappend-path %s" "$variables_to_append" "${OPTARG/:/ }"
         ;;
       "e")
-        variables_to_prepend="$variables_to_prepend\nprepend-path ${OPTARG/:/ }"
+        printf -v variables_to_prepend "%s\nprepend-path %s" "$variables_to_prepend" "${OPTARG/:/ }"
         ;;
       "w")
         module_whatis="$OPTARG"
         ;;
       "c")
-        if [ -z "$module_conflicts" ]; then
-          module_conflicts="conflict $OPTARG"
-        else
-          module_conflicts="$module_conflicts $OPTARG"
-        fi
+        printf -v module_conflicts "%s\nconflict %s" "$module_conflicts" "$OPTARG"
         ;;
       "r")
-        if [ -z "$module_prereqs" ]; then
-          module_prereqs="prereq $OPTARG"
-        else
-          module_prereqs="$module_prereqs $OPTARG"
-        fi
+        printf -v module_prereqs "%s\nprereq %s" "$module_prereqs" "$OPTARG"
         ;;
       "h")
         send_help_and_quit="y"
@@ -115,6 +107,7 @@ ${module_conflicts}
 
 set              prefix               $module_prefix
 ${variables_to_import}${variables_to_prepend}${variables_to_append}
+
 if { [file isdirectory \$prefix/bin] } then {
   prepend-path      PATH                 \$prefix/bin
 }
