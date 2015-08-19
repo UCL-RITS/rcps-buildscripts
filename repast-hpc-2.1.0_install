@@ -43,9 +43,8 @@ then
 
   cp /shared/ucl/apps/build_scripts/repast-patches/*.patch .
   patch < Makefile.patch
-  patch < install.sh.patch
 
-  ./install.sh rhpc
+  make -f Makefile
 
 
 

@@ -13,7 +13,7 @@
 -CURL_LIB_DIR=./
 +BOOST_INCLUDE_DIR=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2/include
 +BOOST_LIB_DIR=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2/lib
-+BOOST_INFIX=-
++BOOST_INFIX=
 +NETCDF_INCLUDE_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/include
 +NETCDF_LIB_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/lib
 +NETCDFCXX_INCLUDE_DIR=/shared/ucl/apps/NetCDF-c++-legacy/4.2-gnu-4.9.2/include
