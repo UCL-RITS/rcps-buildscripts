@@ -23,12 +23,12 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`sha1sum netcdf-cxx4-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`sha1sum netcdf-cxx-${VERSION}.tar.gz| awk '{print $1}'`
 
 if [[ "$SHA1" == "$CHECKSUM" ]]
 then
-   tar xvzf netcdf-cxx4-${VERSION}.tar.gz
-   cd netcdf-cxx4-${VERSION}
+   tar xvzf netcdf-cxx-${VERSION}.tar.gz
+   cd netcdf-cxx-${VERSION}
 
    export CPPFLAGS="-I/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/include"
    export LDFLAGS="-L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
