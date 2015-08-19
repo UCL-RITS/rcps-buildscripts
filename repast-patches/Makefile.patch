@@ -16,8 +16,8 @@
 +BOOST_INFIX=-
 +NETCDF_INCLUDE_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/include
 +NETCDF_LIB_DIR=/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/lib
-+NETCDFCXX_INCLUDE_DIR=/shared/ucl/apps/NetCDF-c++/4.2-gnu-4.9.2/include
-+NETCDFCXX_LIB_DIR=/shared/ucl/apps/NetCDF-c++/4.2-gnu-4.9.2/lib
++NETCDFCXX_INCLUDE_DIR=/shared/ucl/apps/NetCDF-c++-legacy/4.2-gnu-4.9.2/include
++NETCDFCXX_LIB_DIR=/shared/ucl/apps/NetCDF-c++-legacy/4.2-gnu-4.9.2/lib
 +CURL_INCLUDE_DIR=/usr/include
 +CURL_LIB_DIR=/usr/lib64
  
