@@ -44,7 +44,7 @@ then
 
   cd ${APPNAME}_${VERSION}/src
   autoconf
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX $MBOPTS
   make && make install
 else
   echo "Hash mismatch."
