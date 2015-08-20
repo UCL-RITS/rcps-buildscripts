@@ -27,7 +27,7 @@ fi
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
-export CFLAGS=${CFLAGS:-"-O2 -xSSE4.2 -DNDEBUG -DUSECONFIG_H"}
+export CFLAGS=${CFLAGS:-"-O2 -axSSE4.2,AVX -DNDEBUG -DUSECONFIG_H"}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
