@@ -13,7 +13,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TA
 MD5=${MD5:-a85a63e5382bc7ea36b1ce1c2138ee6e}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mrbayes/mrbayes/3.2.5/mrbayes-3.2.5.tar.gz}
 MPI=${MPI:-no}
-MBOPTS=${OPTS}
+MBOPTS=${MBOPTS:-"--with-beagle=no"}
 
 if [ "$MPI" == "yes" ] 
 then
