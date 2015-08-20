@@ -27,7 +27,7 @@ fi
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
-export CFLAGS=${CFLAGS:-"-xSSE4.2"}
+export CFLAGS=${CFLAGS:-"-O3 -xSSE4.2"}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
