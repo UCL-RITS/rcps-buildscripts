@@ -17,9 +17,10 @@ MBOPTS=${OPTS}
 
 if [ "$MPI" == "yes" ] 
 then
-   MBOPTS="$MBOPTS --enable-mpi"
+   MBOPTS="$MBOPTS --enable-mpi=yes"
    INSTALL_PREFIX="${INSTALL_PREFIX}/mpi"
 else
+   MBOPTS="$MBOPTS --enable-mpi=no"
    INSTALL_PREFIX="${INSTALL_PREFIX}/serial"
 fi 
 
@@ -41,7 +42,8 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
-  cd ${APPNAME}_${VERSION}
+  cd ${APPNAME}_${VERSION}/src
+  autoconf
   ./configure --prefix=$INSTALL_PREFIX
   make && make install
 else
