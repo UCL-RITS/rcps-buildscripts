@@ -41,7 +41,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
-  cd ${APPNAME}-${VERSION}
+  cd ${APPNAME}_${VERSION}
   ./configure --prefix=$INSTALL_PREFIX
   make && make install
 else
