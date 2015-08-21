@@ -97,3 +97,17 @@ Test::YAML
 YAML
 CGI
 Bio::Perl
+HTML::Template
+XML::LibXML::Simple
+MIME::Charset
+Unicode::GCString
+String::Print
+Log::Report::Optional
+Log::Report
+XML::Compile::Tester
+XML::Compile
+XML::Compile::Cache
+XML::Compile::SOAP11
+XML::Compile::WSDL11
+Log::Log4perl
+Math::CDF
