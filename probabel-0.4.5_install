@@ -31,7 +31,7 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX --with-eigen-include-path=/shared/ucl/apps/eigen/3.2.5/gnu-4.9.2/include/eigen3
   make && make install
 else
   echo "Hash mismatch."
