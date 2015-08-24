@@ -1,0 +1,217 @@
+###############################################################################
+# Class: UCLLauncher
+#
+# Purpose:    Custom launcher for UCL
+#
+# Programmer: Heather Kelly
+# Date:       Fri 12 Dec 2014
+#
+# Modifications:
+# Allowed launchers are "qsub/mpirun" if submitting through client, and  
+# "mpirun" if submitting inside a jobscript.
+# 
+###############################################################################
+
+class UCLLauncher(MainLauncher):
+    def __init__(self):
+        super(UCLLauncher, self).__init__()
+
+    def Customize(self):
+    # ----
+    # Global initialization
+    # ----
+
+        if self.sectorname() == "legion":
+            print "self.sectorname=" + self.sectorname()
+
+    #
+    # Override the JobSubmitterFactory method so the custom job submitter can
+    # be returned. "qsub/mpirun" and "mpirun" are allowed launchers.
+    #
+    def JobSubmitterFactory(self, launch):
+        if launch[:4] == "qsub":
+            return JobSubmitter_qsub_UCL(self)
+        elif launch == "mpirun":
+            return JobSubmitter_mpirun_UCL(self)
+        return super(UCLLauncher, self).JobSubmitterFactory(launch)
+
+# Launcher creation function
+def createlauncher():
+    return UCLLauncher()
+
+###############################################################################
+# Class: JobSubmitter_qsub_UCL
+#
+# Purpose:    Custom qsub job submitter for UCL
+#
+# Programmer: Heather Kelly
+# Date:       Fri 12 Dec 2014
+#
+# Modifications:
+# Need to set up module files and write out SGE directives
+# Tell it not to use ppn in init.
+# Change the time flag.
+# Change CreateCommand to write the jobscript correctly.
+# Change where the jobscript is written: use cwd.
+###############################################################################
+
+class JobSubmitter_qsub_UCL(JobSubmitter_qsub):
+    def __init__(self, launcher):
+        super(JobSubmitter_qsub_UCL, self).__init__(launcher)
+        self.tfilename = ""
+        self.useppn = 0
+
+    def SetupTime(self):
+        args = []
+        if self.parallel.time != None:
+            args = ["-l", "h_rt=%s" % self.parallel.time]
+        return args
+
+    # Set up the jobscript
+    def TFileSetup(self, tfile):
+        tuser = self.launcher.username()
+        tfile.write("#$ -S /bin/bash\n")
+        tfile.write("#$ -N VisIt\n")
+        tfile.write("#$ -pe qlc "+self.parallel.np+"\n")
+        tfile.write("#$ -wd /home/%s/Scratch/visit\n" % (tuser))
+
+
+    # Load the correct modules
+    def TFileLoadModules(self, tfile):
+        tfile.write("module unload compilers mpi\n")
+        tfile.write("module load compilers/gnu/4.9.2\n")
+        tfile.write("module load mpi/openmpi/1.8.4/gnu.4.9.2\n")
+        tfile.write("module load visit/2.9.2\n")
+
+    # Execute VisIt
+    # mpirun should not use -ppn. OpenMPI so no machinefile
+    def mpirun_args(self, args):
+        mpicmd = self.mpirun()
+        #mpicmd = mpicmd + ["-np", self.parallel.np]
+        if self.parallel.sublaunchargs != None:
+            mpicmd = mpicmd + self.parallel.launchargs
+        #if self.parallel.machinefile != None:
+        #    mpicmd = mpicmd + ["-machinefile", self.parallel.machinefile]
+        mpicmd = mpicmd + self.VisItExecutable()
+        mpicmd = mpicmd + ["-plugindir", GETENV("VISITPLUGINDIR")]
+        mpicmd = mpicmd + args
+        return mpicmd    
+
+    # Break up creating the command line into customizable stages.
+    def AssembleCommandLine(self):
+        parcmd = self.Executable()
+        parcmd = parcmd + self.HandleCWDPermissions()
+        parcmd = parcmd + self.AddEnvironment()
+        largs, use_vis = self.LauncherArgs()
+        parcmd = parcmd + largs
+
+        #nodes = self.parallel.nn
+        #if nodes == None:
+        #    nodes = self.parallel.np
+        #ppn = str(int(math.ceil(float(self.parallel.np) / float(nodes))))
+        #parcmd = parcmd + self.SetupPPN(nodes, self.parallel.np, ppn, use_vis)
+
+        parcmd = parcmd + self.SetupTime()
+        parcmd = parcmd + self.AdditionalSetup()
+        parcmd = parcmd + [self.tfilename]
+
+        return parcmd
+
+    # Entry point for the job submitter. Create a tfile and a job submission
+    # command line.
+    def CreateCommand(self, args, debugger):
+        plauncher,sublauncher = self.LauncherAndSubLauncher()
+
+        self.tfilename = self.CreateFilename("visit")
+        try:
+            # Determine the sublauncher command line.
+            if sublauncher == "mpirun":
+                mpicmd = self.mpirun_args(args)
+            else:
+                mpicmd = self.VisItExecutable() + args
+
+            mpicmd = debugger.CreateCommand(mpicmd)
+
+            # Write the tfile.
+            tfile = open(self.tfilename, "wt")
+            tfile.write("#!/bin/bash -l\n")
+
+            self.TFileSetup(tfile)
+            self.TFileLoadModules(tfile)
+
+            if self.parallel.hw_precmd != None:
+                tfile.write(self.parallel.hw_precmd + "\n")
+            if self.parallel.sublaunchprecmd != None:
+                tfile.write(string.join(self.parallel.sublaunchprecmd, " ") + "\n")
+            tfile.write(string.join(mpicmd, " ") + "\n")
+            if self.parallel.sublaunchpostcmd != None:
+                tfile.write(string.join(self.parallel.sublaunchpostcmd, " ") + "\n")
+            if self.parallel.hw_postcmd != None:
+                tfile.write(self.parallel.hw_postcmd + "\n")
+
+            tfile.close()
+            os.chmod(self.tfilename, 0775)
+        except (IOError, OSError):
+            exit("Can't create the jobscript: %s" % (self.tfilename), 0)
+
+        parcmd = self.AssembleCommandLine()
+        return parcmd
+
+    def CreateFilename(self, root):
+        tdate = string.replace(time.asctime(), " ", "-")
+        tuser = self.launcher.username()
+        return os.path.join("/home/%s/Scratch/visit" % (tuser), "%s.%s.%s" % (root, tuser, tdate))
+
+    def LauncherArgs(self):
+        args = []
+        use_vis = 0
+        if self.parallel.launchargs != None:
+            print ', '.join(map(str, self.parallel.launchargs))
+            i = 0
+            while i < len(self.parallel.launchargs):
+                larg = self.parallel.launchargs[i]
+                if larg == "-l":
+                    nextarg = self.parallel.launchargs[i+1]
+                    if nextarg == "vis":
+                        use_vis = 1
+                    else:
+                        args = args + [larg, nextarg]
+                    i = i + 1
+                else:
+                    args = args + [larg]
+                i = i + 1
+        return args, use_vis
+
+###############################################################################
+# Class: JobSubmitter_mpirun_UCL
+#
+# Purpose:    Custom mpirun job submitter for UCL
+#
+# Programmer: Heather Kelly
+# Date:       Fri 12 Dec 2014
+#
+# Modifications:
+# Should look like this:
+# mpirun -np nprocs VisItExecutable -plugindir $VISITPLUGINDIR
+#
+###############################################################################
+
+class JobSubmitter_mpirun_UCL(JobSubmitter_mpirun):
+    def __init__(self, launcher):
+        super(JobSubmitter_mpirun_UCL, self).__init__(launcher)
+
+    def mpirun(self):
+        return ["mpirun"]
+
+    # mpirun should not use -ppn
+    def mpirun_args(self, args):
+        mpicmd = self.mpirun()
+        #mpicmd = mpicmd + ["-np", self.parallel.np]
+        if self.parallel.sublaunchargs != None:
+            mpicmd = mpicmd + self.parallel.launchargs
+        #if self.parallel.machinefile != None:
+        #    mpicmd = mpicmd + ["-machinefile", self.parallel.machinefile]
+        mpicmd = mpicmd + self.VisItExecutable()
+        mpicmd = mpicmd + ["-plugindir", GETENV("VISITPLUGINDIR")]
+        mpicmd = mpicmd + args
+        return mpicmd

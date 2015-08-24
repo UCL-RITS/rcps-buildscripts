@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing nano
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-nano}
+VERSION=${VERSION:-2.4.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-ce6968992fec4283c17984b53554168b}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nano-editor.org/dist/v2.4/nano-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

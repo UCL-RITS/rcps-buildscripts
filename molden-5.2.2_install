@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Molden
+#
+# by Owain Kenway, 2015 
+#
+
+# Note that Molden has an unusual license (and hence why we have not provided
+# auto-download for the code).
+
+# Please visit http://www.cmbi.ru.nl/molden/, and obtain a license (if you are
+# a for profit organisation) and a copy of the source code and place it in 
+# $SRC_ARCHIVE below.
+
+APPNAME=${APPNAME:-molden}
+VERSION=${VERSION:-5.2.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/molden/source/molden5.2.2.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+tar zxvf $SRC_ARCHIVE
+cd molden5.2
+make -f makefile
+make -f makefile moldenogl
+
+
+mkdir -p $INSTALL_PREFIX/bin
+for a in ambfor/ambfor  ambfor/ambmd ambfor/change_precision ambfor/tompi  gmolden  molden  moldenogl  surf/surf change_parameter change_parameter.sh
+do
+   cp $a $INSTALL_PREFIX/bin
+done
+
