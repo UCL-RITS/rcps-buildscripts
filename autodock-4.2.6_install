@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Autodock and Autogrid
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-autodock}
+VERSION=${VERSION:-4.2.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}/$COMPILER_TAG}
+MD5=${MD5:-f4942c8e8c47aca7f3a2ae8794259067}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://autodock.scripps.edu/downloads/autodock-registration/tars/dist426/autodocksuite-${VERSION}-src.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd src/autodock
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make check
+  make install
+
+  # autogrid
+  cd ../autogrid
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make check
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
