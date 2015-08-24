@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MEME Suite
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-meme}
+VERSION=${VERSION:-4.10.1}
+PATCH=${PATCH:-_4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}${PATCH}/$COMPILER_TAG}
+MD5=${MD5:-608b7a57eaf866689ead0e1ac58b1f0f}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://meme-suite.org/meme-software/${VERSION}/${NAME}_${VERSION}${PATCH}.tar.gz}
+MEME_URL=${MEME_URL:-http://meme-suite.org}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}_${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --with-url=$MEME_URL
+  make 2>&1 | tee make.log
+  make test
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
