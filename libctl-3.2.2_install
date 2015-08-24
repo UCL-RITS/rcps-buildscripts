@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+#######################
+# libctl, required for MPB and Meep
+#
+# by uccaiki, 2015-07-21
+
+# Remember to set LIBCTL_DIR=$prefix/share/libctl in module
+#  --> meep and MPB use that variable to tell where to find it
+
+set -e
+
+PACKAGE_NAME="libctl"
+PACKAGE_VERSION="3.2.2"
+
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require compilers/gnu/4.9.2
+require libtool
+require guile
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS=http://ab-initio.mit.edu/libctl/libctl-${PACKAGE_VERSION}.tar.gz
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$SRC_URLS))
+}
+
+_fetch_files() {
+  cd $BUILD_DIR
+  wget $SRC_URLS
+  cd $OWD
+}
+
+_setup_files() {
+  cd $BUILD_DIR
+  tar -xf ${BASENAME}.tar.gz
+  cd $OWD
+}
+
+_build() {
+  cd $BUILD_DIR
+  cd ${BASENAME}
+  ./configure --prefix=$INSTALLATION_PREFIX
+  make
+  make check
+  cd $OWD
+}
+
+_install() {
+  cd $BUILD_DIR
+  cd $BASENAME
+  make install
+  cd $OWD
+  cd $BUILD_DIR
+  cd $BASENAME
+  make install
+  cd $OWD
+  make_module -p $INSTALLATION_PREFIX \
+              -n "${PACKAGE_NAME}" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "guile" \
+              -v "LIBCTL_DIR \$prefix/share/libctl" \
+              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG/-/.} \
+              -w "Adds libctl (built using Intel compilers) to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf ${BUILD_DIR}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_install
+_clean_up
+
