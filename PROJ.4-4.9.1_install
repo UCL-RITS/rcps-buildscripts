@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PROJ.4 using GCC
+#
+# by Brian Alston, 2015 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: compilers/gnu/4.9.2, gmt/recommended
+
+VERSION=${VERSION:-4.9.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION} }
+MD5=${MD5:-3cbb2a964fd19a496f5f4265a717d31c}
+SRC_ARCHIVE=${SRC_ARCHIVE:- http://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require compilers/gnu/4.9.2
+require gmt/recommended
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum proj-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf proj-${VERSION}.tar.gz
+   cd proj-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
+   make 2>&1 | tee make-log
+   make check 2>&1 | tee make-check-log
+   make install 2>&1 | tee make-install-log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
