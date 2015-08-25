@@ -76,7 +76,7 @@ _prepare_module() {
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -r "mpi/openmpi/1.8.4/gnu.4.9.2" \
-              -r "hdf/5-1.8.15/gnu.4.9.2" \
+              -r "hdf/5-1.8.15-ompi/gnu.4.9.2" \
               -r "fftw/3.3.4-ompi/gnu.4.9.2" \
               -r "libctl" \
               -r "openblas/0.2.14/gnu.4.9.2" \
