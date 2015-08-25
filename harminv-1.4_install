@@ -13,6 +13,7 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
+require openblas/0.2.14/gnu-4.9.2
 require libtool
 
 _env_setup() {
