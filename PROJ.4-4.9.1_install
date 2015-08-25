@@ -7,7 +7,7 @@
 #
 # Using Ian's require function to load modules
 #
-# Will need modules: gcc-libs/4.9.2, compilers/gnu/4.9.2, gmt/recommended
+# Will need modules: rcps-core/1.0.0, gcc-libs/4.9.2, compilers/gnu/4.9.2, gmt/recommended
 
 VERSION=${VERSION:-4.9.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION} }
@@ -21,6 +21,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
+require rcps-core/1.0.0
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require gmt/recommended
