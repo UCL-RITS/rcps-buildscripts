@@ -56,7 +56,8 @@ _install() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}-impi/${COMPILER_TAG} \
+              -r "openblas/0.2.14/gnu-4.9.2" \
+              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG} \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
 
