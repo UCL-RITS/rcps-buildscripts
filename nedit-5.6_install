@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NEdit from GIT repository
+#
+# by Brian Alston, 2015 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: default-modules
+
+VERSION=${VERSION:-5.6-Aug15}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NEdit/${VERSION} }
+SRC_ARCHIVE=${SRC_ARCHIVE:- git://git.code.sf.net/p/nedit/git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require default-modules
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE nedit-git
+
+if [[ "$?" == "0" ]]
+then
+   cd nedit-git
+   make linux 2>&1 | tee make-linux-log
+   cd source
+   mkdir -p $INSTALL_PREFIX/bin
+   cp nedit $INSTALL_PREFIX/bin/
+   cp nc $INSTALL_PREFIX/bin/ncl
+   cd ../doc
+   make man
+   mandir=$INSTALL_PREFIX/share/man/man1
+   mkdir -p $mandir
+   cp nedit.man $mandir/nedit.1
+   sed -e '/Title /s/NC/NCL/;/^.TH/s/NC/NCL/;/^nc /s//ncl /;/\\fBnc\\fR/s//\\fBncl\\fR/' nc.man > ncl.man
+   cp ncl.man $mandir/ncl.1
+
+else
+   echo ""
+   echo "***** git clone failed."
+fi
