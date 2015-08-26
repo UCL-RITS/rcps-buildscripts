@@ -10,7 +10,7 @@
 # Will need modules: default-modules
 
 VERSION=${VERSION:-5.6-Aug15}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NEdit/${VERSION} }
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NEdit/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:- git://git.code.sf.net/p/nedit/git}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
