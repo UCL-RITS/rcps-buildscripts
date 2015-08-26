@@ -73,10 +73,10 @@ _prepare_module() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -r "hdf/5-1.8.15/gnu.4.9.2" \
-              -r "fftw/3.3.4/gnu.4.9.2" \
+              -r "hdf/5-1.8.15/gnu-4.9.2" \
+              -r "fftw/3.3.4/gnu-4.9.2" \
               -r "libctl" \
-              -r "openblas/0.2.14/gnu.4.9.2" \
+              -r "openblas/0.2.14/gnu-4.9.2" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
   echo "Module files put in: $MODULE_DIR" >&2

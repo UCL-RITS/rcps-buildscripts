@@ -11,7 +11,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require mpi/openmpi/1.8.4/gnu.4.9.2
+require mpi/openmpi/1.8.4/gnu-4.9.2
 
 _env_setup() {
   OWD=$(pwd)
@@ -64,7 +64,7 @@ _prepare_module() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -r "mpi/openmpi/1.8.4/gnu.4.9.2" \
+              -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG} \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} (built with OpenMPI) to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
