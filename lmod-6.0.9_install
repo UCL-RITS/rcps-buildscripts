@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing self-contained Lmod
+#
+#
+
+
+PACKAGE_NAME="lmod"
+PACKAGE_VERSION=${PACKAGE_VERSION:-6.0.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lmod/$VERSION}
+MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles
+
+LUA_VERSION=${LUA_VERSION:-5.3.1}
+LUAROCKS_VERSION=${LUAROCKS_VERSION:-2.2.2}
+
+set -e
+
+
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+echo "Building in temporary directory: $temp_dir"
+
+
+cd $temp_dir
+
+wget \
+  https://github.com/TACC/Lmod/archive/${PACKAGE_VERSION}.tar.gz \
+  http://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz \
+  http://www.lua.org/ftp/lua-${LUA_VERSION}.tar.gz
+
+mv ${PACKAGE_VERSION}.tar.gz lmod-${PACKAGE_VERSION}.tar.gz
+tar -xf lmod-${PACKAGE_VERSION}.tar.gz
+tar -xf luarocks-${LUAROCKS_VERSION}.tar.gz
+tar -xf lua-${LUA_VERSION}.tar.gz
+
+cd lua-${LUA_VERSION}
+sed -i -e "s/usr/local/$INSTALL_PREFIX/" src/luaconf.h
+make PLAT=linux INSTALL_TOP="$INSTALL_PREFIX" linux install
+cd ..
+
+cd luarocks-${LUAROCKS_VERSION}
+./configure --prefix=$INSTALL_PREFIX --with-lua=$INSTALL_PREFIX --versioned-rocks-dir 
+make build install
+cd ..
+
+$INSTALL_PREFIX/bin/luarocks install luaposix 
+$INSTALL_PREFIX/bin/luarocks install luafilesystem
+
+cd Lmod-${PACKAGE_VERSION}
+./configure \
+  --prefix=${INSTALL_PREFIX} \
+  --with-spiderCacheDir=${INSTALL_PREFIX}/spidercache \
+  --with-updateSystemFn=${INSTALL_PREFIX}/spidercache.updb.txt \
+  --with-duplicatePaths=yes \
+  --with-module-root-path=${MODULE_ROOT_PATH} \
+  luaprog=${INSTALL_PREFIX}/bin/lua \
+  PATH_TO_LUAC=${INSTALL_PREFIX}/bin/luac
+make -l 12 -j && make install
+
