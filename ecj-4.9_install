@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ecj - Eclipse java compiler
+# (used by GCC gcj)
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-ecj}
+VERSION=${VERSION:-4.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}/$COMPILER_TAG}
+MD5=${MD5:-7339f199ba11c941890031fd9981d7be}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://sourceware.org/pub/java/${NAME}-${VERSION}.jar}
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+wget -O ecj.jar $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ecj.jar| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  
+  cat <<EOF > ecj1
+#!/bin/sh
+gij -cp $INSTALL_PREFIX/ecj.jar \\
+    org.eclipse.jdt.internal.compiler.batch.GCCMain \\
+    \${1+"\$@"}
+
+EOF
+  chmod a+x ecj1
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
