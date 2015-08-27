@@ -24,7 +24,7 @@ PACKAGE_DEPS="compilers libtool"
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS="http://www.hboehm.info/gc/gc_source/gc-${PACKAGE_VERSION}.tar.gz \
@@ -48,7 +48,7 @@ _setup_files() {
 _build() {
   cd $BUILD_DIR
   cd gc-${PACKAGE_VERSION}
-  ./configure --prefix=$INSTALLATION_PREFIX --disable-threads #--enable-threads=pthreads
+  ./configure --prefix=$INSTALL_PREFIX --disable-threads #--enable-threads=pthreads
   #  ^-- on some kernels, the `make check` tests with threading reliably hit a bug where futexes get
   #       permanently locked. I'm not sure whether this would happen in use but I
   #       figured it would be annoying enough for us to not want it to happen
@@ -62,7 +62,7 @@ _install() {
   cd $BUILD_DIR/gc-${PACKAGE_VERSION}
   make install
   cd $OWD
-  make_module -p $INSTALLATION_PREFIX \
+  make_module -p $INSTALL_PREFIX \
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \

@@ -15,7 +15,7 @@ require mpi/openmpi/1.8.4/gnu-4.9.2
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}}
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS=http://www.fftw.org/fftw-${PACKAGE_VERSION}.tar.gz
@@ -40,7 +40,7 @@ _setup_files() {
 __sub_build() {
   mkdir $BUILD_LABEL
   cd $BUILD_LABEL
-  ../${BASENAME}/configure --prefix=$INSTALLATION_PREFIX --enable-mpi --enable-sse2 $CONFIGURE_ADD_OPTS
+  ../${BASENAME}/configure --prefix=$INSTALL_PREFIX --enable-mpi --enable-sse2 $CONFIGURE_ADD_OPTS
   make
   # make wisdom # use this for single-arch, single node-class systems
   make check
@@ -60,7 +60,7 @@ _build() {
 }
 
 _prepare_module() {
-  make_module -p $INSTALLATION_PREFIX \
+  make_module -p $INSTALL_PREFIX \
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \

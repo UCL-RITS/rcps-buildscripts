@@ -18,7 +18,7 @@ require libtool
 
 _env_setup() {
   OWD=$(pwd)
-  INSTALLATION_PREFIX=${INSTALLATION_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG}}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS=http://ab-initio.mit.edu/harminv/harminv-${PACKAGE_VERSION}.tar.gz
@@ -40,7 +40,7 @@ _setup_files() {
 _build() {
   cd $BUILD_DIR
   cd ${BASENAME}
-  ./configure --prefix=$INSTALLATION_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX
   make
   make check
   cd $OWD
@@ -52,7 +52,7 @@ _install() {
   make install
   cd $OWD
 
-  make_module -p $INSTALLATION_PREFIX \
+  make_module -p $INSTALL_PREFIX \
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
