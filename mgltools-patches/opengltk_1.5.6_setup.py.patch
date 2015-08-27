@@ -1,0 +1,19 @@
+--- MGLPACKS/opengltk-1.5.6/setup.py.old        2015-08-27 16:01:09.357390318 +0100
++++ MGLPACKS/opengltk-1.5.6/setup.py    2015-08-27 16:25:13.402280691 +0100
+@@ -121,11 +121,11 @@
+ #         # for building in MGL:
+
+     if tcltk_ver == '8.4':
+-        #tcl_include_dir.append("./include/tcltk84")
+-       tcl_include_dir.append("./include/tcltk84/tcl/unix")
+-        tcl_include_dir.append("./include/tcltk84/tk/unix")
+-        tcl_include_dir.append("./include/tcltk84/tcl/generic")
+-        tcl_include_dir.append("./include/tcltk84/tk/generic")
++        tcl_include_dir.append("./include/tcltk84")
++        tcl_include_dir.append("./include/tcltk84/unix")
++        #tcl_include_dir.append("./include/tcltk84/tk/unix")
++        #tcl_include_dir.append("./include/tcltk84/tcl/generic")
++        #tcl_include_dir.append("./include/tcltk84/tk/generic")
+     else:
+         tcl_include_dir.append("./include/tcltk85/tcl/unix")
+         tcl_include_dir.append("./include/tcltk85/tk/unix")
