@@ -36,6 +36,8 @@ _setup_files() {
 _build() {
   cd ${basename}
   ./configure --prefix=$install_prefix CFLAGS="-fp-model strict" ${1:-}
+  # if you don't add use -fp-model strict here, the tests don't pass
+  #  I didn't investigate in any more detail than that
   make ${2:-}
   make check 
   make install
