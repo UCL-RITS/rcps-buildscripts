@@ -25,7 +25,7 @@ require() {
     fi
   fi
 
-  while [ -n "$1" ]; do
+  while [ -n "${1:-}" ]; do
     module load $1
     if ! (module list -t 2>&1 | grep -P "^$1($|/)" >/dev/null 2>/dev/null ); then
       echo "Error: could not load module: $1" >&2
