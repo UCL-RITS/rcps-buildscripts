@@ -10,7 +10,7 @@
 # Will need modules: 
 
 VERSION=${VERSION:-20130903}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Rappture/}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/rappture/}
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://nanohub.org/site/downloads/rappture/rappture-Linux-x86_64-${VERSION}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
