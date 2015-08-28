@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Rappture toolkit from binary distribution
+#
+# by Brian Alston, 2015 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: 
+
+VERSION=${VERSION:-20130903}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Rappture/}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://nanohub.org/site/downloads/rappture/rappture-Linux-x86_64-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# require default-modules
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE 
+
+if [[ "$?" == "0" ]]
+then
+   mkdir -p $INSTALL_PREFIX
+   cd $INSTALL_PREFIX
+   tar  xvzf $temp_dir/rappture-Linux-x86_64-${VERSION}.tar.gz
+   cd ${VERSION}/bin
+   chmod +w rappture.env
+   cp rappture.env rappture.env_dist
+   sed -e '/exec_prefix=/s/\/apps\/share64/\/shared\/ucl\/apps/;/vtkdir=/s/\/apps\/share64/\/shared\/ucl\/apps/' rappture.env_dist > rappture.env
+else
+   echo ""
+   echo "***** wget failed."
+fi
