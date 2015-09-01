@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MGLTools binary version
+# 
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-mgltools}
+VERSION=${VERSION:-1.5.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}/$COMPILER_TAG}
+MD5=${MD5:-e3f62852c4d442a292dedbe6c79540ca}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mgltools.scripps.edu/downloads/downloads/tars/releases/REL1.5.6/${NAME}_x86_64Linux2_${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  tar -xvf $archive
+  cd $(basename "$archive" .tar.gz)
+  ./install.sh -d $INSTALL_PREFIX
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

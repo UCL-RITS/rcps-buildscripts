@@ -1,19 +1,38 @@
 --- MGLPACKS/opengltk-1.5.6/setup.py.old        2015-08-27 16:01:09.357390318 +0100
-+++ MGLPACKS/opengltk-1.5.6/setup.py    2015-08-27 16:25:13.402280691 +0100
-@@ -121,11 +121,11 @@
- #         # for building in MGL:
++++ MGLPACKS/opengltk-1.5.6/setup.py    2015-08-28 14:16:48.168039750 +0100
+@@ -73,8 +73,8 @@
+ #    tcltk_ver = "8.5"
+ #    tcltk_full_ver = "8.5.7"
 
-     if tcltk_ver == '8.4':
--        #tcl_include_dir.append("./include/tcltk84")
--       tcl_include_dir.append("./include/tcltk84/tcl/unix")
--        tcl_include_dir.append("./include/tcltk84/tk/unix")
--        tcl_include_dir.append("./include/tcltk84/tcl/generic")
--        tcl_include_dir.append("./include/tcltk84/tk/generic")
-+        tcl_include_dir.append("./include/tcltk84")
-+        tcl_include_dir.append("./include/tcltk84/unix")
-+        #tcl_include_dir.append("./include/tcltk84/tk/unix")
-+        #tcl_include_dir.append("./include/tcltk84/tcl/generic")
-+        #tcl_include_dir.append("./include/tcltk84/tk/generic")
+-tcltk_ver = "8.4"
+-tcltk_full_ver = "8.4.9"
++tcltk_ver = "8.5"
++tcltk_full_ver = "8.5.13"
+ if sys.version.startswith('2.6') and os.name =='nt':
+     tcltk_ver = "8.5"
+     tcltk_full_ver = "8.5.7"
+@@ -105,7 +105,7 @@
+
+ ###### Tk , tcl include directory #################################
+ if os.name =='posix': # for POSIX OS
+-    tcl_include_dir = []
++    tcl_include_dir = ["/usr/include"]
+
+     if os.environ.has_key('MGL_EXTRAINCLUDE'):
+         tcl_include_dir.append(os.environ['MGL_EXTRAINCLUDE'])
+@@ -127,10 +127,11 @@
+         tcl_include_dir.append("./include/tcltk84/tcl/generic")
+         tcl_include_dir.append("./include/tcltk84/tk/generic")
      else:
-         tcl_include_dir.append("./include/tcltk85/tcl/unix")
-         tcl_include_dir.append("./include/tcltk85/tk/unix")
+-        tcl_include_dir.append("./include/tcltk85/tcl/unix")
+-        tcl_include_dir.append("./include/tcltk85/tk/unix")
+-        tcl_include_dir.append("./include/tcltk85/tcl/generic")
+-        tcl_include_dir.append("./include/tcltk85/tk/generic")
++        tcl_include_dir.append("/usr/include")
++        tcl_include_dir.append("/usr/include/tcl-private/unix")
++        tcl_include_dir.append("/usr/include/tcl-private/generic")
++        tcl_include_dir.append("/usr/include/tk-private/unix")
++        tcl_include_dir.append("/usr/include/tk-private/generic")
+ elif os.name == 'nt': #for Windows
+     if tcltk_ver == '8.4':
+         tcl_include_dir = ["./include/tcltk84"]
