@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+set -eu; for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+PACKAGE_NAME="libetsfio"
+PACKAGE_VERSION="1.0.4"
+
+require compilers/intel/2015/update2
+require netcdf-fortran/4.4.1/intel-2015-update2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${PACKAGE_NAME}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${PACKAGE_NAME}-modules.XXXXXXXX)}
+  
+  src_urls=http://www.etsf.eu/system/files/etsf_io-${PACKAGE_VERSION}.tar.gz
+  actual_file_name=etsf_io-${PACKAGE_VERSION}.tar.gz
+
+  basename=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))
+  echo "Building in: $build_dir"
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget -O $actual_file_name $src_urls
+}
+
+_setup_files() {
+  tar -xf ${basename}.tar.gz
+}
+
+_build() {
+  cd ${basename}
+  patch -p0 -d tests/group_level <<EOF
+--- tests_module.f90 2010-03-29 18:09:37.000000000 +0200
++++ tests_module.f90 2014-01-09 10:38:48.832447343 +0100
+@@ -85,7 +85,7 @@
+     character(len = *), parameter :: me = "check_read_nD"
+     integer, allocatable :: int_array(:)
+     double precision, allocatable :: dbl_array(:)
+-    character(len = 256), allocatable :: strings(:)
++    character(len = dims(1)), allocatable :: strings(:)
+ 
+     ! Allocate temporary read space
+     if (type == "integer") then
+EOF
+
+  ./configure \
+    --prefix=$install_prefix \
+    --with-netcdf-incs=-I/shared/ucl/apps/NetCDF-fortran/4.4.1-intel-2015-update2/include/ \
+    --with-netcdf-libs="-lnetcdff"
+  make ${2:-}
+  make check 
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -n "${PACKAGE_NAME}" \
+              -c "${PACKAGE_NAME}" \
+              -o $module_dir/$package_label \
+              -r compilers/intel/2015/update2 \
+              -r netcdf-fortran/4.4.1/intel-2015-update2 \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
