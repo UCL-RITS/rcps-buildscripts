@@ -50,6 +50,7 @@ _prepare_module() {
               -n "${package_name}" \
               -c "${package_name}" \
               -o $module_dir/$package_label \
+              -r compilers/intel \
               -w "Adds ${package_name} ${package_version} to your environment."
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
