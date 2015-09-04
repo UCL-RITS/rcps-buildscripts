@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="octopus"
+package_version="4.1.2"
+src_urls=http://www.tddft.org/programs/octopus/down.php?file=4.1.2/octopus-4.1.2.tar.gz 
+# Optional: 
+package_variant="impi"
+
+actual_file_name=octopus-4.1.2.tar.gz
+actual_file_md5=05081d25cbb46b1026e31d871557ef4a
+
+require compilers/intel/2015/update2
+require mpi/intel/2015/update3/intel
+require gsl/1.16/intel-2015-update2
+require hdf/5-1.8.15/intel-2015-update2 
+require netcdf/4.3.3.1/intel-2015-update2
+require netcdf-fortran/4.4.1/intel-2015-update2
+require libetsfio/1.0.4/intel-2015-update2
+require libgd/2.1.1/intel-2015-update2
+require libxc/2.1.2/intel-2015-update2
+require sparskit2/2009.11.18/intel-2015-update2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+
+  # v-- if you don't do this, it attempts to use the static netcdf library
+  # v    this then tries to dynamically link against HDF5 and other libraries, which
+  # v    fails with errors like:
+  # v     <intel compiler name>: note: '<symbol name>' is defined in DSO <library> so try adding it to the linker command line
+  # v     <intel compiler name>: could not read symbols: Invalid operation
+  patch $basename/configure <<EOF
+10430c10430
+<   for netcdf_libsl in "" -lnetcdf "-lnetcdff -lnetcdf"; do
+---
+>   for netcdf_libsl in "" -lnetcdf -lnetcdff; do
+EOF
+}
+
+_build() {
+  cd ${basename}
+  export FC="mpif90 -mkl"
+  export CC="mpicc   -mkl"
+  export FCCPP="fpp "
+  export CPP="mpicc -E"
+  export MPIEXEC=`which mpirun`
+  find . -name "*.?90" | xargs -Ifile sed -i.old -e 's/^ *#/#/' file
+  ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/intel-2015-update2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/include --enable-utils --enable-mpi  ${1:-} 
+  make ${2:-}
+  ulimit -s unlimited # <-- if you don't do this, the first test segfaults
+  make check 
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -n "${package_name}" \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -w "Adds ${package_name} ${package_version} to your environment."
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
