@@ -2,9 +2,9 @@
 
 ###############################################
 # Installing OpenFOAM
-#
+# 
 # by Owain Kenway, 2015 
-#
+# (Note: uses -xHost somewhere in its build system - build on oldest node)
 
 
 VERSION=${VERSION:-2.3.1}
