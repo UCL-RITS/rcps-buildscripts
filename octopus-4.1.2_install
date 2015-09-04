@@ -71,7 +71,16 @@ _prepare_module() {
               -n "${package_name}" \
               -c "${package_name}" \
               -o $module_dir/$package_label \
+              -r compilers/intel/2015/update2 \
+              -r gsl/1.16/intel-2015-update2 \
+              -r hdf/5-1.8.15/intel-2015-update2 \
+              -r netcdf/4.3.3.1/intel-2015-update2 \
+              -r netcdf-fortran/4.4.1/intel-2015-update2 \
+              -r libetsfio/1.0.4/intel-2015-update2 \
+              -r libgd/2.1.1/intel-2015-update2 \
+              -r libxc/2.1.2/intel-2015-update2 \
               -w "Adds ${package_name} ${package_version} to your environment."
+              # -r sparskit2/2009.11.18/intel-2015-update2 # <-- sparskit linked statically, module not required
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
 }
