@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MRtrix3
+#
+# Configure requires X-forwarding. 
+# Once built, mrview and shview will not work over X-forwarding (OpenGL3.3).
+# Building for command-line tools only.
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-mrtrix}
+VERSION=${VERSION:-0.3.12}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-e1e03a356d7304564afbaa7b9350e9ba}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/MRtrix3/mrtrix3/archive/${VERSION}.zip}
+MARCH=${MARCH:-nehalem}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require python/2.7.9
+require qt/4.8.6/gnu-4.9.2
+require gsl
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  unzip $temp_dir/$archive
+  cd ${NAME}3-${VERSION}
+  # has no --prefix option
+  ARCH=$MARCH ./configure 
+  ./build 2>&1 | tee make.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
