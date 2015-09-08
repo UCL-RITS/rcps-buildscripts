@@ -1,0 +1,11 @@
+--- g09/bsd/g09.profile.old     2015-09-08 14:06:17.415921681 +0100
++++ g09/bsd/g09.profile 2015-09-08 11:37:05.077926392 +0100
+@@ -16,7 +16,7 @@
+ export GAUSS_LEXEDIR="$gr/g09/linda-exe"
+ export GAUSS_ARCHDIR="$gr/g09/arch"
+ export GAUSS_BSDDIR="$gr/g09/bsd"
+-export GV_DIR="$gr/gv"
++#export GV_DIR="$gr/gv"
+ if [ -e "$GV_DIR/gview.app" ]; then
+   alias gv='open $GV_DIR/gview.app'
+ else

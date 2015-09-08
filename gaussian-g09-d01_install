@@ -33,6 +33,11 @@ then
   tar -xvf $SRC_ARCHIVE
   chgrp -R $GROUP g09
 
+  # patch to comment out line that overrides $GV_DIR in g09.profile - we set this in a
+  # module and it breaks if gview is not in $g09root.
+  cp /shared/ucl/apps/buildscripts/gaussian-patches/gaussian_g09-d01_profile.patch .
+  patch -p0 -i gaussian_g09-d01_profile.patch  
+
   cd g09
   bsd/install
   # Undocumented step that build script doesn't do
