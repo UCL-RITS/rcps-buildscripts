@@ -76,17 +76,17 @@ then
    tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
 
 # Compiling QT with Intel compilers breaks in all kinds of fun ways.
-   ./makeQt -gcc
+   ./makeQt -gcc 2>&1 | tee makeqt.log
 
 # Make CGAL
    cp /shared/ucl/apps/build_scripts/openfoam-patches/makeCGAL.patch .
    patch < makeCGAL.patch
-   ./makeCGAL
+   ./makeCGAL 2>&1 | tee makecgal.log
 
    source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    cd ../OpenFOAM-${VERSION}
-   ./Allwmake
+   ./Allwmake 2>&1 | tee make.log
 
 # Step above breaks these
 
@@ -103,8 +103,8 @@ then
    source /shared/ucl/apps/build_scripts/openfoam-patches/build_vars.sh
 
    ./Allwclean
-   ./Allwmake
-   ./Allwmake
+   ./Allwmake 2>&1 | tee make1.log
+   ./Allwmake 2>&1 | tee make2.log
 
    rm $INSTALL_PREFIX
    cd $temp_dir
