@@ -29,6 +29,13 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -Jxvf Python-${VERSION}.tar.xz
 
+  # if /tmp/pip_build_<user> exists from a previous attempt, then
+  # ensurepip will fail, complaining about multiple .dist-info dirs
+  if [ -d "/tmp/pip_build_$USER" ]
+  then
+    rm -r /tmp/pip_build_$USER
+  fi
+
   cd Python-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX \
               --enable-shared \
