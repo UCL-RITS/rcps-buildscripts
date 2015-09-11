@@ -5,7 +5,7 @@
  # Location of the OpenFOAM installation
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -foamInstall=$HOME/$WM_PROJECT
-+foamInstall=/shared/ucl/apps/$WM_PROJECT
++foamInstall=$INSTALL_PREFIX
  # foamInstall=~$WM_PROJECT
  # foamInstall=/opt/$WM_PROJECT
  # foamInstall=/usr/local/$WM_PROJECT
