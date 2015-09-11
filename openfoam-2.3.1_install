@@ -24,6 +24,12 @@ export MPI_ROOT=${MPI_ROOT:-$I_MPI_ROOT}
 
 set -e
 
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require flex
+
 mkdir -p /dev/shm/openfoam
 temp_dir=`mktemp -d -p /dev/shm/openfoam`
 
