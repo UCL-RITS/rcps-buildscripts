@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="viennarna"
+package_version="2.1.9"
+src_urls=http://www.tbi.univie.ac.at/RNA/download.php?id=viennarna-2.1.9
+# Optional: 
+# package_variant=""
+
+actual_file_name=ViennaRNA-2.1.9.tar.gz
+actual_file_md5=34ea9f3544f57f17f781a6a80ea497d4
+
+require compilers/gnu/4.9.2
+require perl
+require python/2.7.9
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$actual_file_name))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget --trust-server-names $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  ./configure --prefix=$install_prefix --with-python FPIC="yes" ${1:-}
+  make ${2:-}
+  make check 
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -n "${package_name}" \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r perl \
+              -r python/2.7.9 \
+              -e PYTHONPATH:"$install_prefix/lib/python2.7/site-packages/" \
+              -e PERL5LIB:"$install_prefix/lib/site_perl/5.22.0/x86_64-linux-thread-multi" \
+              -w "Adds ${package_name} ${package_version} to your environment."
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
