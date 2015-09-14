@@ -111,3 +111,4 @@ XML::Compile::SOAP11
 XML::Compile::WSDL11
 Log::Log4perl
 Math::CDF
+PDF::API2
