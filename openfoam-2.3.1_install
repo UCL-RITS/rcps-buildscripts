@@ -55,7 +55,7 @@ then
    tar zxvf ThirdParty-${THIRDPARTY_VERSION}.tgz
 
 # Patch the Allwmake scripts so that they exit on an error rather than blindly continuing.
-   find . -name "Allwmake" | xargs -Ifile sed -i -e "1s_\#\!/bin/sh_\#\!/bin/sh\nset +e\n_" file
+   find . -name "Allwmake" | xargs -Ifile sed -i -e "1s_\#\!/bin/sh_\#\!/bin/sh\nset -e\n_" file
 
    cd OpenFOAM-${VERSION}/etc
    cp /shared/ucl/apps/build_scripts/openfoam-patches/bashrc.patch .
