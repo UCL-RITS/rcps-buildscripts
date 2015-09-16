@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="mirdeep"
+package_version="2.0.0.7"
+src_urls=https://www.mdc-berlin.de/43969303/en/research/research_teams/systems_biology_of_gene_regulatory_elements/projects/miRDeep/mirdeep2_0_0_7.zip
+# Optional: 
+# package_variant=""
+
+actual_file_name=mirdeep2_0_0_7.zip
+actual_file_md5=1246b4d5ab66297156249ad9ce46612b
+
+###
+# No actual module requirements
+###
+
+
+_env_setup() {
+  owd=$(pwd)
+  # no compiler needed, no compiler tag applied
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .zip $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  unzip $actual_file_name
+}
+
+_build() {
+  cp -r $basename $install_prefix
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -n "${package_name}" \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r squid/1.9g \
+              -r randfold/2.0 \
+              -r perl/5.22.0 \
+              -r bowtie/1.1.2 \
+              -r python/2.7.9 \
+              -r viennarna/2.1.9 \
+              -e PATH:$install_prefix \
+              -w "Adds ${package_name} ${package_version} to your environment."
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
