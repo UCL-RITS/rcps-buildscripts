@@ -38,7 +38,8 @@ _setup_files() {
 }
 
 _build() {
-  cp -r $basename $install_prefix
+  mkdir -p $install_prefix
+  cp -r $basename/* $install_prefix
 
   echo "Installed to: $install_prefix"
 }
