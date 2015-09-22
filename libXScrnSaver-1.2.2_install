@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libXScrnSaver
+# 
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-libXScrnSaver}
+VERSION=${VERSION:-1.2.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-7a773b16165e39e938650bcc9027c1d5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://xorg.freedesktop.org/releases/individual/lib/libXScrnSaver-${VERSION}.tar.bz2}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require xorg-utils/X11R7.7
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
