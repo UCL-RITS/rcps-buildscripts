@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing dos2unix
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-dos2unix}
+VERSION=${VERSION:-7.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-c265f15ede773a2990f4f424def3b4d0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/dos2unix/files/dos2unix/${VERSION}/dos2unix-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  make 2>&1 | tee make.log
+  make prefix=$INSTALL_PREFIX install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
