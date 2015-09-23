@@ -10,7 +10,7 @@
 # Will need modules: see list of modules below.
 
 VERSION=${VERSION:-3.2.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-ATLAS-test }
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-ATLAS }
 MD5=${MD5:-66fa17ad457d7e618191aa0f52fc402e}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
 
