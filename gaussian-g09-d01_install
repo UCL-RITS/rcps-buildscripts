@@ -59,6 +59,8 @@ then
   mg linda 2>&1 | tee makelinda.log
 
   cp -r $g09root/g09 $INSTALL_PREFIX
+  # Linda job setup
+  cp /shared/ucl/apps/buildscripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
  
 else
   echo "Hash mismatch."
