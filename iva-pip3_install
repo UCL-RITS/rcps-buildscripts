@@ -19,3 +19,6 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
 
 pip3 install --install-option="--prefix=$INSTALL_PREFIX" iva
 
+# need to change the #! to have python3 instead of 1435743341-3 from the bundle when pip was used
+cd $INSTALL_PREFIX/bin
+sed -i.bak '1s|^#!.*|#!/usr/bin/env python3|' *
