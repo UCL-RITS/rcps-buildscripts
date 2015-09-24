@@ -1,0 +1,11 @@
+--- g09/linda8.2/opteron-linux/bin/vntsnet.old  2015-09-24 10:18:58.000000000 +0100
++++ g09/linda8.2/opteron-linux/bin/vntsnet      2015-09-24 10:20:24.000000000 +0100
+@@ -1,6 +1,6 @@
+
+-LINDA_PATH=/dev/shm/g09/linda8.2/opteron-linux/
+-export LINDA_PATH
++#LINDA_PATH=/dev/shm/g09/linda8.2/opteron-linux/
++#export LINDA_PATH
+ TSNET_PATH=${TSNET_PATH=/usr/bin/linda:.}
+ export TSNET_PATH
+ SCA_NTSNET_VIA=1

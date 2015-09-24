@@ -1,0 +1,10 @@
+--- g09/linda8.2/opteron-linux/bin/pmbuild.old  2015-09-24 10:19:07.000000000 +0100
++++ g09/linda8.2/opteron-linux/bin/pmbuild      2015-09-24 10:20:57.000000000 +0100
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+
+-LINDA_PATH=/dev/shm/g09/linda8.2/opteron-linux/
++#LINDA_PATH=/dev/shm/g09/linda8.2/opteron-linux/
+ ${LINDA_PATH}bin/par_order $1
+
+ CC -o $1.pm -L${LINDA_PATH}lib/ -I${LINDA_PATH}lib/ T${1}.c ${LINDA_PATH}lib/pm.a -L/usr/X11/lib -lXaw -lXt -lXmu -lXext -lX11 -lSM -lICE -lfl -lm
