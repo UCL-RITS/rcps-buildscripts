@@ -13,7 +13,7 @@ MD5=${MD5:-a4f03a2051d3c12856e5ee041a42351a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/Gaussian/tar/wkssrc.tgz}
 SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/home/ccspapp/Software/Gaussian/tar/optlin82.tgz}
 MD5_LINDA=${MD5_LINDA:-672266813b43fe6af6e6a0d49b13fc7f}
-GROUP=${GROUP:-legg03}
+GROUP=${GROUP:-Legg09}
 
 set -e
 
@@ -62,6 +62,8 @@ then
   # Linda job setup
   cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
  
+  chmod -R o-rwx $INSTALL_PREFIX
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
