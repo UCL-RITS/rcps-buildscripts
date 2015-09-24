@@ -61,7 +61,9 @@ then
   cp -r $g09root/g09 $INSTALL_PREFIX
   # Linda job setup
   cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
- 
+  cp /shared/ucl/apps/build_scripts/files/linda*.patch .
+  patch -p0 -i linda*.patch
+  
   chmod -R o-rwx $INSTALL_PREFIX
 
 else
