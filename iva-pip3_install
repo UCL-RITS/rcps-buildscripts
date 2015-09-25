@@ -9,13 +9,17 @@ VERSION=${VERSION:-0.11.6}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
 
 # Note, you need the following packages loaded to build this:
-# python3/recommended
-# compilers/gnu
-# smalt
-# kmc
-# mummer
-# trimmomatic
-# samtools
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu
+require python3/recommended
+require kmc
+require mummer
+require trimmomatic
+require samtools/2.1
+require bambamc
+require smalt
 
 pip3 install --install-option="--prefix=$INSTALL_PREFIX" iva
 
