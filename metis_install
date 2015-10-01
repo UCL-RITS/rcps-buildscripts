@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="metis"
+  PACKAGE_NAME="METIS"
+  version="5.1.0"
+  filename="$package_name-$version.tar.gz"
+  directory="$package_name-$version"
+  source_location="http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/$filename"
+  compiler=${1:-intel}
+  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+
+  temp_dir=`mktemp -d -p /dev/shm`
+
+  module swap compilers compilers/$compiler
+  module load cmake
+
+  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+}
+
+_download() {
+  cd $temp_dir
+  wget $source_location
+  tar -xvf $filename
+}
+
+_configure() {
+  cd $temp_dir/$directory
+  make config shared=1 openmp=1 prefix=$INSTALL_PREFIX
+}
+_make() {
+  cd $temp_dir/$directory
+  make -j8
+}
+
+_install() {
+  cd $temp_dir/$directory
+  make install
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name/$compiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Adds $package_name to your environment"
+
+set              root              $INSTALL_PREFIX
+
+conflict cppunit
+prereq compilers/$compiler
+
+append-path      LD_RUN_PATH       \$root/lib/
+append-path      LD_LIBRARY_PATH   \$root/lib/
+append-path      PATH              \$root/bin
+append-path      CMAKE_PREFIX_PATH \$root/
+
+setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
+setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+for compiler in "gnu" "intel"; do
+  _env_setup $compiler
+  _download
+  _configure
+  _make
+  _install
+  _modulefile
+done

@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="parmetis"
+  PACKAGE_NAME="PARMETIS"
+  version="4.0.3"
+  filename="$package_name-$version.tar.gz"
+  directory=$package_name-$version
+  source_location="http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/$filename"
+  patches=(
+    "https://bitbucket.org/petsc/pkg-parmetis/commits/82409d68aa1d6cbc70740d0f35024aae17f7d5cb/raw/"
+    "https://bitbucket.org/petsc/pkg-parmetis/commits/1c1a9fd0f408dc4d42c57f5c3ee6ace411eb222b/raw/"
+  )
+  compiler=${1:-intel}
+  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+
+  temp_dir=`mktemp -d -p /dev/shm`
+
+  module swap compilers compilers/$compiler
+  module load metis/$compiler
+  if [ "$compiler" = "intel" ] ; then
+    module swap mpi/intel mpi/intel/2015/update3/intel
+  else
+    module swap mpi/intel mpi/intel/2015/update3/gnu-4.9.2
+  fi
+  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+}
+
+_download() {
+  cd $temp_dir
+  wget $source_location
+  tar -xvf $filename
+  cd $temp_dir
+
+  for (( i=0; i<${#patches[@]}; i++ )); do
+    cd $temp_dir && wget ${patches[$i]} -O patch-$i
+    cd $temp_dir/$directory && patch -p 1 < $temp_dir/patch-$i
+  done
+  cd $temp_dir/$directory
+  patch -p 1 <<EOF
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ca945dd..1bf94e9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,7 +33,7 @@ include_directories(\${GKLIB_PATH})
+ include_directories(\${METIS_PATH}/include)
+
+ # List of directories that cmake will look for CMakeLists.txt
+-add_subdirectory(\${METIS_PATH}/libmetis \${CMAKE_BINARY_DIR}/libmetis)
++#add_subdirectory(\${METIS_PATH}/libmetis \${CMAKE_BINARY_DIR}/libmetis)
+ add_subdirectory(include)
+ add_subdirectory(libparmetis)
+ add_subdirectory(programs)
+EOF
+}
+
+_configure() {
+  cd $temp_dir/$directory
+  LDFLAGS="-L$METIS_LIBRARY_DIR -lmetis -lm" make config prefix=$INSTALL_PREFIX shared=1
+}
+
+_make() {
+  cd $temp_dir/$directory
+  echo "-L$METIS_LIBRARY_DIR -lmetis -lm"
+  LDFLAGS="-L$METIS_LIBRARY_DIR -lmetis -lm" make -j 8
+}
+
+_install() {
+  cd $temp_dir/$directory/build/$compiler
+  LDFLAGS="-L$METIS_LIBRARY_DIR -lmetis -lm" make install
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name/$compiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Adds $package_name to your environment"
+
+set              root              $INSTALL_PREFIX
+
+prereq metis
+prereq compilers/$compiler
+
+EOF
+
+  if [ "$compiler" = "intel" ] ; then
+    cat >> $modulefiles/$package_name/$compiler <<EOF
+prereq mpi/intel/2015/update3/intel
+EOF
+  else
+    cat >> $modulefiles/$package_name/$compiler <<EOF
+prereq mpi/intel/2015/update3/gnu-4.9.2
+EOF
+  fi
+
+  cat >> $modulefiles/$package_name/$compiler <<EOF
+append-path      LD_RUN_PATH       \$root/lib/
+append-path      LD_LIBRARY_PATH   \$root/lib/
+append-path      CMAKE_PREFIX_PATH \$root/
+
+setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
+setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+for compiler in "gnu" "intel"; do
+  _env_setup $compiler
+  _download
+  _configure
+  _make
+  _install
+  _modulefile
+done
