@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="ninja"
+  directory=$package_name
+  source_location="git@github.com:martine/ninja.git"
+  compiler=${1:-intel}
+  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+
+  module swap compilers compilers/$compiler
+  module load python git
+  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name}
+}
+
+_download() {
+  cd $temp_dir
+  git clone $source_location $directory
+}
+
+_make() {
+  cd $temp_dir/$directory
+  python configure.py --bootstrap
+}
+
+_install() {
+  mkdir -p $INSTALL_PREFIX
+  cp ninja $INSTALL_PREFIX
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Adds $package_name to your environment"
+
+append-path      PATH  $INSTALL_PREFIX
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+# Creates a temporary directory
+temp_dir=`mktemp -d -p /dev/shm`
+
+_env_setup
+_download
+_make
+_install
+_modulefile
