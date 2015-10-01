@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 _env_setup() {
-  package_name="cppunit"
-  PACKAGE_NAME="CPPUNIT"
-  version="1.13.2"
-  filename="$package_name-$version.tar.gz"
-  source_location="http://dev-www.libreoffice.org/src/$filename"
+  package_name="ctemplate"
+  PACKAGE_NAME="CTEMPLATE"
+  version="2.3"
+  source_dir="$package_name-$version"
+  source_location="http://ctemplate.googlecode.com/svn/tags/$package_name-$version/"
   compiler=${1:-intel}
   modulefiles=${modulefiles:-~ccsprsd/modulefiles}
 
@@ -12,6 +12,7 @@ _env_setup() {
 
   MODULE_INIT_PATH=/shared/ucl/apps/bin/defmods
   source $MODULE_INIT_PATH
+  module load subversion
   module swap compilers compilers/$compiler
 
   INSTALL_PREFIX=${INSTALL_PREFIX:-/imports/home0/ccsprsd/modules/}/$package_name/$compiler
@@ -22,22 +23,21 @@ _env_setup() {
 _download() {
   cd $temp_dir
   pwd
-  wget $source_location
-  tar -xf $filename
+  svn co $source_location
 }
 
 _configure() {
-  cd $temp_dir/$package_name-$version
+  cd $temp_dir/$source_dir
   ./configure --disable-dependency-tracking --prefix=$INSTALL_PREFIX
 }
 
 _make() {
-  cd $temp_dir/$package_name-$version
+  cd $temp_dir/$source_dir
   make -j8
 }
 
 _install() {
-  cd $temp_dir/$package_name-$version
+  cd $temp_dir/$source_dir
   make install
 }
 
@@ -56,9 +56,10 @@ module-whatis "Adds $package_name to your environment"
 
 set              root              $INSTALL_PREFIX
 
-conflict cppunit
+conflict $package_name
 prereq compilers/$compiler
 
+append-path      PATH              \$root/bin/
 append-path      LD_RUN_PATH       \$root/lib/
 append-path      LD_LIBRARY_PATH   \$root/lib/
 append-path      CMAKE_PREFIX_PATH \$root/
