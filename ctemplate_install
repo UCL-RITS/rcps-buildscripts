@@ -10,14 +10,10 @@ _env_setup() {
 
   temp_dir=`mktemp -d -p /dev/shm`
 
-  MODULE_INIT_PATH=/shared/ucl/apps/bin/defmods
-  source $MODULE_INIT_PATH
   module load subversion
   module swap compilers compilers/$compiler
 
-  INSTALL_PREFIX=${INSTALL_PREFIX:-/imports/home0/ccsprsd/modules/}/$package_name/$compiler
-  export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
-  export PATH=$INSTALL_PREFIX/bin:$PATH
+  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
 }
 
 _download() {
@@ -68,6 +64,9 @@ setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
 setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include
 EOF
 }
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
 
 for compiler in "gnu" "intel"; do
   _env_setup $compiler
