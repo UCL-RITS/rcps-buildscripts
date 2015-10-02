@@ -41,6 +41,7 @@ then
 
   ./build
 
+  mkdir -p $INSTALL_PREFIX
   cp -r $FSLDIR $INSTALL_PREFIX
 
 else
