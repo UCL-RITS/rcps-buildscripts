@@ -13,7 +13,7 @@ _env_setup() {
   module load subversion
   module swap compilers compilers/$compiler
 
-  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
 }
 
 _download() {

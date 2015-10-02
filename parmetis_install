@@ -22,7 +22,7 @@ _env_setup() {
   else
     module swap mpi/intel mpi/intel/2015/update3/gnu-4.9.2
   fi
-  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
 }
 
 _download() {

@@ -8,7 +8,7 @@ _env_setup() {
 
   module swap compilers compilers/$compiler
   module load python git
-  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name}
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name}
 }
 
 _download() {

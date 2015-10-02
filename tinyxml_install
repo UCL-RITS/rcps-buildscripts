@@ -16,7 +16,7 @@ _env_setup() {
   modulefiles=${modulefiles:-~ccsprsd/modulefiles}
 
   module swap compilers compilers/$compiler
-  INSTALL_PREFIX=${2:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+  INSTALL_PREFIX=${DESTDIR-/imports/home0/ccsprsd/modules/$package_name/$compiler}
 }
 
 _download() {
