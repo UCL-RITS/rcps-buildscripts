@@ -11,7 +11,7 @@ _env_setup() {
     "https://bitbucket.org/petsc/pkg-parmetis/commits/1c1a9fd0f408dc4d42c57f5c3ee6ace411eb222b/raw/"
   )
   compiler=${1:-intel}
-  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
   temp_dir=`mktemp -d -p /dev/shm`
 

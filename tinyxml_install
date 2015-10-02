@@ -13,7 +13,7 @@ _env_setup() {
   )
   plevels=(1 0 1)
   compiler=${1:-intel}
-  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
   module swap compilers compilers/$compiler
   INSTALL_PREFIX=${DESTDIR-/imports/home0/ccsprsd/modules/$package_name/$compiler}

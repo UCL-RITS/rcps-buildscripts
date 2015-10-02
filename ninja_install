@@ -4,7 +4,7 @@ _env_setup() {
   directory=$package_name
   source_location="git@github.com:martine/ninja.git"
   compiler=${1:-intel}
-  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
   module swap compilers compilers/$compiler
   module load python git

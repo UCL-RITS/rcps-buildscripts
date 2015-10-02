@@ -6,7 +6,7 @@ _env_setup() {
   source_dir="$package_name-$version"
   source_location="http://ctemplate.googlecode.com/svn/tags/$package_name-$version/"
   compiler=${1:-intel}
-  modulefiles=${modulefiles:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
   temp_dir=`mktemp -d -p /dev/shm`
 
