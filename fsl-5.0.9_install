@@ -29,7 +29,8 @@ then
   tar -xvf $archive
   export FSLDIR=$temp_dir/${NAME}
 
-  cp $PATCHES/*.patch .
+  cp $PATCHES/*.patch $FSLDIR
+  cd $FSLDIR
   patch -p0 -i fsl-5.0.9_fslconf.patch
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
@@ -38,7 +39,6 @@ then
   # patch systemvars after above copy
   patch -p0 -i fsl-5.0.9_systemvars.patch
 
-  cd $FSLDIR
   ./build
 
   cp -r $FSLDIR $INSTALL_PREFIX
