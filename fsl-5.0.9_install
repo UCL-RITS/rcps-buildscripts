@@ -37,7 +37,7 @@ then
   cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
 
   # patch systemvars after above copy
-  patch -p0 -i fsl-5.0.9_systemvars.patch
+  #patch -p0 -i fsl-5.0.9_systemvars.patch
 
   ./build
 
