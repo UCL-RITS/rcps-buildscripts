@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="pytest"
+  compiler=${1:-python2}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  module load $compiler
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+  if [ "$compiler" = "python2" ] ; then
+    pypath=python2.7
+  elif [ "$compiler" = "python3" ] ; then
+    pypath=python3.4
+  else
+    echo "Unknown compiler $compiler"
+    exit 1
+  fi
+}
+
+_install() {
+  export PYTHONPATH=$INSTALL_PREFIX/lib/$pypath/site-packages
+  pip install $package_name --install-option="--prefix=$INSTALL_PREFIX" -I
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name/$compiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "$package_name is a python package to work with wavelets"
+
+set              root              $INSTALL_PREFIX
+
+prereq $compiler
+append-path      PYTHONPATH \$root/lib/$pypath/site-packages
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+for compiler in "python2" "python3"; do
+  _env_setup $compiler
+  _install
+  _modulefile
+  module unload $compiler
+done
