@@ -23,7 +23,6 @@ _download() {
   cd $temp_dir
   wget $source_location
   tar -xvf $filename
-  cd $temp_dir
 
   for (( i=0; i<${#patches[@]}; i++ )); do
     cd $temp_dir && wget ${patches[$i]} -O patch-$i

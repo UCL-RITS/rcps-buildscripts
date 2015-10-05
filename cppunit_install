@@ -17,7 +17,6 @@ _env_setup() {
 
 _download() {
   cd $temp_dir
-  pwd
   wget $source_location
   tar -xf $filename
 }
