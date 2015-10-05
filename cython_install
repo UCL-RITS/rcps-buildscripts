@@ -21,13 +21,16 @@ _env_setup() {
 
 _install() {
   export PYTHONPATH=$INSTALL_PREFIX/lib/$pypath/site-packages
+  export CC=gcc
+  export CXX=g++
+  export FC=gfortran
   mkdir -p $INSTALL_PREFIX
   pip install $package_name==$version --install-option="--prefix=$INSTALL_PREFIX" -I
 }
 
 _modulefile() {
-  mkdir -p $modulefiles/$package_name
-  cat > $modulefiles/$package_name/$compiler <<EOF
+  mkdir -p $modulefiles/$package_name/$compiler
+  cat > $modulefiles/$package_name/$compiler/$version <<EOF
 #%Module -*- tcl -*-
 ##
 ## dot modulefile
@@ -50,7 +53,7 @@ source /shared/ucl/apps/bin/defmods
 
 for compiler in "python2" "python3" ; do
   _env_setup $compiler
-  _install
+  # _install
   _modulefile
   module unload $compiler
 done
