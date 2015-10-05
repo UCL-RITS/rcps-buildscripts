@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="GreatCMakeCookoff"
+  url="git@github.com:UCL/GreatCMakeCookOff.git"
+  directory=$package_name
+
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  INSTALL_PREFIX=${DESTDIR-/imports/home0/ccsprsd/modules/$package_name/}
+}
+
+_download() {
+  module load git
+  git clone $url $temp_dir/$package_name
+}
+
+_configure() {
+  mkdir -p $temp_dir/build
+  cd $temp_dir/build
+  # only needed for tests
+  module load python2
+  module load pytest/python2 cython/python2 mako/python2
+
+  cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        $temp_dir/$directory
+}
+
+_make() {
+  cd $temp_dir/build && make -j8
+}
+
+_test() {
+  cd $temp_dir/build && ctest -j8
+}
+
+_install() {
+  cd $temp_dir/build && make install
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "$package_name: a bunch of cmake recipes"
+append-path      CMAKE_PREFIX_PATH $INSTALL_PREFIX
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+# Creates a temporary directory
+temp_dir=`mktemp -d -p /dev/shm`
+
+_env_setup
+_download
+_configure
+_make
+_test
+# _install
+# _modulefile
