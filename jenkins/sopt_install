@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="sopt"
+  pycompiler=${1:-python2}
+  compiler=${2:-intel}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  if [ "$compiler" = "intel" ] ; then
+    fftw="fftw/3.3.4/intel-2015-update2"
+  elif [ "$compiler" = "gnu" ] ; then
+    fftw="fftw/3.3.4/gnu-4.9.2"
+  else
+    echo "Unknown compiler $compiler"
+    exit 1
+  fi
+
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$pycompiler}
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/jenkins/$package_name/$compiler/
+  cat > $modulefiles/jenkins/$package_name/$compiler/$pycompiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Loads all module to work with $purify"
+
+set              root              $INSTALL_PREFIX
+
+prereq $compiler
+prereq $pycompiler
+module load PyWavelets/$pycompiler
+module load $fftw
+module load gbenchmark/$compiler
+module load spdlog/$compiler
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+for pycompiler in "python2" "python3" ; do
+  for compiler in "intel" "gnu" ; do
+    _env_setup $pycompiler $compiler
+    _modulefile
+  done
+done
