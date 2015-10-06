@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="the_silver_searcher"
+  version="0.31.0"
+  filename="${version}.tar.gz"
+  directory="$package_name-$version"
+  source_location="https://github.com/ggreer/the_silver_searcher/archive/${filename}"
+  export CC=gcc
+  export CXX=g++
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  module swap compilers compilers/$compiler
+  INSTALL_PREFIX=${DESTDIR-/imports/home0/ccsprsd/modules/$package_name}
+}
+
+_download() {
+  cd $temp_dir
+  wget $source_location
+  tar -xvf $filename
+}
+
+_configure() {
+  cd $temp_dir/$directory
+  aclocal
+  autoconf
+  autoheader
+  automake --add-missing
+  ./configure --disable-dependency-tracking --prefix=$INSTALL_PREFIX
+}
+
+_make() {
+  cd $temp_dir/$directory && make -j8
+}
+
+_install() {
+  cd $temp_dir/$directory && make install
+}
+
+_modulefile() {
+  cat > $modulefiles/$package_name <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "$package_name provides easy to use grep-like superpowers"
+
+set              root              $INSTALL_PREFIX
+
+append-path      PATH       \$root/bin
+append-path      MANPATH    \$root/share/man
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+# Creates a temporary directory
+temp_dir=`mktemp -d -p /dev/shm`
+[ ! -e $temp_dir ] || mkdir $temp_dir
+
+_env_setup
+_download
+_configure
+_make
+_install
+_modulefile
+
+rm -rf $temp_dir
