@@ -32,12 +32,22 @@ module-whatis "Loads all module to work with $purify"
 
 set              root              $INSTALL_PREFIX
 
-prereq $compiler
-prereq $pycompiler
+module swap compilers compilers/$compiler
+module load $pycompiler
 module load PyWavelets/$pycompiler
 module load $fftw
 module load gbenchmark/$compiler
 module load spdlog/$compiler
+module load eigen
+module load GreatCMakeCookoff
+
+append-path CMAKE_PREFIX_PATH /shared/ucl/apps/$fftw
+if { "$compiler" == "gnu" } {
+  module load openblas/0.2.14/gnu-4.9.2
+  append-path CMAKE_PREFIX_PATH /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2
+}
+append-path CMAKE_LIBRARY_PATH $::env(LIBRARY_PATH)
+append-path CMAKE_INCLUDE_PATH $::env(INCLUDE_PATH)
 EOF
 }
 
