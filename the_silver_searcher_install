@@ -53,7 +53,7 @@ set              root              $INSTALL_PREFIX
 append-path      PATH       \$root/bin
 append-path      MANPATH    \$root/share/man
 EOF
-  cat $modulefiles/$ag <<EOF
+  cat > $modulefiles/ag <<EOF
 #%Module -*- tcl -*-
 ##
 ## dot modulefile
@@ -64,7 +64,7 @@ proc ModulesHelp { } {
 
 module-whatis "$package_name provides easy to use grep-like superpowers"
 
-moduleload $package_name
+module load $package_name
 EOF
 }
 
