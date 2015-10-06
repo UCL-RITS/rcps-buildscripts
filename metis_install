@@ -52,7 +52,6 @@ module-whatis "Adds $package_name to your environment"
 
 set              root              $INSTALL_PREFIX
 
-conflict cppunit
 prereq compilers/$compiler
 
 append-path      LD_RUN_PATH       \$root/lib/
