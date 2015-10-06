@@ -38,7 +38,6 @@ _install() {
 }
 
 _modulefile() {
-  mkdir -p $modulefiles/$package_name
   cat > $modulefiles/$package_name <<EOF
 #%Module -*- tcl -*-
 ##
@@ -62,6 +61,8 @@ _env_setup
 _download
 _configure
 _make
-_test
-# _install
-# _modulefile
+# _test
+_install
+_modulefile
+
+rm -rf $temp_dir
