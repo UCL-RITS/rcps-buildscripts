@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="cgal"
+  PACKAGE_NAME="CGAL"
+  version="4.6.3"
+  filename="${PACKAGE_NAME}-$version.tar.gz"
+  directory=$PACKAGE_NAME-$version
+  source_location="https://gforge.inria.fr/frs/download.php/file/35138/$filename"
+  compiler=${1:-intel}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  module swap compilers compilers/$compiler
+  module load python2
+  module load eigen cmake
+
+  if [ "$compiler" = "intel" ] ; then
+    boost="boost/1_54_0/mpi/intel-2015-update2"
+  elif [ "$compiler" = "gnu" ] ; then
+    boost="boost/1_54_0/gnu-4.9.2"
+  else
+    echo "Unknown compiler $compiler"
+    exit 1
+  fi
+  module load $boost
+  INSTALL_PREFIX=${DESTDIR-/imports/home0/ccsprsd/modules/$package_name/$compiler}
+}
+
+_download() {
+  cd $temp_dir
+  wget $source_location
+  tar -xf $filename
+
+  cat > patch <<EOF
+diff --git a/src/CGAL/File_header_extended_OFF.cpp b/src/CGAL/File_header_extended_OFF.cpp
+index 3f709ff..f0e5bd3 100644
+--- a/src/CGAL/File_header_extended_OFF.cpp
++++ b/src/CGAL/File_header_extended_OFF.cpp
+@@ -186,7 +186,8 @@ std::istream& operator>>( std::istream& in, File_header_extended_OFF& h) {
+         }
+         in >> keyword;
+     }
+-    in >> skip_until_EOL >> skip_comment_OFF;
++    skip_until_EOL(in);
++    skip_comment_OFF(in);
+     return in;
+ }
+ #undef CGAL_IN
+EOF
+  cd $directory
+  patch -p 1 < $temp_dir/patch
+}
+
+_configure() {
+  mkdir -p $temp_dir/$directory/build/$compiler
+  cd $temp_dir/$directory/build/$compiler
+  cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX  \
+        -DCMAKE_BUILD_TYPE=Release              \
+        -DWITH_CGAL_Qt3=OFF                     \
+        -DWITH_CGAL_Qt4=OFF                     \
+        -DWITH_CGAL_ImageIO=OFF                 \
+        -DWITH_Eigen3=ON                        \
+        -DWITH_LAPACK=OFF                       \
+        -DCMAKE_LIBRARY_PATH="$LIBRARY_PATH"    \
+        -DCMAKE_INCLUDE_PATH="$INCLUDE_PATH"    \
+        -DBoost_DIR=$BOOST_ROOT         \
+        $temp_dir/$directory
+}
+
+_make() {
+  cd $temp_dir/$directory/build/$compiler && make -j8
+}
+
+_install() {
+  cd $temp_dir/$directory/build/$compiler && make install
+}
+
+_modulefile() {
+  mkdir -p $modulefiles/$package_name
+  cat > $modulefiles/$package_name/$compiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Adds $package_name to your environment"
+
+set              root              $INSTALL_PREFIX
+
+prereq compilers/$compiler
+
+append-path      LD_RUN_PATH       \$root/lib/
+append-path      LD_LIBRARY_PATH   \$root/lib/
+append-path      CMAKE_PREFIX_PATH \$root/
+
+append-path      ${INCLUDE_PATH} \$root/include
+append-path      ${LIBRARY_PATH} \$root/lib
+setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
+setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+# Creates a temporary directory
+temp_dir=`mktemp -d -p /dev/shm`
+
+_env_setup gnu
+_download
+
+for compiler in "gnu" "intel"; do
+  _env_setup $compiler
+  _configure
+  _make
+  _install
+  _modulefile
+done
+
+rm -rf $temp_dir
