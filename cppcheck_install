@@ -45,9 +45,12 @@ proc ModulesHelp { } {
 
 module-whatis "$package_name is a source code analysis tool for C/C++"
 
+conflict tinyxml
 set              root              $INSTALL_PREFIX
 
 append-path      PATH \$root/bin
+append-path      LD_RUN_PATH       \$root/lib/
+append-path      LD_LIBRARY_PATH   \$root/lib/
 EOF
 }
 
