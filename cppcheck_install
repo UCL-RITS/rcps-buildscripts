@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="cppcheck"
+  version="1.70"
+  filename="$package_name"
+  source_location="http://sourceforge.net/projects/cppcheck/files/latest/download"
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  export CC=gcc
+  export CXX=g++
+
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name}
+}
+
+_download() {
+  cd $temp_dir
+  curl -L $source_location -o $filename
+  tar -xf $filename
+}
+
+_configure() {
+  mkdir -p $temp_dir/$package_name-$version/build
+  cd $temp_dir/$package_name-$version/build
+  cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release \
+        $temp_dir/$package_name-$version
+}
+
+_make() {
+  cd $temp_dir/$package_name-$version/build && make -j8
+}
+
+_install() {
+  cd $temp_dir/$package_name-$version/build && make install
+}
+
+_modulefile() {
+  cat > $modulefiles/$package_name <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "$package_name is a source code analysis tool for C/C++"
+
+set              root              $INSTALL_PREFIX
+
+append-path      PATH \$root/bin
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+
+_env_setup
+_download
+_configure
+_make
+_install
+_modulefile
+
+rm -rf $temp_dir
