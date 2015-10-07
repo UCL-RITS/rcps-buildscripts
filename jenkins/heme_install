@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="heme"
+  pycompiler=${2:-python2}
+  compiler=${1:-intel}
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  if [ "$compiler" = "intel" ] ; then
+    boost="boost/1_54_0/mpi/intel-2015-update2"
+  elif [ "$compiler" = "gnu" ] ; then
+    boost="boost/1_54_0/gnu-4.9.2"
+  else
+    echo "Unknown compiler $compiler"
+    exit 1
+  fi
+
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$pycompiler}
+}
+
+_modulefile() {
+  cd
+  mkdir -p $modulefiles/jenkins/$package_name/$compiler/
+  cat > $modulefiles/jenkins/$package_name/$compiler/$pycompiler <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "Loads all module to work with $purify"
+
+set              root              $INSTALL_PREFIX
+
+module swap compilers compilers/$compiler
+module load $pycompiler
+module load GreatCMakeCookoff
+module load ctemplate/$compiler
+module load cppunit/$compiler
+module load metis/$compiler
+module load tinyxml/$compiler
+if { "$compiler" == "gnu" } {
+  module swap mpi mpi/intel/2015/update3/gnu-4.9.2
+}
+module load parmetis/$compiler
+module load $boost
+
+append-path CMAKE_LIBRARY_PATH $::env(LIBRARY_PATH)
+append-path CMAKE_INCLUDE_PATH $::env(INCLUDE_PATH)
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+for compiler in "intel" "gnu" ; do
+  _env_setup $compiler
+  _modulefile
+done
