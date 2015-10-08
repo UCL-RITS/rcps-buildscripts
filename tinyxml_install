@@ -68,6 +68,9 @@ prereq compilers/$compiler
 append-path      LD_RUN_PATH       \$root/lib/
 append-path      LD_LIBRARY_PATH   \$root/lib/
 append-path      CMAKE_PREFIX_PATH \$root/
+append-path      CPATH             \$root/include
+append-path      INCLUDE_PATH      \$root/include
+append-path      LIBRARY_PATH      \$root/lib
 
 setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
 setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include

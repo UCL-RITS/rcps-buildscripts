@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 _env_setup() {
-  package_name="gbenchmark"
-  PACKAGE_NAME="GBENCHMARK"
+  package_name="cfitsio"
+  PACKAGE_NAME="CFITSIO"
+  version="3.370"
+  filename="${package_name}3370.tar.gz"
   directory=$package_name
-  source_location="google/benchmark.git"
+  source_location="http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/$filename"
   compiler=${1:-intel}
   modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
-  temp_dir=`mktemp -d -p /dev/shm`
 
-  module load git
   module swap compilers compilers/$compiler
 
   INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
@@ -17,23 +17,23 @@ _env_setup() {
 
 _download() {
   cd $temp_dir
-  git clone git@github.com:$source_location $directory
+  wget $source_location
+  tar -xf $filename
 }
 
 _configure() {
-  mkdir -p $temp_dir/$directory/build
-  cd $temp_dir/$directory/build
-  cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DBENCHMARK_ENABLE_TESTING=OFF \
-    $temp_dir/$directory
+  cd $temp_dir/$directory
+  ./configure --disable-dependency-tracking --prefix=$INSTALL_PREFIX
 }
 
 _make() {
-  cd $temp_dir/$directory/build && make -j8
+  cd $temp_dir/$directory
+  make -j8
 }
 
 _install() {
-  cd $temp_dir/$directory/build && make install
+  cd $temp_dir/$directory
+  make install
 }
 
 _modulefile() {
@@ -47,11 +47,10 @@ proc ModulesHelp { } {
   puts stderr "\tAdds $package_name"
 }
 
-module-whatis "A C++ package for easy benchmarking"
+module-whatis "$package_name reads FITS files (Flexible Image Transport System)"
 
 set              root              $INSTALL_PREFIX
 
-conflict $package_name
 prereq compilers/$compiler
 
 append-path      LD_RUN_PATH       \$root/lib/
@@ -60,6 +59,7 @@ append-path      CMAKE_PREFIX_PATH \$root/
 append-path      CPATH             \$root/include
 append-path      INCLUDE_PATH      \$root/include
 append-path      LIBRARY_PATH      \$root/lib
+append-path      PKG_CONFIG_PATH   \$root/lib/pkgconfig
 
 setenv           ${PACKAGE_NAME}_LIBRARY_DIR  \$root/lib
 setenv           ${PACKAGE_NAME}_INCLUDE_DIR  \$root/include
@@ -69,11 +69,14 @@ EOF
 # loads modules
 source /shared/ucl/apps/bin/defmods
 
-for compiler in "intel"; do
+for compiler in "gnu" "intel"; do
+  temp_dir=`mktemp -d -p /dev/shm`
   _env_setup $compiler
   _download
-  _configure
+   _configure
   _make
   _install
   _modulefile
+  [[ -d "$temp_dir" ]] && rm -rf $temp_dir || true
 done
+

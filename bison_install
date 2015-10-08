@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+_env_setup() {
+  package_name="bison"
+  version="3.0"
+  filename="${package_name}-${version}.tar.gz"
+  directory=$package_name-$version
+  source_location="ftp://ftp.gnu.org/gnu/bison/$filename"
+  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+
+  export CC=gcc
+  export CXX=g++
+
+  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name}
+}
+
+_download() {
+  cd $temp_dir
+  wget $source_location
+  tar -xf $filename
+}
+
+_configure() {
+  builddir=$temp_dir/$directory
+  cd $builddir
+  ./configure --prefix=$INSTALL_PREFIX
+}
+
+_make() {
+  cd $builddir && make -j8
+}
+
+_install() {
+  cd $builddir && make install
+}
+
+_modulefile() {
+  cat > $modulefiles/$package_name <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+  puts stderr "\tAdds $package_name"
+}
+
+module-whatis "$package_name is a general purpose parser generator"
+
+set              root              $INSTALL_PREFIX
+
+append-path      LD_RUN_PATH       \$root/lib/
+append-path      LD_LIBRARY_PATH   \$root/lib/
+append-path      CMAKE_PREFIX_PATH \$root/
+append-path      CPATH             \$root/include
+append-path      INCLUDE_PATH      \$root/include
+append-path      LIBRARY_PATH      \$root/lib
+append-path      PKG_CONFIG_PATH   \$root/lib/pkgconfig
+append-path      PATH              \$root/bin
+EOF
+}
+
+# loads modules
+source /shared/ucl/apps/bin/defmods
+
+temp_dir=`mktemp -d -p /dev/shm`
+_env_setup
+_download
+ _configure
+_make
+_install
+_modulefile
+[[ -d "$temp_dir" ]] && rm -rf $temp_dir || true
