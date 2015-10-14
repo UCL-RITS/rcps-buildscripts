@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 make_module() {
+  # Reset OPTIND so that getopts invocations don't conflict
+  unset OPTIND
   # Set fallback values
   module_prefix="/no/prefix/given" 
   output_file="/dev/stdout"
