@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ANTs
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-ants}
+VERSION=${VERSION:-2.1.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-67a195f5de39fd675229201c9027cf61}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/stnava/ANTs/archive/v${VERSION}.zip}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip $archive
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  cmake $temp_dir/ANTs-${VERSION}/ -DBUILD_EXTERNAL_APPLICATIONS=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STYLE_UTILS=OFF -DUSE_SYSTEM_ITK=OFF -DCMAKE_VERBOSE_MAKEFILE=ON
+  # there is a missing cmake file in the ANTs 2.1.0 release version
+  if [ "$VERSION" == 2.1.0 ]
+  then  
+    cp $temp_dir/ANTs-${VERSION}/CMake/ProjectSourceVersionVars.cmake.in $temp_dir/ANTs-${VERSION}/CMake/ProjectSourceVersionVars.cmake
+  fi  
+  make 2>&1 | tee make.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
