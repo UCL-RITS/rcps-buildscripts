@@ -46,9 +46,6 @@ if { "$compiler" == "gnu" } {
   module load openblas/0.2.14/gnu-4.9.2
   append-path CMAKE_PREFIX_PATH /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2
 }
-if { "$compiler" == "intel" } {
-  setenv LDFLAGS "-lmkl_avx -lmkl_def"
-}
 append-path CMAKE_LIBRARY_PATH $::env(LIBRARY_PATH)
 append-path CMAKE_INCLUDE_PATH $::env(INCLUDE_PATH)
 EOF
