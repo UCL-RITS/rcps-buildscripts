@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing grace
+#
+# by Heather Kelly, 2015
+#
+
+NAME=${NAME:-grace}
+VERSION=${VERSION:-5.1.25}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-c0482b1f18b113192946a96f5ff35a4d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://plasma-gate.weizmann.ac.il/pub/grace/src/grace5/grace-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
