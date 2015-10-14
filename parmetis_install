@@ -13,15 +13,14 @@ _env_setup() {
   compiler=${1:-intel}
   modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
-  temp_dir=`mktemp -d -p /dev/shm`
-
   module swap compilers compilers/$compiler
   module load metis/$compiler
   if [ "$compiler" = "intel" ] ; then
-    module swap mpi/intel mpi/intel/2015/update3/intel
+    mpi=mpi/intel/2015/update3/intel
   else
-    module swap mpi/intel mpi/intel/2015/update3/gnu-4.9.2
+    mpi=mpi/openmpi/1.8.4/gnu-4.9.2
   fi
+  module swap mpi/intel $mpi
   INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler}
 }
 
@@ -86,20 +85,8 @@ set              root              $INSTALL_PREFIX
 
 prereq compilers/$compiler
 prereq metis/$compiler
+prereq $mpi
 
-EOF
-
-  if [ "$compiler" = "intel" ] ; then
-    cat >> $modulefiles/$package_name/$compiler <<EOF
-prereq mpi/intel/2015/update3/intel
-EOF
-  else
-    cat >> $modulefiles/$package_name/$compiler <<EOF
-prereq mpi/intel/2015/update3/gnu-4.9.2
-EOF
-  fi
-
-  cat >> $modulefiles/$package_name/$compiler <<EOF
 append-path      LD_RUN_PATH       \$root/lib/
 append-path      LD_LIBRARY_PATH   \$root/lib/
 append-path      CMAKE_PREFIX_PATH \$root/
@@ -112,11 +99,13 @@ EOF
 # loads modules
 source /shared/ucl/apps/bin/defmods
 
-for compiler in "gnu" "intel"; do
+for compiler in "gnu"; do
+  temp_dir=`mktemp -d -p /dev/shm`
   _env_setup $compiler
   _download
   _configure
   _make
   _install
   _modulefile
+  [ ! -d "$temp_dir" ] && rm -rf $temp_dir
 done

@@ -6,13 +6,18 @@ _env_setup() {
   modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
 
   if [ "$compiler" = "intel" ] ; then
-    boost="boost/1_54_0/mpi/intel-2015-update2"
+    boost=boost/1_54_0/mpi/intel-2015-update2
+    mpi=mpi/intel/2015/update3/intel
+    hdf5=hdf/5-1.8.15-p1-impi/intel-2015-update2
   elif [ "$compiler" = "gnu" ] ; then
-    boost="boost/1_54_0/gnu-4.9.2"
+    boost=boost/1_54_0/gnu-4.9.2
+    mpi=mpi/openmpi/1.8.4/gnu-4.9.2
+    hdf5=hdf/5-1.8.15-p1-ompi/gnu-4.9.2
   else
     echo "Unknown compiler $compiler"
     exit 1
   fi
+
 
   INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$pycompiler}
 }
@@ -40,10 +45,9 @@ module load ctemplate/$compiler
 module load cppunit/$compiler
 module load metis/$compiler
 module load tinyxml/$compiler
-if { "$compiler" == "gnu" } {
-  module swap mpi mpi/intel/2015/update3/gnu-4.9.2
-}
+module swap mpi $mpi
 module load parmetis/$compiler
+module load $hdf5
 module load $boost
 
 append-path CMAKE_LIBRARY_PATH $::env(LIBRARY_PATH)
