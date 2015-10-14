@@ -9,7 +9,7 @@ package_version="6.6"
 #package_variant="impi"
 
 actual_file_name=turbomole-6.6.tar.gz
-actual_file_md5=5ec3c52980da6a168c0b840bf6db3413
+actual_file_md5=6ec1b8555f567a7ea88dc54805c59e9f
 stored_file_location=/shared/ucl/apps/$package_name/sources
 
 
