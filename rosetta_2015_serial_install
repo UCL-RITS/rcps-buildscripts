@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Rosetta 2015 serial build
+#
+# by Brian Alston, 2015 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-2015.31.58019}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Rosetta}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Rosetta/source}
+ROSETTA_BUNDLE=${ROSETTA_BUNDLE:-rosetta_src_${VERSION}_bundle.tgz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python2/recommended
+
+#
+# And for doing the MPI support:
+# require mpi/openmpi/1.8.4/gnu-4.9.2
+
+echo "Building in $INSTALL_PREFIX/Test-${VERSION}-serial ..."
+mkdir -p $INSTALL_PREFIX/Test-${VERSION}-serial
+cd $INSTALL_PREFIX/Test-${VERSION}-serial
+module list
+read -p "Press [Enter] key to start ..."
+
+if [ ! -f $SRC_ARCHIVE/$ROSETTA_BUNDLE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find Rosetta source bundle"
+    echo ""
+    echo "You need to download the Rosetta source bundle from the Rosetta Commons site"
+    echo "(https://www.rosettacommons.org/software/academic) using our UCL site login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & ROSETTA_BUNDLE" 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+tar xvzf $SRC_ARCHIVE/$ROSETTA_BUNDLE 
+
+cd rosetta_src_${VERSION}_bundle
+cd main/source
+cd tools/build
+cp /shared/ucl/apps/build_scripts/files/Rosetta_2015/Rosetta_2015_serial_site.settings site.settings
+
+cd ../..
+./scons.py -j2 mode=release bin  2>&1 | tee build-serial.log
+
+cd ../..
+pwd
+echo mv rosetta_src_${VERSION}_bundle $INSTALL_PREFIX
