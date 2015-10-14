@@ -35,6 +35,7 @@ then
     cp $temp_dir/ANTs-${VERSION}/CMake/ProjectSourceVersionVars.cmake.in $temp_dir/ANTs-${VERSION}/CMake/ProjectSourceVersionVars.cmake
   fi  
   make 2>&1 | tee make.log
+  cp $temp_dir/ANTs-${VERSION}/Scripts/* $INSTALL_PREFIX/bin
 
 else
   echo "Hash mismatch."
