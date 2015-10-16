@@ -4,12 +4,11 @@ set -o errexit -o nounset
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 package_name="turbomole"
-package_version="6.6"
+package_version=${PACKAGE_VERSION:-6.6}
 # Optional: 
 #package_variant="impi"
 
-actual_file_name=turbomole-6.6.tar.gz
-actual_file_md5=6ec1b8555f567a7ea88dc54805c59e9f
+actual_file_name=turbomole-${package_version}.tar.gz
 stored_file_location=/shared/ucl/apps/$package_name/sources
 
 
@@ -27,7 +26,11 @@ _env_setup() {
 
 _fetch_files() {
   cd $stored_file_location/
-  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  md5sum -c <<<"
+  e2ea4a35b0279132f95de189afc62256  turbomole-6.4.tar.gz
+  59a98f014af94b63745b9aa100326222  turbomole-6.5.tar.gz
+  6ec1b8555f567a7ea88dc54805c59e9f  turbomole-6.6.tar.gz
+  "
 }
 
 _setup_files() {
