@@ -6,13 +6,12 @@
 # by Owain Kenway, 2015 
 #
 
-APPNAME=${APPNAME:-REPLACE}
-VERSION=${VERSION:-REPLACE}
+APPNAME=${APPNAME:-primer3}
+VERSION=${VERSION:-2.3.6}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-REPLACE}
-SHA1=${SHA1:-REPLACE}
-SRC_ARCHIVE=${SRC_ARCHIVE:-REPLACE}
+MD5=${MD5:-6e437ec00f82452b2187da78375f3ed3}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/${APPNAME}/files/${APPNAME}/${VERSION}/${APPNAME}-src-${VERSION}.tar.gz}
 
 set -e
 
@@ -25,15 +24,17 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum ${APPNAME}-src-${VERSION}.tar.gz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+  mkdir -p $INSTALL_PREFIX
+  cd ${INSTALL_PREFIX}
+  tar -zxvf ${temp_dir}/${APPNAME}-src-${VERSION}.tar.gz
 
-  cd ${APPNAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
-  make && make install
+  cd ${APPNAME}-${VERSION}/src
+  make
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
