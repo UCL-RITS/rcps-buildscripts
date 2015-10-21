@@ -101,6 +101,14 @@ _prepare_module() {
               -r xorg-utils \
               -e PATH:$install_prefix \
               -w "Adds ${package_name} ${package_version} to your environment."
+  cat >>$module_dir/$package_label <<'EOF'
+  if { [info exists ::env(TMPDIR) ] } {
+    setenv ESPRESSO_TMPDIR $::env(TMPDIR)
+  } else {
+    setenv ESPRESSO_TMPDIR /tmp
+  }
+EOF
+
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
 }
