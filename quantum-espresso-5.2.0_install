@@ -4,7 +4,7 @@ set -o errexit -o nounset
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 package_name="quantum-espresso"
-package_version="5.2.1"
+package_version="5.2.0"
 package_variant="impi"
 
 # There are other files available from the QE site but the build downloads the appropriate
@@ -86,7 +86,7 @@ _build() {
 
   make install 
 
-  mv $basename/../pwgui $install_prefix/bin 
+  mv ../pwgui $install_prefix/bin 
 
   echo "Installed to: $install_prefix"
 }
