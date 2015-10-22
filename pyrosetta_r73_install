@@ -35,7 +35,7 @@ echo "Installing into $INSTALL_PREFIX/PyRosetta.monolith.linux.release-${VERSION
 module list
 read -p "Press [Enter] key to start ..."
 
-if [ ! -f $SRC_ARCHIVE/PyROSETTA_BUNDLE ]
+if [ ! -f $SRC_ARCHIVE/$PyROSETTA_BUNDLE ]
 then
     echo ""
     echo "*** ERROR: Cannot find PyRosetta install archive"
