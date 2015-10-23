@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-argtable}
+VERSION=${VERSION:-2.13}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-bce828c64c35e16f4c3f8e1f355e4a2a97fe3289}
+ARCHIVENAME=${ARCHIVENAME:-argtable2-13}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://prdownloads.sourceforge.net/argtable/$ARCHIVENAME.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum $ARCHIVENAME.tar.gz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -zxvf $ARCHIVENAME.tar.gz
+
+  cd $ARCHIVENAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
