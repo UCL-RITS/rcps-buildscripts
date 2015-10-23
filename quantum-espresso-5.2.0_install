@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="quantum-espresso"
+package_version="5.2.0"
+package_variant="impi"
+
+# There are other files available from the QE site but the build downloads the appropriate
+#  ones automatically so w/e
+src_urls=('http://www.qe-forge.org/gf/download/frsrelease/195/806/espresso-5.2.0.tar.gz'
+          'http://www.qe-forge.org/gf/download/frsrelease/195/799/GWW-5.2.0.tar.gz'
+          'http://www-k3.ijs.si/kokalj/pwgui/download/pwgui-5.1.1-linux-x86_64.tgz')
+md5sums=('483aae6aa46869331ebcc41862a69b1e  espresso-5.2.0.tar.gz'
+         'd56996c9c8ef9711df6d251e8dd93cd9  GWW-5.2.0.tar.gz'
+         '4f0b5446cfd60a09db51bbc6ec6385ec  pwgui-5.1.1-linux-x86_64.tgz')
+
+# Optional: 
+# package_variant=""
+
+require compilers/intel/2015/update2
+require mpi/intel/2015/update3/intel
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  echo "Starting to build in: $build_dir"
+  cd $build_dir
+}
+
+_fetch_files() {
+  for src_url in "${src_urls[@]}"; do
+    wget $src_url
+  done
+  for sum in "${md5sums[@]}"; do
+    md5sum -c <<<"${sum}"
+  done
+}
+
+_setup_files() {
+  for md5line in "${md5sums[@]}"; do
+    filename=${md5line##*  }
+    echo "Unpacking $filename"
+    case "$filename" in
+      *.tar.gz|*.tgz|*.tar.bz2|*.tar.Z|*.tar.xz)
+        tar -xf $filename
+        ;;
+      *.zip)
+        unzip $filename
+        ;;
+      *)
+        echo "Error: Don't know how to unpack file" >&2
+        exit 5
+        ;;
+    esac
+  done
+  
+  mv GWW $basename/
+}
+
+_build() {
+  cd $basename
+
+  # Should probably add this to the MKL module but it needs to be set either way
+  export CPATH=$MKLROOT/include/fftw:$CPATH
+
+  #                                      v-- QE doesn't really seem to *get* how prefixes should work
+  ./configure --prefix=${install_prefix}/bin --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  
+  make all w90 want west couple #plumed # plumed patches some routines so I'm not sure it should go in by default: add it in here if someone wants it.
+
+  cd PW/tests
+
+  ./check-pw.x.j
+
+  cd ../../CPV/tests
+
+  ./check-cp.x.j
+
+  cd ../..
+
+  make install 
+
+  mv ../pwgui $install_prefix/bin 
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -n "${package_name}" \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r compilers/intel \
+              -r mpi/intel \
+              -r xorg-utils \
+              -e PATH:$install_prefix \
+              -w "Adds ${package_name} ${package_version} to your environment."
+  cat >>$module_dir/$package_label <<'EOF'
+  if { [info exists ::env(TMPDIR) ] } {
+    setenv ESPRESSO_TMPDIR $::env(TMPDIR)
+  } else {
+    setenv ESPRESSO_TMPDIR /tmp
+  }
+EOF
+
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    :
+    #rm -Rf ${build_dir:-if_this_appears_something_is_wrong}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+

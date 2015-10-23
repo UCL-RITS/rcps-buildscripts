@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-clustal-omega}
+VERSION=${VERSION:-1.2.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-50f67eb3244c25c9380e7afef0e157161535121b}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.clustal.org/omega/${APPNAME}-${VERSION}.tar.gz}
+ARGTABLEVER=${ARGTABLE_TAG:-2.13}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX CFLAGS="-I/shared/ucl/apps/argtable/${ARGTABLEVER}/gnu-4.9.2/include" LDFLAGS="-L/shared/ucl/apps/argtable/${ARGTABLEVER}/gnu-4.9.2/lib"
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi
