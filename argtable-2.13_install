@@ -36,6 +36,6 @@ then
   make && make install
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5"
+  echo "Expected: $SHA1"
   echo "Got: $CHECKSUM"
 fi
