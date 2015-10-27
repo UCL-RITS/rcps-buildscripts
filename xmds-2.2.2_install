@@ -11,7 +11,7 @@ VERSION=${VERSION:-2.2.2}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-7e2cb59ba4cb46b0de0a9c3fe16336d0}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/xmds/files/xmds-2.2.2.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/xmds/files/xmds-${VERSION}.tar.gz}
 
 set -e
 
