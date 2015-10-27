@@ -38,7 +38,7 @@ then
   mkdir -p scripts
   cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup scripts
 
-  mkdir -p $INSTALL_PREFX/${APPNAME}-${VERSION}/lib/python2.7/site-packages
+  mkdir -p $INSTALL_PREFIX/${APPNAME}-${VERSION}/lib/python2.7/site-packages
   ./setup.py develop --prefix=`pwd`
 
   export INSTALL_PREFIX
