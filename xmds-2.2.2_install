@@ -35,7 +35,7 @@ then
   cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
   cd ${APPNAME}-${VERSION}
   mkdir scripts
-  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2 scripts
+  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup scripts
 
   export INSTALL_PREFIX
   export VERSION
