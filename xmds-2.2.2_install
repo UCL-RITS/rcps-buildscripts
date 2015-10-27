@@ -41,11 +41,11 @@ then
   mkdir -p $INSTALL_PREFIX/${APPNAME}-${VERSION}/lib/python2.7/site-packages
   ./setup.py develop --prefix=`pwd`
 
-  export INSTALL_PREFIX
-  export VERSION
+#  export INSTALL_PREFIX
+#  export VERSION
 
-  cd ..
-  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
+#  cd ..
+#  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
 
 else
   echo "Hash mismatch."
