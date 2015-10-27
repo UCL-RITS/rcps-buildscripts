@@ -41,7 +41,7 @@ then
   export VERSION
 
   cd ..
-  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst ./create-svn-xmds-inst 
+  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
