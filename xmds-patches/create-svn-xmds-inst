@@ -8,7 +8,7 @@
 # Owain Kenway, October 2015
 
 export XMDSDIR=${XMDSDIR:-$HOME/xmds-svn-inst}
-XMDSROOT=${XMDSROOT:-/shared/ucl/apps/xmds/2.2.2/gnu-4.9.2}
+XMDSROOT=${XMDSROOT:-/shared/ucl/apps/xmds/2.2.2/gnu-4.9.2/xmds-2.2.2}
 export CONFIGSCRIPT=${CONFIGSCRIPT:-$XMDSROOT/scripts/xmds2-setup}
 
 if [[ -f $XMDSDIR ]]; then
