@@ -42,6 +42,8 @@ _install() {
   mkdir -p $install_prefix
   cd $install_prefix
   tar --strip-components=1 -xf $stored_file_location/$actual_file_name
+  # scripts directory will only be executable by group ccsp otherwise
+  chmod -R a+rX $install_prefix
   echo "Installed to: $install_prefix"
 }
 
