@@ -35,11 +35,15 @@ then
   cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
   cd ${APPNAME}-${VERSION}
   chmod +x bin/*
-  mkdir -p scripts
-  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup scripts
 
-  mkdir -p $INSTALL_PREFIX/${APPNAME}-${VERSION}/lib/python2.7/site-packages
-  ./setup.py develop --prefix=`pwd`
+  mkdir -p $INSTALL_PREFIX/xmds/lib/python2.7/site-packages
+  mkdir -p $INSTALL_PREFIX/xmds/scripts
+  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup $INSTALL_PREFIX/xmds/scripts
+  
+  export PYTHONPATH=$INSTALL_PREFIX/xmds2/lib/python2.7/site-packages:$PYTHONPATH
+  export PATH=$INSTALL_PREFIX/xmds/bin:$INSTALL_PREFIX/${APPNAME}-${VERSION}/bin:$PATH
+  ./setup.py develop --prefix=$INSTALL_PREFIX/xmds/lib/python2.7/site-packages
+  pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
 
 #  export INSTALL_PREFIX
 #  export VERSION
