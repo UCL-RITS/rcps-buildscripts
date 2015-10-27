@@ -32,10 +32,10 @@ then
   cd $INSTALL_PREFIX
   tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
 
-  cp /shared/ucl/apps/build_scripts/xmds-pathches/create-svn-xmds-inst .
+  cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
   cd ${APPNAME}-${VERSION}
   mkdir scripts
-  cp /shared/ucl/apps/build_scripts/xmds-pathches/xmds2 scripts
+  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2 scripts
 
   export INSTALL_PREFIX
   export VERSION
