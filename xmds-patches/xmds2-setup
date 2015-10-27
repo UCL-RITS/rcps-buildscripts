@@ -5,6 +5,7 @@ VERSION=${VERSION:-2.2.2}
 export PATH=$INSTALL_PREFIX/xmds-${VERSION}/bin:$PATH
 export PYTHONPATH=$INSTALL_PREFIX/xmds-${VERSION}/lib/python2.7/site-packages/:$PYTHONPATH
 
+source /etc/profile.d/modules.sh
 module unload default-modules
 module load rcps-core
 module load python2/recommended

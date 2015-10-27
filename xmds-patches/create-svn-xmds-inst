@@ -21,6 +21,7 @@ mkdir -p $XMDSDIR
 cd $XMDSDIR
 
 cat >$XMDSDIR/env-setup <<EOF
+source /etc/profile.d/modules.sh
 export XMDSDIR=$XMDSDIR
 export PATH=\$XMDSDIR/prefix/bin:\$PATH
 export PYTHONPATH=\$XMDSDIR/prefix/lib/python2.7/site-packages:\$PYTHONPATH
