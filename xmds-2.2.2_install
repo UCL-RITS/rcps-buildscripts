@@ -34,6 +34,7 @@ then
 
   cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
   cd ${APPNAME}-${VERSION}
+  chmod +x bin/*
   mkdir -p scripts
   cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup scripts
 
@@ -42,6 +43,7 @@ then
 
   cd ..
   XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
