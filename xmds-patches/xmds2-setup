@@ -22,8 +22,8 @@ MPICC=mpicc \
 MPICXX=mpicxx \
 $INSTALL_PREFIX/xmds-${VERSION}/bin/xmds2 \
   --configure \
-  --include-path /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/include \
-  --lib-path     /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib \
+  --include-path /shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/include \
+  --lib-path     /shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/lib \
   --include-path /shared/ucl/apps/fftw/3.3.4-ompi/gnu-4.9.2/include \
   --lib-path     /shared/ucl/apps/fftw/3.3.4-ompi/gnu-4.9.2/lib \
   --include-path /shared/ucl/apps/python/bundles/python2/venv/include \
