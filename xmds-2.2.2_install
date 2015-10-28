@@ -40,7 +40,7 @@ then
   mkdir -p $INSTALL_PREFIX/xmds/scripts
   cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup $INSTALL_PREFIX/xmds/scripts
   
-  export PYTHONPATH=$INSTALL_PREFIX/xmds2/lib/python2.7/site-packages:$PYTHONPATH
+  export PYTHONPATH=$INSTALL_PREFIX/xmds/lib/python2.7/site-packages:$PYTHONPATH
   export PATH=$INSTALL_PREFIX/xmds/bin:$INSTALL_PREFIX/${APPNAME}-${VERSION}/bin:$PATH
   ./setup.py develop --prefix=$INSTALL_PREFIX/xmds
   pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
