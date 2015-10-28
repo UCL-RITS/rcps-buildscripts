@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+PACKAGE_NAME="fftw"
+PACKAGE_VERSION="3.3.4"
+PACKAGE_VARIANT="impi"
+
+set -e
+
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require mpi/intel/2015/update3/gnu-4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS=http://www.fftw.org/fftw-${PACKAGE_VERSION}.tar.gz
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$SRC_URLS))
+}
+
+MD5=${MD5:-2edab8c06b24feeb3b82bbb3ebf3e7b3}
+
+_fetch_files() {
+  cd $BUILD_DIR
+  wget $SRC_URLS
+  md5sum -c <<<"2edab8c06b24feeb3b82bbb3ebf3e7b3  fftw-${PACKAGE_VERSION}.tar.gz"
+  cd $OWD
+}
+
+_setup_files() {
+  cd $BUILD_DIR
+  tar -xf ${BASENAME}.tar.gz
+  cd $OWD
+}
+
+__sub_build() {
+  mkdir $BUILD_LABEL
+  cd $BUILD_LABEL
+  ../${BASENAME}/configure --prefix=$INSTALL_PREFIX --enable-mpi --enable-sse2 $CONFIGURE_ADD_OPTS
+  make
+  # make wisdom # use this for single-arch, single node-class systems
+  make check
+  make install
+  cd ..
+}
+
+_build() {
+  cd $BUILD_DIR
+  
+  BUILD_LABEL="single" CONFIGURE_ADD_OPTS="--enable-float" __sub_build
+  BUILD_LABEL="double" CONFIGURE_ADD_OPTS=""               __sub_build
+  BUILD_LABEL="single-shared" CONFIGURE_ADD_OPTS="--enable-float --enable-shared" __sub_build
+  BUILD_LABEL="double-shared" CONFIGURE_ADD_OPTS="               --enable-shared" __sub_build
+  
+  cd $OWD
+}
+
+_prepare_module() {
+  make_module -p $INSTALL_PREFIX \
+              -n "${PACKAGE_NAME}" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "mpi/intel/2015/update3/gnu-4.9.2" \
+              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG} \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} (built with Intel MPI) to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf ${BUILD_DIR}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+
