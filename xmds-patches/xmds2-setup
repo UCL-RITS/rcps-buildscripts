@@ -18,7 +18,7 @@ echo $PYTHONPATH
 
 CXX=g++ \
 LINKFLAGS="-lsatlas" \
-CXXFLAGS="-O2 -march=nehalem" \
+CXXFLAGS="-march=nehalem -O2" \
 MPICC=mpicc \
 MPICXX=mpicxx \
 $INSTALL_PREFIX/xmds-${VERSION}/bin/xmds2 \
