@@ -30,8 +30,8 @@ module unload compilers
 module unload mpi
 module load python2/recommended
 module load compilers/gnu/4.9.2
-module load mpi/openmpi/1.8.4/gnu-4.9.2
-module load fftw/3.3.4-ompi/gnu-4.9.2
+module load mpi/intel/2015/update3/gnu-4.9.2
+module load fftw/3.3.4-impi/gnu-4.9.2
 module load hdf/5-1.8.15/gnu-4.9.2
 EOF
 

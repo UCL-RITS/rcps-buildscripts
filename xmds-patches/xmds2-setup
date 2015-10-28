@@ -10,22 +10,23 @@ module unload default-modules
 module load rcps-core
 module load python2/recommended
 module load compilers/gnu/4.9.2
-module load mpi/openmpi/1.8.4/gnu-4.9.2
-module load fftw/3.3.4-ompi/gnu-4.9.2
+module load mpi/intel/2015/update3/gnu-4.9.2
+module load fftw/3.3.4-impi/gnu-4.9.2
 module load hdf/5-1.8.15/gnu-4.9.2
 
 echo $PYTHONPATH
 
 CXX=g++ \
-LINKFLAGS="-lopenblas" \
+LINKFLAGS="-lsatlas" \
+CXXFLAGS="-O2" \
 MPICC=mpicc \
 MPICXX=mpicxx \
 $INSTALL_PREFIX/xmds-${VERSION}/bin/xmds2 \
   --configure \
   --include-path /shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/include \
   --lib-path     /shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/lib \
-  --include-path /shared/ucl/apps/fftw/3.3.4-ompi/gnu-4.9.2/include \
-  --lib-path     /shared/ucl/apps/fftw/3.3.4-ompi/gnu-4.9.2/lib \
+  --include-path /shared/ucl/apps/fftw/3.3.4-impi/gnu-4.9.2/include \
+  --lib-path     /shared/ucl/apps/fftw/3.3.4-impi/gnu-4.9.2/lib \
   --include-path /shared/ucl/apps/python/bundles/python2/venv/include \
   --lib-path     /shared/ucl/apps/python/bundles/python2/venv/lib \
   --include-path /shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2/lib \
