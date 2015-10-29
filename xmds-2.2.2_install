@@ -32,25 +32,34 @@ then
   cd $INSTALL_PREFIX
   tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
 
+# Install script so users can create their own svn version.
   cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
+
+# Fix permissions on python scripts in bin
   cd ${APPNAME}-${VERSION}
   chmod +x bin/*
 
-  
-
+# Create place to put installation.
   mkdir -p $INSTALL_PREFIX/xmds/lib/python2.7/site-packages
   mkdir -p $INSTALL_PREFIX/xmds/scripts
+
+# Install user setup script.
   cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup $INSTALL_PREFIX/xmds/scripts
   
+# Install xmds
   export PYTHONPATH=$INSTALL_PREFIX/xmds/lib/python2.7/site-packages:$PYTHONPATH
   export PATH=$INSTALL_PREFIX/xmds/bin:$INSTALL_PREFIX/${APPNAME}-${VERSION}/bin:$PATH
   ./setup.py develop --prefix=$INSTALL_PREFIX/xmds
+
+# Install the h5py package (needed for XMDS).
   pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
 
 # We need to fix the shebangs in the xmds bin dir.
   cd $INSTALL_PREFIX/xmds/bin
   sed -i.bak '1s|^#!.*|#!/usr/bin/env python|' *
   rm *.bak
+
+  echo "Installation of XMDS complete."
 
 else
   echo "Hash mismatch."
