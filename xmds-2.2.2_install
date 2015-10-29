@@ -49,8 +49,8 @@ then
 
 # We need to fix the shebangs in the two bin dirs.
   cd $INSTALL_PREFIX/xmds/bin
-  sed -i.bak '1s|^#!.*|#!/usr/bin/env python3|' *
-
+  sed -i.bak '1s|^#!.*|#!/usr/bin/env python|' *
+  rm *.bak
 
 else
   echo "Hash mismatch."
