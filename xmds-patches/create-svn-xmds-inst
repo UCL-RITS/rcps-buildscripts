@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# This script creates a version of XMDS for the user in their home directory
+# from the SVN repo.
+
+# Based on the script Ian Kirker wrote for the old Legion OS.
+
+# Owain Kenway, October 2015
+
+export XMDSDIR=${XMDSDIR:-$HOME/xmds-svn-inst}
+XMDSROOT=${XMDSROOT:-/shared/ucl/apps/xmds/2.2.2/gnu-4.9.2/xmds-2.2.2}
+export CONFIGSCRIPT=${CONFIGSCRIPT:-/shared/ucl/apps/xmds/2.2.2/gnu-4.9.2/xmds/scripts/xmds2-setup}
+
+if [[ -f $XMDSDIR ]]; then
+  echo "Error: $XMDSDIR already exists." >&2
+  exit 5
+fi
+
+mkdir -p $XMDSDIR
+
+cd $XMDSDIR
+
+cat >$XMDSDIR/env-setup <<EOF
+source /etc/profile.d/modules.sh
+export XMDSDIR=$XMDSDIR
+export PATH=\$XMDSDIR/prefix/bin:\$PATH
+export PYTHONPATH=\$XMDSDIR/prefix/lib/python2.7/site-packages:\$PYTHONPATH
+
+module unload compilers
+module unload mpi
+module load python2/recommended
+module load compilers/gnu/4.9.2
+module load mpi/intel/2015/update3/gnu-4.9.2
+module load fftw/3.3.4-impi/gnu-4.9.2
+module load hdf/5-1.8.15/gnu-4.9.2
+EOF
+
+source $XMDSDIR/env-setup
+
+svn checkout https://svn.code.sf.net/p/xmds/code/trunk/xpdeint
+
+mkdir -p $XMDSDIR/prefix/lib/python2.7/site-packages
+
+cd xpdeint
+./setup.py develop --prefix=$XMDSDIR/prefix
+make
+
+$CONFIGSCRIPT
+
+echo "===Done===" >&2
+

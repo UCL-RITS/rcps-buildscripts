@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-xmds}
+VERSION=${VERSION:-2.2.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-7e2cb59ba4cb46b0de0a9c3fe16336d0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/xmds/files/xmds-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
+
+  cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds-inst .
+  cd ${APPNAME}-${VERSION}
+  chmod +x bin/*
+
+  mkdir -p $INSTALL_PREFIX/xmds/lib/python2.7/site-packages
+  mkdir -p $INSTALL_PREFIX/xmds/scripts
+  cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup $INSTALL_PREFIX/xmds/scripts
+  
+  export PYTHONPATH=$INSTALL_PREFIX/xmds/lib/python2.7/site-packages:$PYTHONPATH
+  export PATH=$INSTALL_PREFIX/xmds/bin:$INSTALL_PREFIX/${APPNAME}-${VERSION}/bin:$PATH
+  ./setup.py develop --prefix=$INSTALL_PREFIX/xmds
+  pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
+
+#  export INSTALL_PREFIX
+#  export VERSION
+
+#  cd ..
+#  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

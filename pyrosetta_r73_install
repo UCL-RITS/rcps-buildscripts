@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PyRosetta release 73
+#    PyRosetta.monolith.linux.release-73
+#
+# by Brian Alston, 2015 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-73}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Roestta/PyRosetta}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Rosetta/source}
+PyROSETTA_BUNDLE=${PyROSETTA_BUNDLE:-PyRosetta.monolith.linux.release-${VERSION}.tar.bz2}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python2/recommended
+
+#
+# And for doing the MPI support:
+# require mpi/openmpi/1.8.4/gnu-4.9.2
+
+echo "Installing into $INSTALL_PREFIX/PyRosetta.monolith.linux.release-${VERSION} ..."
+module list
+read -p "Press [Enter] key to start ..."
+
+if [ ! -f $SRC_ARCHIVE/$PyROSETTA_BUNDLE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find PyRosetta install archive"
+    echo ""
+    echo "You need to download the PyRosetta install archive from the PyRosetta site"
+    echo "(http://www.pyrosetta.org/dow) using our UCL site login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & PyROSETTA_BUNDLE" 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+cd $INSTALL_PREFIX
+tar xvjf $SRC_ARCHIVE/$PyROSETTA_BUNDLE 
+
