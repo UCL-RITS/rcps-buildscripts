@@ -18,7 +18,7 @@ if __name__ == "__main__":
    import sys
 
    if len(sys.argv) == 2:
-     print getPackageJSON(sys.argv[1])['info']['version']
+     print(getPackageJSON(sys.argv[1])['info']['version'])
    else:
-     print 'Run ' + sys.argv[0] + ' <packgage> to get latest version number for <package>.'
+     print('Run ' + sys.argv[0] + ' <packgage> to get latest version number for <package>.')
 
