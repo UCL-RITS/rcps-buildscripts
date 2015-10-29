@@ -47,7 +47,7 @@ then
   ./setup.py develop --prefix=$INSTALL_PREFIX/xmds
   pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
 
-# We need to fix the shebangs in the two bin dirs.
+# We need to fix the shebangs in the xmds bin dir.
   cd $INSTALL_PREFIX/xmds/bin
   sed -i.bak '1s|^#!.*|#!/usr/bin/env python|' *
   rm *.bak
