@@ -5,7 +5,7 @@
 #
 # by Owain Kenway, 2015 
 #
-VERSION=${VERSION:-1.0.0}
+VERSION=${VERSION:-`python3 /shared/ucl/apps/build_scripts/files/pypiver.py iva`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
 
 # Note, you need the following packages loaded to build this:
