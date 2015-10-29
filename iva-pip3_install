@@ -17,7 +17,7 @@ require python3/recommended
 require kmc
 require mummer
 require trimmomatic
-require samtools/2.1
+require samtools/1.2
 require bambamc
 require smalt
 
