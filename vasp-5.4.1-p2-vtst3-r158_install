@@ -51,9 +51,9 @@ _env_setup() {
 
   require  compilers/intel/2015/update2          
   require  mpi/intel/2015/update3/intel          
-  require  ruby  # For the automatic download because the VASP site is a PoS
+  require  ruby  # For the automatic download because the VASP site is a pain
 
-  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/$VASP_VERSION/${COMPILER_TAG}}
+  INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/$VASP_VERSION-p2-vtst3-r158/${COMPILER_TAG}}
   export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
   export PATH=$INSTALL_PREFIX/bin:$PATH
 
