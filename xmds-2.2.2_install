@@ -36,6 +36,8 @@ then
   cd ${APPNAME}-${VERSION}
   chmod +x bin/*
 
+  
+
   mkdir -p $INSTALL_PREFIX/xmds/lib/python2.7/site-packages
   mkdir -p $INSTALL_PREFIX/xmds/scripts
   cp /shared/ucl/apps/build_scripts/xmds-patches/xmds2-setup $INSTALL_PREFIX/xmds/scripts
@@ -45,11 +47,12 @@ then
   ./setup.py develop --prefix=$INSTALL_PREFIX/xmds
   pip install --install-option="--prefix=$INSTALL_PREFIX/xmds" h5py
 
-#  export INSTALL_PREFIX
-#  export VERSION
+# We need to fix the shebangs in the two bin dirs.
+  cd $INSTALL_PREFIX/xmds/bin
+  sed -i.bak '1s|^#!.*|#!/usr/bin/env python3|' *
+  cd $INSTALL_PREFIX/${APPNAME}-${VERSION}
+  sed -i.bak '1s|^#!.*|#!/usr/bin/env python3|' *
 
-#  cd ..
-#  XMDSDIR=$INSTALL_PREFIX/xmds-svn-inst XMDSROOT=$INSTALL_PREFIX/${APPNAME}-${VERSION} ./create-svn-xmds-inst 
 
 else
   echo "Hash mismatch."
