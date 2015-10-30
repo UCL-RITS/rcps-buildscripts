@@ -11,16 +11,15 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
+require libtool
 require compilers/gnu/4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require fftw/3.3.4/gnu-4.9.2
 require gsl/1.16/gnu-4.9.2 # GSL dependency not listed in the docs, but is in the configure script
 require openblas/0.2.14/gnu-4.9.2
 require harminv
+require libctl
 require mpb/1.5/gnu-4.9.2
-require libctl
-require libtool
-require libctl
 
 _env_setup() {
   OWD=$(pwd)
