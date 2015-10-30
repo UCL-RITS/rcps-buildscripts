@@ -36,6 +36,7 @@ then
   cp Makefile.linux_openmp_64 Makefile.rcos
   sed -i 's|USE_LOCAL_X_TREE = 1||' Makefile.rcos
   sed -i 's|INSTALLDIR = ./linux_openmp_64|INSTALLDIR = '$INSTALL_PREFIX'|' Makefile.rcos
+  sed -i 's|/usr/bin/gcc|'$CC'|' Makefile.rcos
   make -f Makefile.rcos vastness
 else
   echo "Hash mismatch."
