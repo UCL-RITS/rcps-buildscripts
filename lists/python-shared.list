@@ -3,6 +3,7 @@ nose
 numpy
 scipy
 matplotlib
+Cython
 biopython
 acora
 python-Levenshtein
