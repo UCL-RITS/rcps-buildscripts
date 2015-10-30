@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing AFNI
+# This doesn't seem to have version numbers.  Which is upsetting.
+# VERSION is the date I downloaded it.
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-afni}
+VERSION=${VERSION:-20151030}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-9f646f656ad3d1e8aae3af1a542eb1d1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://afni.nimh.nih.gov/pub/dist/tgz/afni_src.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd afni_src
+  cp Makefile.linux_openmp_64 Makefile.rcos
+  sed -i 's|USE_LOCAL_X_TREE = 1||' Makefile.rcos
+  sed -i 's|INSTALLDIR = ./linux_openmp_64|INSTALLDIR = '$INSTALL_PREFIX'|' Makefile.rcos
+  make -f Makefile.rcos vastness
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
