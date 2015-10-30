@@ -14,7 +14,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require fftw/3.3.4/gnu-4.9.2
-require gsl # GSL dependency not listed in the docs, but is in the configure script
+require gsl/1.19/gnu-4.9.2 # GSL dependency not listed in the docs, but is in the configure script
 require harminv
 require mpb/1.5/gnu-4.9.2
 require libctl
