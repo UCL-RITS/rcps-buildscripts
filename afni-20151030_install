@@ -26,11 +26,11 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum afni_src.tgz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+  tar -zxvf afni_src.tgz
 
   cd afni_src
   cp Makefile.linux_openmp_64 Makefile.rcos
