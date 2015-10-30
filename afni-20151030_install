@@ -33,12 +33,12 @@ then
   tar -zxvf afni_src.tgz
 
   cd afni_src
-  cp Makefile.linux_openmp_64 Makefile.rcos
-  sed -i 's|USE_LOCAL_X_TREE = 1||' Makefile.rcos
-  sed -i 's|INSTALLDIR = ./linux_openmp_64|INSTALLDIR = '$INSTALL_PREFIX'|' Makefile.rcos
-  sed -i 's|/usr/bin/gcc|'$CC'|' Makefile.rcos
-  sed -i 's|'$CC' -V 34|'$CC'|' Makefile.rcos
-  make -f Makefile.rcos vastness
+  cp Makefile.linux_openmp_64 Makefile
+  sed -i 's|USE_LOCAL_X_TREE = 1||' Makefile
+  sed -i 's|INSTALLDIR = ./linux_openmp_64|INSTALLDIR = '$INSTALL_PREFIX'|' Makefile
+  sed -i 's|/usr/bin/gcc|'$CC'|' Makefile
+  sed -i 's|'$CC' -V 34|'$CC'|' Makefile
+  make vastness
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
