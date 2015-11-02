@@ -18,6 +18,10 @@ MAKEDEPEND_NAME=${MAKEDEPEND_NAME:-makedepend-1.0.5}
 MAKEDEPEND_SRC_ARCHIVE=${MAKEDEPEND_SRC_ARCHIVE:-http://www.x.org/releases/individual/util/${MAKEDEPEND_NAME}.tar.bz2}
 MAKEDEPEND_MD5=${MAKEDEPEND_MD5:-0475638eb40a3920d0d3f14482c924a4}
 
+XDMCP_NAME=${XDMCP_NAME:-libXdmcp-1.1.1}
+XDMCP_SRC_ARCHIVE=${XDMCP_SRC_ARCHIVE:-ftp://ftp.x.org/pub/X11R7.7/src/lib/${XDMCP_NAME}.tar.bz2}
+XDMCP_MD5=${XDMCP_MD5:-b94af6cef211cf3ee256f7e81f70fcd9}
+
 set -e
 
 temp_dir=`mktemp -d -p /dev/shm`
@@ -48,6 +52,19 @@ then
   exit 1;
 fi
 
+wget $XDMCP_SRC_ARCHIVE
+xdmcp_archive=$(basename "${XDMCP_SRC_ARCHIVE}")
+XDMCP_CHECKSUM=`md5sum $xdmcp_archive| awk '{print $1}'`
+
+if [ "$XDMCP_MD5" != "$XDMCP_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xdmcp_archive."
+  echo "Expected: $XDMCP_MD5"
+  echo "Got: $XDMCP_CHECKSUM"
+  exit 1;
+fi
+
+
 # install xorg/util/macros
 tar -xvf $xutilmacros_archive
 cd $XUTILMACROS_NAME
@@ -64,3 +81,12 @@ cd $MAKEDEPEND_NAME
 ./configure --prefix=$INSTALL_PREFIX
 make 2>&1 | tee make.log
 make install
+
+# install xdmcp
+cd $temp_dir
+tar -xvf $xdmcp_archive
+cd $XDMCP_NAME
+./configure --prefix=$INSTALL_PREFIX
+make 2>&1 | tee make.log
+make install
+
