@@ -33,7 +33,7 @@ then
   cat > $APPNAME << EOF
 #!/bin/bash
 
-java -Xmx2g ${INSTALL_PREFIX}/VarScan.v${VERSION}.jar $*
+java -Xmx2g -jar ${INSTALL_PREFIX}/VarScan.v${VERSION}.jar \$*
 EOF
 
 chmod +x $APPNAME
