@@ -12,7 +12,7 @@
 # Will need modules: see list of modules below.
 
 VERSION=${VERSION:-3.2.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-ATLAS }
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 MD5=${MD5:-57cef5c2e210a5454da1979562a10e5b}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
 
