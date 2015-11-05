@@ -11,7 +11,7 @@
 
 VERSION=${VERSION:-3.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}_OpenBLAS}
-MD5=${MD5:-03cccb5b33dbe975fdcd8ae9dc021f24}
+MD5=${MD5:-ac8242931837e4367b2a3de8b231aa0e}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mcmc-jags/JAGS/3.x/Source/JAGS-${VERSION}.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmcmc-jags%2Ffiles%2FJAGS%2F3.x%2FSource%2F&ts=1433519396&use_mirror=heanet}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
