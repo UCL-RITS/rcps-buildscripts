@@ -1,18 +1,30 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing JAGS built with with GCC
+# Installing JAGS built with with GCC and OpenBLAS
 #
-# by Brian Alston, 2015 
+# by Brian Alston, 2015 (5th November)
 #
-# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and atlas/3.10.2/gnu.4.9.2
+# Now using Ian's require function to load modules
+#
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and openblas/0.2.14/gnu-4.9.2
 
 VERSION=${VERSION:-3.4.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}_OpenBLAS}
 MD5=${MD5:-03cccb5b33dbe975fdcd8ae9dc021f24}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mcmc-jags/JAGS/3.x/Source/JAGS-${VERSION}.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmcmc-jags%2Ffiles%2FJAGS%2F3.x%2FSource%2F&ts=1433519396&use_mirror=heanet}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require openblas/0.2.14/gnu-4.9.2
 
 temp_dir=`mktemp -d -p /dev/shm`
 
@@ -26,9 +38,9 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf JAGS-${VERSION}.tar.gz
    cd JAGS-${VERSION}
-   LDFLAGS="-L/shared/ucl/apps/atlas/3.10.2/gnu-4.9.2/lib" ./configure --prefix=/shared/ucl/apps/JAGS/3.4.0 \
-           --with-blas="-lptf77blas -lptcblas -lpthread -latlas" \
-           --with-lapack="-llapack -lptf77blas -lptcblas -lpthread -latlas"
+   ./configure --prefix=$INSTALL_PREFIX \
+           --with-blas="-lopenblas" \
+           --with-lapack="-lopenblas"
    make
    make install
    ( cd $INSTALL_PREFIX; ln -s lib lib64 )
