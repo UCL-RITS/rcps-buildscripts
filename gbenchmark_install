@@ -69,7 +69,7 @@ EOF
 # loads modules
 source /shared/ucl/apps/bin/defmods
 
-for compiler in "intel"; do
+for compiler in "gnu" "intel"; do
   _env_setup $compiler
   _download
   _configure
