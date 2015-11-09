@@ -78,6 +78,7 @@ src_install() {
 }
 
 pkg_postinst() {
+  echo "Writing modulefile to ${MODULEFILE}"
   mkdir -p "${MODULEFILE%/*}"
   cat > "${MODULEFILE}" <<EOF
 ##Module -*- tcl -*-
@@ -134,7 +135,7 @@ export FILESDIR="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/${P}-patches"
 export S="${WORKDIR}/${P}"
 
 export DESTDIR="${DESTDIR:-${PREFIX}/${PN}/${PV}}"
-export MODULEFILE="${DESTDIR}/${P}"
+export MODULEFILE="${MODULEFILE:-${DESTDIR}/${P}}"
 
 echo "Fetching ${A} from ${SRC_URI}"
 pkg_fetch
