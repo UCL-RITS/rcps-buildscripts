@@ -53,7 +53,7 @@ source /shared/ucl/apps/bin/defmods
 
 for compiler in "python2" "python3" ; do
   _env_setup $compiler
-  # _install
+  _install
   _modulefile
   module unload $compiler
 done
