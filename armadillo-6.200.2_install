@@ -81,7 +81,7 @@ pkg_postinst() {
   echo "Writing modulefile to ${MODULEFILE}"
   mkdir -p "${MODULEFILE%/*}"
   cat > "${MODULEFILE}" <<EOF
-##Module -*- tcl -*-
+#%Module -*- tcl -*-
 ##
 ## dot modulefile
 ##
