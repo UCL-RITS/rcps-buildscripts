@@ -107,7 +107,7 @@ EOF
 }
 
 
-export WORKDIR="${TMPDIR}"
+export WORKDIR="${TMPDIR:-/tmp}"
 
 # ${A} is the archive name e.g. armadillo-6.200.2.tar.gz
 export A="${WORKDIR}/${SRC_URI##*/}"
