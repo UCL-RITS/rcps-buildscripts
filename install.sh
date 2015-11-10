@@ -24,7 +24,7 @@ source functions/src_install.sh
 source functions/pkg_postinst.sh
 
 die() {
-  [ "$1" ] && echo "\033[1;31m$1\033[0m"
+  [ "$1" ] && echo -e "\033[1;31m$1\033[0m"
   exit 1
 }
 
@@ -88,20 +88,20 @@ if [ -d "${WORKDIR}" ]
 fi
 mkdir "${WORKDIR}" || die "Failed to create working directory ${WORKDIR}"
 
-echo "\033[1;32mFetching ${A} from ${SRC_URI}\033[0m"
+echo -e "\033[1;32mFetching ${A} from ${SRC_URI}\033[0m"
 pkg_fetch || die "Failed to fetch sources"
-echo "\033[1;32mUnpacking ${A} to ${WORKDIR}\033[0m"
+echo -e "\033[1;32mUnpacking ${A} to ${WORKDIR}\033[0m"
 src_unpack || die "Failed to unpack source tarballs"
 
 pushd "${S}" 2>&1 > /dev/null
-echo "\033[1;32mPatching\033[0m"
+echo -e "\033[1;32mPatching\033[0m"
 src_prepare || die "Failed to prepare sources"
-echo "\033[1;32mConfiguring\033[0m"
+echo -e "\033[1;32mConfiguring\033[0m"
 src_configure || die "Failed to configure source"
-echo "\033[1;32mCompiling source in ${WORKDIR}\033[0m"
+echo -e "\033[1;32mCompiling source in ${WORKDIR}\033[0m"
 src_compile || die "Failed to compile source"
-echo "\033[1;32mInstalling to ${DESTDIR}\033[0m"
+echo -e "\033[1;32mInstalling to ${DESTDIR}\033[0m"
 src_install || die "Failed to install source"
-echo "\033[1;32mPerforming post-installation setup\033[0m"
+echo -e "\033[1;32mPerforming post-installation setup\033[0m"
 pkg_postinst || die "Failed to perform post-installation tasks"
 popd 2>&1 > /dev/null
