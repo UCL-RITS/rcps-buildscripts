@@ -11,6 +11,8 @@ PV=""
 src_prepare() {
   # F2C ships with several makefiles, none of which are called 'Makefile'
   cp "${S}/makefile.u" "${S}/Makefile"
+  # and it hardcodes CC as cc, because
+  sed -i ".backup" -e "/CC = cc/d" "${S}/Makefile"
 }
 
 # Surprise, surprise! F2C's install step is also broken. Yay!
