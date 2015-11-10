@@ -75,7 +75,7 @@ export S="${WORKDIR}/${P}"
 source "${CWD}/$1"
 
 export DESTDIR="${DESTDIR:-${PREFIX}/${PN}/${PV}}"
-export MODULEFILE="${MODULEFILE:-${DESTDIR}/${P}}"
+export MODULEFILE="${MODULEFILE:-${PREFIX}/${P}}"
 
 if [ "${HOME}" == "${WORKDIR}" -o "/" == "${WORKDIR}" ]
   then
