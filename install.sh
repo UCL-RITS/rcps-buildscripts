@@ -60,7 +60,8 @@ fi
 export PN="${P%-*}"
 
 # ${PV} is the package version  e.g. 6.200.2
-# THIS WILL NOT WORK FOR VERSIONS OF THE FORM 6.200.2-r1
+# THIS WILL NOT WORK FOR VERSIONS OF THE FORM 6.200.2-r1 OR FOR VERSIONLESS
+# TARBALLS. For those cases set PV explicitly in the package script.
 export PV="${P##*-}"
 
 # ${FILESDIR} is where the patches are stored
@@ -81,7 +82,10 @@ if [ "${HOME}" == "${WORKDIR}" -o "/" == "${WORKDIR}" ]
   die "Refusing to work in \${HOME} or /"
 fi
 
-[ -d "${WORKDIR}" ] && rm -rf "${WORKDIR}" || die "Failed to clean working directory ${WORKDIR}"
+if [ -d "${WORKDIR}" ]
+  then
+  rm -rf "${WORKDIR}" || die "Failed to clean working directory ${WORKDIR}"
+fi
 mkdir "${WORKDIR}" || die "Failed to create working directory ${WORKDIR}"
 
 echo "Fetching ${A} from ${SRC_URI}"
