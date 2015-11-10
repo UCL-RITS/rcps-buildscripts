@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+DESCRIPTION="Fortran to C converter"
+SRC_URI="http://www.netlib.org/f2c/libf2c.zip"
+
+# F2C unpacks everything to the current directory
+S="${WORKDIR}"
+# and doesn't have a version
+PV=""
+
+src_prepare() {
+  # F2C ships with several makefiles, none of which are called 'Makefile'
+  cp "${S}/makefile.u" "${S}/Makefile"
+}
+
+# Surprise, surprise! F2C's install step is also broken. Yay!
+src_install() {
+  # ONLY copy f2c.h to the include dir, as F2C defines its own versions of
+  # ctype.h, etc. which are incompatible with the system versions and break
+  # compilations in confusingly horrible ways!
+  mkdir -p "${DESTDIR}/lib" && cp "${S}/libf2c.a" "${DESTDIR}/lib" && \
+  mkdir -p "${DESTDIR}/include" && cp "${S}/f2c.h" "${DESTDIR}/include"
+}
