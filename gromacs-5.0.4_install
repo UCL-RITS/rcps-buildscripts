@@ -14,6 +14,14 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.ta
 
 set -e
 
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers
+require mpi
+
 # ready for testing
 export PATH=$INSTALL_PREFIX/bin:$PATH
 export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$PATH
@@ -35,13 +43,13 @@ then
   mkdir build
   cd build
   
-  echo "Building and installing full, serial, single precision GROMACS"
-  cmake .. -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  echo "Building and installing full, serial, single precision GROMACS with gmx view"
+  cmake .. -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
   make
   make install
   
-  echo "Building and installing full, serial, double precision GROMACS"
-  cmake .. -DGMX_DOUBLE=on -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  echo "Building and installing full, serial, double precision GROMACS with gmx view"
+  cmake .. -DGMX_DOUBLE=on -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
   make
   make install
   
