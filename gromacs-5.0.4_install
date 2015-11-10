@@ -11,6 +11,8 @@ VERSION=${VERSION:-5.0.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-c177ae5fd6d71e2bec7369bc66cd082e}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
+CMAKE_FLAGS=${CMAKE_FLAGS:-""}
+# may need to set -DCMAKE_LINKER=icc for Intel compiler for 5.1.1
 
 set -e
 
@@ -21,10 +23,6 @@ source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs
 require compilers
 require mpi
-
-# ready for testing
-export PATH=$INSTALL_PREFIX/bin:$PATH
-export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$PATH
 
 temp_dir=`mktemp -d -p /dev/shm`
 
@@ -44,22 +42,22 @@ then
   cd build
   
   echo "Building and installing full, serial, single precision GROMACS with gmx view"
-  cmake .. -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  cmake .. -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX $CMAKE_FLAGS
   make
   make install
   
   echo "Building and installing full, serial, double precision GROMACS with gmx view"
-  cmake .. -DGMX_DOUBLE=on -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  cmake .. -DGMX_DOUBLE=on -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DGMX_X11=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX $CMAKE_FLAGS
   make
   make install
   
   echo "Building and installing mdrun-only, MPI, single precision GROMACS"
-  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX $CMAKE_FLAGS
   make
   make install
 
   echo "Building and installing mdrun-only, MPI, double precision GROMACS"
-  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+  cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=ON -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX $CMAKE_FLAGS
   make
   make install
 
