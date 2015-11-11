@@ -74,7 +74,7 @@ export FILESDIR="${CWD}/${P}-patches"
 export COMPILER_MODULE
 for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
   do
-  module list 2>&1 | grep ${ccmod} >/dev/null
+  /shared/ucl/apps/modules/3.2.6/Modules/3.2.6/bin/modulecmd bash list 2>&1 | grep ${ccmod} >/dev/null
   if [ $? -eq 0 ]
     then
     COMPILER_MODULE=${ccmod}
