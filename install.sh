@@ -71,15 +71,17 @@ fi
 export FILESDIR="${CWD}/${P}-patches"
 
 # Find which compiler module is loaded
+export COMPILER_MODULE
 for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
   do
   module list 2>&1 | grep ${ccmod} >/dev/null
   if [ $? -eq 0 ]
     then
-    export COMPILER_MODULE=${ccmod}
+    COMPILER_MODULE=${ccmod}
     break
   fi
 done
+[ "${COMPILER_MODULE}" ] || die "Unable to parse compiler module"
 export modulestring=$(cut -d'/' -f2- <<< ${COMPILER_MODULE} | tr '/' '-')
 
 export PREFIX=${PREFIX:-${HOME}}
