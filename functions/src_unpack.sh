@@ -8,50 +8,36 @@
 #
 
 src_unpack() {
-  if [ "${GIT_URI}" ]
-    then
-    ARGS="--depth=1"
-    [ "${GIT_BRANCH}" ] && ARGS="${ARGS} --branch=${GIT_BRANCH}"
-    git clone "${GIT_URI}" "${S}"
-    if [ "${GIT_COMMIT}" ]
-      then
-      git -C"${S}" checkout "${GIT_COMMIT}"
-    fi
-  elif [ "${SVN_URI}" ]
-    then
-    svn checkout "${SVN_URI}" "${S}"
-  else
-    local extension="${A##*.}"
-    local output="${A%.*}"
-    case "${extension}" in
-      zip)
-        unzip -q -o "${WORKDIR}/${A}" -d "${WORKDIR}"
-        ;;
-      bz2|gz|xz)
-        if [ "${output##*.}" == "tar" ]
-          then
-          case "${extension}" in
-            bz2)
-              tar -jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-              ;;
-            gz)
-              tar -zxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-              ;;
-            xz)
-              tar -Jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-              ;;
-          esac
-        fi
-        ;;
-      tbz)
-        tar -jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-        ;;
-      tgz)
-        tar -zxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-        ;;
-      txz)
-        tar -Jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
-        ;;
-    esac
-  fi
+  local extension="${A##*.}"
+  local output="${A%.*}"
+  case "${extension}" in
+    zip)
+      unzip -q -o "${WORKDIR}/${A}" -d "${WORKDIR}"
+      ;;
+    bz2|gz|xz)
+      if [ "${output##*.}" == "tar" ]
+        then
+        case "${extension}" in
+          bz2)
+            tar -jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+            ;;
+          gz)
+            tar -zxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+            ;;
+          xz)
+            tar -Jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+            ;;
+        esac
+      fi
+      ;;
+    tbz)
+      tar -jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+      ;;
+    tgz)
+      tar -zxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+      ;;
+    txz)
+      tar -Jxf "${WORKDIR}/${A}" -C "${WORKDIR}"
+      ;;
+  esac
 }

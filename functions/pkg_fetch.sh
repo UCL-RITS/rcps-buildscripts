@@ -15,5 +15,17 @@ pkg_fetch() {
         die "SHA256 checksums differ! ${SHA256_SRC} != ${SHA256}"
       fi
     fi
+  elif [ "${GIT_URI}" ]
+    then
+    ARGS="--depth=1"
+    [ "${GIT_BRANCH}" ] && ARGS="${ARGS} --branch=${GIT_BRANCH}"
+    git clone "${GIT_URI}" "${S}"
+    if [ "${GIT_COMMIT}" ]
+      then
+      git -C"${S}" checkout "${GIT_COMMIT}"
+    fi
+  elif [ "${SVN_URI}" ]
+    then
+    svn checkout "${SVN_URI}" "${S}"
   fi
 }
