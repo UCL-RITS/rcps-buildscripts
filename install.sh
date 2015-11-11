@@ -101,8 +101,11 @@ mkdir -p "${WORKDIR}" || die "Failed to create working directory ${WORKDIR}"
 
 echo -e "\033[1;32mFetching ${A} from ${SRC_URI}\033[0m"
 pkg_fetch || die "Failed to fetch sources"
-echo -e "\033[1;32mUnpacking ${A} to ${WORKDIR}\033[0m"
-src_unpack || die "Failed to unpack source tarballs"
+if [ "${A}" ]
+  then
+  echo -e "\033[1;32mUnpacking ${A} to ${WORKDIR}\033[0m"
+  src_unpack || die "Failed to unpack source tarballs"
+fi
 
 pushd "${S}" 2>&1 > /dev/null
 echo -e "\033[1;32mPatching\033[0m"
