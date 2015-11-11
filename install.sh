@@ -23,18 +23,25 @@ source functions/src_compile.sh
 source functions/src_install.sh
 source functions/pkg_postinst.sh
 
+# Prints an optional error message then exits.  Designed to be used within
+# package scripts, e.g.:
+#   mkdir build || die "Failed to create build directory"
+# or:
+#   make all || die
 die() {
-  [ "$1" ] && echo -e "\033[1;31m$1\033[0m"
+  [ "${1}" ] && echo -e "\033[1;31m${1}\033[0m"
   exit 1
 }
 
+# The directory containing this script.
+# Works even if this script is called from another directory (i.e. pwd will not
+# work).
 export CWD="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
 
-if [ $# -eq 1 ]
+# Check that we have been called with a valid argument
+if [ ! ${#} -eq 1 ]
   then
-  source "${CWD}/$1"
-else
-  echo "Usage: $0 <package_file>"
+  echo "Usage: ${0##*/} <package_file>"
   exit 1
 fi
 
