@@ -17,6 +17,9 @@ src_unpack() {
       then
       git -C"${S}" checkout "${GIT_COMMIT}"
     fi
+  elif [ "${SVN_URI}" ]
+    then
+    svn checkout "${SVN_URI}" "${S}"
   else
     local extension="${A##*.}"
     local output="${A%.*}"
