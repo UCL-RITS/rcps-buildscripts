@@ -45,31 +45,27 @@ if [ ! ${#} -eq 1 ]
   exit 1
 fi
 
-# ${A} is the archive name e.g. armadillo-6.200.2.tar.gz
+export P="${1}"
+IFS=- read PN PV PR <<< "${P}"
+export PN
+export PV
+export PR
+
+export WORKDIR="${TMPDIR:-/tmp/$(whoami)-install}/${P}"
+
+# ${S} is the build directory
+export S="${WORKDIR}/${P}"
+
+source "${CWD}/${1}" || die "Could not find ${1} to install"
+
+# ${A} is the archive name, e.g. armadillo-6.200.2.tar.gz
+# For git or SVN sources this is blank
 if [ "${SRC_URI}" ]
   then
   export A="${SRC_URI##*/}"
-elif [ "${GIT_URI}" ]
-  then
-  export A="${GIT_URI##*/}"
-  A="${A%.git}"
+else
+  export A=""
 fi
-
-# ${P} is the package name without the extension e.g. armadillo-6.200.2
-export P="${A%.*}"
-# Handle tar files with two extensions
-if [ "${P##*.}" == "tar" ]
-  then
-  P="${P%.*}"
-fi
-
-# ${PN} is the package name without the version e.g. armadillo
-export PN="${P%-*}"
-
-# ${PV} is the package version  e.g. 6.200.2
-# THIS WILL NOT WORK FOR VERSIONS OF THE FORM 6.200.2-r1 OR FOR VERSIONLESS
-# TARBALLS. For those cases set PV explicitly in the package script.
-export PV="${P##*-}"
 
 # ${FILESDIR} is where the patches are stored
 export FILESDIR="${CWD}/${P}-patches"
@@ -99,7 +95,7 @@ if [ -d "${WORKDIR}" ]
   then
   rm -rf "${WORKDIR}" || die "Failed to clean working directory ${WORKDIR}"
 fi
-mkdir "${WORKDIR}" || die "Failed to create working directory ${WORKDIR}"
+mkdir -p "${WORKDIR}" || die "Failed to create working directory ${WORKDIR}"
 
 echo -e "\033[1;32mFetching ${A} from ${SRC_URI}\033[0m"
 pkg_fetch || die "Failed to fetch sources"
