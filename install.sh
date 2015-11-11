@@ -74,15 +74,21 @@ export PV="${P##*-}"
 # ${FILESDIR} is where the patches are stored
 export FILESDIR="${CWD}/${P}-patches"
 
-export WORKDIR="${TMPDIR:-/tmp}/${P}"
+# Find which compiler module is loaded
+for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
+  do
+  module list 2>&1 | grep ${ccmod} >/dev/null
+  if [ $? -eq 0 ]
+    then
+    export COMPILER_MODULE=${ccmod}
+    break
+  fi
+done
+export modulestring=$(cut -d'/' -f2- <<< ${COMPILER_MODULE} | tr '/' '-')
 
-# ${S} is the build directory
-export S="${WORKDIR}/${P}"
-
-source "${CWD}/$1"
-
-export DESTDIR="${DESTDIR:-${PREFIX}/${PN}/${PV}}"
-export MODULEFILE="${MODULEFILE:-${PREFIX}/${P}}"
+export PREFIX=${PREFIX:-${HOME}}
+export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${modulestring}}"
+export MODULEFILE="${MODULEFILE:-${PREFIX}/modulefiles/${PN}/${PV}/${modulestring}}"
 
 if [ "${HOME}" == "${WORKDIR}" -o "/" == "${WORKDIR}" ]
   then

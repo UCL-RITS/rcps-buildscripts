@@ -20,6 +20,7 @@ module-whatis "${DESCRIPTION}"
 set             root            ${DESTDIR}
 
 conflict ${PN}
+prereq ${COMPILER_MODULE}
 
 append-path LD_RUN_PATH       \$root/lib
 append-path LD_LIBRARY_PATH   \$root/lib
