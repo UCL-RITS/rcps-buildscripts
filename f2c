@@ -6,8 +6,6 @@ SHA256_SRC="5dff29c58b428fa00cd36b1220e2d71b9882a658fdec1aa094fb7e6e482d6765"
 
 # F2C unpacks everything to the current directory
 S="${WORKDIR}"
-# and doesn't have a version
-PV=""
 
 src_prepare() {
   # F2C ships with several makefiles, none of which are called 'Makefile'
