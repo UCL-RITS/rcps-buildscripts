@@ -14,14 +14,14 @@
 #
 # See armadillo_6.200.2_install and f2c_install for examples.
 
-source functions/pkg_preinst.sh
-source functions/pkg_fetch.sh
-source functions/src_unpack.sh
-source functions/src_prepare.sh
-source functions/src_configure.sh
-source functions/src_compile.sh
-source functions/src_install.sh
-source functions/pkg_postinst.sh
+source functions/pkg_preinst
+source functions/pkg_fetch
+source functions/src_unpack
+source functions/src_prepare
+source functions/src_configure
+source functions/src_compile
+source functions/src_install
+source functions/pkg_postinst
 
 # Prints an optional error message then exits.  Designed to be used within
 # package scripts, e.g.:
@@ -73,25 +73,10 @@ else
 fi
 
 # ${FILESDIR} is where the patches are stored
-export FILESDIR="${CWD}/${P}-patches"
-
-# Find which compiler module is loaded
-export COMPILER_MODULE
-for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
-  do
-  /shared/ucl/apps/modules/3.2.6/Modules/3.2.6/bin/modulecmd bash list 2>&1 | grep ${ccmod} >/dev/null
-  if [ $? -eq 0 ]
-    then
-    COMPILER_MODULE=${ccmod}
-    break
-  fi
-done
-[ "${COMPILER_MODULE}" ] || die "Unable to parse compiler module"
-export modulestring=$(cut -d'/' -f2- <<< ${COMPILER_MODULE} | tr '/' '-')
+export FILESDIR="${CWD}/${PN}-files"
 
 export PREFIX=${PREFIX:-${HOME}}
-export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${modulestring}}"
-export MODULEFILE="${MODULEFILE:-${PREFIX}/modulefiles/${PN}/${PV}/${modulestring}}"
+export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${MODULE_STRING}}"
 
 if [ "${HOME}" == "${WORKDIR}" -o "/" == "${WORKDIR}" ]
   then

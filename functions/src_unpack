@@ -1,11 +1,4 @@
-#!/usr/bin/env sh
-#
-# Unpacks downloaded tarballs to source directory S, or, if GIT_URI is set,
-# checks out the latest commit from a git repo.  If GIT_BRANCH is set, then only
-# that branch is cloned.  If GIT_COMMIT is set, then that commit is checked out
-# rather than the latest commit on whatever branch is cloned.  If GIT_BRANCH and
-# GIT_COMMIT are both set, then GIT_COMMIT must be on GIT_BRANCH.
-#
+# Unpacks downloaded tarballs to source directory S.
 
 src_unpack() {
   local extension="${A##*.}"

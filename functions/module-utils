@@ -1,0 +1,66 @@
+# Finds which compiler module is loaded
+get-compiler_module() {
+  export COMPILER_MODULE
+  local ccmod
+  for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
+    do
+    /shared/ucl/apps/modules/3.2.6/Modules/3.2.6/bin/modulecmd bash list 2>&1 | grep ${ccmod} >/dev/null
+    if [ $? -eq 0 ]
+      then
+      COMPILER_MODULE=${ccmod}
+      break
+    fi
+  done
+}
+
+# Constructs the modulefile name by taking the compiler module (e.g.
+# compilers/intel/2015/update2), stripping off the leading 'compilers/' and
+# and replacing the remaining '/'s with '-' (e.g. intel-2015-update2).
+get-module_string() {
+  get-compiler_module || die "Unable to find compiler module"
+  export MODULE_STRING=${COMPILER_MODULE#*/*}
+  MODULE_STRING=${MODULE_STRING/\//-/}
+}
+
+# Constructs the modulefile path as
+# ${PREFIX}/modulefiles/${PN}/${PV}/${MODULE_STRING}
+get-module_file() {
+  get-module_string || die "Unable to construct module string"
+  export MODULE_FILE="${MODULE_FILE:-${PREFIX}/modulefiles/${PN}/${PV}/${MODULE_STRING}}"
+}
+
+write_module_file() {
+get-module_file || die "Unable to get module file path"
+local module_depstring="", dep
+for dep in "${MODULE_DEPENDS}"
+  do
+  module_depstring = "${module_depstring}\nprereq ${dep}"
+done
+mkdir -p "${MODULE_FILE%/*}" && \
+cat > "${MODULE_FILE}" <<EOF
+#%Module -*- tcl -*-
+##
+## dot modulefile
+##
+proc ModulesHelp { } {
+puts stderr "\tAdds ${PN}"
+}
+
+module-whatis "${DESCRIPTION}"
+
+set             root            ${DESTDIR}
+
+conflict ${PN}
+prereq ${COMPILER_MODULE}${module_depstring}
+
+append-path LD_RUN_PATH       \$root/lib
+append-path LD_LIBRARY_PATH   \$root/lib
+append-path CMAKE_PREFIX_PATH \$root
+append-path CPATH             \$root/include
+append-path INCLUDE_PATH      \$root/include
+append-path LIBRARY_PATH      \$root/lib
+
+setenv  ${PN}_LIBRARY_DIR     \$root/lib
+setenv  ${PN}_INCLUDE_DIR     \$root/include
+EOF
+}

@@ -1,7 +1,9 @@
-#!/usr/bin/env sh
-#
-# Fetches the package using SRC_URI (if defined)
-#
+# Fetches the package using SRC_URI (if defined), or, if GIT_URI is set,
+# checks out the latest commit from a git repo.  If GIT_BRANCH is set, then only
+# that branch is cloned.  If GIT_COMMIT is set, then that commit is checked out
+# rather than the latest commit on whatever branch is cloned.  If GIT_BRANCH and
+# GIT_COMMIT are both set, then GIT_COMMIT must be on GIT_BRANCH.
+# If SVN_URI is set, then checks out the source from SVN_URI.
 
 pkg_fetch() {
   if [ "${SRC_URI}" ]
@@ -19,13 +21,13 @@ pkg_fetch() {
     then
     ARGS="--depth=1"
     [ "${GIT_BRANCH}" ] && ARGS="${ARGS} --branch=${GIT_BRANCH}"
-    git clone "${GIT_URI}" "${S}"
+    git clone "${GIT_URI}" "${WORKDIR}"
     if [ "${GIT_COMMIT}" ]
       then
       git -C"${S}" checkout "${GIT_COMMIT}"
     fi
   elif [ "${SVN_URI}" ]
     then
-    svn checkout "${SVN_URI}" "${S}"
+    svn checkout "${SVN_URI}" "${WORKDIR}"
   fi
 }
