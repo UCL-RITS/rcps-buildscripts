@@ -28,6 +28,7 @@ source ${CWD}/functions/src_configure
 source ${CWD}/functions/src_compile
 source ${CWD}/functions/src_install
 source ${CWD}/functions/pkg_postinst
+source ${CWD}/functions/module-utils
 
 # Prints an optional error message then exits.  Designed to be used within
 # package scripts, e.g.:
@@ -80,6 +81,9 @@ fi
 
 # ${FILESDIR} is where the patches are stored
 export FILESDIR="${CWD}/${PN}-files"
+
+# Find the compiler module before setting DESTDIR
+get_module_string
 
 export PREFIX=${PREFIX:-${HOME}}
 export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${MODULE_STRING}}"
