@@ -14,14 +14,20 @@
 #
 # See armadillo_6.200.2_install and f2c_install for examples.
 
-source functions/pkg_preinst
-source functions/pkg_fetch
-source functions/src_unpack
-source functions/src_prepare
-source functions/src_configure
-source functions/src_compile
-source functions/src_install
-source functions/pkg_postinst
+
+# The directory containing this script.
+# Works even if this script is called from another directory (i.e. pwd will not
+# work).
+export CWD="$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)"
+
+source ${CWD}/functions/pkg_preinst
+source ${CWD}/functions/pkg_fetch
+source ${CWD}/functions/src_unpack
+source ${CWD}/functions/src_prepare
+source ${CWD}/functions/src_configure
+source ${CWD}/functions/src_compile
+source ${CWD}/functions/src_install
+source ${CWD}/functions/pkg_postinst
 
 # Prints an optional error message then exits.  Designed to be used within
 # package scripts, e.g.:
