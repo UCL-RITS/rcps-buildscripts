@@ -1,7 +1,7 @@
 # Runs post installation package tasks.  Creates a modulefile in MODULEFILE.
 
-source module-utils
+source ${CWD}/functions/module-utils
 
 pkg_postinst() {
-  write_module_file()
+  write_module_file
 }
