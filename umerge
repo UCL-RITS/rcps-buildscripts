@@ -58,6 +58,11 @@ export S="${WORKDIR}/${P}"
 
 source "${CWD}/${1}" || die "Could not find ${1} to install"
 
+if [ -z "${DESCRIPTION}" ] || [ -z "${SRC_URI}" -o -z "${GIT_URI}" -o -z "${SVN_URI}"]
+  then
+  die "${P} does not define DESCRIPTION or one of SRC_URI, GIT_URI or SVN_URI"
+fi
+
 # ${A} is the archive name, e.g. armadillo-6.200.2.tar.gz
 # For git or SVN sources this is blank
 if [ "${SRC_URI}" ]
