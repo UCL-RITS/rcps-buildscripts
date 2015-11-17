@@ -10,7 +10,7 @@ COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-1.8.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/openmpi/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-93b7ea2c4ebae76947f942579608ae4a}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.open-mpi.org/software/ompi/v1.8/downloads/openmpi-${VERSION}.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.open-mpi.org/software/ompi/v${VERSION%.*}/downloads/openmpi-${VERSION}.tar.bz2}
 
 set -e
 
