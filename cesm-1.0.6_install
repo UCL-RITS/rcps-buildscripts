@@ -32,6 +32,6 @@ cp /shared/ucl/apps/build_scripts/cesm-patches/modules.csh ${INSTALL_PREFIX}/sup
 
 
 # uncomment when groups set on build system
-#cd $INSTALL_PREFIX
+cd $INSTALL_PREFIX
 chgrp -R legcesm cesm${VERSION}
 chmod -R o-rwx cesm${VERSION}
