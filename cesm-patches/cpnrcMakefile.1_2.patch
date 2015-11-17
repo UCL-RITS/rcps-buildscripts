@@ -1,0 +1,29 @@
+--- Makefile.old        2015-11-17 18:05:28.000000000 +0000
++++ Makefile    2015-11-17 18:09:44.000000000 +0000
+@@ -28,7 +28,7 @@
+ RM = rm
+ 
+ ifeq ($(NETCDF),$(null))
+-NETCDF := /contrib/netcdf/4.1.3_seq
++NETCDF := /shared/ucl/apps/cesm/support/netcdf
+ endif
+ 
+ # Check for the netcdf library and include directories 
+@@ -108,7 +108,7 @@
+ 
+ ifeq ($(UNAMES),Linux)
+   ifeq ($(USER_FC),$(null))
+-    FC := pgf90
++    FC := ifort
+   else
+     FC := $(USER_FC)
+   endif
+@@ -144,7 +144,7 @@
+   endif
+   LDFLAGS = -L$(LIB_NETCDF) -lnetcdff -lnetcdf
+   ifeq ($(FC),ifort)
+-    LDFLAGS += -Wl,rpath,$(LIB_NETCDF)
++    LDFLAGS += 
+   endif
+   ifeq ($(FC),pgf90)
+     LDFLAGS += -Wl,-R$(LIB_NETCDF)

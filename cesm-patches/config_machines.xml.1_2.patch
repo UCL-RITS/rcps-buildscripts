@@ -1,26 +1,29 @@
---- config_machines.xml 2015-11-17 17:29:45.000000000 +0000
-+++ config_machines.xml.old     2015-11-17 17:13:42.000000000 +0000
-@@ -569,22 +569,4 @@
+--- config_machines.xml.old     2015-11-17 17:13:42.000000000 +0000
++++ config_machines.xml 2015-11-17 18:23:43.000000000 +0000
+@@ -569,4 +569,25 @@
          <MAX_TASKS_PER_NODE>32</MAX_TASKS_PER_NODE>
  </machine>
  
--<machine MACH="legion">
--         <DESC>UCL Legion, os is Linux, batch system is SGE, user-defined</DESC>
--         <EXEROOT>/home/$CCSMUSER/Scratch/cesm/cases/$CASE</EXEROOT>
--         <OBJROOT>$EXEROOT</OBJROOT>
--         <LIBROOT>$EXEROOT/lib</LIBROOT>
--         <INCROOT>$EXEROOT/lib/include</INCROOT>
--         <DIN_LOC_ROOT>/home/$CCSMUSER/Scratch/cesm/inputdata</DIN_LOC_ROOT>
--         <DIN_LOC_ROOT_CLMFORC>/home/$CCSMUSER/Scratch/cesm/inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
--         <DOUT_S_ROOT>/home/$CCSMUSER/Scratch/cesm/archive/$CASE</DOUT_S_ROOT>
--         <DOUT_L_HTAR>FALSE</DOUT_L_HTAR>
--         <DOUT_L_MSROOT>UNSET</DOUT_L_MSROOT>
--         <OS>Linux</OS>
--         <BATCHQUERY>qstat</BATCHQUERY>
--         <BATCHSUBMIT>qsub</BATCHSUBMIT>
--         <GMAKE_J>1</GMAKE_J>
--         <MAX_TASKS_PER_NODE>4</MAX_TASKS_PER_NODE>
--</machine>
--
++<machine MACH="legion">
++         <DESC>UCL Legion, os is Linux, batch system is SGE, user-defined</DESC>
++         <COMPILERS>intel</COMPILERS>
++         <MPILIBS>impi</MPILIBS>
++         <RUNDIR>/home/$CCSMUSER/Scratch/cesm/cases/$CASE/run</RUNDIR>
++         <EXEROOT>/home/$CCSMUSER/Scratch/cesm/cases/$CASE/bld</EXEROOT>
++         <CESMSCRATCHROOT>/home/$CCSMUSER/Scratch/cesm/scratch</CESMSCRATCHROOT>
++         <DIN_LOC_ROOT>/home/$CCSMUSER/Scratch/cesm/inputdata</DIN_LOC_ROOT>
++         <DIN_LOC_ROOT_CLMFORC>/home/$CCSMUSER/Scratch/cesm/inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
++         <DOUT_S_ROOT>/home/$CCSMUSER/Scratch/cesm/archive/$CASE</DOUT_S_ROOT>
++         <DOUT_L_HTAR>FALSE</DOUT_L_HTAR>
++         <DOUT_L_MSROOT>UNSET</DOUT_L_MSROOT>
++         <CCSM_BASELINE>/home/$CCSMUSER/Scratch/cesm/baselines</CCSM_BASELINE>
++         <CCSM_CPRNC>/shared/ucl/apps/cesm/cesm1_2_2/tools/cprnc/cpnrc</CCSM_CPRNC>
++         <OS>Linux</OS>
++         <BATCHQUERY>qstat</BATCHQUERY>
++         <BATCHSUBMIT>qsub</BATCHSUBMIT>
++         <GMAKE_J>1</GMAKE_J>
++         <MAX_TASKS_PER_NODE>12</MAX_TASKS_PER_NODE>
++</machine>
++
  </config_machines>
 
