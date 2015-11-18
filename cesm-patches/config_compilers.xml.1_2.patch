@@ -1,0 +1,12 @@
+--- config_compilers.xml.old    2015-11-18 16:15:10.000000000 +0000
++++ config_compilers.xml        2015-11-18 16:16:08.000000000 +0000
+@@ -850,4 +850,9 @@
+   <TRILINOS_PATH>$(TRILINOS_PATH)</TRILINOS_PATH>
+ </compiler>
+
++<compiler MACH="legion">
++  <ADD_SLIBS>-L/shared/ucl/apps/HDF/5-1.8.15-Intel_2015/lib -L/shared/ucl/apps/cesm/support/netcdf/lib -lnetcdff -lnetcdf</ADD_SLIBS>
++</compiler>
++
++
+ </config_compilers>
