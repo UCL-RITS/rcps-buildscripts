@@ -39,7 +39,9 @@ then
   cd ${INSTALL_PREFIX}/cesm${VERSION}/tools/cprnc
   cp /shared/ucl/apps/build_scripts/cesm-patches/cpnrcMakefile.1_2.patch .
   patch < cpnrcMakefile.1_2.patch
-  cp ../../models/csm_share/shr/dtypes.h . 
+  set +e
+  make
+  set -e
   make
 fi
 
