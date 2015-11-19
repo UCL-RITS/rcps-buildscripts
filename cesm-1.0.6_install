@@ -24,6 +24,7 @@ cd cesm${VERSION}/scripts
 cp /shared/ucl/apps/build_scripts/cesm-patches/legion_cesm_setup.sh .
 cd ccsm_utils/Machines
 cp /shared/ucl/apps/build_scripts/cesm-patches/*.legion .
+cp /shared/ucl/apps/build_scripts/cesm-patches/Depends.intel .
 mv mkbatch.legion.${VERSION%_*} mkbatch.legion
 cp /shared/ucl/apps/build_scripts/cesm-patches/config_machines.xml.${VERSION%_*}.patch .
 patch < config_machines.xml.${VERSION%_*}.patch 

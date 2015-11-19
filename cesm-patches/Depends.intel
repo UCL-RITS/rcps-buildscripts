@@ -1,0 +1,6 @@
+NOOPTOBJS = spmd_dyn.o
+
+$(NOOPTOBJS): %.o: %.F90
+	$(FC) -c $(INCLDIR) $(INCS) $(FFLAGS) $(FREEFLAGS) -O1 $<
+endif
+
