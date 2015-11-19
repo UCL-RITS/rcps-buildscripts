@@ -33,7 +33,7 @@ mkdir -p $INSTALL_PREFIX/support
 cp /shared/ucl/apps/build_scripts/cesm-patches/modules.csh ${INSTALL_PREFIX}/support/modules.csh
 
 # Version 1.2 specific fixes
-if [ "${VERSION%_*}"=="1_2" ]
+if [ "${VERSION%_*}" == "1_2" ]
 then
   cd $INSTALL_PREFIX/cesm${VERSION}/scripts/ccsm_utils/Machines
   cp /shared/ucl/apps/build_scripts/cesm-patches/config_compilers.xml.1_2.patch .
