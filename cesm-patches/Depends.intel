@@ -1,3 +1,4 @@
+ifeq ($(CAM_DYCORE),fv)
 NOOPTOBJS = spmd_dyn.o
 
 $(NOOPTOBJS): %.o: %.F90
