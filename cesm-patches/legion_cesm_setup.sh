@@ -10,3 +10,4 @@ mkdir -p $usercesm/cases
 mkdir -p $usercesm/inputdata
 mkdir -p $usercesm/output
 mkdir -p $usercesm/scratch
+mkdir -p $usercesm/baselines
