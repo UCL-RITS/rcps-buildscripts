@@ -18,7 +18,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
-require compilers/intel/
+require compilers/intel/2015/update2` 
 require python2/recommended
 require boost # for some tests to pass
 
