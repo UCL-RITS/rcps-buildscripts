@@ -16,7 +16,7 @@ make_module() {
   send_help_and_quit="n"
 
   #Get command line arguments
-  while getopts  "hp:o:n:v:a:e:w:c:r:" flag
+  while getopts  "hp:o:n:v:a:e:w:c:r:d" flag
   do
     case "$flag" in
       "p")
@@ -27,6 +27,9 @@ make_module() {
         ;;
       "n")
         module_name="$OPTARG"
+        ;;
+      "d")
+        omit_normal_block="y"
         ;;
       "v")
         printf -v variables_to_import "%s\nsetenv %s" "$variables_to_import" "${OPTARG/=/ }"
@@ -109,7 +112,10 @@ ${module_conflicts}
 
 set              prefix               $module_prefix
 ${variables_to_import}${variables_to_prepend}${variables_to_append}
+EOF
 
+if [ -z "$omit_normal_block" ]; then
+cat >>$output_file <<EOF
 if { [file isdirectory \$prefix/bin] } then {
   prepend-path      PATH                 \$prefix/bin
 }
@@ -142,6 +148,7 @@ if { [file isdirectory \$prefix/include] } then {
 }
 
 EOF
+fi
 
 }
 
