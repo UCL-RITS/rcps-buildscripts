@@ -46,7 +46,7 @@ then
 cat > $a <<EOF
 #!/bin/bash
 
-${INSTALL_PREFIX}/${APPNAME}-${VERSION}/bin/picard $a \$\*
+${INSTALL_PREFIX}/${APPNAME}-${VERSION}/bin/picard $a \$\* TMP_DIR=\$TMPDIR
 EOF
   chmod +x $a
   done
