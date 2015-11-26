@@ -1,13 +1,12 @@
 # Finds which compiler module is loaded
 get_compiler_module() {
-  export COMPILER_MODULE
   local ccmod
   for ccmod in $(find /shared/ucl/apps/modulefiles/compilers -type f | cut -d'/' -f7-)
     do
-    /shared/ucl/apps/modules/3.2.6/Modules/3.2.6/bin/modulecmd bash list 2>&1 | grep ${ccmod} >/dev/null
+    /shared/ucl/apps/modules/3.2.6/Modules/3.2.6/bin/modulecmd bash list 2>&1 | grep "${ccmod}" >/dev/null
     if [ $? -eq 0 ]
       then
-      COMPILER_MODULE=${ccmod}
+      echo "${ccmod}"
       break
     fi
   done
@@ -17,28 +16,35 @@ get_compiler_module() {
 # compilers/intel/2015/update2), stripping off the leading 'compilers/' and
 # and replacing the remaining '/'s with '-' (e.g. intel-2015-update2).
 get_module_string() {
-  get_compiler_module || die "Unable to find compiler module"
-  export MODULE_STRING=${COMPILER_MODULE#*/*}
-  MODULE_STRING=${MODULE_STRING//\//-}
+  local ccmod
+  ccmod="$(get_compiler_module)"
+  [ "${ccmod}" ] || die "Unable to find compiler module"
+  local modstring
+  modstring="${ccmod#*/*}"
+  echo "${modstring//\//-}"
 }
 
 # Constructs the modulefile path as
 # ${PREFIX}/modulefiles/${PN}/${PV}/${MODULE_STRING}
 get_module_file() {
-  get_module_string || die "Unable to construct module string"
-  export MODULE_FILE="${MODULE_FILE:-${PREFIX}/modulefiles/${PN}/${PV}/${MODULE_STRING}}"
+  local modstring
+  modstring="$(get_module_string)"
+  [ "${modstring}" ] || die "Unable to construct module string"
+  echo "${MODULE_FILE:-${PREFIX}/modulefiles/${PN}/${PV}/${modstring}}"
 }
 
 write_module_file() {
-get_module_file || die "Unable to get module file path"
-local module_depstring=""
-for dep in ${MODULE_DEPENDS}
-  do
-  module_depstring="${module_depstring}
+  local modfile
+  modfile="$(get_module_file)"
+  [ "${modfile}" ] || die "Unable to get module file path"
+  local module_depstring=""
+  for dep in ${MODULE_DEPENDS}
+    do
+    module_depstring="${module_depstring}
 prereq ${dep}"
-done
-mkdir -p "${MODULE_FILE%/*}" && \
-cat > "${MODULE_FILE}" <<EOF
+  done
+  mkdir -p "${modfile%/*}" && \
+  cat > "${modfile}" <<EOF
 #%Module -*- tcl -*-
 ##
 ## dot modulefile
@@ -52,7 +58,7 @@ module-whatis "${DESCRIPTION}"
 set             root            ${DESTDIR}
 
 conflict ${PN}
-prereq ${COMPILER_MODULE}${module_depstring}
+prereq $(get_compiler_module)${module_depstring}
 
 append-path LD_RUN_PATH       \$root/lib
 append-path LD_LIBRARY_PATH   \$root/lib

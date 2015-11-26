@@ -83,7 +83,7 @@ fi
 export FILESDIR="${CWD}/${PN}-files"
 
 # Find the compiler module before setting DESTDIR
-get_module_string
+export MODULE_STRING="$(get_module_string)"
 
 export PREFIX=${PREFIX:-${HOME}}
 export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${MODULE_STRING}}"
