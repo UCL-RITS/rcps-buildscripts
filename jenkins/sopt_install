@@ -7,8 +7,10 @@ _env_setup() {
 
   if [ "$compiler" = "intel" ] ; then
     fftw="fftw/3.3.4/intel-2015-update2"
+    ccompiler="intel/2015/update2"
   elif [ "$compiler" = "gnu" ] ; then
     fftw="fftw/3.3.4/gnu-4.9.2"
+    ccompiler="gnu/4.9.2"
   else
     echo "Unknown compiler $compiler"
     exit 1
@@ -32,7 +34,7 @@ module-whatis "Loads all module to work with $purify"
 
 set              root              $INSTALL_PREFIX
 
-module swap compilers compilers/$compiler
+module swap compilers compilers/$ccompiler
 module load $pycompiler
 module load PyWavelets/$pycompiler
 module load cython/$pycompiler

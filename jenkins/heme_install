@@ -9,10 +9,12 @@ _env_setup() {
     boost=boost/1_54_0/mpi/intel-2015-update2
     mpi=mpi/intel/2015/update3/intel
     hdf5=hdf/5-1.8.15-p1-impi/intel-2015-update2
+    ccompiler="intel/2015/update2"
   elif [ "$compiler" = "gnu" ] ; then
     boost=boost/1_54_0/gnu-4.9.2
     mpi=mpi/openmpi/1.8.4/gnu-4.9.2
     hdf5=hdf/5-1.8.15-p1-ompi/gnu-4.9.2
+    ccompiler="gnu/4.9.2"
   else
     echo "Unknown compiler $compiler"
     exit 1
@@ -38,7 +40,7 @@ module-whatis "Loads all module to work with $purify"
 
 set              root              $INSTALL_PREFIX
 
-module swap compilers compilers/$compiler
+module swap compilers compilers/$ccompiler
 module load $pycompiler
 module load GreatCMakeCookoff
 module load ctemplate/$compiler
@@ -59,6 +61,6 @@ EOF
 source /shared/ucl/apps/bin/defmods
 
 for compiler in "intel" "gnu" ; do
-  _env_setup $compiler
+  _env_setup "$compiler"
   _modulefile
 done
