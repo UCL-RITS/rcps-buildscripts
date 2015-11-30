@@ -7,8 +7,8 @@
 #
 
 # You need to purchase a copy of AMBER and put the tar file somehwere.  You 
-# should also download the corresponding AmberTools packages
-
+# should also download the corresponding AmberTools packages.
+# Compiles using -xHost.
 
 VERSION=${VERSION:-14}
 PARALLEL=${PARALLEL:-""}
@@ -17,6 +17,15 @@ ABNAME=${ABNAME:-amber-${VERSION}${PARALLEL}}
 export AMBERHOME=${INSTALL_PREFIX}/${ABNAME}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2}
 TOOLS_SRC_ARCHIVE=${TOOLS_SRC_ARCHIVE:-/shared/ucl/apps/amber/source/AmberTools${VERSION}.tar.bz2}
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers
+require python
+require flex
 
 # If intel compilers are loard. MKLROOT will say where MKL is.
 export MKL_HOME=$MKLROOT
