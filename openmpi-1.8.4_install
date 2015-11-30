@@ -31,6 +31,11 @@ then
   cd openmpi-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX --with-sge --with-psm=/usr
   make && make install
+
+# Install mpirun wrapper
+  mkdir -p /shared/ucl/apps/openmpi/ucl-wrapper/bin
+  cp /shared/ucl/apps/build_scripts/files/mpirun /shared/ucl/apps/openmpi/ucl-wrapper/bin
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
