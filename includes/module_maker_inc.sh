@@ -116,6 +116,9 @@ EOF
 
 if [ -z "$omit_normal_block" ]; then
 cat >>$output_file <<EOF
+
+prepend-path        CMAKE_PREFIX_PATH    \$prefix
+
 if { [file isdirectory \$prefix/bin] } then {
   prepend-path      PATH                 \$prefix/bin
 }
