@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="icommands"
+package_version="4.1.7"
+# Optional: 
+# package_variant=""
+package_description="The iRODS iCommands are the command-line clients to an iRODS system."
+
+
+declare -a src_files
+declare -A file_md5s
+declare -A file_srcs
+src_files+=(icommands-4.1.7-bin.tgz)
+file_md5s+=([icommands-4.1.7-bin.tgz]=27a227119225f7cd3deace3cb6bbdce4)
+file_srcs+=([icommands-4.1.7-bin.tgz]=file:/shared/ucl/apps/pkg-store/%)
+
+
+# No requirements
+
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+/$package_variant}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  cd $build_dir
+  for file in "${src_files[@]}"; do
+    if [ "${file_srcs[$file]:0:5}" = "file:" ]; then
+      actual_path=${file_srcs[$file]#file:}
+      cp ${actual_path//%/$file} ./
+    else
+      wget -O $file ${file_srcs[$file]//%/$file}
+    fi
+    md5sum -c <<<"${file_md5s[$file]}  $file"
+  done
+}
+
+_setup_files() {
+  cd $build_dir
+  for file in *.tgz *.tar.?? *.tar.???; do
+    if [ "${file:0:1}" != "*" ]; then # (then the pattern has been matched)
+      tar -xf $file
+    fi
+  done
+}
+
+_build() {
+  cd $build_dir
+
+  mkdir -p "$install_prefix"
+
+  cp -r icommands-4.1.7-bin/* "$install_prefix"
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  export cprefix=$install_prefix
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -v IRODS_PLUGINS_DIR=$install_prefix/plugins \
+              -e PATH:$install_prefix \
+              -d \
+              -w "[$package_name/$package_version] $package_description"
+
+  # We need some extra sauce in this module, so it's here.
+
+  cat >>$module_dir/$package_label <<EOF
+lappend auto_path /shared/ucl/apps/modulelibs/UsefulModuleFunctions
+package require modulefunctions 1.0
+
+if [ modulefunctions::isModuleLoad ]  {
+  if { [ expr ! [ file exists ~/.irods/irods_environment.json ] ] } {
+    exec /shared/ucl/apps/userscripts/mkiconfig -q
+  }
+}
+
+EOF
+
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
