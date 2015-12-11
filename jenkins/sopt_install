@@ -42,7 +42,7 @@ module load pytest/$pycompiler
 module load $fftw
 module load gbenchmark/$compiler
 module load spdlog/$compiler
-module load eigen
+module load eigen/$compiler
 module load GreatCMakeCookoff
 
 append-path CMAKE_PREFIX_PATH /shared/ucl/apps/$fftw

@@ -39,7 +39,7 @@ module load $pycompiler
 module load pytest/$pycompiler
 module load cython/$pycompiler
 module load $fftw
-module load eigen
+module load eigen/$compiler
 module load GreatCMakeCookoff
 module load cfitsio/$compiler
 module load doxygen/$compiler
