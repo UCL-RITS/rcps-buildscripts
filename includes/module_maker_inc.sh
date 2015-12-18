@@ -106,7 +106,7 @@ set              prefix               $module_prefix
 ${variables_to_import}${variables_to_prepend}${variables_to_append}
 EOF
 
-if [ -z "$omit_normal_block" ]; then
+if [ -z "${omit_normal_block:-}" ]; then
 cat >>$output_file <<EOF
 
 prepend-path        CMAKE_PREFIX_PATH    \$prefix
