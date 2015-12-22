@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="collectl"
+package_version="4.0.2"
+# Optional: 
+# package_variant=""
+package_description="collectl is a tool for tracking and monitoring various node usage statistics."
+
+
+declare -a src_files
+declare -A file_md5s
+declare -A file_srcs
+src_files+=(collectl-${package_version}.src.tar.gz)
+file_md5s+=([collectl-${package_version}.src.tar.gz]=8502fbb30539e6f9ac962b8577a863b4)
+file_srcs+=([collectl-${package_version}.src.tar.gz]=http://downloads.sourceforge.net/project/collectl/collectl/collectl-${package_version}/%)
+
+
+# No requirements
+# Uses system perl
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+/$package_variant}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  cd $build_dir
+  for file in "${src_files[@]}"; do
+    if [ "${file_srcs[$file]:0:5}" = "file:" ]; then
+      actual_path=${file_srcs[$file]#file:}
+      cp ${actual_path//%/$file} ./
+    else
+      wget -O $file ${file_srcs[$file]//%/$file}
+    fi
+    md5sum -c <<<"${file_md5s[$file]}  $file"
+  done
+}
+
+_setup_files() {
+  cd $build_dir
+  for file in *.tgz *.tar.?? *.tar.???; do
+    if [ "${file:0:1}" != "*" ]; then # (then the pattern has been matched)
+      tar -xf $file
+    fi
+  done
+}
+
+_build() {
+  cd $build_dir
+
+  mkdir -p "$install_prefix"
+
+  # link usr to parent because collectl's installation dir settings are not correct
+  #  also link collectl.conf because collectl expects to find it either in same dir or ../../etc/ or /etc
+  ( cd $install_prefix; ln -s ./ usr; mkdir bin; ln -s ../etc/collectl.conf bin/collectl.conf )
+
+  cd "collectl-${package_version}"
+  export DESTDIR="$install_prefix"
+  ./INSTALL
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  export cprefix=$install_prefix
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -w "[$package_name/$package_version] $package_description"
+
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
