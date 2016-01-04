@@ -31,6 +31,13 @@ then
   cd OpenBLAS-${VERSION}
   make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1
   make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 install
+
+# Fixes for various packages e.g. numpy with broken search routines.
+  cd $INSTALL_PREFIX/lib
+  ln -s libopenblas.so liblapack.so
+  ln -s libopenblas.so libblas.so
+  ln -s libopenblas.a liblapack.a
+  ln -s libopenblas.a libblas.a
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
