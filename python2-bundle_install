@@ -23,13 +23,22 @@ virtualenv --system-site-packages venv
 
 source venv/bin/activate
 
-export LAPACK=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
-export BLAS=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so
+LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
+BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 
-export CVXOPT_BLAS_LIB_DIR=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib 
-export CVXOPT_BLAS_LIB=openblas 
-export CVXOPT_LAPACK_LIB_DIR=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib 
-export CVXOPT_LAPACK_LIB=openblas
+CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
+CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
+CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
+CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
+
+
+export LAPACK
+export BLAS
+
+export CVXOPT_BLAS_LIB_DIR
+export CVXOPT_BLAS_LIB
+export CVXOPT_LAPACK_LIB_DIR
+export CVXOPT_LAPACK_LIB
 
 pip install --upgrade pip
 
