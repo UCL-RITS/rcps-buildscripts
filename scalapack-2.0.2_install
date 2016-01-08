@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ScaLAPACK
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-scalapack}
+VERSION=${VERSION:-2.0.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/$BLAS_TAG}
+MD5=${MD5:-2f75e600a2ba155ed9ce974a1c4b536f}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.netlib.org/scalapack/scalapack-$VERSION.tgz}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers
+require mpi
+
+# check for BLAS provider
+if [ "$BLAS_TAG" == "" ] 
+then
+  echo "You need a BLAS module loaded (eg. OpenBLAS, ATLAS, MKL)."
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ${NAME}-${VERSION}
+  # static library
+  cmake CMakeLists.txt -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_VERBOSE_MAKEFILE=ON
+  make 2>&1 | tee make_static.log
+  make install
+
+  # shared library
+  cmake CMakeLists.txt -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_VERBOSE_MAKEFILE=ON
+  make 2>&1 | tee make_shared.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
