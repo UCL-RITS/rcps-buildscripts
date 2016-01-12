@@ -19,9 +19,9 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/4.9.2
-require blast+
-require samtools
-require perl
+require blast+/2.2.30
+require samtools/1.2
+require perl/5.22.0
 
 mkdir -p $INSTALL_PREFIX
 
