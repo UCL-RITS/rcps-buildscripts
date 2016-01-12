@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing proovread
+#
+# by Heather Kelly, 2016
+# You have to clone this recursively and they haven't been making releases or tagged versions.
+# Labelled by version stated in bin/proovread, last commit date and commit label.
+
+NAME=${NAME:-proovread}
+VERSION=${VERSION:-2.13.11-8Jan2016-f6a856a}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/BioInf-Wuerzburg/$NAME}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers
+require blast+
+require samtools
+require perl
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+git clone --recursive $SRC_ARCHIVE
+cd ${NAME}/util/bwa
+make
