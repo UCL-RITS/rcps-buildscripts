@@ -19,9 +19,10 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/4.9.2
-require blast+/2.2.30
-require samtools/1.2
+require samtools/1.2/gnu-4.9.2
 require perl/5.22.0
+
+hash blastx 2>/dev/null || { echo >&2 "Blast+ needs to be loaded. Aborting."; exit 1; }
 
 mkdir -p $INSTALL_PREFIX
 
