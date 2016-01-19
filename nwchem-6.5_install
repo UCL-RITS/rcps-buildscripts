@@ -12,6 +12,7 @@ REVISION=${REVISION:-r26243}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION-$REVISION/$COMPILER_TAG}
 MD5=${MD5:-39f4c5974367f47e08328f442833e0f9}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nwchem-sw.org/images/Nwchem-6.5.revision26243-src.2014-09-10.tar.gz}
+SRC_DIR=${SRC_DIR:-Nwchem-6.5.revision26243-src.2014-09-10}
 
 FL=${FL:-ifort}
 # stop it using -xhost. SSE4.1 for Nehalem. This doesn't actually work, need to build on older host.
@@ -81,14 +82,14 @@ then
   tar -xvf $archive
 
   # strip off the extraneous bits around the directory name
-  dirname=${archive#download.php?f=}
-  dirname=${dirname%.tar.gz}
+  #dirname=${archive#download.php?f=}
+  #dirname=${dirname%.tar.gz}
 
   export FL
   export FOPTIMIZE
   export COPTIMIZE
 
-  export NWCHEM_TOP=$temp_dir/$dirname
+  export NWCHEM_TOP=$temp_dir/$SRC_DIR
   export NWCHEM_TARGET
   export NWCHEM_MODULES
   export NWCHEM_LONG_PATHS
