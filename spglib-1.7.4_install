@@ -9,6 +9,7 @@ NAME=${NAME:-spglib}
 VERSION=${VERSION:-1.7.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/spglib/files/spglib/spglib-1.7/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-5d137c3ff5b2c42b82d258e23b6857a8}
 
 set -e
 
