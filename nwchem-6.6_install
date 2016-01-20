@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NWChem
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-nwchem}
+VERSION=${VERSION:-6.6}
+REVISION=${REVISION:-r27746}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION-$REVISION/$COMPILER_TAG}
+MD5=${MD5:-c581001c004ea5e5dfacb783385825e3}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nwchem-sw.org/download.php?f=Nwchem-6.6.revision27746-src.2015-10-20.tar.gz}
+SRC_DIR=${SRC_DIR:-nwchem-6.6}
+
+FL=${FL:-ifort}
+# stop it using -xhost. SSE4.1 for Nehalem. This doesn't actually work, need to build on older host.
+#FOPTIMIZE=${FOPTIMIZE:-'-O3 -xSSE4.1'}
+#COPTIMIZE=${COPTIMIZE:-'-O3 -xSSE4.1'}
+
+NWCHEM_TARGET=${NWCHEM_TARGET:-LINUX64}
+NWCHEM_MODULES=${NWCHEM_MODULES:-'all python'}
+NWCHEM_LONG_PATHS=${NWCHEM_LONG_PATHS:-Y}
+LARGE_FILES=${LARGE_FILES:-TRUE}
+# NOIO recommended on clusters
+USE_NOIO=${USE_NOIO:-TRUE}
+
+USE_MPI=${USE_MPI:-y}
+USE_MPIF=${USE_MPIF:-y}
+USE_MPIF4=${USE_MPIF4:-y}
+MPI_LOC=${MPI_LOC:-$MPI_HOME}
+# can run contrib/distro-tools/getmpidefs_nwchem to get these
+MPI_INCLUDE=${MPI_INCLUDE:-"-I$MPI_HOME/intel64/include"}
+MPI_LIB=${MPI_LIB:-"-L$MPI_HOME/intel64/lib/release_mt -L$MPI_HOME/intel64/lib"}
+LIBMPI=${LIBMPI:-'-lmpifort -lmpi -lmpigi -ldl -lrt -lpthread'}
+
+MPI_F90=${mpif90}
+MPI_CC=${mpicc}
+MPI_CXX=${mpicxx}
+
+ARMCI_NETWORK=${ARMCI_NETWORK:-OPENIB}
+MSG_COMMS=${MSG_COMMS:-MPI}
+IB_HOME=${IB_HOME:-/usr}
+IB_INCLUDE=${IB_INCLUDE:-$IB_HOME/include}
+IB_LIB=${IB_LIB:-$IB_HOME/lib64}
+IB_LIB_NAME=${IB_LIB_NAME:-"-libverbs"}
+
+PYTHONHOME=${PYTHONHOME:-/shared/ucl/apps/python/2.7.9/gnu-4.9.2/}
+PYTHONVERSION=${PYTHONVERSION:-2.7}
+
+# If we don't want to use MKL, need not to set some of these at all. 
+# Can't pass them in as empty if they have a default value, but the default is still handy.
+if [ "$BLAS_TAG" == "mkl" ]
+then
+  BLASOPT=${BLASOPT:-"${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"}
+  LAPACK_LIB=${LAPACK_LIB:-"${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a"}
+  USE_SCALAPACK=${USE_SCALAPACK:-y}
+  SCALAPACK_SIZE=${SCALAPACK_SIZE:-8}
+  SCALAPACK=${SCALAPACK:-"-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lmkl_blacs_intelmpi_ilp64 -lpthread -lm"}
+
+# Default for ATLAS. 
+elif [ "$BLAS_TAG" == "atlas" ]
+then
+  BLASOPT=${BLASOPT:-"-L$ATLASROOT/lib -lsatlas"}
+fi
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive
+
+  export FL
+  export FOPTIMIZE
+  export COPTIMIZE
+
+  export NWCHEM_TOP=$temp_dir/$SRC_DIR
+  export NWCHEM_TARGET
+  export NWCHEM_MODULES
+  export NWCHEM_LONG_PATHS
+  export LARGE_FILES
+
+  export USE_MPI
+  export USE_MPIF
+  export USE_MPIF4
+  export MPI_LOC
+  export MPI_INCLUDE
+  export MPI_LIB
+  export LIBMPI
+
+  export MPI_F90
+  export MPI_CC
+  export MPI_CXX
+
+  export ARMCI_NETWORK
+  export MSG_COMMS
+  export IB_HOME
+  export IB_INCLUDE
+  export IB_LIB
+  export IB_LIB_NAME
+
+  export PYTHONHOME
+  export PYTHONVERSION
+
+  export BLASOPT
+  export LAPACK_LIB
+  export USE_SCALAPACK
+  export SCALAPACK_SIZE
+  export SCALAPACK
+
+  # apply patches
+  cd $NWCHEM_TOP
+  wget http://www.nwchem-sw.org/images/Tddft_mxvec20.patch.gz
+  gzip -d Tddft_mxvec20.patch.gz
+  patch -p0 < Tddft_mxvec20.patch
+
+  wget -O Config_libs66.patch.gz http://www.nwchem-sw.org/download.php?f=Config_libs66.patch.gz
+  gzip -d Config_libs66.patch.gz
+  patch -p0 < Config_libs66.patch
+
+  wget -O Cosmo_meminit.patch.gz http://www.nwchem-sw.org/download.php?f=Cosmo_meminit.patch.gz
+  gzip -d Cosmo_meminit.patch.gz
+  patch -p0 < Cosmo_meminit.patch
+
+  wget -O Sym_abelian.patch.gz http://www.nwchem-sw.org/download.php?f=Sym_abelian.patch.gz
+  gzip -d Sym_abelian.patch.gz
+  patch -p0 < Sym_abelian.patch
+
+  wget -O Xccvs98.patch.gz http://www.nwchem-sw.org/download.php?f=Xccvs98.patch.gz
+  gzip -d Xccvs98.patch.gz
+  patch -p0 < Xccvs98.patch
+
+  # make nwchem
+  cd $NWCHEM_TOP/src
+  make nwchem_config 2>&1 | tee ../nwchem_config.log
+  make 2>&1 | tee ../nwchem_make.log
+
+  # install
+
+  mkdir -p $INSTALL_PREFIX/bin
+  cp $NWCHEM_TOP/bin/${NWCHEM_TARGET}/nwchem $INSTALL_PREFIX/bin
+  chmod 755 $INSTALL_PREFIX/bin/nwchem
+  cd $NWCHEM_TOP/src/
+  cp -r data $INSTALL_PREFIX
+  cd $NWCHEM_TOP/src/basis
+  cp -r libraries $INSTALL_PREFIX/data
+  cd $NWCHEM_TOP/src/nwpw
+  cp -r libraryps $INSTALL_PREFIX/data
+  chmod -R a+rx $INSTALL_PREFIX/data
+
+  # create .nwchemrc
+  cat <<EOT >> $INSTALL_PREFIX/.nwchemrc
+nwchem_basis_library $INSTALL_PREFIX/data/libraries/
+nwchem_nwpw_library $INSTALL_PREFIX/data/libraryps/
+ffield amber
+amber_1 $INSTALL_PREFIX/data/amber_s/
+amber_2 $INSTALL_PREFIX/data/amber_q/
+amber_3 $INSTALL_PREFIX/data/amber_x/
+amber_4 $INSTALL_PREFIX/data/amber_u/
+spce    $INSTALL_PREFIX/data/solvents/spce.rst
+charmm_s $INSTALL_PREFIX/data/charmm_s/
+charmm_x $INSTALL_PREFIX/data/charmm_x/
+EOT
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
