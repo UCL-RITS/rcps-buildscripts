@@ -92,6 +92,7 @@ then
   export NWCHEM_LONG_PATHS
   export LARGE_FILES
 
+  export USE_OPENMP
   export USE_MPI
   export USE_MPIF
   export USE_MPIF4
