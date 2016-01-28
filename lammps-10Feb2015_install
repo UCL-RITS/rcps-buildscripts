@@ -30,7 +30,21 @@ then
   tar -zxvf $archive
 
   cd lammps-${VERSION}/src
-  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
+
+  # Get host machine
+  if hostname -A | grep -q legion
+  then
+    cluster="legion"
+  elif hostname -A | grep -q grace
+  then
+    cluster="grace"
+  else
+    echo "Unknown machine, exiting: $(hostname -A)"
+    exit 1
+  fi
+
+  # Copy in appropriate Makefile with correct architecture flags
+  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
 
 # Add some necessary packages that aren't included by default for some reason
   make yes-kspace
@@ -39,11 +53,11 @@ then
   make yes-class2
 
 # Make binaries, libraries
-  make legion
+  make $cluster
 
 # Put them outside the source tree
   mkdir ../bin
-  mv lmp_legion ../bin
+  mv lmp_${cluster} ../bin
 
 # Wipe out our old object files.
   make clean-all
