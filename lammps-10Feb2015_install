@@ -10,7 +10,7 @@ COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-10Feb15}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-25a432713a3ad4969fdaaa2551d517ef} 
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-stable.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-$VERSION.tar.gz}
 
 set -e
 
@@ -35,6 +35,7 @@ then
   make yes-kspace
   make yes-replica
   make yes-rigid
+  make yes-class2
 
 # Make binaries, libraries
   make legion
