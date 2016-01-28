@@ -10,7 +10,7 @@ COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-10Feb15}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-25a432713a3ad4969fdaaa2551d517ef} 
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-$VERSION.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-${VERSION}.tar.gz}
 
 set -e
 
@@ -21,12 +21,13 @@ temp_dir=`mktemp -d`
 cd $temp_dir
 
 wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
 
-CHECKSUM=`md5sum lammps-stable.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf lammps-stable.tar.gz
+  tar -zxvf $archive
 
   cd lammps-${VERSION}/src
   cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.legion-${COMPILER_TAG} MAKE/MINE/Makefile.legion
