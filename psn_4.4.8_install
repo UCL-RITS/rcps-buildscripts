@@ -17,7 +17,7 @@
 
 NAME=${NAME:-psn}
 VERSION=${VERSION:-4.4.8}
-INSTALL_PREFIX=${INSTALL_PREFIX:-"~/$NAME-$VERSION-$COMPILER_TAG"}
+INSTALL_PREFIX=${INSTALL_PREFIX:-"/home/$USER/$NAME-$VERSION-$COMPILER_TAG"}
 MD5=${MD5:-188fcb58e02eab30dd41bc7fbb6dc0fd}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/psn/files/PsN-$VERSION.tar.gz}
 INSTALL_NAME=${INSTALL_NAME:-PsN_4_4_8}
@@ -41,7 +41,7 @@ then
   perl setup.pl
 
   #   Interactive answers   #
-  # Set PsN Utilities install location to $INSTALL_PREFIX
+  # Set PsN Utilities install location to same as $INSTALL_PREFIX
   # Perl binary location should be correct as long as you have the perl module loaded
   # Set PsN Core and Toolkit install location to $INSTALL_PREFIX
   # Complete path to NM-installation dir: /shared/ucl/apps/NONMEM/nm730_Intel
@@ -51,7 +51,7 @@ then
   sed -i.bak -e "s|threads=.*|threads=1|" ${INSTALL_PREFIX}/$INSTALL_NAME/psn.conf
   sed -i '/threads=1/a run_on_sge=1' ${INSTALL_PREFIX}/$INSTALL_NAME/psn.conf
 
-  # Back up current sge.pm and copy in ours
+  # Backs up current sge.pm and copy in ours
   mv $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/sge.pm $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/sge.pm.orig
   cp /shared/ucl/apps/build_scripts/files/psn/sge.pm $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/
 
