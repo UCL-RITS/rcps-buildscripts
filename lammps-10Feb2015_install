@@ -67,6 +67,10 @@ then
   mkdir -p $INSTALL_PREFIX
   mv lammps-${VERSION} $INSTALL_PREFIX
 
+# Make default binary symlink
+  cd $INSTALL_PREFIX/lammps-${VERSION}/bin
+  ln -s lmp_${cluster} lmp_default
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
