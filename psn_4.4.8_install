@@ -51,12 +51,15 @@ then
   sed -i.bak -e "s|threads=.*|threads=1|" ${INSTALL_PREFIX}/$INSTALL_NAME/psn.conf
   sed -i '/threads=1/a run_on_sge=1' ${INSTALL_PREFIX}/$INSTALL_NAME/psn.conf
 
-  # Backs up current sge.pm and copy in ours
+  # Backs up current sge.pm and copies in ours
   mv $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/sge.pm $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/sge.pm.orig
   cp /shared/ucl/apps/build_scripts/files/psn/sge.pm $INSTALL_PREFIX/$INSTALL_NAME/nonmemrun/
 
   # Tidy up temporary files
   rm -rf $temp_dir
+
+  echo "Put this in your .bashrc using your chosen \$INSTALL_PREFIX:"
+  echo "export PATH=$INSTALL_PREFIX:\$PATH" 
 
 else
   echo "Hash mismatch."
