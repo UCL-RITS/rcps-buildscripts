@@ -9,7 +9,7 @@
 NAME=${NAME:-p7zip}
 VERSION=${VERSION:-15.09}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/$NAME/files/$NAME/$VERSION/$NAME_$VERSION_src_all.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/$NAME/files/$NAME/$VERSION/${NAME}_${VERSION}_src_all.tar.bz2}
 
 set -e
 
