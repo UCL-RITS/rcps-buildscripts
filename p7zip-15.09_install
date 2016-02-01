@@ -36,10 +36,10 @@ then
   cd ${NAME}_${VERSION}
   cp makefile.linux_any_cpu_gcc_4.X makefile.linux
   make all_test 2>&1 | tee make.log
-  # install manually
   mkdir -p $INSTALL_PREFIX
-  cp -r bin $INSTALL_PREFIX
-  echo "Copied /bin to $INSTALL_PREFIX"
+  # set install location
+  sed -i.bak -e "s|DEST_HOME=/usr/local|DEST_HOME=$INSTALL_PREFIX|" install.sh
+  ./install.sh
 
 else
   echo "Hash mismatch."
