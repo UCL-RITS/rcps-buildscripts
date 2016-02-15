@@ -56,7 +56,7 @@ tar xvzf $SRC_ARCHIVE/$CRYSTAL14_ARC
 # Unpack the utilities archive
 
 echo "Unpacking the utilities archive ..."
-tar xvzf $UTILS14_ARC
+tar xvzf $SRC_ARCHIVE/$UTILS14_ARC
 cd utils14
 chmod a+x run*
 cd ..
@@ -82,7 +82,7 @@ tar xvzf $temp_dir/$CRGRA2006_ARC
 
 echo "Rebuilding the parallel versions for OpenMPI 1.8.4 and Infinband  ..."
 cd $temp_dir
-tar xvzf $CRYSTAL14_PAROBJ
+tar xvzf $SRC_ARCHIVE/$CRYSTAL14_PAROBJ
 cd build/Xmakes
 cp Linux-ifort_amd64.inc Linux-ifort_amd64.inc_dist
 sed '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' Linux-ifort_amd64.inc_dist > Linux-ifort_amd64.inc
