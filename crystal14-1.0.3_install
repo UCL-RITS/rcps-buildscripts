@@ -21,7 +21,7 @@ CRYSTAL14_PAROBJ=${CRYSTAL14_PAROBJ:-crystal14_v1_0_3_Linux-ifort_amd64_Pdistrib
 set -e
 startDir=`pwd`
 
-if [ ! -f $SRC_ARCHIVE/$CRYSTAL14_ARC1 ]
+if [ ! -f $SRC_ARCHIVE/$CRYSTAL14_ARC ]
 then
     echo ""
     echo "*** ERROR: Cannot find Crysta14 archives"
