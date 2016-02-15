@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# This script installs Crystal14 Versaion 1.0.3
+# Brian Alston Feb 2016
+# Based on spm12_install by Owain Kenway
+
+# You need to download the Crystal14 archives from the Crystal14 Licence Portal
+# (https://www.crystalsolutions.eu/login.html) using a UK academic login.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE etc
+# variables appropriately.
+
+VERSION=${VERSION:-v1.0.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Crystal14}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Crystal14/archives}
+CRYSTAL14_ARC=${CRYSTAL14_ARC:-crystal14_v1_0_3_Linux-ifort_openmpi_amd64_exe.tar.gz}
+UTILS14_ARC=${UTILS14_ARC:-utils14.tar.gz}
+INPUTS_ARC=${INPUTS_ARC:-inputs_wf.tar.gz}
+CRGRA2006_ARC=${CRGRA2006_ARC:-crgra2006.tar.gz}
+CRYSTAL14_PAROBJ=${CRYSTAL14_PAROBJ:-crystal14_v1_0_3_Linux-ifort_amd64_Pdistrib.tar.gz}
+
+set -e
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$CRYSTAL14_ARC1 ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find Crysta14 archives"
+    echo ""
+    echo "You need to download the Crystal14 archives from the Crystal14 Licence Portal"
+    echo "(https://www.crystalsolutions.eu/login.html) using a UK academic login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE etc." 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers/intel/2015/update2
+require mpi/openmpi/1.8.4/intel-2015-update2
+
+echo "Installing into $INSTALL_PREFIX/$VERSION ..."
+
+# Unpack the Crystal14 archive.
+
+echo "Unpacking the Crystal14 archive ..."
+mkdir -p $INSTALL_PREFIX/$VERSION
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $SRC_ARCHIVE/$CRYSTAL14_ARC
+
+# Unpack the utilities archive
+
+echo "Unpacking the utilities archive ..."
+tar xvzf $UTILS14_ARC
+cd utils14
+chmod a+x run*
+cd ..
+
+# Unpack the input files for the supplied examples
+
+echo "Unpacking the examples archive ..."
+cd $temp_dir
+wget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $temp_dir/$INPUTS_ARC
+
+# Unpack the crgra2006 untility
+
+echo "Unpacking the crgra utility archive ..."
+cd $temp_dir
+wget http://www.crystal.unito.it/crgra2006/crgra2006.tar.gz
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $temp_dir/$CRGRA2006_ARC
+
+# Rebuild parallel versions Pcrystal and Ppropertis to work on UCL Clusters with infiniband
+# and OpenMPI 1.8.4
+
+echo "Rebuilding the parallel versions for OpenMPI 1.8.4 and Infinband  ..."
+cd $temp_dir
+tar xvzf $CRYSTAL14_PAROBJ
+cd build/Xmakes
+cp Linux-ifort_amd64.inc Linux-ifort_amd64.inc_dist
+sed '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' Linux-ifort_amd64.inc_dist > Linux-ifort_amd64.inc
+cd ..
+make all
+cd ../bin/Linux-ifort_amd64/v1.0.3/
+cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_openmpi_amd64/$VERSION/
+cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_openmpi_amd64/$VERSION/
+
+# Change ownership to reserved app group
+
+cd $INSTALL_PREFIX/..
+chgrp -R legcryst Crystal14
+
+echo "Finished."
+
+cd $startDir
