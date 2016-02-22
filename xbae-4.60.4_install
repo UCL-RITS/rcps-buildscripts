@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing xbae
+#
+# by Brian Alston February 2016
+#
+
+NAME=${NAME:-xbae}
+VERSION=${VERSION:-4.60.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Xbae/$VERSION/$COMPILER_TAG
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/${NAME}/${NAME}-${VERSION}.tar.gz}
+CHECKSUM=${CHECKSUM:-9690059474bb05191dccd041ff5052bd}
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require xorg-utils/X11R7.7
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+xbae_archive=$(basename "$SRC_ARCHIVE}")
+XBAE_CHECKSUM=`md5sum $xbae_archive| awk '{print $1}'`
+
+if [ "$CHECKSUM" != "$XBAE_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xbae_archive."
+  echo "Expected: $CHECKSUM"
+  echo "Got: $XBAE_CHECKSUM"
+  exit 1;
+fi
+
+# install xbae
+tar -xvzf $xbae_archive
+cd ${NAME}-${VERSION}
+./configure --prefix=$INSTALL_PREFIX
+make 2>&1 | tee make.log
+make install
