@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CERNLIB
+#
+# by Brian Alston February 2016
+# http://cernlib.web.cern.ch/cernlib/download/2006_source/tar/2006_src.tar.gz
+
+VERSION=${VERSION:-2006}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://cernlib.web.cern.ch/cernlib/download/${VERSION}_source/tar/${VERSION}_src.tar.gz}
+INSTALL_DIR=/shared/ucl/apps/CERNLIB/2006
+BUILD_DIR=~/Software/CERNLIB_LegionNew
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require xorg-utils/X11R7.7
+require xbae/4.60.4
+
+set -e
+
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR
+
+wget $SRC_ARCHIVE
+cernlib_archive=$(basename "${SRC_ARCHIVE}")
+tar xvzf $cernlib_archive
+
+export CERN_LEVEL=$VERSION
+export CERN=`pwd`
+export CERN_ROOT=$CERN/$CERN_LEVEL
+export CVSCOSRC=$CERN_ROOT/src
+export PATH=$PATH:$CERN_ROOT/bin
+
+# Replace some source files with UCL/legion specific ones 
+
+cp ~ccaabaa/Software/CERNLIB/linux.cf-hacked $CVSCOSRC/config/linux.cf
+cp ~ccaabaa/Software/CERNLIB/linux-lp64.cf-hacked $CVSCOSRC/config/linux-lp64.cf
+cp ~ccaabaa/Software/CERNLIB/bugrep.c $CVSCOSRC/pawlib/paw/cpaw/bugrep.c
+
+$CVSCOSRC/config/imake_boot
+make bin/kuipc
+make scripts/Makefile
+cd scripts
+make install.bin
+chmod a+rx ../${CERN_LEVEL}/bin/*
+cd ..
+make 2>&1 | tee make-log
+
+# Install in /shared/ucl/apps
+
+mkdir -p $INSTALL_DIR
+cd $INSTASLL_DIR
+(cd $BUILD_DIR/2006; tar cvzf - lib) | tar xvzf -
+(cd $BUILD_DIR/2006; tar cvzf - bin) | tar xvzf -
