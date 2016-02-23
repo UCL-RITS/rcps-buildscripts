@@ -33,6 +33,7 @@ export CERN=`pwd`
 export CERN_ROOT=$CERN/$CERN_LEVEL
 export CVSCOSRC=$CERN_ROOT/src
 export PATH=$PATH:$CERN_ROOT/bin
+alias strip=/bin/echo
 
 # Replace some source files with UCL/legion specific ones 
 
