@@ -33,7 +33,6 @@ export CERN=`pwd`
 export CERN_ROOT=$CERN/$CERN_LEVEL
 export CVSCOSRC=$CERN_ROOT/src
 export PATH=$PATH:$CERN_ROOT/bin
-alias strip=/bin/echo
 
 # Replace some source files with UCL/legion specific ones 
 
@@ -53,6 +52,6 @@ make 2>&1 | tee make-log
 # Install in /shared/ucl/apps
 
 mkdir -p $INSTALL_DIR
-cd $INSTASLL_DIR
+cd $INSTALL_DIR
 (cd $BUILD_DIR/2006; tar cvzf - lib) | tar xvzf -
 (cd $BUILD_DIR/2006; tar cvzf - bin) | tar xvzf -
