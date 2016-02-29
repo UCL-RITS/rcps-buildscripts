@@ -19,3 +19,4 @@ lxml
 pysamstats
 astropy
 pyspglib
+scikit-learn
