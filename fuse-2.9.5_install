@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing fuse, headers needed for CVMFS
+#
+# It will fail to create ‘/sbin/mount.fuse’ but installs the bin, lib and include
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-fuse}
+VERSION=${VERSION:-2.9.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/libfuse/libfuse/releases/download/${NAME}_2_9_5/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-c901b77a1c4584c7ac6c2b67c0713f2b}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
