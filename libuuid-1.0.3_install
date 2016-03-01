@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing static libuuid
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-libuuid}
+VERSION=${VERSION:-1.0.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/$NAME/files/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-d44d866d06286c08ba0846aba1086d68}
+
+set -e
+
+# module prereqs for building
+#dirname=$(dirname $0 2>/dev/null)
+#INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+#source ${INCLUDES_DIR}/require_inc.sh
+#require gcc-libs/4.9.2
+#require compilers/gnu/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-static --disable-shared
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
