@@ -5,11 +5,11 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 package_name="octopus"
 package_version="4.1.2"
-src_urls=http://www.tddft.org/programs/octopus/down.php?file=4.1.2/octopus-4.1.2.tar.gz 
+src_urls=http://www.tddft.org/programs/octopus/down.php?file=${package_versio}n/octopus-${package_version}.tar.gz 
 # Optional: 
 # package_variant=""
 
-actual_file_name=octopus-4.1.2.tar.gz
+actual_file_name=octopus-${package_version}.tar.gz
 actual_file_md5=05081d25cbb46b1026e31d871557ef4a
 
 require compilers/intel/2015/update2
