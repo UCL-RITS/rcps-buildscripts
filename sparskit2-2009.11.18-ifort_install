@@ -41,7 +41,13 @@ _setup_files() {
 _build() {
   cd ${basename}
   sed -i.old -e 's/^make/make -e/' dotests
-  export F77=ifort
+  if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+  then
+    export F77=gfortran
+  else
+    export F77=ifort
+  fi
+
   export LIB="-L../ -lskit"
   # ^-- the makefiles are not exactly fully working, so we fix some things here
   make -e
