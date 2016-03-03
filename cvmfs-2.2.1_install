@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing cvmfs
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-cvmfs}
+VERSION=${VERSION:-2.2.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/$NAME/$NAME/archive/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-5b3b44aa8cde64e8a8c536af1d0eea22}
+FUSE_PREFIX=${FUSE_PREFIX:-/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/gnu
+require libuuid
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${NAME}-${VERSION}
+
+  # build libcvmfs.a
+  mkdir build
+  cd build
+  cmake -Wno-dev -DINSTALL_MOUNT_SCRIPTS=OFF -DBUILD_SERVER:BOOL=OFF \
+   -DBUILD_CVMFS:BOOL=OFF -DBUILD_LIBCVMFS:BOOL=ON \
+   -DINSTALL_BASH_COMPLETION:BOOL=OFF \
+   -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PREFIX/CVMFS \
+   -DCMAKE_C_FLAGS="-I${FUSE_PREFIX}/include" ..
+  make libpacparser
+  cd cvmfs
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
