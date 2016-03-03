@@ -7,20 +7,47 @@ package_name="octopus"
 package_version=${VERSION:-4.1.2}
 src_urls=http://www.tddft.org/programs/octopus/down.php?file=${package_version}/octopus-${package_version}.tar.gz 
 # Optional: 
-# package_variant=""
+package_variant=""
+libxcver=${LIBXCVER:-2.1.2}
 
 actual_file_name=octopus-${package_version}.tar.gz
 actual_file_md5=${MD5:-05081d25cbb46b1026e31d871557ef4a}
 
-require compilers/intel/2015/update2
-require gsl/1.16/intel-2015-update2
-require hdf/5-1.8.15/intel-2015-update2 
-require netcdf/4.3.3.1/intel-2015-update2
-require netcdf-fortran/4.4.1/intel-2015-update2
-require libetsfio/1.0.4/intel-2015-update2
-require libgd/2.1.1/intel-2015-update2
-require libxc/2.1.2/intel-2015-update2
-require sparskit2/2009.11.18/intel-2015-update2
+if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+then
+  require compilers/gnu/4.9.2
+  require hdf/5-1.8.15/gnu-4.9.2
+  require netcdf/4.3.3.1/gnu-4.9.2
+  require netcdf-fortran/4.4.1/gnu-4.9.2
+  require gsl/1.16/gnu-4.9.2
+  require libetsfio/1.0.4/gnu-4.9.2
+  require libgd/2.1.1/gnu-4.9.2
+  require libxc/${libxcver}/gnu-4.9.2
+  require sparskit2/2009.11.18/gnu-4.9.2
+  require openblas/0.2.14/gnu-4.9.2
+  require fftw/3.3.4/gnu-4.9.2
+
+else 
+  require compilers/intel/2015/update2
+  require gsl/1.16/intel-2015-update2
+  require hdf/5-1.8.15/intel-2015-update2 
+  require netcdf/4.3.3.1/intel-2015-update2
+  require netcdf-fortran/4.4.1/intel-2015-update2
+  require libetsfio/1.0.4/intel-2015-update2
+  require libgd/2.1.1/intel-2015-update2
+  require libxc/${libxcver}/intel-2015-update2
+  require sparskit2/2009.11.18/intel-2015-update2
+fi
+
+if [ "$package_variant" == "impi" ]
+then
+  require mpi/intel/2015/update3/intel
+fi
+
+if [ "$package_variant" == "openmpi" ]
+then
+  require mpi/openmpi/1.10.1/gnu-4.9.2
+fi
 
 _env_setup() {
   owd=$(pwd)
@@ -55,9 +82,41 @@ EOF
 
 _build() {
   cd ${basename}
-  export FC="ifort -mkl"
-  export CC="icc   -mkl"
-  ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/intel-2015-update2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/include --enable-utils   ${1:-} 
+  if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+  then
+    export FC="gfortran"
+    export CC="gcc"
+   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-fft-lib=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3.a --with-blas=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libblas.a --with-lapack=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/liblapack --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils   ${1:-} 
+    
+  else
+    export FC="ifort -mkl"
+    export CC="icc   -mkl"
+    ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/intel-2015-update2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/include --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/intel-2015-update2/"  --enable-utils   ${1:-} 
+
+  fi
+
+  if [ "$package_variant" == "impi" ]
+  then
+    export FC="mpif90 -mkl"
+    export CC="mpicc   -mkl"
+    export FCCPP="fpp "
+    export CPP="mpicc -E"
+    export MPIEXEC=`which mpirun`
+    ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-Intel_2015/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/intel-2015-update2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/intel-2015-update2/include --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/intel-2015-update2/"  --enable-utils --enable-mpi  ${1:-} 
+
+  fi
+
+  if [ "$package_variant" == "openmpi" ]
+  then
+    export FC="mpif90"
+    export CC="mpicc"
+    export FCCPP="gfortran -cpp "
+    export CPP="mpicc -E"
+    export MPIEXEC=`which mpirun`
+   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-fft-lib=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3.a --with-blas=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libblas.a --with-lapack=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/liblapack --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils --enable-mpi  ${1:-} 
+
+  fi
+
   make ${2:-}
   ulimit -s unlimited # <-- if you don't do this, the first test segfaults
   make check 
@@ -67,19 +126,51 @@ _build() {
 }
 
 _prepare_module() {
+if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+then
+  if [ "$package_variant" == "openmpi" ]
+  then
+    extra=" -r mpi/openmpi/1.10.1/gnu-4.9.2 "
+  fi
+
   make_module -p $install_prefix \
-              -n "${package_name}" \
               -c "${package_name}" \
               -o $module_dir/$package_label \
-              -r compilers/intel/2015/update2 \
+              -r compilers/gnu/4.9.2 ${extra} \
+              -r hdf/5-1.8.15/gnu-4.9.2 \
+              -r netcdf/4.3.3.1/gnu-4.9.2 \
+              -r netcdf-fortran/4.4.1/gnu-4.9.2 \
+              -r gsl/1.16/gnu-4.9.2 \
+              -r libetsfio/1.0.4/gnu-4.9.2 \
+              -r libgd/2.1.1/gnu-4.9.2 \
+              -r libxc/${libxcver}/gnu-4.9.2 \
+#              -r sparskit2/2009.11.18/gnu-4.9.2 \
+              -r openblas/0.2.14/gnu-4.9.2 \
+              -r fftw/3.3.4/gnu-4.9.2 \
+              -w "Adds ${package_name} ${package_version} to your environment."
+
+else 
+  if [ "$package_variant" == "impi" ]
+  then
+     extra=" -r mpi/intel/2015/update3/intel "
+  fi
+
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r compilers/intel/2015/update2 ${extra} \
               -r gsl/1.16/intel-2015-update2 \
               -r hdf/5-1.8.15/intel-2015-update2 \
               -r netcdf/4.3.3.1/intel-2015-update2 \
               -r netcdf-fortran/4.4.1/intel-2015-update2 \
               -r libetsfio/1.0.4/intel-2015-update2 \
               -r libgd/2.1.1/intel-2015-update2 \
-              -r libxc/2.1.2/intel-2015-update2 \
+              -r libxc/${libxcver}/intel-2015-update2 \
+#              -r sparskit2/2009.11.18/intel-2015-update2 \
               -w "Adds ${package_name} ${package_version} to your environment."
+
+fi
+
               # -r sparskit2/2009.11.18/intel-2015-update2 # <-- sparskit linked statically, module not required
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
