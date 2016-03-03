@@ -9,11 +9,13 @@ if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
   require compilers/gnu/4.9.2
   require netcdf-fortran/4.4.1/gnu-4.9.2
-  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-intel-2015-update2
+  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-gnu-4.9.2
+
 else
   require compilers/intel/2015/update2
   require netcdf-fortran/4.4.1/intel-2015-update2
-  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-gnu-4.9.2
+  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-intel-2015-update2
+
 fi 
 
 _env_setup() {
