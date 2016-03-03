@@ -59,7 +59,6 @@ _prepare_module() {
   fi 
 
   make_module -p $install_prefix \
-              -n "${package_name}" \
               -c "${package_name}" \
               -r "${compmod}" \
               -o $module_dir/$package_label \
