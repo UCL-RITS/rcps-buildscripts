@@ -3,10 +3,18 @@
 set -eu; for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 PACKAGE_NAME="libetsfio"
-PACKAGE_VERSION="1.0.4"
+PACKAGE_VERSION=${VERSION:-1.0.4}
 
-require compilers/intel/2015/update2
-require netcdf-fortran/4.4.1/intel-2015-update2
+if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+then
+  require compilers/gnu/4.9.2
+  require netcdf-fortran/4.4.1/gnu-4.9.2
+  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-intel-2015-update2
+else
+  require compilers/intel/2015/update2
+  require netcdf-fortran/4.4.1/intel-2015-update2
+  netcdfloc=/shared/ucl/apps/NetCDF-fortran/4.4.1-gnu-4.9.2
+fi 
 
 _env_setup() {
   owd=$(pwd)
@@ -49,7 +57,7 @@ EOF
 
   ./configure \
     --prefix=$install_prefix \
-    --with-netcdf-incs=-I/shared/ucl/apps/NetCDF-fortran/4.4.1-intel-2015-update2/include/ \
+    --with-netcdf-incs=-I${netcdfloc}/include/ \
     --with-netcdf-libs="-lnetcdff"
   make ${2:-}
   make check 
@@ -59,12 +67,22 @@ EOF
 }
 
 _prepare_module() {
+  if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
+  then
+    compmod="compilers/gnu/4.9.2"
+    netmod="netcdf-fortran/4.4.1/gnu-4.9.2"
+  else
+    compmod="compilers/intel/2015/update2"
+    netmod="netcdf-fortran/4.4.1/intel-2015-update2"
+  fi 
+
+
   make_module -p $install_prefix \
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -o $module_dir/$package_label \
-              -r compilers/intel/2015/update2 \
-              -r netcdf-fortran/4.4.1/intel-2015-update2 \
+              -r $compmod \
+              -r $netmod \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
