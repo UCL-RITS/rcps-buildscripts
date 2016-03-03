@@ -7,7 +7,7 @@ package_name="octopus"
 package_version=${VERSION:-5.0.1}
 src_urls=http://www.tddft.org/programs/octopus/down.php?file=${package_version}/octopus-${package_version}.tar.gz 
 # Optional: 
-package_variant=""
+package_variant=${MPI:-""}
 libxcver=${LIBXCVER:-2.2.2}
 
 actual_file_name=octopus-${package_version}.tar.gz
