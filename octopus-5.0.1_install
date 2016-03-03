@@ -145,7 +145,6 @@ then
               -r libetsfio/1.0.4/gnu-4.9.2 \
               -r libgd/2.1.1/gnu-4.9.2 \
               -r libxc/${libxcver}/gnu-4.9.2 \
-#              -r sparskit2/2009.11.18/gnu-4.9.2 \
               -r openblas/0.2.14/gnu-4.9.2 \
               -r fftw/3.3.4/gnu-4.9.2 \
               -w "Adds ${package_name} ${package_version} to your environment."
@@ -167,7 +166,6 @@ else
               -r libetsfio/1.0.4/intel-2015-update2 \
               -r libgd/2.1.1/intel-2015-update2 \
               -r libxc/${libxcver}/intel-2015-update2 \
-#              -r sparskit2/2009.11.18/intel-2015-update2 \
               -w "Adds ${package_name} ${package_version} to your environment."
 
 fi
