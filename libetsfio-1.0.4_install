@@ -80,7 +80,6 @@ _prepare_module() {
 
 
   make_module -p $install_prefix \
-              -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -o $module_dir/$package_label \
               -r $compmod \
