@@ -126,6 +126,7 @@ _build() {
 }
 
 _prepare_module() {
+extra=""
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
 then
   if [ "$package_variant" == "openmpi" ]
