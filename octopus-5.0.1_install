@@ -86,7 +86,7 @@ _build() {
   then
     export FC="gfortran"
     export CC="gcc"
-   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-fft-lib=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3.a --with-blas=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libblas.a --with-lapack=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/liblapack --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils   ${1:-} 
+   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils   ${1:-} 
     
   else
     export FC="ifort -mkl"
@@ -113,7 +113,7 @@ _build() {
     export FCCPP="gfortran -cpp "
     export CPP="mpicc -E"
     export MPIEXEC=`which mpirun`
-   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-fft-lib=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3.a --with-blas=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libblas.a --with-lapack=/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/liblapack --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils --enable-mpi  ${1:-} 
+   ./configure --prefix=$install_prefix --with-etsf-io-prefix=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/ --with-netcdf-prefix="/shared/ucl/apps/NetCDF/4.3.3.1-gcc.4.9.2/" --with-sparskit=/shared/ucl/apps/sparskit2/2009.11.18/gnu-4.9.2/lib/libskit.a --with-etsf-io-include=/shared/ucl/apps/libetsfio/1.0.4/gnu-4.9.2/include --with-libxc-prefix="/shared/ucl/apps/libxc/${libxcver}/gnu-4.9.2/" --enable-utils --enable-mpi  ${1:-} 
 
   fi
 
