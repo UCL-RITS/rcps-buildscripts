@@ -9,6 +9,7 @@ src_urls=http://www.tddft.org/programs/octopus/down.php?file=${package_version}/
 # Optional: 
 package_variant=${MPI:-""}
 libxcver=${LIBXCVER:-2.2.2}
+tests=${TESTS:-"yes"}
 
 actual_file_name=octopus-${package_version}.tar.gz
 actual_file_md5=${MD5:-2b6392ab67b843f9d4ca7413fc07e822}
@@ -119,7 +120,10 @@ _build() {
 
   make ${2:-}
   ulimit -s unlimited # <-- if you don't do this, the first test segfaults
-  make check 
+  if [ "$tests" == "yes" ]
+  then
+    make check
+  fi 
   make install
   make distclean
   echo "Installed to: $install_prefix"
