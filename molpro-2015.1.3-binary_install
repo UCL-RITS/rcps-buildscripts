@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Molpro binary
+#
+# 
+#
+
+# You need to register for Molpro, and download a token and binary
+# from their licensee website. Put the token in ~/.molpro/token.
+
+VERSION=${VERSION:-2015.1.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}}
+SOURCE_DIR=${SOURCE_DIR:-/shared/ucl/apps/molpro/sources}
+EXECUTABLE=${EXECUTABLE:-molpro-mpp-${VERSION}.linux_x86_64_openmp.sh}
+
+
+set -e
+
+cd $SOURCE_DIR
+gunzip $EXECUTABLE.gz
+./$EXECUTABLE
+
+# Leave the bin directory location as the default and give it the main install directory
+
