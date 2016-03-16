@@ -85,7 +85,7 @@ export FILESDIR="${CWD}/${PN}-files"
 # Find the compiler module before setting DESTDIR
 export MODULE_STRING="$(get_module_string)"
 
-export PREFIX=${PREFIX:-${HOME}}
+export PREFIX=${PREFIX:-/shared/ucl/apps/rsd}
 export DESTDIR="${DESTDIR:-${PREFIX}/modules/${PN}/${PV}/${MODULE_STRING}}"
 
 if [ "${HOME}" == "${WORKDIR}" -o "/" == "${WORKDIR}" ]
