@@ -18,7 +18,8 @@ EXECUTABLE=${EXECUTABLE:-molpro-mpp-${VERSION}.linux_x86_64_openmp.sh}
 set -e
 
 cd $SOURCE_DIR
-gunzip $EXECUTABLE.gz
+gunzip -c $EXECUTABLE.gz > $EXECUTABLE
+chmod u+x $EXECUTABLE
 ./$EXECUTABLE
 
 # Leave the bin directory location as the default and give it the main install directory
