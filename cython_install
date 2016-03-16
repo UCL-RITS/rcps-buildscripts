@@ -3,12 +3,12 @@ _env_setup() {
   package_name="cython"
   compiler=${1:-python2}
   version=${2:-0.23.3}
-  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-/shared/ucl/apps/rsd/modulefiles}
 
   temp_dir=`mktemp -d -p /dev/shm`
 
   module load $compiler
-  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$version}
+  INSTALL_PREFIX=${DESTDIR:-/shared/ucl/apps/rsd/modules/$package_name/$compiler/$version}
   if [ "$compiler" = "python2" ] ; then
     pypath=python2.7
   elif [ "$compiler" = "python3" ] ; then

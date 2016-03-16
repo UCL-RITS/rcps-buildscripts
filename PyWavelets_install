@@ -2,13 +2,13 @@
 _env_setup() {
   package_name="PyWavelets"
   compiler=${1:-python2}
-  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-/shared/ucl/apps/rsd/modulefiles}
 
   module load $pyversion
   export CC=gcc
   export CXX=g++
 
-  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$pyversion}
+  INSTALL_PREFIX=${DESTDIR:-/shared/ucl/apps/rsd/modules/$package_name/$pyversion}
   if [ "$pyversion" = "python2" ] ; then
     pypath=python2.7
   elif [ "$pyversion" = "python3" ] ; then
