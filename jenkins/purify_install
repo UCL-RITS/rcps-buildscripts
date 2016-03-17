@@ -3,20 +3,21 @@ _env_setup() {
   package_name="purify"
   pycompiler=${1:-python2}
   compiler=${2:-intel}
-  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-/shared/ucl/apps/rsd/modulefiles}
 
   if [ "$compiler" = "intel" ] ; then
-    fftw="fftw/3.3.4/intel-2015-update2"
     ccompiler="intel/2015/update2"
+    boost="boost-1.60.0-intel-16.0.0-xh6vyvufvac7ei34sa7xa6trehet2b6f"
   elif [ "$compiler" = "gnu" ] ; then
     fftw="fftw/3.3.4/gnu-4.9.2"
     ccompiler="gnu/4.9.2"
+    boost="boost-1.60.0-gcc-4.9.2-x4eb7s2lw2porc3fixnkymist2xkrn65"
   else
     echo "Unknown compiler $compiler"
     exit 1
   fi
 
-  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$pycompiler}
+  INSTALL_PREFIX=${DESTDIR:-/shared/ucl/apps/rsd/modules/$package_name/$compiler/$pycompiler}
 }
 
 _modulefile() {
@@ -35,14 +36,9 @@ module-whatis "Loads all module to work with $purify"
 set              root              $INSTALL_PREFIX
 
 module swap compilers compilers/$ccompiler
-module load $pycompiler
-module load pytest/$pycompiler
-module load cython/$pycompiler
-module load $fftw
-module load eigen/$compiler
-module load GreatCMakeCookoff
-module load cfitsio/$compiler
-module load doxygen/$compiler
+module load jenkins/sopt/$compiler/$pycompiler
+module load $boost
+module load doxygen-1.8.10-gcc-4.9.2-g4iiglbvyt5trinty5gi7quegmg23qbw
 
 append-path CMAKE_PREFIX_PATH /shared/ucl/apps/$fftw
 if { "$compiler" == "gnu" } {

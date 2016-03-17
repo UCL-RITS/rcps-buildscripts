@@ -3,20 +3,28 @@ _env_setup() {
   package_name="sopt"
   pycompiler=${1:-python2}
   compiler=${2:-intel}
-  modulefiles=${RSD_MODULES_HOME:-~ccsprsd/modulefiles}
+  modulefiles=${RSD_MODULES_HOME:-/shared/ucl/apps/rsd/modulefiles}
 
   if [ "$compiler" = "intel" ] ; then
-    fftw="fftw/3.3.4/intel-2015-update2"
     ccompiler="intel/2015/update2"
+    fftw="fftw/3.3.4/intel-2015-update2"
+    cfitsio="cfitsio-3.370-intel-16.0.0-tafgqoy666tdxop74lhl7bfp7c7wig2b"
+    eigen="Eigen-3.2.7-intel-16.0.0-75wkblk6tcedg7zknnjq6ttyh5qfyerc"
+    spdlog="spdlog-dev-intel-16.0.0-bo7aljmuwwayqacwf6fc76bwzkei73mh"
+    gbenchmark="gbenchmark-1.0.0-intel-16.0.0-d73sn5qo5p47w4pkcbmzkh23zx77mo3y"
   elif [ "$compiler" = "gnu" ] ; then
-    fftw="fftw/3.3.4/gnu-4.9.2"
     ccompiler="gnu/4.9.2"
+    fftw="fftw/3.3.4/gnu-4.9.2"
+    cfitsio="cfitsio-3.370-gcc-4.9.2-3zknqa3qmewhfdir5lllsvsyubrukldg"
+    eigen="Eigen-3.2.7-gcc-4.9.2-yljnptvwpmsa7awoeowaizjplgpgriur"
+    spdlog="spdlog-dev-gcc-4.9.2-fpkicawlycnnnnvr3zteddxjhudr2me2"
+    gbenchmark="gbenchmark-1.0.0-gcc-4.9.2-xfckdztmph5qa2lpwv5bnljbvr33boln"
   else
     echo "Unknown compiler $compiler"
     exit 1
   fi
 
-  INSTALL_PREFIX=${DESTDIR:-/imports/home0/ccsprsd/modules/$package_name/$compiler/$pycompiler}
+  INSTALL_PREFIX=${DESTDIR:-/shared/ucl/apps/rsd/modules/$package_name/$compiler/$pycompiler}
 }
 
 _modulefile() {
@@ -35,15 +43,8 @@ module-whatis "Loads all module to work with $purify"
 set              root              $INSTALL_PREFIX
 
 module swap compilers compilers/$ccompiler
-module load $pycompiler
+module load $pycompiler $cfitsio $spdlog $gbenchmark $fftw $eigen
 module load PyWavelets/$pycompiler
-module load cython/$pycompiler
-module load pytest/$pycompiler
-module load $fftw
-module load gbenchmark/$compiler
-module load spdlog/$compiler
-module load eigen/$compiler
-module load GreatCMakeCookoff
 
 append-path CMAKE_PREFIX_PATH /shared/ucl/apps/$fftw
 if { "$compiler" == "gnu" } {
