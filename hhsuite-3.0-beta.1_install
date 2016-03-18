@@ -40,7 +40,7 @@ then
   cd ${NAME}-${VERSION}
   mkdir build
   cd build
-  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_BASE_DIR} $CMAKE_OPTIONS ..
+  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} $CMAKE_OPTIONS ..
   make
   make install
 
