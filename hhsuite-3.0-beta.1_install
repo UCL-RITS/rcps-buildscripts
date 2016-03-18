@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing hhsuite
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-hhsuite}
+VERSION=${VERSION:-3.0-beta.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/soedinglab/hh-suite/releases/download/v${VERSION}/${NAME}-${VERSION}-Source.tar.gz}
+MD5=${MD5:-e5e7ced997f0a4b1bce85aa44cafe0d3}
+CMAKE_OPTIONS=${CMAKE_OPTIONS:-"-DHAVE_AVX2=OFF -DHAVE_SSSE3=ON"}
+
+# CMAKE_OPTIONS for Nehalem nodes.
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require cmake
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  # Has inconsistent version naming inside tar file
+  mkdir -p $temp_dir/${NAME}-${VERSION}
+  tar -xvf $archive -C $temp_dir/${NAME}-${VERSION} --strip-components=1
+  cd ${NAME}-${VERSION}
+  mkdir build
+  cd build
+  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_BASE_DIR} $CMAKE_OPTIONS ..
+  make
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
