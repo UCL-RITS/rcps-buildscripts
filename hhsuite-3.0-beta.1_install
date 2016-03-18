@@ -17,6 +17,9 @@ CMAKE_OPTIONS=${CMAKE_OPTIONS:-"-DHAVE_AVX2=OFF -DHAVE_SSSE3=ON"}
 
 set -e
 
+# Check that an mpi is loaded
+hash mpicc 2>/dev/null || { echo >&2 "No MPI module loaded. Aborting."; exit 1; }
+
 # module prereqs for building
 dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
