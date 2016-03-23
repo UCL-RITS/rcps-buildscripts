@@ -4,7 +4,7 @@
     {"EnginePath" -> "/opt/sge", "KernelOptions" -> "-subkernel -mathlink \
 -LinkMode Connect -LinkProtocol TCPIP -LinkName `linkname`", 
      "KernelProgram" -> 
-      "/usr/local/Wolfram/Mathematica/7.0/Executables/math", 
+      "/shared/ucl/apps/Mathematica/10.4/bin/math", 
      "NativeSpecification" -> "", "NetworkInterface" -> "", 
      "ToQueue" -> False}, {"Legion", False, False}]}, 
  Parallel`Palette`paletteConfig["enabledImplementations"] -> 
