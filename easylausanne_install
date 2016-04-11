@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-easylausanne}
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/mattcieslak/easy_lausanne}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd easy_lausanne
+
+python setup.py install --prefix=$INSTALL_PREFIX
