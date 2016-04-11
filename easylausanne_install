@@ -23,6 +23,6 @@ cd $temp_dir
 git clone $SRC_ARCHIVE
 cd easy_lausanne
 
-export PYTHONPATH=/shared/ucl/apps/easylausanne/8cb3962/lib/python2.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=$INSTALL_PREFIX/lib/python2.7/site-packages/:$PYTHONPATH
 
 python setup.py install --prefix=$INSTALL_PREFIX
