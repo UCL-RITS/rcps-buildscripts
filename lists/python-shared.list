@@ -21,3 +21,4 @@ astropy
 pyspglib
 scikit-learn
 weblogo
+nibabel
