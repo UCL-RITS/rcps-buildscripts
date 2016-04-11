@@ -7,8 +7,6 @@
 #
 
 APPNAME=${APPNAME:-easylausanne}
-VERSION=${VERSION:-`git rev-parse --short HEAD`}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/mattcieslak/easy_lausanne}
 
 set -e
@@ -23,6 +21,9 @@ cd $temp_dir
 git clone $SRC_ARCHIVE
 cd easy_lausanne
 
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+mkdir -p $INSTALL_PREFIX/lib/python2.7/site-packages
 export PYTHONPATH=$INSTALL_PREFIX/lib/python2.7/site-packages/:$PYTHONPATH
 
 python setup.py install --prefix=$INSTALL_PREFIX
