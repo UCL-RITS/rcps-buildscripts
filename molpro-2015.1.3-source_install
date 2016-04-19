@@ -31,7 +31,7 @@ cp -r $SRC_ARCHIVE .
 sourcedir=$(basename "${SRC_ARCHIVE}")
 cd $sourcedir
 
-CXX=mpicxx FC=mpif90 ./configure --enable-mpp --disable-boost -prefix $INSTALL_PREFIX
+CXX=mpicxx FC=mpif90 ./configure --enable-mpp --disable-boost --prefix $INSTALL_PREFIX
 
 make
 make tuning
