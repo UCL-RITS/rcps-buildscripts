@@ -9,7 +9,7 @@ VERSION=${VERSION:-6.1}
 PRODUCT=${PRODUCT:-npl6a61na}
 ARCH=${ARCH:-amd64}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-compiler}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$PRODUCT_$ARCH.tgz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/${PRODUCT}_$ARCH.tgz}
 MD5=${MD5:-1e29d9d435b7ccc2842a320150b28ba4}
 # EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
 
