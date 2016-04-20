@@ -22,7 +22,6 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/molpro/sources/Molpro2015}
 
 set -e
 
-mkdir -p /dev/shm/molpro
 temp_dir=`mktemp -d -p /dev/shm/molpro`
 
 cd $temp_dir
