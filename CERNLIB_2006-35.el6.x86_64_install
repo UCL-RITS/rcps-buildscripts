@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Cernlib binary
+#
+# 
+#
+
+NAME=${NAME:-CERNLIB}
+VERSION=${VERSION:-2006-35.el6.x86_64}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://fr2.rpmfind.net/linux/epel/6/x86_64/cernlib-${VERSION}.rpm}
+MD5=${MD5:-6529783867961d4e749952d0265dc313}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm/cernlib`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  rpm2cpio $archive | cpio -i -d
+
+  mkdir -p $INSTALL_PREFIX
+  cp -r usr $INSTALL_PREFIX
+  cp -r etc $INSTALL_PREFIX
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
