@@ -19,11 +19,11 @@ temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 wget $SRC_ARCHIVE
-CHECKSUM=`md5sum $PRODUCT_$ARCH.tgz | awk '{print $1}'`
+CHECKSUM=`md5sum ${PRODUCT}_$ARCH.tgz | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
-   tar xvzf $PRODUCT_$ARCH.tgz
+   tar xvzf ${PRODUCT}_$ARCH.tgz
    cd NAG_Fortran-$ARCH
 
     # Run the installer.
