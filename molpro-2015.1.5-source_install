@@ -16,7 +16,7 @@
 # You should manually make test in the build dir to test the build if this 
 # is a new combination of compilers etc.
 
-VERSION=${VERSION:-2015.1.3}
+VERSION=${VERSION:-2015.1.5}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/molpro/sources/Molpro2015}
 
