@@ -47,9 +47,10 @@ sed --in-place -e 's/^@\([^M]\)/#@\1/' init/.modulespath.in
   --with-tcl-lib=${temp_dir}/tmp_tcl_prefix/lib \
   --with-tcl=${temp_dir}/tmp_tcl_prefix/lib \
   --with-tcl-ver=8.6 \
+  --without-tclx \
   --with-module-path=${MODULE_ROOT_PATH} \
   CPPFLAGS="-DUSE_INTERP_ERRORLINE" \
-  CFLAGS="-ldl"  
+  CFLAGS="-ldl -lz"  
   
 
 # If you don't add the CPPFLAGS definition above, you'll get a build error because 
