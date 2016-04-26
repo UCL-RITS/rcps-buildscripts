@@ -5,6 +5,7 @@
 #
 # by Ian Kirker, 2015
 #
+# Updated April 2016
 
 
 VERSION=${VERSION:-3.2.10}
@@ -46,9 +47,10 @@ sed --in-place -e 's/^@\([^M]\)/#@\1/' init/.modulespath.in
   --with-tcl-lib=${INSTALL_PREFIX}/lib \
   --with-tcl=${INSTALL_PREFIX}/lib \
   --with-tcl-ver=8.6 \
+  --without-tclx \
   --with-module-path=${MODULE_ROOT_PATH} \
   CPPFLAGS="-DUSE_INTERP_ERRORLINE" \
-  CFLAGS="-Wl,-rpath=${INSTALL_PREFIX}/lib"
+  CFLAGS="-Wl,-rpath=${INSTALL_PREFIX}/lib -ldl -lz"
 
 # If you don't add the CPPFLAGS definition above, you'll get a build error because 
 # a deprecated feature of Tcl is used.
