@@ -75,8 +75,7 @@ PSET_MODE=install
 ACTIVATION_TYPE=exist_lic
 PHONEHOME_SEND_USAGE_DATA=no
 COMPONENTS=ALL
-ACTIVATION_TYPE=license_server
-ACTIVATION_LICENSE_FILE=$intel_license
+PSET_LICENSE_FILE=$intel_license
 EOF
 
   for i in */install.sh; do
