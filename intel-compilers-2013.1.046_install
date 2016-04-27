@@ -16,12 +16,12 @@ intel_license="28518@lic-intel.ucl.ac.uk"
 declare -a src_files
 declare -A file_md5s
 declare -A file_srcs
-src_files+=(parallel_studio_xe_2013_composer_edition_for_cpp.tgz)
-src_files+=(parallel_studio_xe_2013_composer_edition_for_fortran.tgz)
-file_md5s+=([parallel_studio_xe_2013_composer_edition_for_cpp.tgz]=f57a892fb494db3c80f20a88aa3e901f)
-file_md5s+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=bce7f6a71f7e44f67956197501d00b7c)
-file_srcs+=([parallel_studio_xe_2013_composer_edition_for_cpp.tgz]=file:/shared/ucl/apps/intel/installers/%)
-file_srcs+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=file:/shared/ucl/apps/intel/installers/%)
+src_files+=(l_ics_2013.1.046.tgz)
+# src_files+=(parallel_studio_xe_2013_composer_edition_for_fortran.tgz)
+file_md5s+=([l_ics_2013.1.046.tgz]=26ea1a5d6efd6ff9dd4a71181ed4fb83)
+# file_md5s+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=bce7f6a71f7e44f67956197501d00b7c)
+file_srcs+=([l_ics_2013.1.046.tgz]=file:/shared/ucl/apps/intel/installers/%)
+# file_srcs+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=file:/shared/ucl/apps/intel/installers/%)
 
 require gcc-libs
 
