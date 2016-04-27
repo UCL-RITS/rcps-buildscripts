@@ -37,8 +37,8 @@ _env_setup() {
   owd=$(pwd)
   package_label="compilers/intel/$package_version"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/intel/$package_version}
-  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
-  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  build_dir=${BUILD_DIR:-$(mktemp -d -p ~/Software/Intel  -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -p ~/Software/Intel -t ${package_name}-modules.XXXXXXXX)}
   cd $build_dir
 }
 
