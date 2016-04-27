@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+
+# This is the 2016 Intel compilers install script back ported to 2013.
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="intel-compilers"
+package_version="2013.1.046"
+# Optional: 
+# package_variant=""
+package_description="This is the package for the Intel C, C++, and Fortran compilers."
+
+intel_license="28518@lic-intel.ucl.ac.uk"
+
+declare -a src_files
+declare -A file_md5s
+declare -A file_srcs
+src_files+=(parallel_studio_xe_2013_composer_edition_for_cpp.tgz)
+src_files+=(parallel_studio_xe_2013_composer_edition_for_fortran.tgz)
+file_md5s+=([parallel_studio_xe_2013_composer_edition_for_cpp.tgz]=f57a892fb494db3c80f20a88aa3e901f)
+file_md5s+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=bce7f6a71f7e44f67956197501d00b7c)
+file_srcs+=([parallel_studio_xe_2013_composer_edition_for_cpp.tgz]=file:/shared/ucl/apps/intel/installers/%)
+file_srcs+=([parallel_studio_xe_2013_composer_edition_for_fortran.tgz]=file:/shared/ucl/apps/intel/installers/%)
+
+require gcc-libs
+
+#### Special Intel thing
+if [ -d ~/intel ]; then
+  echo "WARNING: this installer may not behave as expected because this installer likes to read settings in from ~/intel . Delete this directory to get expected results." >&2
+  sleep 3
+fi
+
+
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="compilers/intel/$package_version"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/intel/$package_version}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  cd $build_dir
+  for file in "${src_files[@]}"; do
+    if [ "${file_srcs[$file]:0:5}" = "file:" ]; then
+      actual_path=${file_srcs[$file]#file:}
+      cp ${actual_path//%/$file} ./
+    else
+      wget -O $file ${file_srcs[$file]//%/$file}
+    fi
+    md5sum -c <<<"${file_md5s[$file]}  $file"
+  done
+}
+
+_setup_files() {
+  cd $build_dir
+  for file in *.tgz *.tar.?? *.tar.???; do
+    if [ "${file:0:1}" != "*" ]; then # (then the pattern has been matched)
+      tar -xf $file
+    fi
+  done
+}
+
+_build() {
+  cd $build_dir
+  cat > silent_config_file.cfg <<EOF
+ACCEPT_EULA=accept
+CONTINUE_WITH_OPTIONAL_ERROR=yes
+PSET_INSTALL_DIR=$install_prefix
+CONTINUE_WITH_INSTALLDIR_OVERWRITE=yes
+PSET_MODE=install
+ACTIVATION_TYPE=exist_lic
+PHONEHOME_SEND_USAGE_DATA=no
+COMPONENTS=ALL
+ARCH_SELECTED=INTEL64
+ACTIVATION_TYPE=license_server
+ACTIVATION_LICENSE_FILE=$intel_license
+EOF
+
+  for i in */install.sh; do
+    $i --cli-mode --silent ./silent_config_file.cfg
+  done
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  export cprefix=$install_prefix
+  make_module -p $install_prefix \
+              -n "${package_name}" \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -v INTEL_LICENSE_FILE=$intel_license \
+              -v CC=icc \
+              -v CXX=icpc \
+              -v CXXCPP="\"icpc -E\"" \
+              -v F77=ifort \
+              -v F90=ifort \
+              -v FC=ifort \
+              -v COMPILER_TAG=intel-2013 \
+              -v BLAS_TAG=mkl \
+              -v MKLROOT=$cprefix/compilers_and_libraries_2013.1.046/linux/mkl \
+              -v IPPROOT=$cprefix/compilers_and_libraries_2013.1.046/linux/ipp \
+              -v GDBSERVER_MIC=$cprefix/debugger_2013/gdb/targets/mic/bin/gdbserver \
+              -v TBBROOT=$cprefix/compilers_and_libraries_2013.1.046/linux/tbb \
+              -v GDB_CROSS=$cprefix/debugger_2013/gdb/intel64_mic/bin/gdb-mic \
+              -v DAALROOT=$cprefix/compilers_and_libraries_2013.1.046/linux/daal \
+              -v MPM_LAUNCHER=$cprefix/debugger_2013/mpm/mic/bin/start_mpm.sh \
+              -v INTEL_PYTHONHOME=$cprefix/debugger_2013/python/intel64/ \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/ipp/../compiler/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/ipp/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mkl/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/tbb/lib/intel64/gcc4.4 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/lib/intel64_lin \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/../compiler/lib/intel64_lin \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mpi/mic/lib \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mkl/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/tbb/lib/mic \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mpi/intel64/lib \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/ipp/../compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/ipp/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mkl/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/tbb/lib/intel64/gcc4.4 \
+              -e LD_LIBRARY_PATH:$cprefix/debugger_2013/libipt/intel64/lib \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/lib/intel64_lin \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/../compiler/lib/intel64_lin \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/mic \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mpi/mic/lib \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/tbb/lib/mic \
+              -e CPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/ipp/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mkl/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/tbb/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/include \
+              -e NLSPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/compiler/lib/intel64/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mkl/lib/intel64/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/debugger_2013/gdb/intel64_mic/share/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/debugger_2013/gdb/intel64/share/locale/%l_%t/%N \
+              -e PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/bin/intel64 \
+              -e PATH:$cprefix/compilers_and_libraries_2013.1.046/linux/mpi/intel64/bin \
+              -e PATH:$cprefix/debugger_2013/gdb/intel64_mic/bin \
+              -e CLASSPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/daal/lib/daal.jar \
+              -e MANPATH:$cprefix/man/common \
+              -e MANPATH:$cprefix/compilers_and_libraries_2013.1.046/linux/man/en_US \
+              -e MANPATH:$cprefix/documentation_2013/en/debugger//gdb-ia/man/ \
+              -e MANPATH:$cprefix/documentation_2013/en/debugger//gdb-mic/man/ \
+              -e MANPATH:$cprefix/documentation_2013/en/debugger//gdb-igfx/man/ \
+              -e INFOPATH:$cprefix/documentation_2013/en/debugger//gdb-ia/info/ \
+              -e INFOPATH:$cprefix/documentation_2013/en/debugger//gdb-mic/info/ \
+              -e INFOPATH:$cprefix/documentation_2013/en/debugger//gdb-igfx/info/ \
+              -r gcc-libs/4.9.2 \
+              -d \
+              -w "[$package_name/$package_version] $package_description"
+
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
