@@ -9,6 +9,7 @@
 # You need to register for Molpro, and download a token and the source code
 # from their licensee website.  Then put the source code somewhere, and the
 # token in ~/.molpro/token. Token is necessary to build. 
+# Molpro will then copy the token to lib/.token.
 
 # Brian had to get the source code from git after requesting access from Molpro 
 # - they gave him different login details and he had to supply an ssh public key.
