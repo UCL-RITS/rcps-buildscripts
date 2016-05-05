@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# This script installs the Java Development Kit Version 8u92
+# Brian Alston May 2016
+# Based on spm12_install by Owain Kenway
+
+# You need to download the JDK archive from the Oracle Java Download site
+# (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 
+# Note: you need to agree to the license agreement before you can download.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE etc
+# variables appropriately.
+
+VERSION=${VERSION:-8u92}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/java}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/java/archives}
+JAVA_ARC=${JAVA_ARC:-jdk-${VERSION}-linux-x64.tar.gz}
+
+set -e
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$JAVA_ARC ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find Java archive"
+    echo ""
+    echo "You need to download the JDK archive from the Oracle Java Download site"
+    echo "(http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)"
+    echo "Note: you need to agree to the license agreement before you can download."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE etc." 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+
+echo "Installing into $INSTALL_PREFIX/ ..."
+
+# Unpack the Java archive.
+
+echo "Unpacking the Java archive ..."
+mkdir -p $INSTALL_PREFIX/
+cd $INSTALL_PREFIX/
+tar xvzf $SRC_ARCHIVE/$JAVA_ARC
+
+echo "Finished."
+
+cd $startDir
