@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Ghostscript 9.19
+#
+# by Brian Alston, 2015
+#
+# Updated June 2015 to additionaly build shared object support. 
+# Updated May 2016 for version 9.19 and new download location.
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-9.19}
+VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Ghostscript/$VERSION}
+MD5=${MD5:-c9682ce6b852f9197c69905a43928907}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs${VER}/ghostscript-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ghostscript-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf ghostscript-${VERSION}.tar.gz
+   cd ghostscript-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} --enable-dynamic
+   make
+   make install
+   make so
+   make soinstall
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
