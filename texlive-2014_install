@@ -29,7 +29,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
     # These need to be run as root so:
     sudo mkdir -p /mnt/texlive
-    sudo mount -o loop texlive2014.iso /mnt/texlive
+    sudo mount -o loop texlive${VERSION}.iso /mnt/texlive
 
     cd /mnt/texlive
     ./install-tl -profile $INSTALL_PROFILE
