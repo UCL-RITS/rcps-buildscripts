@@ -31,8 +31,8 @@ then
   cd allinea-forge-${VERSION}-Redhat-7.0-x86_64+MIC-2.1-k1om
   ./textinstall.sh $INSTALL_PREFIX
   cd $INSTALL_PREFIX
-  cd licenses
-  cp /shared/ucl/apps/build_scripts/files/ddtclientlicense ./Licence.client.6255
+  cd licences
+  cp /shared/ucl/apps/build_scripts/files/ddtclientlicence ./Licence.client.6255
 
 else
   echo "Hash mismatch."
