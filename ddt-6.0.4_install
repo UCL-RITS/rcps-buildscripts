@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2016
+#
+
+APPNAME=${APPNAME:-ddt}
+VERSION=${VERSION:-6.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+MD5=${MD5:-857852f823f6ac57e239e1a3e989b2d1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://content.allinea.com/downloads/allinea-forge-latest-Redhat-7.0-x86_64+MIC-2.1-k1om.tar}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum allinea-forge-latest-Redhat-7.0-x86_64+MIC-2.1-k1om.tar | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar xvf allinea-forge-latest-Redhat-7.0-x86_64+MIC-2.1-k1om.tar
+  cd allinea-forge-${VERSION}-Redhat-7.0-x86_64+MIC-2.1-k1om
+  ./textinstall.sh $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  cd licenses
+  cp /shared/ucl/apps/build_scripts/files/ddtclientlicense ./Licence.client.6255
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
