@@ -32,6 +32,26 @@ then
   cp -r usr $INSTALL_PREFIX
   cp -r etc $INSTALL_PREFIX
 
+  cd ${INSTALL_PREFIX}/usr/lib64/cernlib/2006/lib
+
+  ln -s libcojets.so.2_gfortran libcojets.so
+  ln -s libeurodec.so.1_gfortran libeurodec.so
+  ln -s libgeant321.so.2_gfortran libgeant321.so
+  ln -s libgraflib.so.1_gfortran libgraflib.so
+  ln -s libgrafX11.so.1_gfortran libgrafX11.so
+  ln -s libherwig59.so.2_gfortran libherwig59.so
+  ln -s libisajet758.so.3_gfortran libisajet758.so
+  ln -s libkernlib.so.1_gfortran libkernlib.so
+  ln -s libmathlib.so.2_gfortran libmathlib.so
+  ln -s libpacklib-lesstif.so.1_gfortran libpacklib-lesstif.so
+  ln -s libpacklib.so.1_gfortran libpacklib.so
+  ln -s libpawlib-lesstif.so.3_gfortran libpawlib-lesstif.so
+  ln -s libpawlib.so.2_gfortran libpawlib.so
+  ln -s libpdflib804.so.2_gfortran libpdflib804.so
+  ln -s libphotos202.so.1_gfortran libphotos202.so
+  ln -s libphtools.so.2_gfortran libphtools.so
+
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
