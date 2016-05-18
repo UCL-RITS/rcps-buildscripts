@@ -2,6 +2,9 @@
 
 # This script installs NAG Fortran Library Mark 24 for GCC.
 # Brian Alston July 2015
+#
+# Updated May 2016 to set execute permission on installer ( needed for older versions).
+#
 # Based on spm12_install by Owain Kenway
 
 
@@ -25,6 +28,7 @@ wget $DOC_ARCHIVE
 tar xvzf $PRODUCT.tgz
 gunzip $DOC.tgz
 
+chmod +x install.sh
 ./install.sh -accept -installdir=$INSTALL_PREFIX \
    -docinstalldir=$INSTALL_PREFIX/doc
 

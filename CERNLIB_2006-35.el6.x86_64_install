@@ -3,7 +3,7 @@
 ###############################################
 # Installing Cernlib binary
 #
-# 
+# Updated May 2016 to create libpacklib.so style symbolic links.
 #
 
 NAME=${NAME:-CERNLIB}
