@@ -24,13 +24,13 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum ${VERSION}.tar.gz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+  tar -zxvf ${VERSION}.tar.gz
 
-  cd ${APPNAME}-${VERSION}
+  cd ${APPNAME}-${VERSION:1}
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
   make && make install
 else
