@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing webkitgtk from RPM
+#
+#
+
+NAME=${NAME:-webkitgtk}
+VERSION=${VERSION:-2.4.9-1.el7.x86_64}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://dl.fedoraproject.org/pub/epel/7/x86_64/w/webkitgtk-${VERSION}.rpm}
+MD5=${MD5:-0bf3661f9de3fe7b716972d2342e3fed}
+
+set -e
+
+mkdir -p /dev/shm/webkitgtk
+temp_dir=`mktemp -d -p /dev/shm/webkitgtk`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  rpm2cpio $archive | cpio -idv
+
+  mkdir -p $INSTALL_PREFIX
+  cp -r usr/lib64 $INSTALL_PREFIX
+  cp -r usr/libexec $INSTALL_PREFIX
+  cp -r usr/share $INSTALL_PREFIX
+
+  # make .so symlinks
+  cd ${INSTALL_PREFIX}/lib64
+  ln -s libjavascriptcoregtk-1.0.so.0 libjavascriptcoregtk-1.0.so
+  ln -s libwebkitgtk-1.0.so.0 libwebkitgtk-1.0.so
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
