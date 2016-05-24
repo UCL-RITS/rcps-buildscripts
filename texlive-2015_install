@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TeX Live 2015
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0
+#
+# Updated: May 2016 for TeX Live 2015 and removing root depenancy (no longer 
+# using ISO image).
+
+VERSION=${VERSION:-2015}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
+MD5=${MD5:-47ed6e3b24d6d8ba659ce4553b2721dd}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
+INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-patches/texlive-${VERSION}_legion.profile
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum texlive${VERSION}.iso| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    tar xvzf `basename $SRC_ARCHIVE`
+    cd install-tl-20160405
+    ./install-tl -profile $INSTALL_PROFILE
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
