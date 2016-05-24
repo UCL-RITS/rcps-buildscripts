@@ -24,7 +24,7 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum texlive${VERSION}.iso| awk '{print $1}'`
+CHECKSUM=`md5sum `basename $SRC_ARCHIVE` | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
