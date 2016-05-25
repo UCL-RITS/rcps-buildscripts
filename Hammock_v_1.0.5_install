@@ -33,7 +33,8 @@ then
 
   7z x $archive
 
-  echo "Backing up settings.prop to settings.prop.orig and modifying to use clustal-omega and hmmer from modules."
+  echo "------------------------------"
+  echo "Backing up settings.prop to settings.prop.orig, modifying to use clustal-omega and hmmer from modules."
 
   # Back up original settings
   settings=${INSTALL_PREFIX}/${NAME}_v_${VERSION}/settings/settings.prop
@@ -47,7 +48,8 @@ then
   # Set temporary directory to your Scratch - can't use environment variables like $TMPDIR inside settings.prop.
   sed -i -e "s|#tempDirectory=|tempDirectory=${HOME}/Scratch|" $settings
 
-  echo "Using Scratch for temporary files, written as directories called Hammock_temp_time. You will want to clear these up at intervals."
+  echo "Using Scratch for temporary files, written as directories called Hammock_temp_time."
+  echo "You will want to clear these up at intervals."
 
 else
   echo "Hash mismatch."
