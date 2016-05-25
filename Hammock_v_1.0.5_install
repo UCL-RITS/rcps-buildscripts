@@ -9,7 +9,7 @@
 NAME=${NAME:-Hammock}
 VERSION=${VERSION:-1.0.5}
 INSTALL_PREFIX=${INSTALL_PREFIX:-$HOME}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/hammock-dev/hammock/releases/download/${VERSION}/${NAME}_v_${VERSION}.7z}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/hammock-dev/hammock/releases/download/v${VERSION}/${NAME}_v_${VERSION}.7z}
 MD5=${MD5:-fd8ad5f2c7f0e5da4fc287883a3c6ad7}
 
 set -e
