@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+###############################################
+# User install script for Hammock, also runnable by do-hammock-install alias in hammock module.
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-Hammock}
+VERSION=${VERSION:-1.0.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-$HOME}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/hammock-dev/hammock/releases/download/${VERSION}/${NAME}_v_${VERSION}.7z}
+MD5=${MD5:-fd8ad5f2c7f0e5da4fc287883a3c6ad7}
+
+set -e
+
+# module prereqs for installing
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require p7zip/15.09/gnu-4.9.2
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  7z x $archive
+
+  echo "Backing up settings.prop to settings.prop.orig and modifying to use clustal-omega and hmmer from modules."
+
+  # Back up original settings
+  settings=${INSTALL_PREFIX}/${NAME}_v_${VERSION}/settings/settings.prop
+  cp $settings ${INSTALL_PREFIX}/${NAME}_v_${VERSION}/settings/settings.prop.orig 
+
+  # Modify settings.prop to use our modules for clustal-omega and hmmer: pick the executables that are in your PATH.
+  sed -i -e "s|#clustalOmegaCommand=|clustalOmegaCommand=clustalo|" $settings
+  sed -i -e "s|#hmmbuildCommand=|hmmbuildCommand=hmmbuild|" $settings
+  sed -i -e "s|#hmmsearchCommand=|hmmsearchCommand=hmmsearch|" $settings
+
+  # Set temporary directory to your Scratch - can't use environment variables like $TMPDIR inside settings.prop.
+  sed -i -e "s|#tempDirectory=|tempDirectory=${HOME}/Scratch|" $settings
+
+  echo "Using Scratch for temporary files, written as directories called Hammock_temp_time. You will want to clear these up at intervals."
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
