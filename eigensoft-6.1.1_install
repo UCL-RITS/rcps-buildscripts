@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing EIGENSOFT
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-eigensoft}
+VERSION=${VERSION:-6.1.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://data.broadinstitute.org/alkesgroup/EIGENSOFT/EIG${VERSION}.tar.gz}
+MD5=${MD5:-d98bf0960039ea5c37a0e1a3948ce81e}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require gsl/1.16/gnu-4.9.2
+require openblas/0.2.14/gnu-4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+
+  # unzip into install location
+  tar -xvf $archive -C $INSTALL_PREFIX --strip-components=1
+  cd ${INSTALL_PREFIX}/src
+  make clobber
+  make install OPENBLAS=$OPENBLASROOT LDLIBS="-lgsl -lopenblas -lgfortran -lrt -lm -lpthread"
+
+  echo ""
+  echo "Running pcatoy test:"
+  echo ""
+
+  # run tiny test
+  cd ../bin
+  ./pcatoy
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
