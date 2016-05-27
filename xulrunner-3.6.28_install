@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing xulrunner runtime binaries
+#
+#
+
+NAME=${NAME:-xulrunner}
+VERSION=${VERSION:-3.6.28}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/runtimes/${NAME}-${VERSION}.en-US.linux-i686.tar.bz2}
+MD5=${MD5:-0ddbfaaa90f2e4923b1d3e834f00bc80}
+
+set -e
+
+mkdir -p /dev/shm/xulrunner
+temp_dir=`mktemp -d -p /dev/shm/xulrunner`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive -C $INSTALL_PREFIX --strip-components=1
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
