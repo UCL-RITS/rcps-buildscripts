@@ -25,6 +25,7 @@ CHECKSUM=`md5sum $archive| awk '{print $1}'`
 if [ "$MD5" == "$CHECKSUM" ]
 then
 
+  mkdir -p $INSTALL_PREFIX
   tar -xvf $archive -C $INSTALL_PREFIX --strip-components=1
 
 else
