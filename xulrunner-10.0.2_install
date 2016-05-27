@@ -6,10 +6,10 @@
 #
 
 NAME=${NAME:-xulrunner}
-VERSION=${VERSION:-3.6.28}
+VERSION=${VERSION:-10.0.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/runtimes/${NAME}-${VERSION}.en-US.linux-i686.tar.bz2}
-MD5=${MD5:-0ddbfaaa90f2e4923b1d3e834f00bc80}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/runtimes/${NAME}-${VERSION}.en-US.linux-x86_64.tar.bz2}
+MD5=${MD5:-979bff08a53b7137638771026fdab256}
 
 set -e
 
