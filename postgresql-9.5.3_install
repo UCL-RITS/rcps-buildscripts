@@ -14,7 +14,6 @@ actual_file_name=postgresql-${package_version}.tar.bz2
 actual_file_md5=3f0c388566c688c82b01a0edf1e6b7a0
 actual_file_sha=bd8dcbc8c4882468675dcc93263182a27d4ff201
 
-require gcc-libs
 module purge
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
