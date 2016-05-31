@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="postgresql"
+package_version="9.5.3"
+src_urls=https://ftp.postgresql.org/pub/source/v9.5.3/postgresql-${package_version}.tar.bz2
+# Optional: 
+# package_variant=""
+package_description="PostgreSQL is a relational database."
+
+actual_file_name=postgresql-${package_version}.tar.bz2
+actual_file_md5=3f0c388566c688c82b01a0edf1e6b7a0
+actual_file_sha=bd8dcbc8c4882468675dcc93263182a27d4ff201
+
+require gcc-libs
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require perl/5.22.0
+require python/2.7.9
+
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.bz2 $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  ./configure --prefix=$install_prefix --with-perl --with-python ${1:-}
+  make ${2:-}
+  make check 
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r perl/5.22.0  \
+              -r python/2.7.9 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
