@@ -4,7 +4,7 @@
 ERR_MODULES_BROKEN=3
 ERR_MODULE_NOT_LOADED=4
 
-require() {
+require-init() {
   if declare -f module >/dev/null; then
     :
   else 
@@ -24,7 +24,9 @@ require() {
       exit $ERR_MODULES_BROKEN
     fi
   fi
+}
 
+require() {
   while [ -n "${1:-}" ]; do
     module load $1
     if ! (module list -t 2>&1 | grep -P "^$1($|/)" >/dev/null 2>/dev/null ); then
@@ -34,4 +36,6 @@ require() {
     shift
   done
 }
+
+require-init
 
