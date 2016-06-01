@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="json-c"
+package_version="0.12"
+src_urls=https://s3.amazonaws.com/json-c_releases/releases/json-c-${package_version}.tar.gz
+# Optional: 
+# package_variant=""
+package_description="JSON-C is a library for converting between JSON-formatted strings and C representations of the equivalent objects."
+
+actual_file_name=json-c-${package_version}.tar.gz
+actual_file_md5=3ca4bbb881dfc4017e8021b5e0a8c491
+actual_file_sha=5580aad884076c219d41160cbd8bc12213d12c37
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+  ls -l ${basename}/json_tokener.c
+  patch --ignore-whitespace ${basename}/json_tokener.c <<'EOF'
+355c355,358
+<       int size;
+---
+>     // Two commented lines below don't do anything (AFAICT)
+>     //  and because they aren't used, are treated
+>     //  as an error during compilation
+>     //int size;
+360c363
+<       size = json_min(tok->st_pos+1, json_null_str_len);
+---
+>       //size = json_min(tok->st_pos+1, json_null_str_len);
+EOF
+}
+
+_build() {
+  cd ${basename}
+  ./configure --prefix=$install_prefix ${1:-}
+  make ${2:-}
+  make check 
+  make install
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="libxml2"
+package_version="2.9.4"
+src_urls=ftp://xmlsoft.org/libxml2/libxml2-${package_version}.tar.gz
+# Optional: 
+# package_variant=""
+package_description="Libxml2 is an XML C parser and toolkit. Includes Python (2.7.9) bindings."
+
+actual_file_name=libxml2-${package_version}.tar.gz
+actual_file_md5=ae249165c173b1ff386ee8ad676815f5
+actual_file_sha=958ae70baf186263a4bd801a81dd5d682aedd1db
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python/2.7.9
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  ./configure --prefix=$install_prefix --with-python --with-python-install-dir=$install_prefix/lib/python2.7 ${1:-}
+  make ${2:-}
+  make check 
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -e PYTHONPATH:${install_prefix}/lib/python2.7 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
