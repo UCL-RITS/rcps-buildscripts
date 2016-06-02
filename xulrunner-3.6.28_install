@@ -10,7 +10,9 @@ VERSION=${VERSION:-3.6.28}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/source/${NAME}-${VERSION}.source.tar.bz2}
 MD5=${MD5:-b80ae2b89f583f3cbaa407ef9e402dd7}
-PATCH=${PATCH:/shared/ucl/apps/build_scripts/patches/xulrunner-3.6.28.patch}
+PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/xulrunner-3.6.28.patch}
+JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-1.7.0-oracle-1.7.0.99-1jpp.1.el7.x86_64}
+# default Java home. If a module is loaded, it defines it.
 
 set -e
 
@@ -31,12 +33,12 @@ then
   mkdir -p $temp_dir/${NAME}-${VERSION}
   tar -xvf $archive -C $temp_dir/${NAME}-${VERSION} --strip-components=1
 
-  export JAVA_HOME=/usr/lib/jvm/java-1.7.0-oracle-1.7.0.99-1jpp.1.el7.x86_64
+  export JAVA_HOME=$JAVA_HOME
 
   cd ${NAME}-${VERSION}
   # Apply patches so it compiles 
   cp $PATCH .
-  patch -p0 -i $PATCH
+  patch -p0 -i $(basename "${PATCH}")
 
   CXXFLAGS=-fpermissive ./configure --prefix=$INSTALL_PREFIX --enable-application=xulrunner --disable-libnotify --disable-ogg --disable-wave --disable-necko-wifi --disable-crashreporter
   # Crashreporter is not any use here and also requires the obsolete curl/types.h to build
