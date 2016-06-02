@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing xulrunner from source inc javaxpcom
+#
+#
+
+NAME=${NAME:-xulrunner}
+VERSION=${VERSION:-3.6.28}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/source/${NAME}-${VERSION}.source.tar.bz2}
+MD5=${MD5:-b80ae2b89f583f3cbaa407ef9e402dd7}
+PATCH=${PATCH:/shared/ucl/apps/build_scripts/patches/xulrunner-3.6.28.patch}
+
+set -e
+
+mkdir -p /dev/shm/xulrunner
+temp_dir=`mktemp -d -p /dev/shm/xulrunner`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  # By default it untars as mozilla-1.9.2, which doesn't help with naming
+  mkdir -p $temp_dir/${NAME}-${VERSION}
+  tar -xvf $archive -C $temp_dir/${NAME}-${VERSION} --strip-components=1
+
+  export JAVA_HOME=/usr/lib/jvm/java-1.7.0-oracle-1.7.0.99-1jpp.1.el7.x86_64
+
+  cd ${NAME}-${VERSION}
+  # Apply patches so it compiles 
+  cp $PATCH .
+  patch -p0 -i $PATCH
+
+  CXXFLAGS=-fpermissive ./configure --prefix=$INSTALL_PREFIX --enable-application=xulrunner --disable-libnotify --disable-ogg --disable-wave --disable-necko-wifi --disable-crashreporter
+  # Crashreporter is not any use here and also requires the obsolete curl/types.h to build
+  make
+  # need SKIP_GRE_REGISTRATION=1 or it tries to put a registration file in /etc/gre.d despite having a prefix.
+  make install SKIP_GRE_REGISTRATION=1
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
