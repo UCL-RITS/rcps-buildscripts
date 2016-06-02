@@ -42,7 +42,7 @@ then
   cp $PATCH .
   patch -p0 -i $(basename "${PATCH}")
 
-  CXXFLAGS=-fpermissive ./configure --prefix=$INSTALL_PREFIX --enable-application=xulrunner --disable-libnotify --disable-ogg --disable-wave --disable-necko-wifi --disable-crashreporter
+  CXXFLAGS=-fpermissive ./configure --prefix=$INSTALL_PREFIX --enable-application=xulrunner --disable-libnotify --disable-ogg --disable-wave --disable-necko-wifi --disable-crashreporter --disable-dbus
   # Crashreporter is not any use here and also requires the obsolete curl/types.h to build
   make
   cp security/coreconf/Linux2.6.mk security/coreconf/Linux3.10.mk
