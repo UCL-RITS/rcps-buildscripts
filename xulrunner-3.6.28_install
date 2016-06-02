@@ -11,8 +11,6 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.mozilla.org/pub/${NAME}/releases/${VERSION}/source/${NAME}-${VERSION}.source.tar.bz2}
 MD5=${MD5:-b80ae2b89f583f3cbaa407ef9e402dd7}
 PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/xulrunner-3.6.28.patch}
-JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-1.7.0-oracle-1.7.0.99-1jpp.1.el7.x86_64}
-# default Java home. If a module is loaded, it defines it.
 
 set -e
 
@@ -33,7 +31,12 @@ then
   mkdir -p $temp_dir/${NAME}-${VERSION}
   tar -xvf $archive -C $temp_dir/${NAME}-${VERSION} --strip-components=1
 
-  export JAVA_HOME=$JAVA_HOME
+  # if $JAVA_HOME is not set, set it to the system JDK in /usr/lib/jvm/java-<string>
+  if [ -z "$JAVA_HOME" ]
+  then
+    find /usr/lib/jvm -type d -name "java-*" -prune
+    export JAVA_HOME=$JAVA_HOME
+  fi
 
   cd ${NAME}-${VERSION}
   # Apply patches so it compiles 
