@@ -1,0 +1,62 @@
+--- ipc/chromium/src/base/file_util.h.orig      2016-06-01 10:20:43.555661199 +0100
++++ ipc/chromium/src/base/file_util.h   2016-06-01 10:21:34.949645258 +0100
+@@ -18,6 +18,7 @@
+ #endif
+
+ #include <stdio.h>
++#include <unistd.h>
+
+ #include <stack>
+ #include <string>
+--- ipc/chromium/src/base/basictypes.h.orig     2016-06-01 10:52:50.607628575 +0100
++++ ipc/chromium/src/base/basictypes.h  2016-06-01 10:54:08.274121696 +0100
+@@ -46,6 +46,7 @@
+ #include <limits.h>         // So we can set the bounds of our types
+ #include <stddef.h>         // For size_t
+ #include <string.h>         // for memcpy
++#include <unistd.h>
+
+ #include "base/port.h"    // Types that only need exist on certain systems
+
+--- gfx/ots/src/ots.h.orig      2016-06-01 12:15:27.868639782 +0100
++++ gfx/ots/src/ots.h   2016-06-01 12:15:51.130093738 +0100
+@@ -9,6 +9,7 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
++#include <stddef.h>
+
+ #include "opentype-sanitiser.h"
+
+--- content/base/src/nsGkAtomList.h.orig        2016-06-01 14:40:54.286320629 +0100
++++ content/base/src/nsGkAtomList.h     2016-06-01 16:05:52.035175951 +0100
+@@ -261,9 +261,7 @@
+ GK_ATOM(crop, "crop")
+ GK_ATOM(curpos, "curpos")
+ GK_ATOM(current, "current")
+-#ifdef MOZ_MEDIA
+ GK_ATOM(currentloop, "currentloop")
+-#endif
+ GK_ATOM(cycler, "cycler")
+ GK_ATOM(data, "data")
+ GK_ATOM(datalist, "datalist")
+@@ -529,11 +527,9 @@
+ GK_ATOM(localedir, "localedir")
+ GK_ATOM(localName, "local-name")
+ GK_ATOM(longdesc, "longdesc")
+-#ifdef MOZ_MEDIA
+ GK_ATOM(loop, "loop")
+ GK_ATOM(loopend, "loopend")
+ GK_ATOM(loopstart, "loopstart")
+-#endif
+ GK_ATOM(low, "low")
+ GK_ATOM(lowerFirst, "lower-first")
+ GK_ATOM(lowest, "lowest")
+@@ -784,6 +780,7 @@
+ GK_ATOM(priority, "priority")
+ GK_ATOM(processingInstruction, "processing-instruction")
+ GK_ATOM(profile, "profile")
++GK_ATOM(progress, "progress")
+ GK_ATOM(progressmeter, "progressmeter")
+ GK_ATOM(progressNormal, "progressNormal")
+ GK_ATOM(progressUndetermined, "progressUndetermined")
