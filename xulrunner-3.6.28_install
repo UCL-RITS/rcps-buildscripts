@@ -49,6 +49,12 @@ then
   # need SKIP_GRE_REGISTRATION=1 or it tries to put a registration file in /etc/gre.d despite having a prefix.
   make install SKIP_GRE_REGISTRATION=1
 
+  # need to remove the old libnss etc that this builds or it stops ssh working.
+  cd $INSTALL_PREFIX/lib/xulrunner-1.9.2.28
+  mv libssl3.so libssl3.so.bak
+  mv libnssutil3.so libnssutil3.so.bak
+  mv libnss3.so libnss3.so.bak
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
