@@ -74,15 +74,12 @@ _build() {
   
   # We have to actually create and run a DB for the tests to test
   tmp_db_dir=$(mktemp -d -t ${package_name}-tmp-db-dir.XXXXXXXX)
-  oTMPDIR="${TMPDIR:-}"
-  export TMPDIR=$(mktemp -d -t ${package_name}-tmp-test-dir.XXXXXXXX)
+  export PGIS_REG_TMPDIR=$(mktemp -d -t ${package_name}-tmp-test-dir.XXXXXXXX)
   initdb -D $tmp_db_dir
   pg_ctl -D $tmp_db_dir -l ${build_dir}/tmp_db_log start
-  make check 
+  make check
   pg_ctl -D $tmp_db_dir stop
   rm -Rf ${tmp_db_dir:-if_you_see_this_something_is_very_wrong}
-  rm -Rf ${TMPDIR:-if_you_see_this_something_is_very_wrong}
-  TMPDIR="$oTMPDIR"
 
   make install
   make distclean
