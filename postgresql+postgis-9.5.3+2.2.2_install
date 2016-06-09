@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="postgres+postgis"
+package_version="9.5.3+2.2.2"
+src_urls=http://download.osgeo.org/postgis/source/postgis-2.2.2.tar.gz
+# Optional: 
+# package_variant=""
+package_description="PostgreSQL is a relational database, and PostGIS is a geographical information enhancement for PostgreSQL."
+
+actual_file_name=postgis-2.2.2.tar.gz
+actual_file_md5=ed42ad50405520bc1210bd4d3a872617
+actual_file_sha=f82fa96c4c73e8a94091b51f2e528a8146b03597
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require perl/5.22.0
+require python/2.7.9
+require json-c/0.12
+require libxml2
+require cunit
+require pcre2
+require geos/3.5.0
+
+# GMT's requirements
+require hdf/5-1.8.15/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
+require gdal/2.0.0
+require libtool/2.4.6
+require graphicsmagick/1.3.21
+require ghostscript/9.16/gnu-4.9.2
+require fftw/3.3.4/gnu-4.9.2
+require gmt/5.1.2
+
+require proj.4/4.9.1
+
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  # Run a full Postgres install as-per the already-existing recipe
+  INSTALL_PREFIX=$install_prefix MODULE_DIR=$module_dir $owd/postgresql-9.5.3_install
+  module use $module_dir
+  module load postgresql
+  # Then remove the vanilla postgresql module, we don't want it
+  rm -Rf ${module_dir:-if_you_see_this_something_is_very_wrong}/postgresql
+  cd ${basename}
+  ./configure --prefix=$install_prefix ${1:-}
+  make ${2:-}
+
+  
+  # We have to actually create and run a DB for the tests to test
+  tmp_db_dir=$(mktemp -d -t ${package_name}-tmp-db-dir.XXXXXXXX)
+  initdb -D $tmp_db_dir
+  pg_ctl -D $tmp_db_dir -l ${build_dir}/tmp_db_log start
+  make check 
+  pg_ctl -D $tmp_db_dir stop
+  rm -Rf ${tmp_db_dir:-if_you_see_this_something_is_very_wrong}
+  
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r compilers/gnu/4.9.2 \
+              -r perl/5.22.0 \
+              -r python/2.7.9 \
+              -r json-c/0.12 \
+              -r libxml2 \
+              -r cunit \
+              -r pcre2 \
+ \
+              -r hdf/5-1.8.15/gnu-4.9.2 \
+              -r netcdf/4.3.3.1/gnu-4.9.2 \
+              -r gdal/2.0.0 \
+              -r libtool/2.4.6 \
+              -r graphicsmagick/1.3.21 \
+              -r ghostscript/9.16/gnu-4.9.2 \
+              -r fftw/3.3.4/gnu-4.9.2 \
+              -r gmt/5.1.2 \
+              -r proj.4/4.9.1 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
