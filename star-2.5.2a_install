@@ -31,3 +31,5 @@ rm -rf *
 cd ..
 
 make STAR
+cp source/STAR bin
+
