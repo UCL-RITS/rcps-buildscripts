@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-star}
+VERSION=${VERSION:-2.5.2a}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/alexdobin/STAR}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+git clone $SRC_ARCHIVE
+git checkout tags/2.5.2a
+
+cd STAR
+cd bin
+rm -rf * 
+
+cd ..
+
+make STAR
