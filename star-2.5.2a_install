@@ -21,9 +21,10 @@ mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 git clone $SRC_ARCHIVE
+cd STAR
 git checkout tags/2.5.2a
 
-cd STAR
+
 cd bin
 rm -rf * 
 
