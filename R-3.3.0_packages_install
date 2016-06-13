@@ -21,7 +21,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
 export REPROS=${REPROS:-http://www.stats.bris.ac.uk/R/}
-LOCALDIR=${LOCALDIR:-/shared/ucl/apps/bilidscripts/files/R_UCL}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
