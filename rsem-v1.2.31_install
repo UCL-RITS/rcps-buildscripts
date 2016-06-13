@@ -30,7 +30,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf ${VERSION}.tar.gz
 
-  cd RSEM-${VERSION}
+  cd RSEM-${VERSION:1}
   make && make install DESTDIR=$INSTALL_PREFIX
 else
   echo "Hash mismatch."
