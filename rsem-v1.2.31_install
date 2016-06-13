@@ -31,7 +31,7 @@ then
   tar -zxvf ${VERSION}.tar.gz
 
   cd RSEM-${VERSION:1}
-  make && make install DESTDIR=$INSTALL_PREFIX
+  make && make install DESTDIR=$INSTALL_PREFIX prefix=""
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
