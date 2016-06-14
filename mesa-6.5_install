@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="mesa"
+package_version="6.5"
+src_urls=ftp://ftp.freedesktop.org/pub/mesa/older-versions/6.x/MesaLib-${package_version}.tar.gz
+# Optional: 
+# package_variant=""
+package_description="Mesa is an open-source implementation of the OpenGL specification - a system for rendering interactive 3D graphics. This is an old version installed to satisfy a particular dependency: please do not use for new builds."
+
+actual_file_name=MesaLib-6.5.tar.gz
+actual_file_md5=657be3b92f6dabc78a67ed9cb8d67813
+actual_file_sha=2165f45e07e95fbb0b0fc1266be79555e9742b96
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  tarball_ext=${src_urls##*\.}
+  basename=${basename:-$(basename -s .tar.${tarball_ext} $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd Mesa-${package_version}
+  make linux-x86-64
+  mkdir -p $INSTALL_PREFIX
+
+  # v-- feeds input to a simple 'read'-based script
+  cat <<EOF | bin/installmesa
+${INSTALL_PREFIX}/include
+${INSTALL_PREFIX}/lib
+
+EOF
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
