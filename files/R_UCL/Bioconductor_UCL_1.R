@@ -73,7 +73,7 @@ biocLite (pkgs="made4", type="source", lib=mainLib);
 biocLite (pkgs="graph", type="source", lib=mainLib);
 biocLite (pkgs="GSEABase", type="source", lib=mainLib);
 
-biocLite (pkgs="hugene10stprobeset.db", type="source", lib=dbnLib);
+biocLite (pkgs="hugene10stprobeset.db", type="source", lib=dbLib);
 biocLite (pkgs="hugene10sttranscriptcluster.db", type="source", lib=dbLib);
 
 # For Somdutta Dhir (somdutta.dhir@ucl.ac.uk) - added February 2013
