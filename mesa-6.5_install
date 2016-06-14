@@ -44,12 +44,12 @@ _setup_files() {
 _build() {
   cd Mesa-${package_version}
   make linux-x86-64
-  mkdir -p $INSTALL_PREFIX
+  mkdir -p $install_prefix
 
   # v-- feeds input to a simple 'read'-based script
   cat <<EOF | bin/installmesa
-${INSTALL_PREFIX}/include
-${INSTALL_PREFIX}/lib
+${install_prefix}/include
+${install_prefix}/lib
 
 EOF
   echo "Installed to: $install_prefix"
