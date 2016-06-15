@@ -57,7 +57,7 @@ EOT
   # Build, install and log (if any components fail, it doesn't tell you which at the end)
   # You can redo individual ones with ./bjam --with-xxxx install
 
-  if [ "${COMPILER_TAG:0:5}" == "intel"] 
+  if [ "${COMPILER_TAG:0:5}" == "intel" ] 
   then
      b2opts="--toolset=intel-linux"
   fi
