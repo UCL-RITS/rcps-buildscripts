@@ -43,8 +43,7 @@ then
   then
     # enable mpi support by adding "using mpi ;" to the end of user-config.jam
 
-    cp tools/build/v2/user-config.jam .
-    cat <<EOT >> user-config.jam
+    cat <<EOT >> tools/build/v2/user-config.jam
 
 # -----------------
 # MPI configuration.
