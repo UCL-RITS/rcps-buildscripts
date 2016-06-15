@@ -49,7 +49,7 @@ then
 # MPI configuration.
 # -----------------
 
-using mpi ;
+using mpi : mpicxx ;
 EOT
 
   fi  
