@@ -37,7 +37,7 @@ then
   tar -zxvf VinaLC.tar.gz
 
   cd VinaLC
-  ./configure --prefix=$INSTALL_PREFIX --with-boost=/shared/ucl/apps/boost/1_54_0/intel-2015-update2 --with-mpi=/shared/ucl/apps/intel/2015/impi/5.0.3.048/intel64/
+  ./configure --prefix=$INSTALL_PREFIX --with-boost=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2-openmpi-1.10.1 --with-mpi=/shared/ucl/apps/openmpi/1.10.1/gnu-4.9.2
   make && make install
 else
   echo "Hash mismatch."
