@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing VinaLC
+#
+# Note: there appears to only ever be a tar file for the current version on
+# the website.  So for future recovery purposes, this script also archives
+# a copy with a version number in /shared/ucl/apps/vinalc/archive.
+#
+# by Owain Kenway, 2016 
+#
+
+APPNAME=${APPNAME:-vinalc}
+VERSION=${VERSION:-1.1.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-541c26eb51bf015edad563929a4ee330}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mvirdb1.llnl.gov/static_catsid/vina/VinaLC.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum VinaLC.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p /shared/ucl/apps/vinalc/archive
+  cp VinaLC.tar.gz /shared/ucl/apps/vinalc/archive/${APPNAME}-${VERSION}-${MD5}.tar.gz
+  tar -zxvf VinaLC.tar.gz
+
+  cd VinaLC
+  ./configure --prefix=$INSTALL_PREFIX --with-boost=/shared/ucl/apps/boost/1_54_0/gnu-4.9.2-openmpi-1.10.1 --with-mpi=/shared/ucl/apps/openmpi/1.10.1/gnu-4.9.2
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
