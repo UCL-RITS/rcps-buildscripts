@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Mesa (OSMesa, no Gallium, no EGL, no llvm, no DRI)
+#
+# by Heather Kelly, 2015
+#
+# updated to last bugfix release of 10.x series
+
+NAME=${NAME:-mesa}
+VERSION=${VERSION:-10.6.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA=${SHA:-3406876aac67546d0c3e2cb97da330b62644c313e7992b95618662e13c54296a}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.freedesktop.org/pub/mesa/older-versions/${VERSION%%\.*}.x/${VERSION}/mesa-${VERSION}.tar.gz}
+MARCH=${MARCH:-nehalem}
+OPTIONS=${OPTIONS:-"--enable-osmesa --disable-gallium-osmesa --enable-gallium-llvm=no --with-gallium-drivers="" --disable-dri --enable-glx-tls --disable-egl --enable-xlib-glx"}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX CFLAGS=-march=${MARCH} CXXFLAGS=-march=${MARCH} ${OPTIONS}
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA"
+  echo "Got: $CHECKSUM"
+fi
