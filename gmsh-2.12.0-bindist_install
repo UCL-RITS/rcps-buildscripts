@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="gmsh"
+package_version="2.12.0"
+src_urls=http://gmsh.info/bin/Linux/gmsh-${package_version}-Linux64.tgz
+# Optional: 
+package_variant="bindist"
+package_description="Gmsh is a free 3D finite element grid generator with a build-in CAD engine and post-processor."
+
+actual_file_name=gmsh-${package_version}-Linux64.tgz
+actual_file_md5=0c5574da6183f67e51c87d360057415a
+actual_file_sha=88979913717e549ee1d91608072d407254949b59
+
+module purge
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  tarball_ext=${src_urls##*\.}
+  basename=${basename:-$(basename -s .tar.${tarball_ext} $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  echo -n "Checking SHA: "
+  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd gmsh-2.12.0-Linux
+  mkdir -p $install_prefix
+
+  cp -r * $install_prefix/
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r mesa/6.5 \
+              -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
