@@ -76,6 +76,7 @@ cp rungms $INSTALL_PREFIX
 cp gms-files.csh $INSTALL_PREFIX
 cp install.info $INSTALL_PREFIX
 cp -r auxdata $INSTALL_PREFIX
+cp *.DOC $INSTALL_PREFIX
 
 # Run tests - need to alter runall to pass in an extra argument (PPN=1) when target=mpi.
 sed -i -e "s|./rungms exam\$NUM \$VERNO 1  >&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 \>\&  exam\$NUM.log|" runall
