@@ -30,6 +30,7 @@ cd $temp_dir
 tar -xvf $SRC_ARCHIVE
 cd gamess
 
+mkdir -p $INSTALL_PREFIX
 ./config
 
 # Config example answers - have to be given interactively
