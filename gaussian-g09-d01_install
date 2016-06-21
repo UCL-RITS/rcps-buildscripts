@@ -45,14 +45,20 @@ then
   cd bsd
   pgcc machine.c -o gau-machine
   cd ..
+
+  # This script does not play well with set -e
+  set +e
   source $g09root/g09/bsd/g09.profile
+  set -e
   bsd/bldg09 2>&1 | tee make.log
 
   # now build Linda version 
   cd $g09root/g09
   tar -xvf $SRC_ARCHIVE_LINDA 
-  bsd/install                          
+  bsd/install                 
+  set +e         
   source $g09root/g09/bsd/g09.profile    
+  set -e
   # these are missing from g09.profile
   mname="`set-mflags x`"
   mflags="`set-mflags`"
