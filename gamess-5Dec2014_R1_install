@@ -30,13 +30,14 @@ cd $temp_dir
 tar -xvf $SRC_ARCHIVE
 cd gamess
 
+mkdir -p $INSTALL_PREFIX
 ./config
 
 # Config example answers - have to be given interactively
 #
 # Target:		linux64
 # GAMESS dir: (default)
-# GAMESS build dir:	/shared/ucl/apps/gamess/5Dec2014_R1/intel-2015-update2
+# GAMESS build dir: (default)
 # Version:		00
 # Fortran:		ifort
 # Fortran version: 	15
@@ -59,7 +60,7 @@ cd ..
 # Link an executable - will create gamess.00.x
 ./lked gamess 00 2>&1 | tee lked.log
 
-# Alter rungms in temp_dir and copy to install location
+# Alter rungms in temp_dir
 sed -i -e "s|set TARGET=sockets|set TARGET=mpi|" rungms
 sed -i -e "s|set SCR=/scr/\$USER|set SCR=/tmp/\$USER|" rungms
 sed -i -e "s|set USERSCR=/u1/\$USER/scr|set USERSCR=\$HOME/Scratch/gamess|" rungms
@@ -68,17 +69,24 @@ sed -i -e "s|set DDI_MPI_ROOT=/shared/intel/impi/4.1.0.024/intel64|set DDI_MPI_R
 sed -i -e "s|setenv I_MPI_FABRICS dapl|#setenv I_MPI_FABRICS dapl|" rungms
 sed -i -e "s|setenv I_MPI_DAT_LIBRARY libdat2.so|#setenv I_MPI_DAT_LIBRARY libdat2.so|" rungms
 sed -i -e "s|setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:$LD_LIBRARY_PATH|#setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:$LD_LIBRARY_PATH|" rungms
+
+# Manually install
+cp gamess.00.x $INSTALL_PREFIX
 cp rungms $INSTALL_PREFIX
+cp gms-files.csh $INSTALL_PREFIX
+cp install.info $INSTALL_PREFIX
+cp -r auxdata $INSTALL_PREFIX
+cp *.DOC $INSTALL_PREFIX
 
 # Run tests - need to alter runall to pass in an extra argument (PPN=1) when target=mpi.
-sed -i -e "s|./rungms exam\$NUM \$VERNO 1 >\&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 >\&  exam\$NUM.log|" runall
+sed -i -e "s|./rungms exam\$NUM \$VERNO 1  >&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 \>\&  exam\$NUM.log|" runall
 
 # need to create the user directories to run the tests
 mkdir -p /tmp/$USER
 mkdir -p $HOME/Scratch/gamess
 ./runall 00
 # Check test results
-$temp_dir/tests/standard/checktst
+$temp_dir/gamess/tests/standard/checktst
 
 echo "You may now delete the test files from /tmp/$USER and $HOME/Scratch/gamess"
 
