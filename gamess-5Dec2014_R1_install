@@ -78,7 +78,7 @@ cp install.info $INSTALL_PREFIX
 cp -r auxdata $INSTALL_PREFIX
 
 # Run tests - need to alter runall to pass in an extra argument (PPN=1) when target=mpi.
-sed -i -e "s|./rungms exam\$NUM \$VERNO 1 >\&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 >\&  exam\$NUM.log|" runall
+sed -i -e "s|./rungms exam\$NUM \$VERNO 1  >&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 \>\&  exam\$NUM.log|" runall
 
 # need to create the user directories to run the tests
 mkdir -p /tmp/$USER
