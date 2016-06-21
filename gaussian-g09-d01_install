@@ -73,6 +73,7 @@ then
 
   for a in flc LindaLauncher ntsnet pmbuild vntsnet
   do
+    echo "Patching ${a}..."
     sed -i.bak 's|'"$tmp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
   done
 
