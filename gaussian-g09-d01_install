@@ -63,7 +63,7 @@ then
   mname="`set-mflags x`"
   mflags="`set-mflags`"
   alias mg='$mname -f bsd/g09.make $mflags'
-  mg linda 2>&1 | tee makelinda.log
+  $mg linda 2>&1 | tee makelinda.log
 
   cp -r $g09root/g09 $INSTALL_PREFIX
   # Linda job setup
