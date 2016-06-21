@@ -62,7 +62,7 @@ then
   # these are missing from g09.profile
   mname="`set-mflags x`"
   mflags="`set-mflags`"
-  alias mg='$mname -f bsd/g09.make $mflags'
+  export mg='$mname -f bsd/g09.make $mflags'
   $mg linda 2>&1 | tee makelinda.log
 
 
