@@ -85,7 +85,7 @@ mkdir -p /tmp/$USER
 mkdir -p $HOME/Scratch/gamess
 ./runall 00
 # Check test results
-$temp_dir/tests/standard/checktst
+$temp_dir/gamess/tests/standard/checktst
 
 echo "You may now delete the test files from /tmp/$USER and $HOME/Scratch/gamess"
 
