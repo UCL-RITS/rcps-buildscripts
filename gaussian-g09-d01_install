@@ -25,7 +25,7 @@ export g09root=$temp_dir
 CHECKSUM=`md5sum "${SRC_ARCHIVE}"| awk '{print $1}'`
 CHECKSUM_LINDA=`md5sum "${SRC_ARCHIVE_LINDA}"| awk '{print $1}'`
 
-if [ "$MD5" == "$CHECKSUM" && "MD5_LINDA" == "$CHECKSUM_LINDA" ]
+if [ "$MD5" == "$CHECKSUM" && "$MD5_LINDA" == "$CHECKSUM_LINDA" ]
 then
 
   mkdir -p $INSTALL_PREFIX
