@@ -17,6 +17,7 @@ GROUP=${GROUP:-legg09}
 
 set -e
 
+mkdir -p /dev/shm/gaussian
 temp_dir=`mktemp -d -p /dev/shm/gaussian`
 
 export PATH=$INSTALL_PREFIX/g09:$PATH
