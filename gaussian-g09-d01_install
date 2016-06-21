@@ -13,11 +13,11 @@ MD5=${MD5:-a4f03a2051d3c12856e5ee041a42351a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gaussian/sources/g09-d01/wkssrc.tgz}
 SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/shared/ucl/apps/gaussian/sources/linda/optlin82.tgz}
 MD5_LINDA=${MD5_LINDA:-672266813b43fe6af6e6a0d49b13fc7f}
-GROUP=${GROUP:-Legg09}
+GROUP=${GROUP:-legg09}
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+temp_dir=`mktemp -d -p /dev/shm/gaussian`
 
 export PATH=$INSTALL_PREFIX/g09:$PATH
 export g09root=$temp_dir
