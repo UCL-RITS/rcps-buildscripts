@@ -65,12 +65,18 @@ then
   alias mg='$mname -f bsd/g09.make $mflags'
   $mg linda 2>&1 | tee makelinda.log
 
+
   cp -r $g09root/g09 $INSTALL_PREFIX
   # Linda job setup
   cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
-  cp /shared/ucl/apps/build_scripts/files/linda*.patch .
-  patch -p0 -i linda*.patch
-  
+  cd $INSTALL_PREFIX
+
+  for a in flc LindaLauncher ntsnet pmbuild vntsnet
+  do
+    sed -i.bak 's|'"$tmp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
+  done
+
+  chrgp -R $GROUP $INSTALL_PREFIX  
   chmod -R o-rwx $INSTALL_PREFIX
 
 else
