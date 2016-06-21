@@ -15,6 +15,13 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gamess/source/${VERSION}/gamess-curr
 
 set -e
 
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/intel
+prereq mpi/intel
+
 mkdir -p /dev/shm/gamess
 temp_dir=`mktemp -d -p /dev/shm/gamess`
 
@@ -25,7 +32,7 @@ cd gamess
 
 ./config
 
-# Config answers - have to be given interactively
+# Config example answers - have to be given interactively
 #
 # Target:		linux64
 # GAMESS dir: (default)
