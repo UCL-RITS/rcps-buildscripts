@@ -9,10 +9,8 @@
 NAME=${NAME:-gaussian}
 VERSION=${VERSION:-g09-d01}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-a4f03a2051d3c12856e5ee041a42351a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gaussian/sources/g09-d01/wkssrc.tgz}
 SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/shared/ucl/apps/gaussian/sources/linda/optlin82.tgz}
-MD5_LINDA=${MD5_LINDA:-672266813b43fe6af6e6a0d49b13fc7f}
 GROUP=${GROUP:-legg09}
 
 set -e
@@ -23,65 +21,53 @@ temp_dir=`mktemp -d -p /dev/shm/gaussian`
 export PATH=$INSTALL_PREFIX/g09:$PATH
 export g09root=$temp_dir
 
-CHECKSUM=`md5sum "${SRC_ARCHIVE}"| awk '{print $1}'`
-CHECKSUM_LINDA=`md5sum "${SRC_ARCHIVE_LINDA}"| awk '{print $1}'`
+mkdir -p $INSTALL_PREFIX
+cd $g09root
+tar -xvf $SRC_ARCHIVE
+chgrp -R $GROUP g09
 
-if [[ "$MD5" == "$CHECKSUM" && "$MD5_LINDA" == "$CHECKSUM_LINDA" ]]
-then
+# patch to comment out line that overrides $GV_DIR in g09.profile - we set this in a
+# module and it breaks if gview is not in $g09root.
+cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g09-d01_profile.patch .
+patch -p0 -i gaussian_g09-d01_profile.patch  
 
-  mkdir -p $INSTALL_PREFIX
-  cd $g09root
-  tar -xvf $SRC_ARCHIVE
-  chgrp -R $GROUP g09
+cd g09
+bsd/install
+# Undocumented step that build script doesn't do
+cd bsd
+pgcc machine.c -o gau-machine
+cd ..
 
-  # patch to comment out line that overrides $GV_DIR in g09.profile - we set this in a
-  # module and it breaks if gview is not in $g09root.
-  cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g09-d01_profile.patch .
-  patch -p0 -i gaussian_g09-d01_profile.patch  
+# This script does not play well with set -e
+set +e
+source $g09root/g09/bsd/g09.profile
+set -e
+bsd/bldg09 2>&1 | tee make.log
 
-  cd g09
-  bsd/install
-  # Undocumented step that build script doesn't do
-  cd bsd
-  pgcc machine.c -o gau-machine
-  cd ..
-
-  # This script does not play well with set -e
-  set +e
-  source $g09root/g09/bsd/g09.profile
-  set -e
-  bsd/bldg09 2>&1 | tee make.log
-
-  # now build Linda version 
-  cd $g09root/g09
-  tar -xvf $SRC_ARCHIVE_LINDA 
-  bsd/install                 
-  set +e         
-  source $g09root/g09/bsd/g09.profile    
-  set -e
-  # these are missing from g09.profile
-  mname="`set-mflags x`"
-  mflags="`set-mflags`"
-  export mg="${mname} -f bsd/g09.make $mflags"
-  $mg linda 2>&1 | tee makelinda.log
+# now build Linda version 
+cd $g09root/g09
+tar -xvf $SRC_ARCHIVE_LINDA 
+bsd/install                 
+set +e         
+source $g09root/g09/bsd/g09.profile    
+set -e
+# these are missing from g09.profile
+mname="`set-mflags x`"
+mflags="`set-mflags`"
+export mg="${mname} -f bsd/g09.make $mflags"
+$mg linda 2>&1 | tee makelinda.log
 
 
-  cp -r $g09root/g09 $INSTALL_PREFIX
-  # Linda job setup
-  cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
-  cd $INSTALL_PREFIX
+cp -r $g09root/g09 $INSTALL_PREFIX
+# Linda job setup
+cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
+cd $INSTALL_PREFIX
 
-  for a in flc LindaLauncher ntsnet pmbuild vntsnet
-  do
-    echo "Patching ${a}..."
-    sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
-  done
+for a in flc LindaLauncher ntsnet pmbuild vntsnet
+do
+  echo "Patching ${a}..."
+  sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
+done
 
-  chgrp -R $GROUP $INSTALL_PREFIX  
-  chmod -R o-rwx $INSTALL_PREFIX
-
-else
-  echo "Hash mismatch."
-  echo "Expected: $MD5 $MD5_LINDA"
-  echo "Got: $CHECKSUM $CHECKSUM_LINDA"
-fi
+chgrp -R $GROUP $INSTALL_PREFIX  
+chmod -R o-rwx $INSTALL_PREFIX
