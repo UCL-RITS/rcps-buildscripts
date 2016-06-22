@@ -63,7 +63,7 @@ cd ..
 # Alter rungms in temp_dir
 sed -i -e "s|set TARGET=sockets|set TARGET=mpi|" rungms
 sed -i -e "s|set SCR=/scr/\$USER|set SCR=/tmp/\$USER|" rungms
-sed -i -e "s|set USERSCR=/u1/\$USER/scr|set USERSCR=\$HOME/Scratch/gamess|" rungms
+sed -i -e "s|set USERSCR=/u1/\$USER/scr|set USERSCR=\$GAMESS_USERSCR|" rungms
 sed -i -e "s|set GMSPATH=/u1/mike/gamess|set GMSPATH=$INSTALL_PREFIX|" rungms
 sed -i -e "s|set DDI_MPI_ROOT=/shared/intel/impi/4.1.0.024/intel64|set DDI_MPI_ROOT=$I_MPI_ROOT/intel64|" rungms
 sed -i -e "s|setenv I_MPI_FABRICS dapl|#setenv I_MPI_FABRICS dapl|" rungms
