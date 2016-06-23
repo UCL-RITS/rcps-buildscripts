@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# FIX GAUSSIAN INSTALL
+#
+# For unknown reasons, the copy step sometimes fails in the install.
+# This script clears out the broken copy and tries again.
+#
+# run the script with:
+# ./gaussian-g09-d01_fix /path/to/tempbuild/dir
+#
+
+NAME=${NAME:-gaussian}
+VERSION=${VERSION:-g09-d01}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gaussian/sources/g09-d01/wkssrc.tgz}
+SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/shared/ucl/apps/gaussian/sources/linda/optlin82.tgz}
+GROUP=${GROUP:-legg09}
+TMPD=${1:-/dev/shm/gaussian/tmp}
+
+
+set -e
+
+temp_dir=$TMPD
+
+export PATH=$INSTALL_PREFIX/g09:$PATH
+export g09root=$temp_dir
+
+rm -rf $INSTALL_PREFIX
+
+mkdir -p $INSTALL_PREFIX
+
+cp -r $g09root/g09 $INSTALL_PREFIX
+# Linda job setup
+cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
+cd $INSTALL_PREFIX
+
+for a in flc LindaLauncher ntsnet pmbuild vntsnet
+do
+  echo "Patching ${a}..."
+  sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
+done
+
+chgrp -R $GROUP $INSTALL_PREFIX  
+chmod -R o-rwx $INSTALL_PREFIX

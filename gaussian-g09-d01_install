@@ -21,7 +21,6 @@ temp_dir=`mktemp -d -p /dev/shm/gaussian`
 export PATH=$INSTALL_PREFIX/g09:$PATH
 export g09root=$temp_dir
 
-mkdir -p $INSTALL_PREFIX
 cd $g09root
 tar -xvf $SRC_ARCHIVE
 chgrp -R $GROUP g09
@@ -57,6 +56,10 @@ mflags="`set-mflags`"
 export mg="${mname} -f bsd/g09.make $mflags"
 $mg linda 2>&1 | tee makelinda.log
 
+# Clear out install prefix hopefully fixes permission problems.  If not, check
+# out gaussian-g09-d01_fix script.
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
 
 cp -r $g09root/g09 $INSTALL_PREFIX
 # Linda job setup
