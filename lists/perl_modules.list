@@ -142,3 +142,16 @@ SUPER
 Test::MockModule
 Archive::Zip
 File::Copy::Recursive
+Const::Fast
+Devel::Cover
+Devel::Symdump
+Pod::Coverage
+Parse::Yapp::Driver
+Graph::Writer::Dot
+AppConfig
+Test::LeakTrace
+Template
+IPC::Run
+Number::Format
+Statistics::Basic
+Math::Combinatorics
