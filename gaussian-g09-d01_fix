@@ -21,6 +21,13 @@ TMPD=${1:-/dev/shm/gaussian/tmp}
 
 set -e
 
+# module prereqs - if there's no compiler module loaded it will hose the
+# entire g09-d01 directory...
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers
+
 temp_dir=$TMPD
 
 export PATH=$INSTALL_PREFIX/g09:$PATH
