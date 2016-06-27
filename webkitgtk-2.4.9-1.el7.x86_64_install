@@ -20,6 +20,7 @@ temp_dir=`mktemp -d -p /dev/shm/webkitgtk`
 
 cd $temp_dir
 wget $SRC_ARCHIVE
+wget $DEVEL_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
 devel=$(basename "${DEVEL_ARCHIVE}")
 
