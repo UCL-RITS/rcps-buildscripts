@@ -11,7 +11,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://dl.fedoraproject.org/pub/epel/7/x86_64/w/webkitgtk-${VERSION}.rpm}
 MD5=${MD5:-0bf3661f9de3fe7b716972d2342e3fed}
 DEVEL_ARCHIVE=${DEVEL_ARCHIVE:-https://dl.fedoraproject.org/pub/epel/7/x86_64/w/webkitgtk-devel-${VERSION}.rpm}
-MD5_DEVEL=${MD5:-50ea7858f9ee68798670303e86215f87}
+MD5_DEVEL=${MD5_DEVEL:-50ea7858f9ee68798670303e86215f87}
 
 set -e
 
