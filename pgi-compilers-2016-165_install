@@ -18,6 +18,9 @@ module purge
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 
+# This isn't needed during install, just to create the modulefile
+LM_LICENSE_FILE=27000@lic-pgi.ucl.ac.uk
+
 _env_setup() {
   owd=$(pwd)
   package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
@@ -52,11 +55,13 @@ _build() {
 }
 
 _prepare_module() {
-  mkdir -p $module_dir/compilers/pgi/${package_version}
-  cp -v $install_prefix/modulefiles/pgi64/${package_version} $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
-  echo "setenv COMPILER_TAG pgi-20${package_version}" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
-  echo "conflict compilers" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
-  echo "prereq gcc-libs/4.9.2" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
+  mkdir -p $module_dir/compilers/pgi/20${package_version}
+  cp -v $install_prefix/modulefiles/pgi64/${package_version} $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
+  echo "# Customisation below" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
+  echo "setenv COMPILER_TAG pgi-20${package_version}" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
+  echo "conflict compilers" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
+  echo "prereq gcc-libs/4.9.2" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
+  echo "setenv LM_LICENSE_FILE $LM_LICENSE_FILE" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
 }
