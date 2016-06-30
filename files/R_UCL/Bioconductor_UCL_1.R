@@ -172,6 +172,10 @@ biocLite (pkgs="ChAMP", type="source", lib=mainLib);
 
 biocLite (pkgs="EBSeq", type="source", lib=mainLib);
 
+# Required for the cancerit suite (https://github.com/cancerit)
+
+biocLite (pkgs="copynumber", type="source", lib=mainLib);
+
 # End of Bioconductor_UCL_1
 
 # biocLite (pkgs="XXX", type="source", lib=mainLib);

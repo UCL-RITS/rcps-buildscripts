@@ -37,5 +37,15 @@ require() {
   done
 }
 
+prereq() {
+  while [ -n "${1:-}" ]; do
+    if ! (module list -t 2>&1 | grep -P "^$1($|/)" >/dev/null 2>/dev/null ); then
+      echo "Error: module prereq is not met: $1" >&2
+      exit $ERR_MODULE_NOT_LOADED
+    fi
+    shift
+  done
+}
+
 require-init
 

@@ -93,6 +93,12 @@ install.packages ("RcppArmadillo", lib=mainLib, repos=repros);
 
 install.packages ("rstanarm", lib=mainLib, repos=repros);
 
+# Required for the cancerit suite (https://github.com/cancerit)
+
+install.packages ("gam", lib=mainLib, repos=repros);
+install.packages ("VGAM", lib=mainLib, repos=repros);
+install.packages ("poweRlaw", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);

@@ -1,0 +1,11 @@
+--- types.h.bak	2016-06-21 11:48:38.000000000 +0100
++++ types.h	2016-06-21 11:49:04.000000000 +0100
+@@ -156,7 +156,7 @@
+ __STD_TYPE __SUSECONDS_T_TYPE __suseconds_t; /* Signed count of microseconds.  */
+ 
+ __STD_TYPE __DADDR_T_TYPE __daddr_t;	/* The type of a disk address.  */
+-__STD_TYPE __SWBLK_T_TYPE __swblk_t;	/* Type of a swap block maybe?  */
++/* __STD_TYPE __SWBLK_T_TYPE __swblk_t; */	/* Type of a swap block maybe?  */
+ __STD_TYPE __KEY_T_TYPE __key_t;	/* Type of an IPC key.  */
+ 
+ /* Clock ID used in clock and timer functions.  */

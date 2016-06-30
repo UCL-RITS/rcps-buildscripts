@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GAMESS
+#
+# by Heather Kelly, 2016 
+#
+# To get the source you need to register at http://www.msg.ameslab.gov/gamess/License_Agreement.html 
+# and get a time-limited password. The source files should be kept restricted.
+
+NAME=${NAME:-gamess}
+VERSION=${VERSION:-5Dec2014_R1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gamess/source/${VERSION}/gamess-current.tar.gz}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/intel
+prereq mpi/intel
+
+mkdir -p /dev/shm/gamess
+temp_dir=`mktemp -d -p /dev/shm/gamess`
+
+cd $temp_dir
+
+tar -xvf $SRC_ARCHIVE
+cd gamess
+
+mkdir -p $INSTALL_PREFIX
+./config
+
+# Config example answers - have to be given interactively
+#
+# Target:		linux64
+# GAMESS dir: (default)
+# GAMESS build dir: (default)
+# Version:		00
+# Fortran:		ifort
+# Fortran version: 	15
+# Math library:		mkl
+# MKL pathname:	/shared/ucl/apps/intel/2015/composer_xe_2015.2.164/mkl
+# MKL version:	skip
+# comms library:	mpi
+# MPI library: 		impi
+# impi location:	/shared/ucl/apps/intel/2015/impi/5.0.3.048
+# LIBCHEM:		no
+
+# build compddi library for parallel
+cd ddi
+./compddi 2>&1 | tee compddi.log
+
+# compile all of GAMESS
+cd ..
+./compall 2>&1 | tee compall.log
+
+# Link an executable - will create gamess.00.x
+./lked gamess 00 2>&1 | tee lked.log
+
+# Alter rungms in temp_dir
+sed -i -e "s|set TARGET=sockets|set TARGET=mpi|" rungms
+sed -i -e "s|set SCR=/scr/\$USER|set SCR=/tmp/\$USER|" rungms
+sed -i -e "s|set USERSCR=/u1/\$USER/scr|set USERSCR=\$GAMESS_USERSCR|" rungms
+sed -i -e "s|set GMSPATH=/u1/mike/gamess|set GMSPATH=$INSTALL_PREFIX|" rungms
+sed -i -e "s|set DDI_MPI_ROOT=/shared/intel/impi/4.1.0.024/intel64|set DDI_MPI_ROOT=$I_MPI_ROOT/intel64|" rungms
+sed -i -e "s|setenv I_MPI_FABRICS dapl|#setenv I_MPI_FABRICS dapl|" rungms
+sed -i -e "s|setenv I_MPI_DAT_LIBRARY libdat2.so|#setenv I_MPI_DAT_LIBRARY libdat2.so|" rungms
+sed -i -e "s|setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:$LD_LIBRARY_PATH|#setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:$LD_LIBRARY_PATH|" rungms
+
+# Manually install
+cp gamess.00.x $INSTALL_PREFIX
+cp rungms $INSTALL_PREFIX
+cp gms-files.csh $INSTALL_PREFIX
+cp install.info $INSTALL_PREFIX
+cp -r auxdata $INSTALL_PREFIX
+cp -r tests $INSTALL_PREFIX
+cp *.DOC $INSTALL_PREFIX
+
+# Run tests - need to alter runall to pass in an extra argument (PPN=1) when target=mpi.
+sed -i -e "s|./rungms exam\$NUM \$VERNO 1  >&  exam\$NUM.log|./rungms exam\$NUM \$VERNO 1 1 \>\&  exam\$NUM.log|" runall
+
+# need to create the user directories to run the tests
+mkdir -p /tmp/$USER
+mkdir -p $HOME/Scratch/gamess
+./runall 00
+# Check test results
+$temp_dir/gamess/tests/standard/checktst
+
+echo "You may now delete the test files from /tmp/$USER and $HOME/Scratch/gamess"
+
