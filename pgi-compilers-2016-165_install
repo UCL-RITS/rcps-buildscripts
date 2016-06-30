@@ -53,10 +53,10 @@ _build() {
 
 _prepare_module() {
   mkdir -p $module_dir/compilers/pgi/${package_version}
-  cp -v $install_prefix/modulefiles/pgi64/${package_version} $module_dir/compilers/pgi/${package_version}/gnu-4.9.2
-  echo "setenv COMPILER_TAG pgi-${package_version}" >> $module_dir/compilers/pgi/${package_version}/gnu-4.9.2
-  echo "conflict compilers" >> $module_dir/compilers/pgi/${package_version}/gnu-4.9.2
-  echo "prereq gcc-libs/4.9.2" >> $module_dir/compilers/pgi/${package_version}/gnu-4.9.2
+  cp -v $install_prefix/modulefiles/pgi64/${package_version} $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
+  echo "setenv COMPILER_TAG pgi-20${package_version}" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
+  echo "conflict compilers" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
+  echo "prereq gcc-libs/4.9.2" >> $module_dir/compilers/pgi/20${package_version}/gnu-4.9.2
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
 }
