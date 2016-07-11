@@ -108,6 +108,7 @@ _prepare_module() {
               -r fftw/3.3.4/gnu-4.9.2 \
               -r gmt/5.1.2 \
               -r proj.4/4.9.1 \
+              -r geos/3.5.0 \
               -w "Adds ${package_name} ${package_version} to your environment. ${package_description}"
   echo "Module files put in: $module_dir" >&2
   chmod a+rx $module_dir
