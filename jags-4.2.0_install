@@ -11,7 +11,7 @@
 #
 # Updated: July 2016 for JAGS 4.2.0
 
-VERSION=${VERSION:-3.4.0}
+VERSION=${VERSION:-4.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}_OpenBLAS}
 MD5=${MD5:-9e521b3cfb23d3290a8c6bc0b79bf426}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mcmc-jags/JAGS/4.x/Source/JAGS-${VERSION}.tar.gz}
