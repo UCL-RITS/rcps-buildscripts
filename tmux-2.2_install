@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-tmux}
+VERSION=${VERSION:-2.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-bd95ee7205e489c62c616bb7af040099}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tmux/tmux/releases/download/${VERSION}/tmux-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
