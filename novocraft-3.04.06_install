@@ -16,7 +16,7 @@ actual_file_md5=ffa6576da33d438b403a7e59c504e450
 
 _env_setup() {
   owd=$(pwd)
-  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
   build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
   module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
