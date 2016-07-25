@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing strace
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-strace}
+VERSION=${VERSION:-4.12}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-efb8611fc332e71ec419c53f59faa93e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/strace/files/strace/${VERSION}/${NAME}-${VERSION}.tar.xz}
+
+set -e
+
+mkdir -p /dev/shm/strace
+temp_dir=`mktemp -d -p /dev/shm/strace`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

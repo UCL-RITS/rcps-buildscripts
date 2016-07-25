@@ -156,3 +156,10 @@ Number::Format
 Statistics::Basic
 Math::Combinatorics
 IPC::System::Simple
+Data::UUID
+File::ShareDir
+Bio::DB::HTS
+Config::IniFiles
+JSON
+Proc::PID::File
+Term::UI

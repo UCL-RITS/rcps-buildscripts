@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libmatheval
+#
+# by Heather Kelly, 2016
+#
+
+NAME=${NAME:-libmatheval}
+VERSION=${VERSION:-1.1.11}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-595420ea60f6ddd75623847f46ca45c4}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/${NAME}/${NAME}-${VERSION}.tar.gz}
+PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/libmatheval-1.1.11_noguile.patch}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+
+  # patch to remove guile dependency
+  cp $PATCH .
+  patch -p0 -i $(basename "${PATCH}")
+  autoreconf -fi
+  ./configure --prefix=$INSTALL_PREFIX --with-pic
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

@@ -16,6 +16,8 @@
 #
 # Will need modules: see list of modules below.
 
+set -e
+
 VERSION=${VERSION:-3.3.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}

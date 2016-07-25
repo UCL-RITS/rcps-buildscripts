@@ -26,6 +26,10 @@ else
  set file = $CASEROOT/${CASE}.run 
 endif
 
+# Legion needs the size of MPI_COMM_WORLD to allocate procs.
+# This should be how to do it.
+set legpesize = `${UTILROOT}/Tools/taskmaker.pl -sumpes`
+
 cat >! $file << EOF1
 #!/bin/csh -f
 #===============================================================================

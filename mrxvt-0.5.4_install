@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing mrxvt 0.5.4
+#
+# by Brian Alston, July 2016
+#
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-0.5.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/mrxvt/$VERSION}
+MD5=${MD5:-0232c8868484751dcb931a28f0756f69}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/materm/mrxvt%20source/${VERSION}/mrxvt-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum mrxvt-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf mrxvt-${VERSION}.tar.gz
+   cd mrxvt-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} --enable-everything --disable-debug
+   make
+   make install
+   cp /shared/ucl/apps/build_scripts/files/etc-mrxvtrc.legion /shared/ucl/apps/mrxvt/${VERSION}/etc/mrxvt/mrxvtrc
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
+
