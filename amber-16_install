@@ -29,6 +29,10 @@ require compilers/intel/2015/update2
 require python2/recommended
 require flex
 
+if [ "${PARALLEL:-}" = "-mpi" ]; then
+  require mpi/intel/2015/update3/intel
+fi
+
 # If intel compilers are loaded, MKLROOT will say where MKL is.
 export MKL_HOME=$MKLROOT
 
