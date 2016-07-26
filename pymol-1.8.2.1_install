@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-pymol}
+VERSION=${VERSION:-1.8.2.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/v${VERSION}}
+MD5=${MD5:-7b6b61f8b314a9ad204f9df6212bf505}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/pymol/files/pymol/1.8/pymol-v${VERSION}.tar.bz2}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-v${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf ${APPNAME}-v${VERSION}.tar.bz2
+
+  cd ${APPNAME}
+  modules = ${INSTALL_PREFIX}/modules
+  python setup.py build install --home=${INSTALL_PREFIX} --install-lib=${modules} --install-scripts=${INSTALL_PREFIX}
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
