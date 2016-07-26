@@ -31,7 +31,7 @@ then
   tar -jxvf ${APPNAME}-v${VERSION}.tar.bz2
 
   cd ${APPNAME}
-  modules = ${INSTALL_PREFIX}/modules
+  modules=${INSTALL_PREFIX}/modules
   python setup.py build install --home=${INSTALL_PREFIX} --install-lib=${modules} --install-scripts=${INSTALL_PREFIX}
 else
   echo "Hash mismatch."
