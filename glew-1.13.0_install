@@ -26,7 +26,7 @@ wget $SRC_ARCHIVE
 
 CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tgz| awk '{print $1}'`
 
-if [ "$MD5" == "$CHECKSUM" ]
+if [ "$SHA1" == "$CHECKSUM" ]
 then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
@@ -40,6 +40,6 @@ then
   make install.all 2>&1 | tee make-install-log
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5"
+  echo "Expected: $SHA1"
   echo "Got: $CHECKSUM"
 fi
