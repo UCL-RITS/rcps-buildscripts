@@ -28,7 +28,7 @@ CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tgz| awk '{print $1}'`
 
 if [ "$SHA1" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+  tar -zxvf ${APPNAME}-${VERSION}.tgz
 
   cd ${APPNAME}-${VERSION}
   export GLEW_DEST=$INSTALL_PREFIX
