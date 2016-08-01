@@ -38,17 +38,17 @@ then
   cd "${NAME}2-${VERSION}"
   if [ "${BLAS_TAG}" == "openblas" ]
   then
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
   elif [ "${BLAS_TAG}" == "atlas" ]
   then
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
   elif [ "${BLAS_TAG}" == "mkl" ]
   then
     echo "------------------------------------------------"
     echo "ALERT ALERT, using MKL has previously not worked"
     echo "------------------------------------------------"
     echo ""
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-lmatheval -lfl ${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm" CFLAGS="-I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-lmatheval -lfl ${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm" CFLAGS="-I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include" CXXFLAGS="-O3 -axSSE2,AVX"
   else
     echo "Not using external BLAS"
     ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90
