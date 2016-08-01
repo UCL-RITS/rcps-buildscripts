@@ -33,7 +33,7 @@ then
   unzip $temp_dir/$archive
   cd FastQC
   # make fastqc script executable
-  chmod u+x fastqc
+  chmod a+x fastqc
 
 else
   echo "Hash mismatch."
