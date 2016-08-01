@@ -30,7 +30,7 @@ then
   cd $INSTALL_PREFIX
 
   # unzip into install location
-  unzip $archive
+  unzip $temp_dir/$archive
   cd FastQC
   # make fastqc script executable
   chmod u+x fastqc
