@@ -46,6 +46,8 @@ then
   then
     echo "------------------------------------------------"
     echo "ALERT ALERT, using MKL has previously not worked"
+    echo "  --> when running make check, gives 42 failures"
+    echo "      and various nans                          "
     echo "------------------------------------------------"
     echo ""
     ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-lmatheval -lfl ${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm" CFLAGS="-I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include" CXXFLAGS="-O3 -axSSE2,AVX"
@@ -56,6 +58,15 @@ then
 
   make 2>&1 | tee make.log
   make install
+  
+  # The tests also *seem* to require you to have already installed PLUMED into a prefix
+  export PATH="$INSTALL_PREFIX/bin:$PATH"
+  export CPATH="$INSTALL_PREFIX/include:$CPATH"
+  export LIBRARY_PATH="$INSTALL_PREFIX/lib:$LIBRARY_PATH"
+  export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
+
+  # If you don't add -fopenmp here, linking the test executable fails with the Intel compiler
+  make check LDFLAGS+="-fopenmp"
 
 else
   echo "Hash mismatch."
