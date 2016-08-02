@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FastQC
+#
+# 
+#
+
+NAME=${NAME:-fastqc}
+VERSION=${VERSION:-0.11.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.bioinformatics.babraham.ac.uk/projects/fastqc/${NAME}_v${VERSION}.zip}
+MD5=${MD5:-3524f101c0ab0bae77c7595983170a76}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+
+  # unzip into install location
+  unzip $temp_dir/$archive
+  cd FastQC
+  # make fastqc script executable
+  chmod a+x fastqc
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
