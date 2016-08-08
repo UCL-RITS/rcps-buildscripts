@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GROMACS with PLUMED
+#
+
+NAME=${NAME:-gromacs}
+VERSION=${VERSION:-5.1.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/plumed/$COMPILER_TAG}
+MD5=${MD5:-52f0f62dafa9fbe120d310fefb320c91}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
+
+for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+module purge
+require gcc-libs
+require compilers/intel/2015/update2
+require mpi/intel/2015/update3/intel
+require libmatheval
+require flex
+require openblas/0.2.14/intel-2015-update2
+require plumed/2.2.3/intel-2015-update2
+
+set -e
+
+# Check if PLUMED_KERNEL is empty or unset, returns error if it is
+: "${PLUMED_KERNEL:?"parameter null or not set, need to load a plumed module"}"
+
+temp_dir=$(mktemp -d -p /dev/shm)
+
+cd "$temp_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+echo "Checking hashes:"
+md5sum -c <<<"$MD5  $tarfile"
+
+tar -xf "$tarfile"
+
+cd "${NAME}-${VERSION}"
+
+echo "Running PLUMED's interactive patch tool"
+plumed patch -p --shared
+
+mkdir build
+cd build
+
+# Only build the MPI versions of GROMACS with PLUMED
+# need to tell it to build shared libs or it won't since it didn't do a serial build first
+
+echo "Building and installing MPI, double precision GROMACS"
+cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DBUILD_SHARED_LIBS=ON
+make
+make install
+
+# PLUMED 2 always uses double precision, even if GROMACS is running in single
+echo "Building and installing MPI, single precision GROMACS"
+cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl -DGMX_SIMD=SSE4.1 -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DBUILD_SHARED_LIBS=ON
+make
+make install
+
+module_dir=$(mktemp -d -p /dev/shm)
+make_module -r gcc-libs \
+            -r compilers/intel/2015/update2 \
+            -r mpi/intel/2015/update3/intel \
+            -r libmatheval \
+            -r flex \
+            -r openblas/0.2.14/intel-2015-update2 \
+            -r plumed/2.2.3/intel-2015-update2 \
+            -p "$INSTALL_PREFIX" \
+            -c "$NAME" \
+            -w "GROMACS 5.1.3 molecular dynamics package, built with Intel 2015u2 compilers, PLUMED 2.2.3 patches (including libmatheval), and OpenBLAS 0.2.14." \
+            -o "$module_dir/$NAME/$VERSION/plumed/$COMPILER_TAG"
+echo "Modules created in $module_dir"
+
+
+
