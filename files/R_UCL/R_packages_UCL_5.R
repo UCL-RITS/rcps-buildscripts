@@ -5,13 +5,7 @@
 #
 # June 2016
 
-mainLib <- Sys.getenv ("RLIB_MAIN");
-dbLib <- Sys.getenv ("RLIB_DB");
-repros <- Sys.getenv ("REPROS");
-mainLib;
-dbLib;
-repros;
-
+#
 # For Antonia Ford (a.ford.11@ucl.ac.uk) - added Jan 2014
 
 install.packages ("rgl", lib=mainLib, repos=repros);
