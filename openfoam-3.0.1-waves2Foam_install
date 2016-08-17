@@ -38,7 +38,7 @@ QT_VERSION=${QT_VERSION:-4.8.6}
 QT_ARCHIVE=${QT_ARCHIVE:-http://download.qt-project.org/official_releases/qt/4.8/${QT_VERSION}/qt-everywhere-opensource-src-${QT_VERSION}.tar.gz}
 QT_MD5=${QT_MD5:-2edbe4d6c2eff33ef91732602f3518eb}
 
-BUILD_ROOT=/mnt/openfoam
+BUILD_ROOT=/tmp/openfoam-build
 
 mkdir -p "$BUILD_ROOT"
 temp_dir=$(mktemp -d -p "$BUILD_ROOT")
@@ -246,7 +246,7 @@ svn co http://svn.code.sf.net/p/openfoam-extend/svn/trunk/Breeder_1.6/other/wave
 cd waves2Foam
 
 # Trying to track down a problem -- maximum bash debugging
-find . -name "Allwmake" -print0 | xargs -0 -Ifile sed -i -e "1s_\#\!/bin/bash_\#\!/bin/sh\nset -vx\n_" file
+find . -name "Allwmake" -print0 | xargs -0 -Ifile sed -i -e "1s_\#\!/bin/bash_\#\!/bin/sh\nset -e\n_" file
 
 patch --ignore-whitespace bin/bashrc.org <<EOF
 16,21c16,21
