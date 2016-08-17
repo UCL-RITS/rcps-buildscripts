@@ -43,7 +43,7 @@ CHECKSUM=`md5sum $ARCHIVE | awk '{print $1}'`
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
     tar xvzf $ARCHIVE
-    cd fasta${VERSION}_${VERSION_DATE}/src
+    cd fasta36-${VERSION}_${VERSION_DATE}/src
     make -f ../make/Makefile.linux_sse2 all 2>&1 | tee make_all_log
     cd ../bin
     mkdir -p ${INSTALL_PREFIX}/bin
