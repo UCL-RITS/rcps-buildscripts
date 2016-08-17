@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing h5utils
+#
+# 
+#
+
+NAME=${NAME:-h5utils}
+VERSION=${VERSION:-1.12.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-46a6869fee6e6bf87fbba9ab8a99930e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ab-initio.mit.edu/$NAME/${NAME}-${VERSION}.tar.gz}
+PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/h5utils-1.12.1-png_get_.patch}
+FLEX_LIB=${FLEX_LIB:-/shared/ucl/apps/flex/2.5.39/gnu-4.9.2/lib/libfl.a}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/gnu
+prereq hdf/5-1.8.15/gnu-4.9.2
+prereq libmatheval
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+
+  # patch h5utils to work with libpng >= 15
+  cp $PATCH .
+  patch -p0 -i $(basename "$PATCH")
+
+  # to build with matheval, need to link static flex library
+  ./configure --prefix=$INSTALL_PREFIX LIBS="-lhdf5 -lz -lm $FLEX_LIB"
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

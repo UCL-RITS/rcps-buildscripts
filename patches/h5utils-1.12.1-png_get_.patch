@@ -1,0 +1,23 @@
+--- writepng_orig.c	2015-03-19 15:14:35.917050301 -0700
++++ writepng.c	2015-03-19 15:29:58.475651762 -0700
+@@ -309,7 +309,7 @@
+      }
+      /* Set error handling.  REQUIRED if you aren't supplying your own *
+       * error hadnling functions in the png_create_write_struct() call. */
+-     if (setjmp(png_ptr->jmpbuf)) {
++     if (setjmp(png_jmpbuf(png_ptr))) {
+ 	  /* If we get here, we had a problem reading the file */
+ 	  fclose(fp);
+ 	  png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+@@ -434,7 +434,10 @@
+      png_write_end(png_ptr, info_ptr);
+ 
+      /* if you malloced the palette, free it here */
+-     free(info_ptr->palette);
++     //png_colorp palette;
++     //int num_palette;
++     //png_get_PLTE(png_ptr, info_ptr, &palette, num_palette);
++     //free(palette);
+ 
+      /* if you allocated any text comments, free them here */
+
