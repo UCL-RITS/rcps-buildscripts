@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FASTA using GCC 
+#
+# v36.3.8d
+#
+# by Brian Alston, Aug 2016
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-36.3.8d}
+VERSION_DATE=${VERSION_DATE:-13Apr16}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/FASTA/v${VERSION}}
+MD5=${MD5:-5cf9000282c67fda5301ac6ef65b0366}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/wrpearson/fasta36/archive/v${VERSION_${VERSION_DATE}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/cancerit'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+ARCHIVE=`basename $SRC_ARCHIVE`
+
+CHECKSUM=`md5sum $ARCHIVE | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    tar xvzf $ARCHIVE
+    cd fasta${VERSION}_${VERSION_DATE}/src
+    make -f ../make/Makefile.linux_sse2 all 2>&1 | tee make_all_log
+    cd ../bin
+    mkdir -p ${INSTALL_PREFIX}/bin
+    cp * ${INSTALL_PREFIX}/bin
+    cd ../doc
+    mkdir -p ${INSTALL_PREFIX}/man/man1
+    cp *.1 ${INSTALL_PREFIX}/man/man1/
+    mkdir -p ${INSTALL_PREFIX}/doc
+    cp fasta_guide.pdf ${INSTALL_PREFIX}/doc/
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
