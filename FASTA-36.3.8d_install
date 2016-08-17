@@ -15,7 +15,7 @@ VERSION=${VERSION:-36.3.8d}
 VERSION_DATE=${VERSION_DATE:-13Apr16}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/FASTA/v${VERSION}}
 MD5=${MD5:-5cf9000282c67fda5301ac6ef65b0366}
-SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/wrpearson/fasta36/archive/v${VERSION_${VERSION_DATE}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/wrpearson/fasta36/archive/v${VERSION}_${VERSION_DATE}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
