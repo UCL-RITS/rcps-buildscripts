@@ -26,6 +26,8 @@ require perl/5.22.0
 require python/2.7.9
 require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
+require gmt/recommended
+require proj.4/4.9.1
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
