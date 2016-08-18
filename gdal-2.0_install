@@ -13,6 +13,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TA
 SHA256=${SHA256:-53761563ff53c5bf27bff7c4d6cab8bb1634baccefda05348e0f3b7acaf4c9e6}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://download.osgeo.org/gdal/${VERSION}/gdal-${VERSION}.tar.gz}
 HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
+# choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
+LINK_PROJ=${LINK_PROJ:-no}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/4.9.1/lib}
 
 set -e
@@ -26,8 +28,12 @@ require perl/5.22.0
 require python/2.7.9
 require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
-require gmt/recommended
-require proj.4/4.9.1
+
+if [ "$LINK_PROJ" == "yes" ]
+then
+  require gmt/recommended
+  require proj.4/4.9.1
+fi
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -45,7 +51,12 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
+  if [ "$LINK_PROJ" == "yes" ]
+  then
+    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
+  else
+    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+  fi
   make && make install
 else
   echo "Hash mismatch."
