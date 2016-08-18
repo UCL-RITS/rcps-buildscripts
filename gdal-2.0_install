@@ -24,6 +24,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs
+require compilers/gnu
 require perl/5.22.0
 require python/2.7.9
 require hdf/5-1.8.15/gnu-4.9.2
