@@ -8,7 +8,7 @@
 
 NAME=${NAME:-plink}
 VERSION=${VERSION:-1.90b3.40}
-DATE=${DATE:-160616}
+DATE=${DATE:-160816}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$DATE/$COMPILER_TAG}
 MD5=${MD5:-ca7d10efefeeda968ff93be9ffaafbf6}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.cog-genomics.org/static/bin/${NAME}${DATE}/${NAME}_src.zip}
