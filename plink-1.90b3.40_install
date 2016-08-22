@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PLINK
+#
+# 
+#
+
+NAME=${NAME:-plink}
+VERSION=${VERSION:-1.90b3.40}
+DATE=${DATE:-160616}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$DATE/$COMPILER_TAG}
+MD5=${MD5:-ca7d10efefeeda968ff93be9ffaafbf6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.cog-genomics.org/static/bin/${NAME}${DATE}/${NAME}_src.zip}
+PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/plink-3.40b_Makefile.patch}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/gnu
+prereq atlas
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  unzip $archive
+  patch -p0 -i $(basename "$PATCH")
+  # this builds a static zlib
+  ./plink_first_compile
+  make plink 2>&1 | tee make.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
