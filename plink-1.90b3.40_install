@@ -38,7 +38,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   mkdir -p $INSTALL_PREFIX
   cd $INSTALL_PREFIX
-  unzip $archive
+  unzip $temp_dir/$archive
   patch -p0 -i $(basename "$PATCH")
   # this builds a static zlib
   ./plink_first_compile
