@@ -17,13 +17,18 @@ COMSOLGROUP=${COMSOLGROUP:-legcomsl}
 
 set -e
 
+# module prereqs
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers
+prereq xulrunner/3.6.28/gnu-4.9.2
+
 mkdir -p /dev/shm/$NAME
 temp_dir=`mktemp -d -p /dev/shm/$NAME`
 
 cd $temp_dir
-
-wget $SRC_ARCHIVE
-archive=$(basename "${SRC_ARCHIVE}")
 
 tar -xvf $SRC_ARCHIVE
 
