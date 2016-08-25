@@ -11,6 +11,9 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
 PYTHON_VERSION=${PYTHON_VERSION:-3}
 TIME_STAMP=`date +"%s"`
 
+# Disable wheels for some packages
+PIPNOBIN=${PIPNOBIN:-numpy,scipy,cvxopt}
+
 set -e
 
 mkdir -p $INSTALL_PREFIX
@@ -45,12 +48,12 @@ pip3 install --upgrade pip
 
 for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
-   pip3 install $a
+   pip3 install --no-binary $PIPNOBIN $a
 done
 
 for a in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
 do
-   pip3 install $a
+   pip3 install --no-binary $PIPNOBIN $a
 done
 
 
