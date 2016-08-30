@@ -27,7 +27,6 @@ _env_setup() {
   if [ "${BASE_VASP_VERSION%-*}" == "5.4.1" ]; then
     VASP_PATCH_URLS=( 'https://www.vasp.at/index.php/download1/category/5-src?download=28:patch-5-4-1-14032016'
                       'https://www.vasp.at/index.php/download1/category/5-src?download=29:patch-5-4-1-03082016' )
-    #VASP_PATCH_URL=${VASP_PATCH_URL:-https://vasp.at/index.php/download1/category/5-src?download=22:patch-5-4-1-08072015}
     VASP_VERSION=${VASP_VERSION}-p${#VASP_PATCH_URLS[@]}
     for file in "${VASP_PATCH_URLS[@]}"; do
       VASP_RUBY_PATCH_STRING="\"$file\", $VASP_RUBY_PATCH_STRING "
@@ -54,6 +53,7 @@ _env_setup() {
   require  ruby  # For the automatic download because the VASP site is a PoS
 
   INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${PACKAGE_NAME}/$VASP_VERSION/${COMPILER_TAG}}
+  echo "Installing into: $INSTALL_PREFIX"
   export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
   export PATH=$INSTALL_PREFIX/bin:$PATH
 
