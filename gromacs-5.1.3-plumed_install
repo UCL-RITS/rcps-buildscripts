@@ -6,7 +6,6 @@
 
 NAME=${NAME:-gromacs}
 VERSION=${VERSION:-5.1.3}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/plumed/$COMPILER_TAG}
 MD5=${MD5:-52f0f62dafa9fbe120d310fefb320c91}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
 
@@ -19,6 +18,8 @@ require libmatheval
 require flex
 require openblas/0.2.14/intel-2015-update2
 require plumed/2.2.3/intel-2015-update2
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/plumed/$COMPILER_TAG}
 
 set -e
 
