@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ApproxWF
+#
+# by Brian Alston, Sept 2016
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ApproxWF/}
+MD5=${MD5:-a5bb008616e8840f427b65f71f10484d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://bitbucket.org/phaentu/approxwf/get/master.zip}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum master.zip | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    unzip -x master.zip
+    cd phaentu-approxwf-76946c474b99
+    g++ -O3 -o ApproxWF -fopenmp *.cpp  2>&1 |  tee build_legion.log
+    mkdir -p ${INSTALL_PREFIX}/bin
+    cp ApproxWF ${INSTALL_PREFIX}/bin
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
