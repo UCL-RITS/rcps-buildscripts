@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing mpi4py outside python bundle as it requires an MPI module
+#
+# 
+#
+
+NAME=${NAME:-mpi4py}
+VERSION=${VERSION:-2.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://bitbucket.org/${NAME}/${NAME}/downloads/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-4f7d8126d7367c239fd67615680990e3}
+# python2 or python3
+PYTHON_VERSION=${PYTHON_VERSION:-python2}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/gnu
+prereq mpi/openmpi
+
+if [ "$PYTHON_VERSION" == "python2" ]
+then
+  prereq python2/recommended
+elif [ "$PYTHON_VERSION" == "python3" ]
+then
+  prereq python3/recommended
+fi
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+
+# both versions can be happily installed into the same install prefix - 
+# they go into lib/python2.7 and lib/python3.4
+if [ "$PYTHON_VERSION" == "python2" ]
+then
+  python setup.py build 2>&1 | tee build.log
+  python setup.py install --prefix=$INSTALL_PREFIX 2>&1 | tee build.log
+elif [ "$PYTHON_VERSION" == "python3" ]
+then
+  python3 setup.py build 2>&1 | tee build.log
+  python3 setup.py install --prefix=$INSTALL_PREFIX 2>&1 | tee build.log
+fi
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
