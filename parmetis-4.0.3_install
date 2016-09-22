@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="parmetis"
+package_version="4.0.3"
+src_urls="http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-${package_version}.tar.gz"
+# Optional: 
+# package_variant=""
+package_description="ParMETIS is an MPI-based parallel library that implements a variety of algorithms for partitioning unstructured graphs, meshes, and for computing fill-reducing orderings of sparse matrices."
+
+actual_file_name=parmetis-${package_version}.tar.gz
+actual_file_md5=f69c479586bf6bb7aff6a9bc0c739628
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2015/update2
+require mpi/intel/2015/update3/intel
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  make config prefix="$install_prefix"
+  make
+  make install
+  make distclean
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -r "gcc-libs/4.9.2" \
+              -r "compilers/intel/2015/update2" \
+              -r "mpi/intel/2015/update3/intel" \
+              -o $module_dir/$package_label \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
