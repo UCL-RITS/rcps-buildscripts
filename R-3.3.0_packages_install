@@ -11,6 +11,7 @@
 # For R 3.3.0
 #
 # by Brian Alston, June 2016
+# Updated Sep 2016 to updated JAGS version
 #
 # Using Ian's require function to load modules
 #
@@ -43,7 +44,7 @@ require texlive/2015
 require gsl/1.16/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
-require jags/3.4.0/gnu.4.9.2-openblas
+require jags/4.2.0/gnu.4.9.2-openblas
 require root/5.34.30/gnu-4.9.2
 require mpi/openmpi/1.8.4/gnu-4.9.2
 require r/3.3.0-openblas/gnu-4.9.2
