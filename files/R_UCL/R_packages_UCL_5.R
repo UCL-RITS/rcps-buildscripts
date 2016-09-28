@@ -109,6 +109,13 @@ install.packages ("caret", lib=mainLib, repos=repros);
 install.packages ("quantreg", lib=mainLib, repos=repros);
 install.packages ("randomForest", lib=mainLib, repos=repros);
 
+# For Slava Mikhaylov from political science Sep 2016
+
+install.packages ("relaimpo", lib=mainLib, repos=repros);
+install.packages ("GGally", lib=mainLib, repos=repros);
+install.packages ("effects", lib=mainLib, repos=repros);
+install.packages ("HotDeckImputation", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
