@@ -44,6 +44,7 @@ _build() {
   # enable_blaslib prevents superlu building its own copy of netlib BLAS
   cmake \
       -Denable_blaslib=0 \
+      -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_INSTALL_PREFIX="$install_prefix" \
       ../
   make
