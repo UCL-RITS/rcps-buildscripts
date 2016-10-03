@@ -8,7 +8,7 @@ package_version="5.1.0"
 src_urls="http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_${package_version}.tar.gz"
 # Optional: 
 # package_variant=""
-package_description="ParMETIS is an MPI-based parallel library that implements a variety of algorithms for partitioning unstructured graphs, meshes, and for computing fill-reducing orderings of sparse matrices."
+package_description="SuperLU_DIST is the distributed-memory parallel version of SuperLU, a general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations."
 
 actual_file_name=superlu_dist_${package_version}.tar.gz
 actual_file_md5=6bb86e630bd4bd8650243aed8fd92eb9
