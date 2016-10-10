@@ -14,7 +14,6 @@ pysam==0.9.1
 obspy
 cvxopt
 cutadapt
-misopy
 lxml
 pysamstats
 astropy
