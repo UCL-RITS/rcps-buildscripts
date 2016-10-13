@@ -46,6 +46,7 @@ require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
 require root/5.34.30/gnu-4.9.2
+require glpk/4.60/gnu-4.9.2
 require mpi/openmpi/1.8.4/gnu-4.9.2
 require r/3.3.0-openblas/gnu-4.9.2
 

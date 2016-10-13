@@ -115,6 +115,7 @@ install.packages ("relaimpo", lib=mainLib, repos=repros);
 install.packages ("GGally", lib=mainLib, repos=repros);
 install.packages ("effects", lib=mainLib, repos=repros);
 install.packages ("HotDeckImputation", lib=mainLib, repos=repros);
+install.packages ("psych", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
