@@ -27,3 +27,10 @@ mkdir -p $INSTALL_PREFIX/lib/python2.7/site-packages
 export PYTHONPATH=$INSTALL_PREFIX/lib/python2.7/site-packages/:$PYTHONPATH
 
 python setup.py install --prefix=$INSTALL_PREFIX
+
+# easy_lausanne's bin scripts have #!/bin/python and so when run can't find
+# packages that are part of the recommended bundle. 
+cd $INSTALL_PREFIX/bin
+sed -i -e "s|#!/bin/python|#!/bin/env python|" atlas_dilate
+sed -i -e "s|#!/bin/python|#!/bin/env python|" easy_lausanne
+

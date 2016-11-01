@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="novocraft"
+package_version="3.04.06"
+# Optional: 
+# package_variant=""
+package_description="Novocraft is a set of tools for bioinformatics, including Novoalign for short-read mapping."
+
+actual_file_name=novocraftV3.04.06.Linux3.0.tar.gz
+actual_file_md5=ffa6576da33d438b403a7e59c504e450
+
+# (No module build requirements)
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget \
+      --trust-server-names \
+      --referer=http://www.novocraft.com/support/download/ \
+      http://www.novocraft.com/support/download/download.php?filename=V${package_version}/novocraftV${package_version}.Linux3.0.tar.gz
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  tar -xf $actual_file_name
+}
+
+_build() {
+  mkdir -p $install_prefix
+  cp -r novocraft/* $install_prefix
+  cp /shared/ucl/apps/build_scripts/files/novoalign.lic $install_prefix
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -e PATH:$install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -d \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+

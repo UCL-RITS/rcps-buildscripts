@@ -10,11 +10,10 @@ python-Levenshtein
 pandas
 ephem
 networkx
-pysam
+pysam==0.9.1
 obspy
 cvxopt
 cutadapt
-misopy
 lxml
 pysamstats
 astropy
@@ -22,3 +21,5 @@ pyspglib
 scikit-learn
 weblogo
 nibabel
+Pmw
+ipython

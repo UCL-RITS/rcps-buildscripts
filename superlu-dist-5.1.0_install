@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="superlu-dist"
+package_version="5.1.0"
+src_urls="http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_dist_${package_version}.tar.gz"
+# Optional: 
+# package_variant=""
+package_description="SuperLU_DIST is the distributed-memory parallel version of SuperLU, a general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations."
+
+actual_file_name=superlu_dist_${package_version}.tar.gz
+actual_file_md5=6bb86e630bd4bd8650243aed8fd92eb9
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2015/update2
+require cmake/3.2.1 # needs >=2.8.12
+require mpi/intel/2015/update3/intel
+require metis/5.1.0/intel-2015-update2
+require parmetis/4.0.3/intel-2015-update2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  basename=$(tar -tf $actual_file_name | head -n 1 | sed -e 's_/__')
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  mkdir build
+  cd build
+  # uuuugh
+  cmake \
+      -DTPL_PARMETIS_INCLUDE_DIRS=/shared/ucl/apps/parmetis/4.0.3/intel-2015-update2/include \
+      -DTPL_PARMETIS_LIBRARIES=/shared/ucl/apps/parmetis/4.0.3/intel-2015-update2/lib/libparmetis.a\;/shared/ucl/apps/metis/5.1.0/intel-2015-update2/lib/libmetis.a \
+      -DCMAKE_C_FLAGS="-std=c99" \
+      -DCMAKE_C_COMPILER="$(which icc)" \
+      -DMPIEXEC="$(which mpirun)" \
+      -DMPIEXEC_PREFLAGS="-hosts;localhost" \
+      -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+      ../
+  make
+  export PATH="$PATH:$(pwd)/EXAMPLE" 
+  # ^-- makes tests work
+  make test
+  make install
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p "$install_prefix" \
+              -c "${package_name}" \
+              -r "gcc-libs/4.9.2" \
+              -r "compilers/intel/2015/update2" \
+              -r "mpi/intel/2015/update3/intel" \
+              -o "$module_dir/$package_label" \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+

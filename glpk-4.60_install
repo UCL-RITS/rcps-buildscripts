@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GLPK 4.60 for R
+#
+# by Brian Alston, October 2016 
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+VERSION=${VERSION:-4.60}
+# For live installation:
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/GLPK/$VERSION/gcc}
+# For testing:
+# INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccaabaa/lib/apps/GLPK/$VERSION/gcc}
+MD5=${MD5:-e49a664db13d81c968415cd53f62bc8b}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/glpk/glpk-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget ${SRC_ARCHIVE}.sig
+
+gpg --verify glpk-${VERSION}.tar.gz.sig
+if [[ $? == 0 ]]
+then
+   tar xvzf glpk-${VERSION}.tar.gz
+   cd glpk-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} --with-gmp 2>&1 | tee configure_log
+   make 2>&1 | tee make_log
+   make check 2>&1 | tee make_check_log
+   make install 2>&1 | tee make_install_log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

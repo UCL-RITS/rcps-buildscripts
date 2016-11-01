@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-glew}
+VERSION=${VERSION:-1.13.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-d5b1c499f429aa91c466193b4e8ea94a84019e37}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/glew/files/${APPNAME}/${VERSION}/${APPNAME}-${VERSION}.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tgz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tgz
+
+  cd ${APPNAME}-${VERSION}
+  export GLEW_DEST=$INSTALL_PREFIX
+  export CC=gcc
+  sed -i.bak 's!CC = cc!CC = gcc!g' config/Makefile.linux
+  sed -i.bak 's!LD = cc!LD = gcc!g' config/Makefile.linux
+  rm config/Makefile.linux.bak
+  make 2>&1 | tee make.log
+  make install.all 2>&1 | tee make-install-log
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi

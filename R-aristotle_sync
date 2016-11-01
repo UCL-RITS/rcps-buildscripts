@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Syncs ~ccspapp/Scratch/R/<R-version> from Legion to Aristotle
+#
+# Default R vesion is 3.3.0-OpenBLAS
+#
+# by Brian Alston, August 2016
+#
+
+VERSION=${VERSION:-3.3.0-OpenBLAS}
+INSTALL_PREFIX=${INSTALL_PREFIX:-~ccspapp/Scratch/R/}
+REM_PREFIX=${REM_PREFIX:-Scratch/R}
+
+COPY_CMD=scp
+
+if  [ $# -gt 1 ]
+then
+    echo "R-aristotle_sync: *** ERROR *** wrong number of arguments"
+    echo ""
+    echo "  usage: R-aristotle_sync [R version eg 3.3.0-OpenBLAS]"
+    exit 1
+fi
+if [ $# == 1 ]
+then
+   VERSION=$1
+fi
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+echo Copying using: scp -r ccspapp@login05.external.legion.ucl.ac.uk:$REM_PREFIX/R-$VERSION .
+scp -r ccspapp@login05.external.legion.ucl.ac.uk:$REM_PREFIX/R-$VERSION .
+ls -l
+du -hs *
+echo "Done."

@@ -12,6 +12,7 @@ mainLib;
 dbLib;
 repros;
 
+#
 # For Antonia Ford (a.ford.11@ucl.ac.uk) - added Jan 2014
 
 install.packages ("rgl", lib=mainLib, repos=repros);
@@ -98,6 +99,23 @@ install.packages ("rstanarm", lib=mainLib, repos=repros);
 install.packages ("gam", lib=mainLib, repos=repros);
 install.packages ("VGAM", lib=mainLib, repos=repros);
 install.packages ("poweRlaw", lib=mainLib, repos=repros);
+
+# For Zahra Sabetsarvestani (ucakzsa@ucl.ac.uk) Aug 2016
+
+install.packages ("mlr", lib=mainLib, repos=repros);
+install.packages ("pracma", lib=mainLib, repos=repros);
+install.packages ("softImpute", lib=mainLib, repos=repros);
+install.packages ("caret", lib=mainLib, repos=repros);
+install.packages ("quantreg", lib=mainLib, repos=repros);
+install.packages ("randomForest", lib=mainLib, repos=repros);
+
+# For Slava Mikhaylov from political science Sep 2016
+
+install.packages ("relaimpo", lib=mainLib, repos=repros);
+install.packages ("GGally", lib=mainLib, repos=repros);
+install.packages ("effects", lib=mainLib, repos=repros);
+install.packages ("HotDeckImputation", lib=mainLib, repos=repros);
+install.packages ("psych", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
