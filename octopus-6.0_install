@@ -122,7 +122,7 @@ _build() {
   ulimit -s unlimited # <-- if you don't do this, the first test segfaults
   if [ "$tests" == "yes" ]
   then
-    make check
+    make check 2>&1 | tee test.log
   fi 
   make install
   make distclean
