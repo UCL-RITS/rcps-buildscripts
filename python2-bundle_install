@@ -6,7 +6,7 @@
 # by Owain Kenway, 2015 
 #
 
-VERSION=${VERSION:-1.0.0}
+VERSION=${VERSION:-2.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
 PYTHON_VERSION=${PYTHON_VERSION:-2}
 TIME_STAMP=`date +"%s"`
@@ -57,4 +57,4 @@ done
 
 
 cd ..
-ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION} 
+ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}
