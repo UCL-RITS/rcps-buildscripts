@@ -1,16 +1,16 @@
 Test::More          
 CPAN::Perl::Releases
+version
+Module::Metadata
 Try::Tiny 
 Test::Fatal 
 Test::Requires 
 Package::Stash::XS 
-version 
-Module::Metadata 
 JSON::PP
 CPAN::Meta::YAML 
+CPAN::Meta::Requirements
+CPAN::Meta
 Parse::CPAN::Meta 
-CPAN::Meta::Requirements 
-CPAN::Meta 
 Perl::OSType 
 Locale::Maketext::Simple 
 Params::Check 
@@ -20,7 +20,7 @@ Module::Load::Conditional
 Locale::Maketext::Simple 
 IPC::Cmd 
 ExtUtils::CBuilder 
-Parse::CPAN::Meta 
+TAP::Harness
 Module::Build 
 Module::Runtime 
 Module::Implementation 
@@ -43,6 +43,7 @@ Sub::Exporter
 Test::Output
 Sub::Uplevel 
 Test::Exception
+Pod::Text
 Pod::Usage
 File::Temp
 IO::All
