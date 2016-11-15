@@ -81,6 +81,9 @@ then
   # make perlbrew ready to use
   perlbrew init
   source $INSTALL_PREFIX/etc/bashrc
+  # make sure patchperl and cpanm are installed
+  perlbrew install-patchperl
+  perlbrew install-cpanm
 
   # put cpan config back again if there was an original
   if [ -f $temp_dir/MyConfig.pm.orig ]
