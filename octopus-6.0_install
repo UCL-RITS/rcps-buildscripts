@@ -16,6 +16,7 @@ actual_file_md5=${MD5:-5d1168c2a8d7fd9cb9492eaebaa7182e}
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ] 
 then
+  require gcc-libs
   require compilers/gnu/4.9.2
   require hdf/5-1.8.15/gnu-4.9.2
   require netcdf/4.3.3.1/gnu-4.9.2
@@ -29,6 +30,7 @@ then
   require fftw/3.3.4/gnu-4.9.2
 
 else 
+  require gcc-libs
   require compilers/intel/2015/update2
   require gsl/1.16/intel-2015-update2
   require hdf/5-1.8.15/intel-2015-update2 
