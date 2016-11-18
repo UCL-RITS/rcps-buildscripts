@@ -5,6 +5,8 @@
 #
 # by Owain Kenway, 2015 
 #
+set -e
+
 VERSION=${VERSION:-`python3 /shared/ucl/apps/build_scripts/files/pypiver.py iva`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
 
@@ -12,14 +14,14 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
 dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
-require compilers/gnu
-require python3
-require kmc
-require mummer
-require trimmomatic
-require samtools/1.2
-require bambamc
-require smalt
+prereq compilers/gnu
+prereq python3
+prereq kmc
+prereq mummer
+prereq trimmomatic
+prereq samtools/1.2
+prereq bambamc
+prereq smalt
 
 pip3 install --install-option="--prefix=$INSTALL_PREFIX" iva==$VERSION
 
