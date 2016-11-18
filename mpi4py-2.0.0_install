@@ -26,10 +26,10 @@ prereq mpi/openmpi
 
 if [ "$PYTHON_VERSION" == "python2" ]
 then
-  prereq python2/recommended
+  prereq python2
 elif [ "$PYTHON_VERSION" == "python3" ]
 then
-  prereq python3/recommended
+  prereq python3
 fi
 
 mkdir -p /dev/shm/${NAME}
