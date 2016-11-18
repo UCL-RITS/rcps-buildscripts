@@ -13,7 +13,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu
-require python3/recommended
+require python3
 require kmc
 require mummer
 require trimmomatic
