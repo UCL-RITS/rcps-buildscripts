@@ -13,7 +13,7 @@
 # Will need modules: rcps-core/1.0.0, gcc-libs/4.9.2, compilers/gnu/4.9.2, gmt/recommended
 
 VERSION=${VERSION:-4.9.1}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION} }
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION}}
 MD5=${MD5:-3cbb2a964fd19a496f5f4265a717d31c}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
 
