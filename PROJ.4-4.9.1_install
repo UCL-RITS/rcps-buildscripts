@@ -5,6 +5,9 @@
 #
 # by Brian Alston, 2015 
 #
+# Updated Novemvber 2016 to add missing proj_def.dat
+# to .../PROJ.4/4.9.1/share/proj/
+#
 # Using Ian's require function to load modules
 #
 # Will need modules: rcps-core/1.0.0, gcc-libs/4.9.2, compilers/gnu/4.9.2, gmt/recommended
@@ -42,7 +45,8 @@ then
    make 2>&1 | tee make-log
    make check 2>&1 | tee make-check-log
    make install 2>&1 | tee make-install-log
-
+   cd ${INSTALL_PREFIX}/share/proj
+   wget https://github.com/OSGeo/proj.4/blob/master/nad/proj_def.dat
 else
    echo "***** Hash mismatch,"
    echo "	Expected: $MD5"
