@@ -121,6 +121,11 @@ install.packages ("psych", lib=mainLib, repos=repros);
 
 install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
+# More requsts from Political Science
+
+install.packages ("rgdal", lib=mainLib, repos=repros);
+install.packages ("rgeos", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
