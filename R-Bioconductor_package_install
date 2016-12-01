@@ -3,9 +3,9 @@
 ###############################################
 # Installing a single R additional package
 #
-# by Brian Alston, October 2016 V1.0 
+# by Brian Alston, November 2016 V1.0 
 #
-# usage: R-package_install <R package name>
+# usage: R-Bioconductor_package_install <R package name>
 #
 # Will need modules: r/recommended
 
@@ -15,7 +15,7 @@ VERSION=${VERSION:-3.3.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
-export REPROS=${REPROS:-http://www.stats.bris.ac.uk/R/}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
 LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -49,7 +49,8 @@ mainLib;
 dbLib;
 repros;
 
-install.packages ("$PACKAGE", lib=mainLib, repos=repros);
+source ("https://bioconductor.org/biocLite.R");
+biocLite (pkgs="$PACKAGE", type="source", lib=mainLib);
 
 EOF
 
