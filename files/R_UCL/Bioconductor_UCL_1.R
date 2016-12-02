@@ -161,7 +161,8 @@ biocLite (pkgs="methylumi", type="source", lib=mainLib);
 biocLite (pkgs="nleqslv", type="source", lib=mainLib);
 biocLite (pkgs="lumi", type="source", lib=mainLib);
 
-biocLite (pkgs="IlluminaHumanMethylation450k.db", type="source", lib=dbLib);
+# biocLite (pkgs="IlluminaHumanMethylation450k.db", type="source", lib=dbLib);
+biocLite (pkgs="FDb.InfiniumMethylation.hg19", type="source", lib=mainLib);
 
 biocLite (pkgs="ROC", type="source", lib=mainLib);
 biocLite (pkgs="wateRmelon", type="source", lib=mainLib);
