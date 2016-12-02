@@ -13,6 +13,7 @@
 # by Brian Alston, June 2016
 # Updated Sep 2016 to updated JAGS version
 # Updated Nov 2016 for R 3.3.2 and extra modules for rgdal and rgeos packages.
+# Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
 #
 # Using Ian's require function to load modules
 #
@@ -24,7 +25,7 @@ VERSION=${VERSION:-3.3.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
-export REPROS=${REPROS:-http://www.stats.bris.ac.uk/R/}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
 LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
