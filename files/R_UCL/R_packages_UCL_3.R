@@ -27,6 +27,8 @@ install.packages ("saemix", lib=mainLib, repos=repros);
 # For Margarida Cabrita Lopes margarida.lopes@ucl.ac.uk
 
 install.packages ("ncdf", lib=mainLib, repos=repros);
+# install.packages ("RNetCDF", lib=mainLib, repos=repros);
+
 
 # For Dr Jiaqiu Wang (jiaqiu.wang@ucl.ac.uk) (ucesjw0) - added March 2013
 

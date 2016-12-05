@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing UDUNITS 2.2.20 with GCC
+#
+# by Brian Alston, December 2016
+#
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 
+
+VERSION=${VERSION:-2.2.20}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/UDUNITS/${VERSION}-${COMPILER_TAG}}
+MD5=${MD5:-1586b70a49dfe05da5fcc29ef239dce0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum udunits-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf udunits-${VERSION}.tar.gz
+   cd udunits-${VERSION}
+
+   ./configure --prefix=${INSTALL_PREFIX}
+   make
+   make install
+   make install-html 
+   make install-pdf
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
