@@ -8,6 +8,7 @@
 # Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 
 
 VERSION=${VERSION:-2.2.20}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/UDUNITS/${VERSION}-${COMPILER_TAG}}
 MD5=${MD5:-1586b70a49dfe05da5fcc29ef239dce0}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-${VERSION}.tar.gz}
