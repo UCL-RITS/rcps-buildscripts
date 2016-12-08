@@ -55,7 +55,7 @@ module load rcps-core/1.0.0
 module load compilers/intel/2015/update2
 module load mpi/intel/2015/update3/intel
 module load hdf/5-1.8.15/intel-2015-update2
-mosule load perl/5.16.0
+module load perl/5.16.0
 module load cesm/1.2.2/intel-2015-update2
 
 
