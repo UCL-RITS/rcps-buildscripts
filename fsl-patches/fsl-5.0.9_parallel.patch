@@ -1,0 +1,265 @@
+--- bin/fsl_sub-dist    2016-01-19 14:40:58.000000000 +0000
++++ bin/fsl_sub 2016-01-19 16:55:24.000000000 +0000
+@@ -11,6 +11,8 @@
+ #   Imaging of the Brain), Department of Clinical Neurology, Oxford
+ #   University, Oxford, UK
+ #
++#   Modified for use on UCL Legion OS upgrade - January 2015 by BAA  
++#   
+ #
+ #   LICENCE
+ #
+@@ -125,12 +127,27 @@
+     else
+        queue=verylong.q
+     fi
+-    queueCmd=" -q $queue " 
++
++    # No user queues on Legion
++    queueCmd="" 
+
+     #echo "Estimated time was $1 mins: queue name is $queue"
+ }
+
+ ###########################################################################
++# 
++#   Convert FSL runtimne in minutes to h_rt=hrs:mins:secs for Legion
++# 
++###########################################################################
++
++mins_conv ()
++{
++    hours=$(($1/60))
++    mins=$(($1%60))
++    h_rt="$hours:$mins:0"
++}
++
++###########################################################################
+ # Don't change the following (but keep scrolling down!)
+ ###########################################################################
+
+@@ -139,6 +156,8 @@
+ export POSIXLY_CORRECT
+ command=`basename $0`
+
++##### Modified for Legion to remove reference to queues etc.
++#
+ usage ()
+ {
+   cat <<EOF
+@@ -148,16 +167,12 @@
+ Usage: $command [options] <command>
+
+ $command gzip *.img *.hdr
+-$command -q short.q gzip *.img *.hdr
+ $command -a darwin regscript rawdata outputdir ...
+
+   -T <minutes>          Estimated job length in minutes, used to auto-set queue name
+-  -q <queuename>        Possible values for <queuename> are "verylong.q", "long.q" 
+-                        and "short.q". See below for details
+-                        Default is "long.q".
+-  -a <arch-name>        Architecture [e.g., darwin or lx24-amd64]
++  -a <arch-name>        Architecture [e.g., darwin (not Legion) or lx24-amd64]
+   -p <job-priority>     Lower priority [0:-1024] default = 0
+-  -M <email-address>    Who to email, default = `whoami`@fmrib.ox.ac.uk 
++  -M <email-address>    Who to email, default = `whoami`@ucl.ac.uk 
+   -j <jid>              Place a hold on this task until job jid has completed
+   -t <filename>         Specify a task file of commands to execute in parallel
+   -N <jobname>          Specify jobname as it will appear on queue
+@@ -165,25 +180,11 @@
+   -m <mailoptions>      Change the SGE mail options, see qsub for details
+   -z <output>           If <output> image or file already exists, do nothing and exit
+   -F                    Use flags embedded in scripts to set SGE queuing options
+-  -s <pename>,<threads> Submit a multi-threaded task - requires a PE (<pename>) to be
+-                        configured for the requested queues.
++  -s <pename>,<threads> Submit a multi-threaded task - requires PE (<pename>) to be
++                        smp for Legion.
+                         <threads> specifies the number of threads to run
+   -v                    Verbose mode.
+
+-Queues:
+-
+-There are several batch queues configured on the cluster, each with defined CPU
+-time limits. All queues, except bigmem.q, have a 8GB memory limit.
+-
+-veryshort.q:This queue is for jobs which last under 30mins.
+-short.q:    This queue is for jobs which last up to 4h. 
+-long.q:     This queue is for jobs which last less than 24h. Jobs run with a
+-            nice value of 10.
+-verylong.q: This queue is for jobs which will take longer than 24h CPU time.
+-            There is one slot per node, and jobs on this queue have a nice value
+-            of 15.
+-bigmem.q:   This queue is like the verylong.q but has no memory limits.
+-
+ EOF
+
+   exit 1
+@@ -215,7 +216,8 @@
+ # Note, we support openmp tasks even when Grid Engine is not in use.
+ ###########################################################################
+
+-omp_pe='openmp'
++# Set for Legion
++omp_pe='smp'
+
+ ###########################################################################
+ # The following sets up the default queue name, which you may want to
+@@ -223,8 +225,8 @@
+ ###########################################################################
+
+ queue=long.q
+-queueCmd=" -q long.q "
+-mailto=`whoami`@fmrib.ox.ac.uk
++queueCmd=""                    # no user queues on Legion
++mailto=`whoami`@ucl.ac.uk      # changed for UCL
+ MailOpts="a"
+
+
+@@ -269,11 +271,13 @@
+         exit 0
+       fi
+       shift;;
+-    -T)
+-      map_qname $2
++    -T) # For Legion convert given minutes to ht_rt value
++      mins_conv $2
+       shift;;
+     -q)
+       queue=$2
++      echo "Queue must not be specified on Legion"
++      exit 127
+       queueCmd=" -q $queue "
+       $QCONF -sq $queue >/dev/null 2>&1
+       if [ $? -eq 1 ]; then
+@@ -351,6 +355,7 @@
+     -s)
+       pe_string=$2;
+       peName=`echo $pe_string | cut -d',' -f 1`
++      peName='smp'     # must be smp on legion
+       peThreads=`echo $pe_string | cut -d',' -f 2`
+       shift;;
+   esac
+@@ -447,7 +452,7 @@
+
+        if [ "x$tasks" = "x" ] ; then
+            if [ $scriptmode -ne 1 ] ; then
+-               sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $sge_hold"
++               sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd -l h_rt=$h_rt $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $sge_hold"
+            else
+                sge_command="qsub $LogOpts $sge_arch $sge_hold"
+            fi
+@@ -457,7 +462,7 @@
+            fi
+            exec $sge_command $@ | awk '{print $3}'
+        else
+-           sge_command="qsub -V -cwd $queueCmd $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $sge_hold $sge_tasks"
++           sge_command="qsub -V -cwd $queueCmd $pe_options -M $mailto -N $JobName -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $sge_hold $sge_tasks"
+            if [ $verbose -eq 1 ] ; then
+                echo sge_command: $sge_command >&2
+                echo control file: $taskfile >&2
+--- bin/bedpostx-dist   2016-01-19 15:13:08.000000000 +0000
++++ bin/bedpostx        2016-01-19 15:14:04.000000000 +0000
+@@ -10,7 +10,8 @@
+ #   Imaging of the Brain), Department of Clinical Neurology, Oxford
+ #   University, Oxford, UK
+ #
+-#   
++#   Modified for use on UCL Legion OS upgrade - January 2015 by BAA  
++#     
+ #   LICENCE
+ #
+ #   FMRIB Software Library, Release 5.0 (c) 2012, The University of
+@@ -65,6 +66,8 @@
+ #   innovation@isis.ox.ac.uk quoting reference DE/9564.
+ export LC_ALL=C
+
++# Added support for user specified runtime for Legion jobs.
++
+ Usage() {
+     echo ""
+     echo "Usage: bedpostx <subject directory> [options]"
+@@ -78,6 +81,7 @@
+     echo "-b (burnin period, default 1000)"
+     echo "-j (number of jumps, default 1250)"
+     echo "-s (sample every, default 25)"
++    echo "-T (wallclock time for each job in minutes, default 15)"
+     echo "-model (Deconvolution model. 1: with sticks, 2: with sticks with a range of diffusivities (default), 3: with zeppelins)"
+     echo "-g (consider gradient nonlinearities, default off)"
+     #echo "-c do not use CUDA capable hardware/queue (if found)"
+@@ -169,6 +173,7 @@
+ model=2
+ gflag=0
+ nocuda=0
++wallclock=15   # Added for Legion
+ other=""
+
+ shift
+@@ -180,6 +185,7 @@
+       -b) burnin=$2;shift;;
+       -j) njumps=$2;shift;;
+       -s) sampleevery=$2;shift;;
++      -T) wallclock=$2; shift;;
+       -model) model=$2;shift;;
+       -g) gflag=1;;
+       -c) nocuda=1;;
+@@ -190,19 +196,22 @@
+ opts="--nf=$nfibres --fudge=$fudge --bi=$burnin --nj=$njumps --se=$sampleevery --model=$model"
+ defopts="--cnonlinear"
+ opts="$opts $defopts $other"
+-if [ -n "$SGE_ROOT" ]; then
+-       # Look for an SGE queue
+-       if [ -n "$FSLGECUDAQ" -a "$nocuda" -eq 0 ]; then
+-               # Test that the queue exists
+-               qconf -sq $FSLGECUDAQ 2>&1 >/dev/null
+-               if [ $? -eq 0 ]; then
+-                       # CUDA queue exists
+-                       if [ -x $0_gpu ]; then
+-                               exec $0_gpu $myopts
+-                       fi
+-               fi
+-       fi
+-fi
++
++# Commented out on legion - no user queues
++#
++#if [ -n "$SGE_ROOT" ]; then
++#      # Look for an SGE queue
++#      if [ -n "$FSLGECUDAQ" -a "$nocuda" -eq 0 ]; then
++#              # Test that the queue exists
++#              qconf -sq $FSLGECUDAQ 2>&1 >/dev/null
++#              if [ $? -eq 0 ]; then
++#                      # CUDA queue exists
++#                      if [ -x $0_gpu ]; then
++#                              exec $0_gpu $myopts
++#                      fi
++#              fi
++#      fi
++#fi
+
+ echo subjectdir is $subjdir
+
+@@ -262,9 +271,9 @@
+ mkdir -p ${subjdir}.bedpostX/logs/monitor
+ mkdir -p ${subjdir}.bedpostX/xfms
+
+-mailto=`whoami`@fmrib.ox.ac.uk
++mailto=`whoami`@ucl.ac.uk      # updated for UCL
+ echo Queuing preprocessing stages
+-preprocid=`${FSLDIR}/bin/fsl_sub -T 60 -m as -N bpx_preproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc.sh ${subjdir} ${gflag}`
++preprocid=`${FSLDIR}/bin/fsl_sub -T ${wallclock} -m as -N bpx_preproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_preproc.sh ${subjdir} ${gflag}`
+
+ echo Queuing parallel processing stage
+ nslices=`${FSLDIR}/bin/fslval ${subjdir}/data dim3`
+@@ -293,10 +302,10 @@
+     fi
+     slice=$(($slice + 1))
+ done
+-bedpostid=`${FSLDIR}/bin/fsl_sub -j $preprocid -l ${subjdir}.bedpostX/logs -M $mailto -N bedpostx -t ${subjdir}.bedpostX/commands.txt`
++bedpostid=`${FSLDIR}/bin/fsl_sub -j $preprocid -T ${wallclock} -l ${subjdir}.bedpostX/logs -M $mailto -N bedpostx -t ${subjdir}.bedpostX/commands.txt`
+
+ echo Queuing post processing stage
+-mergeid=`${FSLDIR}/bin/fsl_sub -j $bedpostid -T 60 -m as -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir`
++mergeid=`${FSLDIR}/bin/fsl_sub -j $bedpostid -T ${wallclock} -m as -N bpx_postproc -l ${subjdir}.bedpostX/logs ${FSLDIR}/bin/bedpostx_postproc.sh $subjdir`
+
+ echo $mergeid > ${subjdir}.bedpostX/logs/postproc_ID
+
