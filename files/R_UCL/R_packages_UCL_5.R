@@ -125,6 +125,10 @@ install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
 install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
+install.packages ("erer", lib=mainLib, repos=repros);
+install.packages ("panelAR", lib=mainLib, repos=repros);
+install.packages ("arm", lib=mainLib, repos=repros);
+install.packages ("systemfit", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
