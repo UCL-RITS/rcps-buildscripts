@@ -93,7 +93,6 @@ EOF
 _prepare_module() {
   export cprefix=$install_prefix
   make_module -p $install_prefix \
-              -n "${package_name}" \
               -c "${package_name}" \
               -o $module_dir/$package_label \
               -v INTEL_LICENSE_FILE=$intel_license \
@@ -103,63 +102,63 @@ _prepare_module() {
               -v F77=ifort \
               -v F90=ifort \
               -v FC=ifort \
-              -v COMPILER_TAG=intel-2016 \
+              -v COMPILER_TAG=intel-2017 \
               -v BLAS_TAG=mkl \
-              -v MKLROOT=$cprefix/compilers_and_libraries_2016.0.109/linux/mkl \
-              -v IPPROOT=$cprefix/compilers_and_libraries_2016.0.109/linux/ipp \
-              -v GDBSERVER_MIC=$cprefix/debugger_2016/gdb/targets/mic/bin/gdbserver \
-              -v TBBROOT=$cprefix/compilers_and_libraries_2016.0.109/linux/tbb \
-              -v GDB_CROSS=$cprefix/debugger_2016/gdb/intel64_mic/bin/gdb-mic \
-              -v DAALROOT=$cprefix/compilers_and_libraries_2016.0.109/linux/daal \
-              -v MPM_LAUNCHER=$cprefix/debugger_2016/mpm/mic/bin/start_mpm.sh \
-              -v INTEL_PYTHONHOME=$cprefix/debugger_2016/python/intel64/ \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/ipp/../compiler/lib/intel64 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/ipp/lib/intel64 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/intel64 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/tbb/lib/intel64/gcc4.4 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/lib/intel64_lin \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
-              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/../compiler/lib/intel64_lin \
-              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/mic \
-              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mpi/mic/lib \
-              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/mic \
-              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mkl/lib/mic \
-              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/tbb/lib/mic \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/intel64 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mpi/intel64/lib \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/ipp/../compiler/lib/intel64 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/ipp/lib/intel64 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/intel64 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/tbb/lib/intel64/gcc4.4 \
-              -e LD_LIBRARY_PATH:$cprefix/debugger_2016/libipt/intel64/lib \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/lib/intel64_lin \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
-              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/../compiler/lib/intel64_lin \
-              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/mic \
-              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mpi/mic/lib \
-              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/tbb/lib/mic \
-              -e CPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/ipp/include \
-              -e CPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mkl/include \
-              -e CPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/tbb/include \
-              -e CPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/include \
-              -e NLSPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/compiler/lib/intel64/locale/%l_%t/%N \
-              -e NLSPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64/locale/%l_%t/%N \
-              -e NLSPATH:$cprefix/debugger_2016/gdb/intel64_mic/share/locale/%l_%t/%N \
-              -e NLSPATH:$cprefix/debugger_2016/gdb/intel64/share/locale/%l_%t/%N \
-              -e PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/bin/intel64 \
-              -e PATH:$cprefix/compilers_and_libraries_2016.0.109/linux/mpi/intel64/bin \
-              -e PATH:$cprefix/debugger_2016/gdb/intel64_mic/bin \
-              -e CLASSPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/daal/lib/daal.jar \
+              -v MKLROOT=$cprefix/compilers_and_libraries_2017.1.132/linux/mkl \
+              -v IPPROOT=$cprefix/compilers_and_libraries_2017.1.132/linux/ipp \
+              -v GDBSERVER_MIC=$cprefix/debugger_2017/gdb/targets/mic/bin/gdbserver \
+              -v TBBROOT=$cprefix/compilers_and_libraries_2017.1.132/linux/tbb \
+              -v GDB_CROSS=$cprefix/debugger_2017/gdb/intel64_mic/bin/gdb-mic \
+              -v DAALROOT=$cprefix/compilers_and_libraries_2017.1.132/linux/daal \
+              -v MPM_LAUNCHER=$cprefix/debugger_2017/mpm/mic/bin/start_mpm.sh \
+              -v INTEL_PYTHONHOME=$cprefix/debugger_2017/python/intel64/ \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/ipp/../compiler/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/ipp/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mkl/lib/intel64 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/tbb/lib/intel64/gcc4.4 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/lib/intel64_lin \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
+              -e LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/../compiler/lib/intel64_lin \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mpi/mic/lib \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mkl/lib/mic \
+              -e MIC_LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/tbb/lib/mic \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mpi/intel64/lib \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/ipp/../compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/ipp/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mkl/lib/intel64 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/tbb/lib/intel64/gcc4.4 \
+              -e LD_LIBRARY_PATH:$cprefix/debugger_2017/libipt/intel64/lib \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/lib/intel64_lin \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/../tbb/lib/intel64_lin/gcc4.4 \
+              -e LD_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/../compiler/lib/intel64_lin \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/mic \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mpi/mic/lib \
+              -e MIC_LIBRARY_PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/tbb/lib/mic \
+              -e CPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/ipp/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mkl/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/tbb/include \
+              -e CPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/include \
+              -e NLSPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mkl/lib/intel64/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/debugger_2017/gdb/intel64_mic/share/locale/%l_%t/%N \
+              -e NLSPATH:$cprefix/debugger_2017/gdb/intel64/share/locale/%l_%t/%N \
+              -e PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/bin/intel64 \
+              -e PATH:$cprefix/compilers_and_libraries_2017.1.132/linux/mpi/intel64/bin \
+              -e PATH:$cprefix/debugger_2017/gdb/intel64_mic/bin \
+              -e CLASSPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/daal/lib/daal.jar \
               -e MANPATH:$cprefix/man/common \
-              -e MANPATH:$cprefix/compilers_and_libraries_2016.0.109/linux/man/en_US \
-              -e MANPATH:$cprefix/documentation_2016/en/debugger//gdb-ia/man/ \
-              -e MANPATH:$cprefix/documentation_2016/en/debugger//gdb-mic/man/ \
-              -e MANPATH:$cprefix/documentation_2016/en/debugger//gdb-igfx/man/ \
-              -e INFOPATH:$cprefix/documentation_2016/en/debugger//gdb-ia/info/ \
-              -e INFOPATH:$cprefix/documentation_2016/en/debugger//gdb-mic/info/ \
-              -e INFOPATH:$cprefix/documentation_2016/en/debugger//gdb-igfx/info/ \
+              -e MANPATH:$cprefix/compilers_and_libraries_2017.1.132/linux/man/en_US \
+              -e MANPATH:$cprefix/documentation_2017/en/debugger//gdb-ia/man/ \
+              -e MANPATH:$cprefix/documentation_2017/en/debugger//gdb-mic/man/ \
+              -e MANPATH:$cprefix/documentation_2017/en/debugger//gdb-igfx/man/ \
+              -e INFOPATH:$cprefix/documentation_2017/en/debugger//gdb-ia/info/ \
+              -e INFOPATH:$cprefix/documentation_2017/en/debugger//gdb-mic/info/ \
+              -e INFOPATH:$cprefix/documentation_2017/en/debugger//gdb-igfx/info/ \
               -r gcc-libs/4.9.2 \
               -d \
               -w "[$package_name/$package_version] $package_description"
