@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Tunnel (https://github.com/sakra/Tunnel) for Mathematica multi-node
+# support.
+#
+# by Brian Alston, January 2017
+#
+# Will need modules: rcps-core/1.0.0, mathematica/11.0.1,git/2.10.2
+
+VERSION=${VERSION:-2.2.20}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/UDUNITS/${VERSION}-${COMPILER_TAG}}
+MD5=${MD5:-1586b70a49dfe05da5fcc29ef239dce0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/sakra/Tunnel.git}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require mathematica/11.0.1
+require git/2.10.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd Tunnel
+./install-tunnel.sh

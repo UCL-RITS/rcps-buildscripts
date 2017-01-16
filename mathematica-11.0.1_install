@@ -4,6 +4,7 @@
 # Brian Alston August 2016
 # Updated from 10.4 - August 2016
 # Updated to 11.0.1 - October 2016
+# Updated to remind to install of Tunnel.m package for multi-node communication - January 2017
 # Based on spm12_install by Owain Kenway
 
 # You need to download the Mathematica installer from the Wolfram User Portal
@@ -62,3 +63,11 @@ cd UCL
 cp $EXTRA_FILES/Parallel_Preferences.m_UCL .
 
 cd $startDir
+
+echo ""
+echo "Mathematica installation finished. Install Tunnel:"
+echo ""
+echo "    ./mathematica-tunnel_install"
+echo ""
+echo "tu support running kernels on multiple nodes."
+echo ""
