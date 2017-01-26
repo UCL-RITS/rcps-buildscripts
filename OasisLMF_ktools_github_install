@@ -19,12 +19,13 @@ cd $temp_dir
 
 git clone $SRC_ARCHIVE
 
+cd ${APPNAME}
+
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSION}
 
 
-cd ${APPNAME}
-./auotgen.sh
+./autogen.sh
 ./configure --prefix=$INSTALL_PREFIX
 make
 make check
