@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OasisLMK_ktools 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-ktools}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OasisLMF/ktools.git}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSION}
+
+
+cd ${APPNAME}
+./auotgen.sh
+./configure --prefix=$INSTALL_PREFIX
+make
+make check
+make install
+
+echo "Installed $VERSION"
