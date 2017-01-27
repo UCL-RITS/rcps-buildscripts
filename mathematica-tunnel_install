@@ -34,3 +34,10 @@ cd $temp_dir
 git clone $SRC_ARCHIVE
 cd Tunnel
 ./install-tunnel.sh
+
+# replace tunnel.m version containing correct /shared/ucl/apps lcoations for legion/Grace
+
+cd $MATHEMATICA_BASE/Kernel
+cp tunnel.m tunnel.m_dist
+cp ~/Software/Mathematica/Tunnel/Tunnel/scripts/tunnel.m .
+
