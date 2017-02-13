@@ -22,8 +22,8 @@ cd depot_tools
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
 
-mkdir -p ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}/depot_tools
 
-cp -R * $INSTALL_PREFIX
+cp -R * $INSTALL_PREFIX/depot_tools
 
 echo "Completed install of depot_tools version ${VERSION}"
