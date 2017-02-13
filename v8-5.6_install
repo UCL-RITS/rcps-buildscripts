@@ -26,7 +26,7 @@ mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 # Get the source code
-fetch v8
+fetch --nohooks v8
 cd v8
 
 # Set our version appropriately
