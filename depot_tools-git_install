@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing depot_tools from git
+#
+# by Owain Kenway, 2017 
+#
+
+APPNAME=${APPNAME:-depot_tools}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://chromium.googlesource.com/chromium/tools/depot_tools.git}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd depot_tools
+
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+mkdir -p ${INSTALL_PREFIX}
+
+cp -R * $INSTALL_PREFIX
+
+echo "Completed install of depot_tools version ${VERSION}"
