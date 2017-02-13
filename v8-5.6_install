@@ -26,14 +26,14 @@ mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 # Get the source code
-fetch --nohooks v8
+fetch v8
 cd v8
 
 # Set our version appropriately
 git checkout -b $VERSION -t branch-heads/$VERSION
 
 # Pull dependencies
-gclient sync --nohooks
+gclient sync 
 
 # Generate build info
 #tools/dev/v8gen.py x64.release # The instructions say to do this but it doesn't build libraries
