@@ -62,7 +62,7 @@ make_module() {
   Options:
     -p   prefix dir: allows quick configuration of all \$prefix/bin, \$prefix/lib paths
     -o   where to write modulefile -- directories will be created if necessary
-    -n   module name
+    -d   omit normal prefix block
     -v   variables to set, as \"variable=value\". Use multiple times if nec.
     -a   variables to append, as \"variable:value\". Ditto.
     -e   variables to prepend, as \"variable:value\". Ditto.
