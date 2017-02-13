@@ -30,7 +30,7 @@ fetch --nohooks v8
 cd v8
 
 # Set our version appropriately
-git checkout -b $VERSION -t branch-heads/VERSION
+git checkout -b $VERSION -t branch-heads/$VERSION
 
 # Pull dependencies
 gclient sync
