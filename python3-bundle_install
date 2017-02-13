@@ -16,6 +16,12 @@ PIPNOBIN=${PIPNOBIN:-numpy,scipy,cvxopt}
 
 set -e
 
+# module dependencies:
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require python/3.5.2
+require openblas/0.2.14/gnu-4.9.2
+
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
