@@ -33,7 +33,7 @@ cd v8
 git checkout -b $VERSION -t branch-heads/$VERSION
 
 # Pull dependencies
-gclient --nohooks sync
+gclient sync --nohooks
 
 # Generate build info
 #tools/dev/v8gen.py x64.release # The instructions say to do this but it doesn't build libraries
