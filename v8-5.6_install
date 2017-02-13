@@ -33,11 +33,11 @@ cd v8
 git checkout -b $VERSION -t branch-heads/$VERSION
 
 # Pull dependencies
-gclient sync
+gclient --nohooks sync
 
 # Generate build info
 #tools/dev/v8gen.py x64.release # The instructions say to do this but it doesn't build libraries
-gn gen out.gn/ucl_rcas -vv --fail-on-unused-args --args='is_debug=false is_official_build=true use_sysroot=false is_component_build=true v8_enable_i18n_support=true'
+gn gen out.gn/ucl_rcas -vv --fail-on-unused-args --args='is_clang=false is_debug=false is_official_build=true use_sysroot=false is_component_build=true v8_enable_i18n_support=true'
 
 
 # Do the build
