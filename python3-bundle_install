@@ -17,6 +17,8 @@ PIPNOBIN=${PIPNOBIN:-numpy,scipy,cvxopt}
 set -e
 
 # module dependencies:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
 require python/3.5.2
