@@ -1,0 +1,11 @@
+--- DEPS.old	2017-02-15 13:32:32.000000000 +0000
++++ DEPS	2017-02-15 13:27:38.000000000 +0000
+@@ -5,7 +5,7 @@
+ deps = {
+   # Remember to keep the revision in sync with the Makefile.
+   "v8/build/gyp":
+-    "http://gyp.googlecode.com/svn/trunk@1501",
++    "https://chromium.googlesource.com/external/gyp@f7bc250ccc4d619a1cf238db87e5979f89ff36d7",
+ }
+ 
+ deps_os = {
