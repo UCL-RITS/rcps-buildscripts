@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing v8 from git
+#
+# by Owain Kenway, 2017 
+#
+
+APPNAME=${APPNAME:-v8}
+VERSION=${VERSION:-3.19}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+set -e
+
+# module dependencies:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require python/2.7.12
+require depot_tools
+
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+# Get the source code
+fetch --nohooks v8
+cd v8
+
+# Set our version appropriately
+git checkout -b $VERSION -t branch-heads/$VERSION
+
+# Patch DEPS because Google moved the repo
+# New location: https://chromium.googlesource.com/external/gyp@f7bc250ccc4d619a1cf238db87e5979f89ff36d7
+cp /shared/ucl/apps/build_scripts/patches/v8-3.15_DEPS.patch ./DEPS.patch
+patch < DEPS.patch
+rm DEPS.patch
+
+# Pull dependencies
+gclient sync 
+
+# Generate build info
+make x64.release werror=no library=shared
+
+# Fix permissions
+chmod 755 $INSTALL_PREFIX/v8/out
+chmod 755 $INSTALL_PREFIX/v8/out/x64.release
