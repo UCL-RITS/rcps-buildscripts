@@ -42,6 +42,10 @@ rm DEPS.patch
 gclient sync 
 
 # Generate build info
+# x64 -> arch
+# release -> compile without debug tokens
+# werror=no -> don't treat warnings as errors
+# library=shard -> build libv8.so
 make x64.release werror=no library=shared
 
 # Fix permissions
