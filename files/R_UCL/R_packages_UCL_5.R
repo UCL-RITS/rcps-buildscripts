@@ -127,7 +127,7 @@ install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
 
 # tmap requested by James Cheshire, Geography
-v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target'
+v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 install.packages ("tmap", lib=mainLib, repos=repros);
 
