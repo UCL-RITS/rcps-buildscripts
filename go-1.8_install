@@ -26,7 +26,7 @@ _env_setup() {
 
 _fetch_files() {
   wget ${actual_file_name:+-O $actual_file_name} $src_urls
-  sha256sum -c <<<"$actual_file_md5  $actual_file_name"
+  sha256sum -c <<<"$actual_file_sha256  $actual_file_name"
 }
 
 _setup_files() {
