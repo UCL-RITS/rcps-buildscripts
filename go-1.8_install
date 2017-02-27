@@ -11,7 +11,7 @@ src_urls="https://storage.googleapis.com/golang/go${package_version}.linux-amd64
 package_description="Go is an open-source, compiled, statically-typed language with garbage collection, limited structural typing, memory safety features and CSP-style concurrent programming features added."
 
 actual_file_name=go${package_version}.linux-amd64.tar.gz
-actual_file_md5=e6903ecf48cb975a6df8d35bc2b048ff
+actual_file_sha256=53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca
 
 module purge
 
@@ -26,7 +26,7 @@ _env_setup() {
 
 _fetch_files() {
   wget ${actual_file_name:+-O $actual_file_name} $src_urls
-  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  sha256sum -c <<<"$actual_file_md5  $actual_file_name"
 }
 
 _setup_files() {
