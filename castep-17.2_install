@@ -42,7 +42,7 @@ _setup_files() {
 
 _build() {
   cd "CASTEP-${package_version}"
-  mkdir "$install_prefix/bin" # if it doesn't exist, the make process will read from stdin to ask
+  mkdir -p "$install_prefix/bin" # if it doesn't exist, the make process will read from stdin to ask
   make -l 10 -j FFT=mkl MATHLIBS=mkl10 FFTLIBDIR= MATHLIBDIR= 
   make -l 10 -j FFT=mkl MATHLIBS=mkl10 FFTLIBDIR= MATHLIBDIR= check 
   make -l 10 -j FFT=mkl MATHLIBS=mkl10 FFTLIBDIR= MATHLIBDIR= INSTALL_DIR="$install_prefix/bin" install
@@ -52,7 +52,7 @@ _build() {
   echo "Installed to: $install_prefix"
   echo "Unpacking pseudopotentials..."
   cd ..
-  mkdir "$install_prefix/psps"
+  mkdir -p "$install_prefix/psps"
   cd "$install_prefix/psps"
   tar -xf "$build_dir/CASTEP-Releases-${package_version}/CASTEP_POT_MS61.tgz"
   tar -xf "$build_dir/CASTEP-Releases-${package_version}/Opium-Rappe-Bennett-recpots-2012.tar.gz"
