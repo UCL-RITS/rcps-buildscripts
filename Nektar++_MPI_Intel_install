@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Nektar++: MPI with Intel compilers
+#
+# by Brian Alston, March 2017 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-4.3.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Nektar++/$VERSION/intel}
+SRC_ARCHIVE=${SRC_ARCHIVE:-nektar++-$VERSION.tar.gz}
+SRC_ARCHIVE_LOCATION=${SRC_ARCHIVE_LOCATION:-http://www.nektar.info/downloads/file/nektar-source-tar-gz/}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require compilers/intel
+require mpi/intel
+require python3/recommended
+module unload openblas/0.2.14/gnu-4.9.2
+require openblas/0.2.14/intel-2015-update2
+require boost/1_54_0/mpi/intel-2015-update2
+require fftw/3.3.4/intel-2015-update2
+require ghostscript/9.19/gnu-4.9.2
+require texlive/2015
+
+# May be able to use graphicsmagik: gm convert
+require libtool/2.4.6
+require perl/5.22.0
+require graphicsmagick/1.3.21
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+wget $SRC_ARCHIVE_LOCATION -O $SRC_ARCHIVE
+tar xvzf $SRC_ARCHIVE
+cd nektar++-$VERSION
+mkdir build
+cd build
+cmake -DNEKTAR_USE_MPI:BOOL=ON -DNEKTAR_BUILD_TIMINGS:BOOL=ON -DNEKTAR_USE_FFTW:BOOL=ON \
+      -DNEKTAR_USE_OPENBLA:BOOL=ON -DNEKTAR_USE_PETSC:BOOL=ON -DNEKTAR_USE_SCOTCH:BOOL=ON \
+      -DNEKTAR_USE_SYSTEM_BLAS_LAPACK:BOOL=OFF -DCONVERT:STRING="gm convert" \
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING="-lifcore" \
+      -DCMAKE_INSTALL_PREFIX:STRING="$INSTALL_PREFIX"  ../ 
+make install
