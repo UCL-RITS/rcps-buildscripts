@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="f2c"
+package_version="2013-09-26"
+package_description="f2c is a source-to-source translator from Fortran 77 to C. It is not standards-compliant and is not recommended for use under any circumstances."
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd "$build_dir"
+}
+
+_fetch_files() {
+  # -_- thanks, netlib
+  wget \
+      --no-verbose \
+      --recursive \
+      --no-parent \
+      --no-host-directories \
+      --cut-dirs=2 \
+      --exclude-directories=sites/ftp.netlib.org/f2c/msdos,sites/ftp.netlib.org/f2c/mswin \
+      ftp://ftp.mirrorservice.org/sites/ftp.netlib.org/f2c
+}
+
+_build() {
+  mkdir -p "$install_prefix/include"
+  mkdir -p "$install_prefix/man/man1"
+  mkdir -p "$install_prefix/lib"
+  mkdir -p "$install_prefix/bin"
+
+  cd f2c
+  mkdir libf2c
+  cd libf2c
+  unzip ../libf2c.zip
+  make -f makefile.u all
+  make -f makefile.u LIBDIR="$install_prefix/lib" install
+
+  cd ../src
+  make -f makefile.u all
+  cp xsum f2c "$install_prefix/bin"
+
+  cd ..
+  gzip f2c.1
+  mv f2c.1.gz "$install_prefix/man/man1"
+  mv fc "$install_prefix/bin"
+  mv f2c.h "$install_prefix/include"
+
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p "$install_prefix" \
+              -c "${package_name}" \
+              -r "gcc-libs/4.9.2" \
+              -o "$module_dir/$package_label" \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx "$module_dir"
+}
+
+_clean_up() {
+  cd "$owd"
+  if [ -n "$build_dir" ]; then
+    rm -Rf "${build_dir}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_build
+_prepare_module
+_clean_up
+
