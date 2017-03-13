@@ -51,6 +51,18 @@ then
   make
 fi
 
+# build CLM tools which have to be done separately
+echo "Building CLM 4.5 tools."
+
+cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_5/mksurfdata_map/src
+export INC_NETCDF=$INSTALL_PREFIX/support/netcdf/include
+export LIB_NETCDF=$INSTALL_PREFIX/support/netcdf/lib
+gmake
+
+echo "Building CLM 4.0 tools."
+cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_0/mksurfdata_map/src
+gmake
+
 # uncomment when groups set on build system
 cd $INSTALL_PREFIX
 chgrp -R legcesm cesm${VERSION}
