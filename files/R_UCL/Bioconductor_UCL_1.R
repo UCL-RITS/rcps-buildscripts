@@ -177,9 +177,10 @@ biocLite (pkgs="EBSeq", type="source", lib=mainLib);
 
 biocLite (pkgs="copynumber", type="source", lib=mainLib);
 
-# For Athina Dritsoula (athina.dritsoula.09@ucl.ac.uk) - added Feb 2017
+# For Athina Dritsoula (athina.dritsoula.09@ucl.ac.uk) - added Feb and March 2017
 
 biocLite (pkgs="goseq", type="source", lib=mainLib);
+biocLite (pkgs="missMethyl", type="source", lib=mainLib);
 
 # End of Bioconductor_UCL_1
 
