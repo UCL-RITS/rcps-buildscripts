@@ -8,7 +8,7 @@
 
 
 VERSION=${VERSION:-2.4.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/openfoam-2.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/openfoam-${VERSION}}
 MD5=${MD5:-57f16381673faabe2232dd34495a4b64}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/foam/OpenFOAM-${VERSION}.tgz}
 
