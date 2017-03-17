@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OpenFOAM
+# 
+# by Owain Kenway, 2015 
+# (Note: uses -xHost somewhere in its build system - build on oldest node)
+
+
+VERSION=${VERSION:-2.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/OpenFOAM}
+MD5=${MD5:-57f16381673faabe2232dd34495a4b64}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/foam/OpenFOAM-${VERSION}.tgz}
+
+THIRDPARTY_VERSION=${THIRDPARTY_VERSION:-2.4.0}
+THIRDPARTY_ARCHIVE=${THIRDPARTY_ARCHIVE:-http://downloads.sourceforge.net/foam/ThirdParty-${THIRDPARTY_VERSION}.tgz}
+THIRDPARTY_MD5=${THIRDPARTY_MD5:-2c392b05d80d1da4b425c6538e1d232c}
+
+QT_VERSION=${QT_VERSION:-4.8.6}
+QT_ARCHIVE=${QT_ARCHIVE:-http://download.qt-project.org/official_releases/qt/4.8/${QT_VERSION}/qt-everywhere-opensource-src-${QT_VERSION}.tar.gz}
+QT_MD5=${QT_MD5:-2edbe4d6c2eff33ef91732602f3518eb}
+
+PATCH_DIR=${PATCH_DIR:-/shared/ucl/apps/build_scripts/openfoam-${VERSION}-patches}
+
+export MPI_ROOT=${MPI_ROOT:-$I_MPI_ROOT}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require flex
+
+mkdir -p /dev/shm/openfoam
+temp_dir=`mktemp -d -p /dev/shm/openfoam`
+
+ln -fsT $temp_dir $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+[ -f OpenFOAM-${VERSION}.tgz ]                           || wget $SRC_ARCHIVE
+[ -f ThirdParty-${THIRDPARTY_VERSION}.tgz ]              || wget $THIRDPARTY_ARCHIVE
+[ -f qt-everywhere-opensource-src-${QT_VERSION}.tar.gz ] || wget $QT_ARCHIVE
+
+export VERSION
+export QT_VERSION
+export THIRDPARTY_VERSION
+export INSTALL_PREFIX
+
+CHECKSUM=`md5sum OpenFOAM-${VERSION}.tgz| awk '{print $1}'`
+THIRDPARTYCHECKSUM=`md5sum ThirdParty-${THIRDPARTY_VERSION}.tgz |  awk '{print $1}'`
+QTCHECKSUM=`md5sum qt-everywhere-opensource-src-${QT_VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" && "$THIRDPARTY_MD5" == "$THIRDPARTYCHECKSUM" && "$QT_MD5" == "$QTCHECKSUM" ]]
+then
+   tar zxvf OpenFOAM-${VERSION}.tgz
+   tar zxvf ThirdParty-${THIRDPARTY_VERSION}.tgz
+
+# Patch the Allwmake scripts so that they exit on an error rather than blindly continuing.
+   find . -name "Allwmake" | xargs -Ifile sed -i -e "1s_\#\!/bin/sh_\#\!/bin/sh\nset -e\n_" file
+
+   cd OpenFOAM-${VERSION}/etc
+   cp ${PATCH_DIR}/bashrc.patch .
+   patch < bashrc.patch
+
+   cd config
+   cp ${PATCH_DIR}/CGAL.patch .
+   patch < CGAL.patch
+
+   source ${PATCH_DIR}/build_vars.sh
+
+   cd $INSTALL_PREFIX
+
+   cd OpenFOAM-${VERSION}/src/OpenFOAM/include
+   ln -s /shared/ucl/apps/flex/2.5.39/gnu-4.9.2/include/FlexLexer.h .
+
+   cd $INSTALL_PREFIX
+   cd ThirdParty-${THIRDPARTY_VERSION}
+   cp ${PATCH_DIR}/makeQt.patch .
+   patch < makeQt.patch
+
+   rm -rf openmpi-* cmake-*
+
+   tar zxvf ../qt-everywhere-opensource-src-${QT_VERSION}.tar.gz 
+
+# Compiling QT with Intel compilers breaks in all kinds of fun ways.
+   ./makeQt -gcc 2>&1 | tee makeqt.log
+
+# Make CGAL
+   cp ${PATCH_DIR}/makeCGAL.patch .
+   patch < makeCGAL.patch
+   ./makeCGAL 2>&1 | tee makecgal.log
+
+   source ${PATCH_DIR}/build_vars.sh
+
+   cd ../OpenFOAM-${VERSION}
+   ./Allwmake 2>&1 | tee make.log
+
+# Step above breaks these
+
+   source ${PATCH_DIR}/build_vars.sh
+
+   cd ../ThirdParty-${THIRDPARTY_VERSION} 
+   ./makeParaView4
+
+   export ParaView_DIR=${INSTALL_PREFIX}/ThirdParty-${THIRDPARTY_VERSION}/platforms/linux64Icc/paraview-4.1.0
+   export PATH=$ParaView_DIR/bin:$PATH
+   export PV_PLUGIN_PATH=$FOAM_LIBBIN/paraview-4.1.0
+   cd $FOAM_UTILITIES/postProcessing/graphics/PV4Readers
+
+   source ${PATCH_DIR}/build_vars.sh
+
+   ./Allwclean
+   ./Allwmake 2>&1 | tee make1.log
+   ./Allwmake 2>&1 | tee make2.log
+
+   rm $INSTALL_PREFIX
+   cd $temp_dir
+
+# Fix permissions on ThirdParty directory so that our users can actually run stuff.
+   chmod -R o+rX ThirdParty-${THIRDPARTY_VERSION} 
+   mkdir $INSTALL_PREFIX
+   cp -Rv OpenFOAM-${VERSION} $INSTALL_PREFIX/OpenFOAM-${VERSION} 
+   cp -Rv ThirdParty-${THIRDPARTY_VERSION} $INSTALL_PREFIX/ThirdParty-${THIRDPARTY_VERSION}
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $THIRDPARTY_MD5 $QT_MD5"
+  echo "Got: $CHECKSUM $THIRDPARTYCHECKSUM $QTCHECKSUM"
+fi

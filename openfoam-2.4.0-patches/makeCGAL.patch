@@ -1,0 +1,13 @@
+--- makeCGAL    2015-05-15 14:56:48.945043151 +0100
++++ makeCGAL.new        2015-05-15 14:56:12.467042396 +0100
+@@ -128,8 +128,8 @@
+ #
+ #   BOOST_SOURCE_DIR : location of the original sources
+ 
+-BOOST_ARCH_PATH=$installBASE/$boostPACKAGE
+-BOOST_SOURCE_DIR=$WM_THIRD_PARTY_DIR/$boostPACKAGE
++BOOST_ARCH_PATH=/shared/ucl/apps/boost/1_54_0/intel-2015-update2/
++BOOST_SOURCE_DIR=/shared/ucl/apps/boost/1_54_0/intel-2015-update2/
+ 
+ if [ -d "$BOOST_ARCH_PATH" ]
+ then

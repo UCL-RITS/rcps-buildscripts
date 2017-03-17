@@ -1,0 +1,11 @@
+--- CGAL.sh     2015-05-15 15:05:22.209053773 +0100
++++ CGAL.sh.new 2015-05-15 15:03:36.706051590 +0100
+@@ -32,7 +32,7 @@
+ boost_version=boost-system
+ cgal_version=CGAL-4.3
+ 
+-export BOOST_ARCH_PATH=$WM_THIRD_PARTY_DIR/platforms/$WM_ARCH$WM_COMPILER/$boost_version
++export BOOST_ARCH_PATH=/shared/ucl/apps/boost/1_54_0/intel-2015-update2
+ export CGAL_ARCH_PATH=$WM_THIRD_PARTY_DIR/platforms/$WM_ARCH$WM_COMPILER/$cgal_version
+ 
+ if [ "$FOAM_VERBOSE" -a "$PS1" ]
