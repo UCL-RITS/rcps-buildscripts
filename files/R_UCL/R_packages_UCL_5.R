@@ -131,6 +131,10 @@ install.packages ("arm", lib=mainLib, repos=repros);
 install.packages ("systemfit", lib=mainLib, repos=repros);
 
 # tmap requested by James Cheshire, Geography
+# install V8's dependencies first, otherwise v8conf variables get lost in the interim
+install.packages("Rcpp", lib=mainLib, repos=repros);
+install.packages("jsonlite", lib=mainLib, repos=repros);
+install.packages("curl", lib=mainLib, repos=repros);
 v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 install.packages ("tmap", lib=mainLib, repos=repros);
