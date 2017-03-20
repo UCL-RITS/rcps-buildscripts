@@ -125,6 +125,10 @@ install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
 install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
+install.packages ("erer", lib=mainLib, repos=repros);
+install.packages ("panelAR", lib=mainLib, repos=repros);
+install.packages ("arm", lib=mainLib, repos=repros);
+install.packages ("systemfit", lib=mainLib, repos=repros);
 
 # tmap requested by James Cheshire, Geography
 v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';

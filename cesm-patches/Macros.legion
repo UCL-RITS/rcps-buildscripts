@@ -45,7 +45,7 @@ CC            := mpicc
 # Also, review the relative paths of the INC_, LIB_, and MOD_ paths
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
-NETCDF_PATH   := /shared/ucl/apps/cesm/support/netcdf
+NETCDF_PATH   := /shared/ucl/apps/cesm/support/netcdf-2017
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include

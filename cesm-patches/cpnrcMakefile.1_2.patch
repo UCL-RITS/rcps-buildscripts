@@ -5,7 +5,7 @@
  
  ifeq ($(NETCDF),$(null))
 -NETCDF := /contrib/netcdf/4.1.3_seq
-+NETCDF := /shared/ucl/apps/cesm/support/netcdf
++NETCDF := /shared/ucl/apps/cesm/support/netcdf-2017
  endif
  
  # Check for the netcdf library and include directories 

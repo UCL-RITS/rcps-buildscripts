@@ -1,0 +1,11 @@
+--- Makefile.old	2017-02-15 14:05:19.000000000 +0000
++++ Makefile	2017-02-15 13:42:15.000000000 +0000
+@@ -95,7 +95,7 @@
+ ifdef soname_version
+   GYPFLAGS += -Dsoname_version=$(soname_version)
+ endif
+-# werror=no
++werror=no
+ ifeq ($(werror), no)
+   GYPFLAGS += -Dwerror=''
+ endif
