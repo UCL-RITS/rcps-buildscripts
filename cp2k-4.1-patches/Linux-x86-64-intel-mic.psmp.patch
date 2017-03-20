@@ -1,0 +1,45 @@
+--- Linux-x86-64-intel-mic.psmp.old	2017-03-20 16:44:46.000000000 +0000
++++ Linux-x86-64-intel-mic.psmp	2017-03-20 16:47:48.000000000 +0000
+@@ -222,16 +222,16 @@
+             $(MKLROOT)/lib/mic/libmkl_intel_lp64.a \
+             $(MKLROOT)/lib/mic/libmkl_core.a \
+             $(MKLROOT)/lib/mic/libmkl_intel_thread.a \
+-          --end-group \
+-          $(MKLROOT)/lib/mic/libmkl_blacs_intelmpi_lp64.a"
++            $(MKLROOT)/lib/mic/libmkl_blacs_intelmpi_lp64.a \
++          --end-group"
+         LIBS += \
+           $(MKLROOT)/lib/intel64/libmkl_scalapack_lp64.a \
+           -Wl,--start-group \
+             $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a \
+             $(MKLROOT)/lib/intel64/libmkl_core.a \
+             $(MKLROOT)/lib/intel64/libmkl_intel_thread.a \
+-          -Wl,--end-group \
+-          $(MKLROOT)/lib/intel64/libmkl_blacs_intelmpi_lp64.a
++            $(MKLROOT)/lib/intel64/libmkl_blacs_intelmpi_lp64.a \
++          -Wl,--end-group 
+       else
+         MIC_LDFLAGS += -offload-option,mic,ld," \
+           --start-group \
+@@ -274,16 +274,17 @@
+           $(MKLROOT)/lib/mic/libmkl_intel_lp64.a \
+           $(MKLROOT)/lib/mic/libmkl_core.a \
+           $(MKLROOT)/lib/mic/libmkl_sequential.a \
+-        --end-group \
+-        $(MKLROOT)/lib/mic/libmkl_blacs_intelmpi_lp64.a"
++          $(MKLROOT)/lib/mic/libmkl_blacs_intelmpi_lp64.a \
++        --end-group"
+       LIBS += \
+         $(MKLROOT)/lib/intel64/libmkl_scalapack_lp64.a
+         -Wl,--start-group \
+           $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a \
+           $(MKLROOT)/lib/intel64/libmkl_core.a \
+           $(MKLROOT)/lib/intel64/libmkl_sequential.a \
+-        -Wl,--end-group \
+-        $(MKLROOT)/lib/intel64/libmkl_blacs_intelmpi_lp64.a
++          $(MKLROOT)/lib/intel64/libmkl_blacs_intelmpi_lp64.a \
++        -Wl,--end-group
++
+     else
+       MIC_LDFLAGS += -offload-option,mic,ld," \
+         --start-group \
