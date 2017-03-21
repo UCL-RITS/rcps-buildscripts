@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing julia
+#
+# by Owain Kenway, 2015
+# modified by Samuel Powell, 2015
+
+
+VERSION=${VERSION:-0.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
+MD5=${MD5:-af4e9427785784ba44254f20e0eddf87}
+ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
+
+# Target architecture
+TARGET_ARCH=${TARGET_ARCH:-nehalem}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/julia
+temp_dir=`mktemp -d -p /dev/shm/julia`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${ARCHIVENAME}| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf ${ARCHIVENAME}
+
+  cd julia
+
+  echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
+  echo "MARCH = ${TARGET_ARCH}" >> Make.user
+
+  make
+
+  echo prefix=${INSTALL_PREFIX} >> Make.user
+
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
