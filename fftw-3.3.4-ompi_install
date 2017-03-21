@@ -62,7 +62,6 @@ _build() {
 
 _prepare_module() {
   make_module -p $INSTALL_PREFIX \
-              -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
@@ -82,4 +81,4 @@ _fetch_files
 _setup_files
 _build
 _prepare_module
-
+_clean_up
