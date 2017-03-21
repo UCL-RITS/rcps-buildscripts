@@ -2,6 +2,7 @@
 
 PACKAGE_NAME="fftw"
 PACKAGE_VERSION="3.3.4"
+OMPI_VERSION=${OMPI_VERSION:-1.8.4}
 PACKAGE_VARIANT="ompi"
 
 set -e
@@ -11,7 +12,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require mpi/openmpi
+require mpi/openmpi/${OMPI_VERSION}/gnu-4.9.2
 
 _env_setup() {
   OWD=$(pwd)
