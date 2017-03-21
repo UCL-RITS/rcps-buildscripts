@@ -11,7 +11,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require mpi/openmpi/1.8.4/gnu-4.9.2
+require mpi/openmpi
 
 _env_setup() {
   OWD=$(pwd)
