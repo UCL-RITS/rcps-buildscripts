@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Cmake
+#
+# by Owain Kenway, 2015 
+# updated for 3.7.2 by Ian Kirker, 2017
+#
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-3.7.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cmake/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-79bd7e65cd81ea3aa2619484ad6ff25a}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.cmake.org/files/v${VERSION%\.?}/cmake-${VERSION}.tar.gz}
+
+require gcc-libs
+require compilers/gnu
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum cmake-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf cmake-${VERSION}.tar.gz
+
+  cd cmake-${VERSION}
+  ./bootstrap --prefix=$INSTALL_PREFIX --system-curl
+  make && make install
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
