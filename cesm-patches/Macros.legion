@@ -31,7 +31,7 @@ ifeq ($(compile_threaded), true)
    CPPDEFS += -DTHREADED_OMP
 endif
 
-FC            := mpif90
+FC            := mpiifort
 CC            := mpicc
 
 #=====================================================
