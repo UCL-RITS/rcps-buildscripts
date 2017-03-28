@@ -1,6 +1,6 @@
 --- config_compilers.xml.old    2015-11-18 16:15:10.000000000 +0000
 +++ config_compilers.xml        2015-11-18 16:16:08.000000000 +0000
-@@ -850,4 +850,9 @@
+@@ -850,4 +850,11 @@
    <TRILINOS_PATH>$(TRILINOS_PATH)</TRILINOS_PATH>
  </compiler>
 
