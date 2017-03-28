@@ -5,6 +5,8 @@
  </compiler>
 
 +<compiler MACH="legion">
++  <MPICC>mpiicc</MPICC>
++  <MPIFC>mpiifort</MPIFC>
 +  <ADD_SLIBS>-L/shared/ucl/apps/HDF/5-1.8.15-Intel_2015/lib -L$(NETCDF_PATH)/lib -lnetcdff -lnetcdf</ADD_SLIBS>
 +</compiler>
 +
