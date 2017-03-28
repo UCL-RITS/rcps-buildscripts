@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Mesa 
+# (Gallium, LLVM, no EGL, no DRI, no GLX)
+# 
+#
+# 
+
+NAME=${NAME:-mesa}
+VERSION=${VERSION:-13.0.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA=${SHA:-29ef104a7fc082d352b1599bd6cb1d040be424ccd22f5e0eb7ee9b0e9acd3597}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.freedesktop.org/pub/mesa/$VERSION/mesa-${VERSION}.tar.xz}
+OPTIONS=${OPTIONS:-""}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX              \
+  --enable-opengl --disable-gles1 --disable-gles2   \
+  --disable-va --disable-xvmc --disable-vdpau       \
+  --enable-shared-glapi                             \
+  --disable-texture-float                           \
+  --enable-gallium-llvm --enable-llvm-shared-libs   \
+  --with-gallium-drivers=swrast,swr                 \
+  --disable-dri --with-dri-drivers=                 \
+  --disable-egl --with-egl-platforms= --disable-gbm \
+  --disable-glx                                     \
+  --disable-osmesa --enable-gallium-osmesa $OPTIONS
+  
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA"
+  echo "Got: $CHECKSUM"
+fi
