@@ -45,11 +45,19 @@ CC            := mpicc
 # Also, review the relative paths of the INC_, LIB_, and MOD_ paths
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
+
 NETCDF_PATH   := /shared/ucl/apps/cesm/support/netcdf-2017
+MPICH_PATH    := /shared/ucl/apps/intel/2017.Update1/impi/2017.1.132/intel64
+
+# Fix for old compilers.
+ifeq ($(COMPILER_TAG), "intel-2015-update2")
+   NETCDF_PATH   := /shared/ucl/apps/cesm/support/netcdf
+   MPICH_PATH    := /shared/ucl/apps/intel/2015/impi/5.0.3.048/intel64
+endif
+
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include
-MPICH_PATH    := /shared/ucl/apps/intel/2015/impi/5.0.3.048/intel64
 INC_MPI       := $(MPICH_PATH)/include
 LIB_MPI       := $(MPICH_PATH)/lib64
 MPI_LIB_NAME  := mpi
