@@ -27,7 +27,7 @@ require mpi/openmpi/1.10.1/gnu-4.9.2
 require python3/recommended
 require openblas/0.2.14/gnu-4.9.2
 require boost/1_54_0/mpi/gnu-4.9.2-ompi-1.10.1
-require fftw/3.3.4/gnu-4.9.2
+require fftw/3.3.4-ompi-1.10.1/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 require texlive/2015
 
