@@ -50,9 +50,9 @@ _build() {
   cd $build_dir
   export PGI_SILENT=true
   export PGI_ACCEPT_EULA=accept
-  export PGI_INSTALL_TYPE=network
+  export PGI_INSTALL_TYPE=single
   export PGI_INSTALL_DIR=$install_prefix
-  export PGI_INSTALL_LOCAL_DIR=$install_prefix
+#  export PGI_INSTALL_LOCAL_DIR=$install_prefix
   export PGI_INSTALL_NVIDIA=true
   export PGI_INSTALL_AMD=true
   export PGI_INSTALL_JAVA=true
