@@ -30,7 +30,7 @@ if [ "$SHA" == "$CHECKSUM" ]
 then
   mkdir -p $INSTALL_PREFIX
   cd $INSTALL_PREFIX
-  tar -xvf $archive
+  tar -xvf $temp_dir/$archive
 
 else
   echo "Hash mismatch."
