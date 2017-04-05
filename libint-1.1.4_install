@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libint 1.1.4
+#
+# by Owain Kenway, 2015 
+#
+# This is provided to make it possible to build CP2K
+# You should use the same compiler as you intend to build CP2K with.
+
+APPNAME=${APPNAME:-libint}
+VERSION=${VERSION:-1.1.4}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-6bc36ba047e23e16b5bc9c0cc8f4a9f7}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/libint/files/v1-releases/libint-1.1.4.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
