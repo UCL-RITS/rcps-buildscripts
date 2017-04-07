@@ -1,0 +1,23 @@
+# Passes Regression tests on Grace.
+CC         = mpicc
+CPP        =
+FC         = mpif90
+LD         = mpif90
+AR         = ar -r
+ACML_INC   = /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/include
+ACML_LIB   = /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib
+FFTW_INC   = /shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/include
+FFTW_LIB   = /shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib
+LIBINT_INC = /home/ccspapp/Scratch/cp2k/support/include
+LIBINT_LIB = /home/ccspapp/Scratch/cp2k/support/lib
+LIBXC_INC  = /shared/ucl/apps/libxc/2.2.2/gnu-4.9.2/include
+LIBXC_LIB  = /shared/ucl/apps/libxc/2.2.2/gnu-4.9.2/lib
+SCALAPACK_LIB = /shared/ucl/apps/scalapack/2.0.2/gnu-4.9.2/openblas/lib
+DFLAGS     = -D__FFTW3 -D__MPI_VERSION=2 -D__parallel -D__SCALAPACK  -D__LIBINT -D__LIBXC2 
+CPPFLAGS   = 
+FCFLAGS    = $(DFLAGS) -pthread -O2 -ffree-form -ffree-line-length-none\
+             -ftree-vectorize -funroll-loops\
+             -mtune=native\
+             -I$(ACML_INC) -I$(FFTW_INC)  -I$(LIBINT_INC) -I$(LIBXC_INC)
+LDFLAGS    = $(FCFLAGS) -pthread -static-libgfortran
+LIBS       = $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a
