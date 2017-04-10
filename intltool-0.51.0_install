@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing intltool
+# 
+#
+#
+
+NAME=${NAME:-intltool}
+VERSION=${VERSION:-0.51.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-12e517cac2b57a0121cda351570f1e63}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://launchpad.net/intltool/trunk/0.51.0/+download/${NAME}-${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p $NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
