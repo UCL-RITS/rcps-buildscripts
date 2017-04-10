@@ -28,7 +28,7 @@ BUILD_XKB=${BUILD_XKB:-yes}
 
 # these are needed for xkeyboard-config
 LIBXKBFILE_NAME=${LIBXKBFILE_NAME:-libxkbfile-1.0.8}
-LIBXKBFILE_SRC_ARCHIVE=${LIBXKBFILE_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/everything/${XKBCOMP_NAME}.tar.bz2}
+LIBXKBFILE_SRC_ARCHIVE=${LIBXKBFILE_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/everything/${LIBXKBFILE_NAME}.tar.bz2}
 LIBXKBFILE_SHA256=${LIBXKBFILE_SHA256:-8aa94e19c537c43558f30906650cea6e15fa012591445d9f927658c3b32a8f3a}
 
 XKBCOMP_NAME=${XKBCOMP_NAME:-xkbcomp-1.2.4}
