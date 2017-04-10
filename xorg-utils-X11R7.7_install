@@ -164,6 +164,7 @@ fi
 if [ $BUILD_XKB == "yes" ]
 then
   # install libxkbfile
+  cd $temp_dir
   tar -xvf $libxkbfile_archive
   cd $LIBXKBFILE_NAME
   ./configure --prefix=$INSTALL_PREFIX
@@ -173,6 +174,7 @@ then
   export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
 
   # install xkbcomp
+  cd $temp_dir
   tar -xvf $xkbcomp_archive
   cd $XKBCOMP_NAME
   ./configure --prefix=$INSTALL_PREFIX
@@ -182,6 +184,7 @@ then
   export PATH=$INSTALL_PREFIX/bin:$PATH
 
   # install xkeyboard-config
+  cd $temp_dir
   tar -xvf $xkeyboard_config_archive
   cd $XKEYBOARD_CONFIG_NAME
   ./configure --prefix=$INSTALL_PREFIX
