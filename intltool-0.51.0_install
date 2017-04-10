@@ -14,7 +14,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://launchpad.net/intltool/trunk/0.51.0/+download
 
 set -e
 
-mkdir -p $NAME
+mkdir -p /dev/shm/$NAME
 temp_dir=`mktemp -d -p /dev/shm/$NAME`
 
 cd $temp_dir

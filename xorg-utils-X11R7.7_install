@@ -22,71 +22,170 @@ XDMCP_NAME=${XDMCP_NAME:-libXdmcp-1.1.1}
 XDMCP_SRC_ARCHIVE=${XDMCP_SRC_ARCHIVE:-ftp://ftp.x.org/pub/X11R7.7/src/lib/${XDMCP_NAME}.tar.bz2}
 XDMCP_MD5=${XDMCP_MD5:-b94af6cef211cf3ee256f7e81f70fcd9}
 
+# may want to build only the first or last three support packages at once
+BUILD_UTILS=${BUILD_UTILS:-yes}
+BUILD_XKB=${BUILD_XKB:-yes}
+
+# these are needed for xkeyboard-config
+LIBXKBFILE_NAME=${LIBXKBFILE_NAME:-libxkbfile-1.0.8}
+LIBXKBFILE_SRC_ARCHIVE=${LIBXKBFILE_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/everything/${XKBCOMP_NAME}.tar.bz2}
+LIBXKBFILE_SHA256=${LIBXKBFILE_SHA256:-8aa94e19c537c43558f30906650cea6e15fa012591445d9f927658c3b32a8f3a}
+
+XKBCOMP_NAME=${XKBCOMP_NAME:-xkbcomp-1.2.4}
+XKBCOMP_SRC_ARCHIVE=${XKBCOMP_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/everything/${XKBCOMP_NAME}.tar.bz2}
+XKBCOMP_SHA256=${XKBCOMP_SHA256:-91d0c9ab445d21dfe1892dbae5ae5264f39bae68223dd092ffc547c9450b5a2d}
+
+XKEYBOARD_CONFIG_NAME=${XKEYBOARD_CONFIG_NAME:-xkeyboard-config-2.6}
+XKEYBOARD_CONFIG_SRC_ARCHIVE=${XKEYBOARD_CONFIG_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/everything/${XKBCOMP_NAME}.tar.bz2}
+XKEYBOARD_CONFIG_SHA256=${XKEYBOARD_CONFIG_SHA256:-22a1594116bf0ee3165f48487bdca4e5f25b2a1436e35e188b3ee38c543dabda}
+
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+# module prereqs for building
+if [ $BUILD_XKB == "yes" ]
+then
+  dirname=$(dirname $0 2>/dev/null)
+  INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+  source ${INCLUDES_DIR}/require_inc.sh
+  prereq intltool # needed for xkeyboard-config
+fi
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
 
 cd $temp_dir
 
-wget $XUTILMACROS_SRC_ARCHIVE
-xutilmacros_archive=$(basename "${XUTILMACROS_SRC_ARCHIVE}")
-XUTILMACROS_CHECKSUM=`md5sum $xutilmacros_archive| awk '{print $1}'`
-
-if [ "$XUTILMACROS_MD5" != "$XUTILMACROS_CHECKSUM" ] 
+if [ $BUILD_UTILS == "yes" ]
 then
-  echo "Hash mismatch for $xutilmacros_archive."
-  echo "Expected: $XUTILMACROS_MD5"
-  echo "Got: $XUTILMACROS_CHECKSUM"
-  exit 1;
+  wget $XUTILMACROS_SRC_ARCHIVE
+  xutilmacros_archive=$(basename "${XUTILMACROS_SRC_ARCHIVE}")
+  XUTILMACROS_CHECKSUM=`md5sum $xutilmacros_archive| awk '{print $1}'`
+
+  if [ "$XUTILMACROS_MD5" != "$XUTILMACROS_CHECKSUM" ] 
+  then
+    echo "Hash mismatch for $xutilmacros_archive."
+    echo "Expected: $XUTILMACROS_MD5"
+    echo "Got: $XUTILMACROS_CHECKSUM"
+    exit 1;
+  fi
+
+  wget $MAKEDEPEND_SRC_ARCHIVE
+  makedepend_archive=$(basename "${MAKEDEPEND_SRC_ARCHIVE}")
+  MAKEDEPEND_CHECKSUM=`md5sum $makedepend_archive| awk '{print $1}'`
+
+  if [ "$MAKEDEPEND_MD5" != "$MAKEDEPEND_CHECKSUM" ] 
+  then
+    echo "Hash mismatch for $makedepend_archive."
+    echo "Expected: $MAKEDEPEND_MD5"
+    echo "Got: $MAKEDEPEND_CHECKSUM"
+    exit 1;
+  fi
+
+  wget $XDMCP_SRC_ARCHIVE
+  xdmcp_archive=$(basename "${XDMCP_SRC_ARCHIVE}")
+  XDMCP_CHECKSUM=`md5sum $xdmcp_archive| awk '{print $1}'`
+
+  if [ "$XDMCP_MD5" != "$XDMCP_CHECKSUM" ] 
+  then
+    echo "Hash mismatch for $xdmcp_archive."
+    echo "Expected: $XDMCP_MD5"
+    echo "Got: $XDMCP_CHECKSUM"
+    exit 1;
+  fi
 fi
 
-wget $MAKEDEPEND_SRC_ARCHIVE
-makedepend_archive=$(basename "${MAKEDEPEND_SRC_ARCHIVE}")
-MAKEDEPEND_CHECKSUM=`md5sum $makedepend_archive| awk '{print $1}'`
-
-if [ "$MAKEDEPEND_MD5" != "$MAKEDEPEND_CHECKSUM" ] 
+if [ $BUILD_XKB == "yes" ]
 then
-  echo "Hash mismatch for $makedepend_archive."
-  echo "Expected: $MAKEDEPEND_MD5"
-  echo "Got: $MAKEDEPEND_CHECKSUM"
-  exit 1;
+  wget $LIBXKBFILE_SRC_ARCHIVE
+  libxkbfile_archive=$(basename "${LIBXKBFILE_SRC_ARCHIVE}")
+  LIBXKBFILE_CHECKSUM=$(sha256sum $libxkbfile_archive| awk '{print $1}')
+
+  if [ "$LIBXKBFILE_SHA256" != "$LIBXKBFILE_CHECKSUM" ]
+  then
+    echo "Hash mismatch for $libxkbfile_archive."
+    echo "Expected: $LIBXKBFILE_SHA256"
+    echo "Got: $LIBXKBFILE_CHECKSUM"
+    exit 1;
+  fi
+
+  wget $XKBCOMP_SRC_ARCHIVE
+  xkbcomp_archive=$(basename "${XKBCOMP_SRC_ARCHIVE}")
+  XKBCOMP_CHECKSUM=$(sha256sum $xkbcomp_archive| awk '{print $1}')
+
+  if [ "$XKBCOMP_SHA256" != "$XKBCOMP_CHECKSUM" ]
+  then
+    echo "Hash mismatch for $xkbcomp_archive."
+    echo "Expected: $XKBCOMP_SHA256"
+    echo "Got: $XKBCOMP_CHECKSUM"
+    exit 1;
+  fi
+
+  wget $XKEYBOARD_CONFIG_SRC_ARCHIVE
+  xkeyboard_config_archive=$(basename "${XKEYBOARD_CONFIG_SRC_ARCHIVE}")
+  XKEYBOARD_CONFIG_CHECKSUM=$(sha256sum $xkeyboard_config_archive| awk '{print $1}')
+
+  if [ "$XKEYBOARD_CONFIG_SHA256" != "$XKEYBOARD_CONFIG_CHECKSUM" ]
+  then
+    echo "Hash mismatch for $xkeyboard_config_archive."
+    echo "Expected: $XKEYBOARD_CONFIG_SHA256"
+    echo "Got: $XKEYBOARD_CONFIG_CHECKSUM"
+    exit 1;
+  fi
+fi 
+
+if [ $BUILD_UTILS == "yes" ]
+then
+  # install xorg/util/macros
+  tar -xvf $xutilmacros_archive
+  cd $XUTILMACROS_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+  export PKG_CONFIG_PATH=$INSTALL_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+
+  # install xorg/util/makedepend
+  cd $temp_dir
+  tar -xvf $makedepend_archive
+  cd $MAKEDEPEND_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+  # install xdmcp
+  cd $temp_dir
+  tar -xvf $xdmcp_archive
+  cd $XDMCP_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
 fi
 
-wget $XDMCP_SRC_ARCHIVE
-xdmcp_archive=$(basename "${XDMCP_SRC_ARCHIVE}")
-XDMCP_CHECKSUM=`md5sum $xdmcp_archive| awk '{print $1}'`
-
-if [ "$XDMCP_MD5" != "$XDMCP_CHECKSUM" ] 
+if [ $BUILD_XKB == "yes" ]
 then
-  echo "Hash mismatch for $xdmcp_archive."
-  echo "Expected: $XDMCP_MD5"
-  echo "Got: $XDMCP_CHECKSUM"
-  exit 1;
+  # install libxkbfile
+  tar -xvf $libxkbfile_archive
+  cd $LIBXKBFILE_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+  export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+
+  # install xkbcomp
+  tar -xvf $xkbcomp_archive
+  cd $XKBCOMP_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
+  export PATH=$INSTALL_PREFIX/bin:$PATH
+
+  # install xkeyboard-config
+  tar -xvf $xkeyboard_config_archive
+  cd $XKEYBOARD_CONFIG_NAME
+  ./configure --prefix=$INSTALL_PREFIX
+  make 2>&1 | tee make.log
+  make install
+
 fi
-
-
-# install xorg/util/macros
-tar -xvf $xutilmacros_archive
-cd $XUTILMACROS_NAME
-./configure --prefix=$INSTALL_PREFIX
-make 2>&1 | tee make.log
-make install
-
-export PKG_CONFIG_PATH=$INSTALL_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
-
-# install xorg/util/makedepend
-cd $temp_dir
-tar -xvf $makedepend_archive
-cd $MAKEDEPEND_NAME
-./configure --prefix=$INSTALL_PREFIX
-make 2>&1 | tee make.log
-make install
-
-# install xdmcp
-cd $temp_dir
-tar -xvf $xdmcp_archive
-cd $XDMCP_NAME
-./configure --prefix=$INSTALL_PREFIX
-make 2>&1 | tee make.log
-make install
-
