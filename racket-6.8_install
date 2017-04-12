@@ -30,7 +30,7 @@ if [ "$SHA1" == "$CHECKSUM" ]
 then
   tar -zxvf ${APPNAME}-${VERSION}-src.tgz
 
-  cd ${APPNAME}-${VERSION}
+  cd ${APPNAME}-${VERSION}/src
   ./configure --prefix=$INSTALL_PREFIX --enable-shared
   make && make install
 else
