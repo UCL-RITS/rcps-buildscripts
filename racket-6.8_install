@@ -24,11 +24,11 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tgz| awk '{print $1}'`
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}-src.tgz| awk '{print $1}'`
 
 if [ "$SHA1" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tgz
+  tar -zxvf ${APPNAME}-${VERSION}-src.tgz
 
   cd ${APPNAME}-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX --enable-shared
