@@ -1,0 +1,43 @@
+# Place to override setting elsewhere, in particular things set in Makefile.linux_x86_64_gfortran_openmpi
+# look in /home/ccspapp/Scratch/cp2k/QUIP/arch/Makefile.linux_x86_64_gfortran_openmpi for defaults set by arch
+# 
+# F77=mpif77
+# F90=mpif90
+# F95=mpif90
+# CC=mpicc
+# CPLUSPLUS=mpiCC
+# FPP=gfortran -E -x f95-cpp-input
+# LINKER=mpif90
+# OPTIM=
+# COPTIM=
+# DEBUG=
+# LIBTOOL=
+# DEBUG=-O0 -g -DDUMP_CORE_ON_ABORT -DDEBUG -fbounds-check
+# CDEBUG=
+MATH_LINKOPTS=-lopenblas
+HAVE_NETCDF=0
+USE_MAKEDEP=1
+MAKEDEP=makedep.py
+HAVE_MDCORE=0
+HAVE_ASAP=0
+HAVE_KIM=0
+HAVE_CP2K=1
+HAVE_VASP=0
+HAVE_TB=0
+HAVE_PRECON=1
+HAVE_FX=0
+HAVE_GAP=0
+HAVE_GAP_FILLER=0
+HAVE_QR=1
+HAVE_LOTF=0
+HAVE_ONIOM=0
+HAVE_LOCAL_E_MIX=0
+HAVE_QC=0
+EXTRA_LINKOPTS=
+HAVE_CGAL=0
+SIZEOF_FORTRAN_T= 2
+HAVE_THIRDPARTY=0
+HAVE_METIS=0
+HAVE_SCME=0
+HAVE_MTP=0
+HAVE_LMTO_TBE=0
