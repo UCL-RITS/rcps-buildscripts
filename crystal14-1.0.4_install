@@ -13,6 +13,7 @@
 # variables appropriately.
 
 VERSION=${VERSION:-v1.0.4_2}
+SRC_VERSION=${SRC_VERSION:-v1.0.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Crystal14}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Crystal14/archives}
 CRYSTAL14_ARC=${CRYSTAL14_ARC:-crystal14_v1_0_4_Linux-ifort_openmpi-1.6_emt64_exe.tar.gz}
@@ -81,19 +82,21 @@ cd $INSTALL_PREFIX/$VERSION
 tar xvzf $temp_dir/$CRGRA2006_ARC
 
 # Rebuild parallel versions Pcrystal and Ppropertis to work on UCL Clusters with infiniband
-# and OpenMPI 1.8.4
+# and OpenMPI 1.10.1
 
-echo "Rebuilding the parallel versions for OpenMPI 1.8.4 and Infinband  ..."
+echo "Rebuilding the parallel versions for OpenMPI 1.10.1 and Infinband  ..."
 cd $temp_dir
 tar xvzf $SRC_ARCHIVE/$CRYSTAL14_PAROBJ
 cd build/Xmakes
 cp Linux-ifort_XE_emt64.inc Linux-ifort_XE_emt64.inc_dist
-sed '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' Linux-ifort_XE_emt64.inc_dist > Linux-ifort_XE_emt64.inc
+sed -e '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' -e '/F90FLAGS =/s/-i-static/-static-intel/' Linux-ifort_XE_emt64.inc_dist > Linux-ifort_XE_emt64.inc
+cp Linux-ifort_XE_openmpi_emt64.inc Linux-ifort_XE_openmpi_emt64.inc_dist
+sed -e '/F90FLAGS =/s/-i-static/-static-intel/' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
 cd ..
 make all
 cd ../bin/Linux-ifort_XE_emt64/v1.0.4/
-cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
-cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
+cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
+cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
 
 # Change ownership to reserved app group
 
