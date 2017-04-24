@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2015 
+#
+
+APPNAME=${APPNAME:-libsmm}
+VERSION=${VERSION:-4_1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/cp2k-${VERSION}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
+cd cp2k-${VERSION}
+cd tools
+cd build_libsmm
+
+cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/linux.gnu config
+
+./generate -c config/linux.gnu -j 10 -t 16 -w none tiny1
+./generate -c config/linux.gnu tiny2
+./generate -c config/linux.gnu -j 0 -t 16 small1
+./generate -c config/linux.gnu -j 0 -t 16 lib
+
+echo "Finshed building libsmm."
