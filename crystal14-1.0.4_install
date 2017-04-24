@@ -91,7 +91,7 @@ cd build/Xmakes
 cp Linux-ifort_XE_emt64.inc Linux-ifort_XE_emt64.inc_dist
 sed -e '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' -e '/F90FLAGS =/s/-i-static/-static-intel/' Linux-ifort_XE_emt64.inc_dist > Linux-ifort_XE_emt64.inc
 cp Linux-ifort_XE_openmpi_emt64.inc Linux-ifort_XE_openmpi_emt64.inc_dist
-sed -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS =/s/$/ -Lifcore' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
+sed -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS =/s/$/ -Lifcore/' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
 cd ..
 make all
 cd ../bin/Linux-ifort_XE_emt64/v1.0.4/
