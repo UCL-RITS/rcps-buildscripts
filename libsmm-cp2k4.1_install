@@ -16,11 +16,14 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
 svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
 cd cp2k-${VERSION}
-cd tools
+cd cp2k/tools
 cd build_libsmm
 
 cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/linux.gnu config
@@ -30,4 +33,10 @@ cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/linux.gnu config
 ./generate -c config/linux.gnu -j 0 -t 16 small1
 ./generate -c config/linux.gnu -j 0 -t 16 lib
 
+mkdir -p $INSTALL_PREFIX/lib
+
+cp lib/*.a $INSTALL_PREFIX/lib
+
 echo "Finshed building libsmm."
+
+
