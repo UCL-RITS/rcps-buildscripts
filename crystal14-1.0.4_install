@@ -3,6 +3,8 @@
 # This script installs Crystal14 Versaion 1.0.4
 # Brian Alston Feb 2016
 # Updated for V1.0.4 May 2016 - version number and archive name changes
+# Updated April 2017 - removed dependency on Intel 2015
+#
 # Based on spm12_install by Owain Kenway
 
 # You need to download the Crystal14 archives from the Crystal14 Licence Portal
@@ -10,7 +12,7 @@
 # Place it somewhere in your file-system and set the SRC_ARCHIVE etc
 # variables appropriately.
 
-VERSION=${VERSION:-v1.0.4}
+VERSION=${VERSION:-v1.0.4_2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Crystal14}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Crystal14/archives}
 CRYSTAL14_ARC=${CRYSTAL14_ARC:-crystal14_v1_0_4_Linux-ifort_openmpi-1.6_emt64_exe.tar.gz}
@@ -42,8 +44,8 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/4.9.2
-require compilers/intel/2015/update2
-require mpi/openmpi/1.8.4/intel-2015-update2
+require compilers/intel
+require mpi/openmpi/1.10.1/intel-2015-update2
 
 echo "Installing into $INSTALL_PREFIX/$VERSION ..."
 
