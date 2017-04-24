@@ -25,9 +25,9 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
 mkdir -p ${INSTALL_PREFIX}/lib
 mkdir -p ${INSTALL_PREFIX}/include
 mkdir -p ${INSTALL_PREFIX}/structures
+mkdir -p ${INSTALL_PREFIX}/bin
 
-
-export QUIP_INSTALLDIR=${INSTALL_PREFIX}
+export QUIP_INSTALLDIR=${INSTALL_PREFIX}/bin
 export QUIP_STRUCT_DIR=${INSTALL_PREFIX}/structures
 export QUIP_ARCH=linux_x86_64_gfortran_openmpi
 
