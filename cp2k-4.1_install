@@ -30,7 +30,7 @@ cd cp2k-${VERSION}/cp2k
 
 cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
 
-cd make
+cd makefiles
 
 make ARCH=${ARCH} VERSION="${TYPE}"
 make ARCH=${ARCH} VERSION="${TYPE}" check
