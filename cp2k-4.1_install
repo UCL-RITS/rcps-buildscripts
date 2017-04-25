@@ -33,7 +33,7 @@ cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
 cd makefiles
 
 make ARCH=${ARCH} VERSION="${TYPE}"
-make ARCH=${ARCH} VERSION="${TYPE}" check
+make ARCH=${ARCH} VERSION="${TYPE}" test
 
 mkdir -p ${INSTALL_PREFIX}/bin
 mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
