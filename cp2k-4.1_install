@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CP2K
+#
+# by Owain Kenway, 2017 
+#
+
+# YOU SHOULD BUILD WITH GNU 4.9.2 AND OpenMPI 1.8.4
+
+APPNAME=${APPNAME:-cp2k}
+VERSION=${VERSION:-4_1}
+TYPE=${TYPE:-popt}
+ARCH=${ARCH:-UCL-x86-64-gfortran}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
+cd cp2k-${VERSION}
+
+cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
+
+cd make
+
+make ARCH=${ARCH} VERSION="${TYPE}"
+make ARCH=${ARCH} VERSION="${TYPE}" check
+
+mkdir -p ${INSTALL_PREFIX}/bin
+mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
+
+cp exe/${ARCH}/* ${INSTALL_PREFIX}/bin
+cp lib/${ARCH}/${TYPE}/*.a ${INSTALL_PREFIX}/lib/${TYPE}
+
+echo "Finshed building cp2k."
+
+
