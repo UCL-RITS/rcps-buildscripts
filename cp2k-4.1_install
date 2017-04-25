@@ -26,7 +26,7 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 cd $temp_dir
 
 svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
-cd cp2k-${VERSION}
+cd cp2k-${VERSION}/cp2k
 
 cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
 
