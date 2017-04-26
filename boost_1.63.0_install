@@ -8,12 +8,12 @@
 
 NAME=${NAME:-boost}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-1_64_0}
+VERSION=${VERSION:-1_63_0}
 # get the version with dot separators
 VERSIONNUM=${VERSION//_/.}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-SHA256=${SHA256:-7bcc5caace97baa948931d712ea5f37038dbb1c5d89b43ad4def4ed7cb683332}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://dl.bintray.com/boostorg/release/${VERSIONNUM}/source/${NAME}_${VERSION}.tar.bz2}
+SHA256=${SHA256:-beae2529f759f6b3bf3f4969a19c2e9d6f0c503edcb2de4a61d1428519fcb3b0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/${NAME}/files/${NAME}/${VERSIONNUM}/${NAME}_${VERSION}.tar.bz2}
 MPI=${MPI:-yes}
 
 set -e
