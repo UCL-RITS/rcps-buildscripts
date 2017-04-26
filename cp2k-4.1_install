@@ -38,6 +38,8 @@ make ARCH=${ARCH} VERSION="${TYPE}" test
 mkdir -p ${INSTALL_PREFIX}/bin
 mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
 
+cd ..
+
 cp exe/${ARCH}/* ${INSTALL_PREFIX}/bin
 cp lib/${ARCH}/${TYPE}/*.a ${INSTALL_PREFIX}/lib/${TYPE}
 
