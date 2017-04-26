@@ -9,9 +9,11 @@
 NAME=${NAME:-boost}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-1_54_0}
+# get the version with dot separators
+VERSIONNUM=${VERSION//_/.}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-15cb8c0803064faef0c4ddf5bc5ca279}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/boost/files/boost/1.54.0/${NAME}_${VERSION}.tar.bz2}
+SHA256=${SHA256:-047e927de336af106a24bceba30069980c191529fd76b8dff8eb9a328b48ae1d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/boost/files/boost/${VERSIONNUM}/${NAME}_${VERSION}.tar.bz2}
 MPI=${MPI:-yes}
 
 set -e
@@ -30,9 +32,9 @@ cd $temp_dir
 wget $SRC_ARCHIVE
 tarfile=$(basename "${SRC_ARCHIVE}")
 
-CHECKSUM=`md5sum $tarfile| awk '{print $1}'`
+CHECKSUM=`sha256sum $tarfile| awk '{print $1}'`
 
-if [ "$MD5" == "$CHECKSUM" ]
+if [ "$SHA256" == "$CHECKSUM" ]
 then
   tar -xvf $tarfile
 
@@ -66,6 +68,6 @@ EOT
 
 else
   echo "Hash mismatch."
-  echo "Expected: $MD5"
+  echo "Expected: $SHA256"
   echo "Got: $CHECKSUM"
 fi
