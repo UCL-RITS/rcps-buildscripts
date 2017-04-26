@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing BOOST
+#
+# 
+#
+
+NAME=${NAME:-boost}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1_64_0}
+# get the version with dot separators
+VERSIONNUM=${VERSION//_/.}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-7bcc5caace97baa948931d712ea5f37038dbb1c5d89b43ad4def4ed7cb683332}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://dl.bintray.com/boostorg/release/${VERSIONNUM}/source/${NAME}_${VERSION}.tar.bz2}
+MPI=${MPI:-yes}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $tarfile| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd ${NAME}_${VERSION}
+  ./bootstrap.sh --with-libraries=all --with-python=python --prefix=$INSTALL_PREFIX
+
+  if [ "$MPI" == "yes" ]
+  then
+    # enable mpi support by adding "using mpi ;" to the end of project-config.jam
+
+    cat <<EOT >> project-config.jam
+
+# -----------------
+# MPI configuration.
+# -----------------
+
+using mpi : mpicxx ;
+EOT
+
+  fi  
+
+  # Build, install and log (if any components fail, it doesn't tell you which at the end)
+  # You can redo individual ones with ./bjam --with-xxxx install
+
+  if [ "${COMPILER_TAG:0:5}" == "intel" ] 
+  then
+     b2opts="--toolset=intel"
+  fi
+
+  ./b2 install $b2opts 2>&1 | tee build.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
