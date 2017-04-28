@@ -3,29 +3,23 @@
 ###############################################
 # Installing BOOST
 #
-# by Heather Kelly, 2015
+# 
 #
 
 NAME=${NAME:-boost}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-1_54_0}
+VERSION=${VERSION:-1_63_0}
 # get the version with dot separators
 VERSIONNUM=${VERSION//_/.}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-SHA256=${SHA256:-047e927de336af106a24bceba30069980c191529fd76b8dff8eb9a328b48ae1d}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/boost/files/boost/${VERSIONNUM}/${NAME}_${VERSION}.tar.bz2}
+SHA256=${SHA256:-beae2529f759f6b3bf3f4969a19c2e9d6f0c503edcb2de4a61d1428519fcb3b0}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/${NAME}/files/${NAME}/${VERSIONNUM}/${NAME}_${VERSION}.tar.bz2}
 MPI=${MPI:-yes}
 
 set -e
 
-# test module prereqs
-#export PATH=/shared/ucl/apps/rcops_scripts/:$PATH
-#module-loaded compilers
-#module-loaded mpi
-#module-loaded python
-
-#temp_dir=`mktemp -d`
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
 
 cd $temp_dir
 
@@ -43,9 +37,9 @@ then
 
   if [ "$MPI" == "yes" ]
   then
-    # enable mpi support by adding "using mpi ;" to the end of user-config.jam
+    # enable mpi support by adding "using mpi ;" to the end of project-config.jam
 
-    cat <<EOT >> tools/build/v2/user-config.jam
+    cat <<EOT >> project-config.jam
 
 # -----------------
 # MPI configuration.
@@ -61,7 +55,7 @@ EOT
 
   if [ "${COMPILER_TAG:0:5}" == "intel" ] 
   then
-     b2opts="--toolset=intel-linux"
+     b2opts="--toolset=intel"
   fi
 
   ./b2 install $b2opts 2>&1 | tee build.log
