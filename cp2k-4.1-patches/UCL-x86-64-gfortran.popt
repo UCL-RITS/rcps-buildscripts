@@ -17,6 +17,7 @@ LIBXC_INC  = /shared/ucl/apps/libxc/2.2.2/gnu-4.9.2/include
 LIBXC_LIB  = /shared/ucl/apps/libxc/2.2.2/gnu-4.9.2/lib
 QUIP_LIB   = /shared/ucl/apps/quip/18c5440/lib
 QUIP_INC   = /shared/ucl/apps/quip/18c5440/include
+DATA_DIR   = /shared/ucl/apps/cp2k/4_1/gnu-4.9.2/data
 SMM_LIB    = /shared/ucl/apps/libsmm/cp2k-4_1/gnu-4.9.2/lib/libsmm_dnn_linux.gnu.a
 SCALAPACK_LIB = /shared/ucl/apps/scalapack/2.0.2/gnu-4.9.2-ompi-1.8.4/openblas/lib
 DFLAGS     = -D__FFTW3 -D__MPI_VERSION=2 -D__parallel -D__SCALAPACK -D__HAS_smm_dnn -D__QUIP -D__LIBINT -D__LIBXC2 
