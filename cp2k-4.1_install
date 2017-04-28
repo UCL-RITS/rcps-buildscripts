@@ -28,7 +28,7 @@ cd $temp_dir
 svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
 cd cp2k-${VERSION}/cp2k
 
-mkdir -p ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}/data
 cp -R data/* ${INSTALL_PREFIX}/data
 
 cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
