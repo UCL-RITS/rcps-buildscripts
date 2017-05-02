@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing mysql-connector-python
+#
+# 
+#
+
+NAME=${NAME:-mysql-connector-python}
+VERSION=${VERSION:-2.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-3df394d89300db95163f17c843ef49df}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://cdn.mysql.com/Downloads/Connector-Python/${NAME}-${VERSION}.zip}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip $archive
+  cd ${NAME}-${VERSION}
+  python setup.py install --prefix=$INSTALL_PREFIX
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
