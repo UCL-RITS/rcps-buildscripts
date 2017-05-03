@@ -64,7 +64,8 @@ fi
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
@@ -103,10 +104,6 @@ then
 
   export ARMCI_NETWORK
   export MSG_COMMS
-  export IB_HOME
-  export IB_INCLUDE
-  export IB_LIB
-  export IB_LIB_NAME
 
   export PYTHONHOME
   export PYTHONVERSION
