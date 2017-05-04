@@ -19,8 +19,9 @@
 
 VERSION=${VERSION:-3.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
-MD5=${MD5:-5a7506c8813432d1621c9725e86baf7a}
-SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
+MD5=${MD5:-75083c23d507b9c16d5c6afbd7a827e7}
+# SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:- /home/ccaabaa/Software/R//R-${VERSION}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
