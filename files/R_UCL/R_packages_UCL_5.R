@@ -43,6 +43,7 @@ install.packages ("dichromat", lib=mainLib, repos=repros);
 install.packages ("colorspace", lib=mainLib, repos=repros);
 install.packages ("munsell", lib=mainLib, repos=repros);
 install.packages ("scales", lib=mainLib, repos=repros);
+install.packages ("shiny", lib=mainLib, repos=repros);
 install.packages ("gtable", lib=mainLib, repos=repros);
 install.packages ("stringr", lib=mainLib, repos=repros);
 install.packages ("reshape2", lib=mainLib, repos=repros);

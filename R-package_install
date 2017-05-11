@@ -5,6 +5,7 @@
 #
 # by Brian Alston, October 2016 V1.1 
 # Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
+# Updated May 2017 to default to R 3.4.0
 #
 # usage: R-package_install <R package name>
 #
@@ -12,7 +13,7 @@
 
 set -e
 
-VERSION=${VERSION:-3.3.2}
+VERSION=${VERSION:-3.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
@@ -26,7 +27,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require r/recommended
+# require r/recommended
 # require r/new
 
 if [ $# -ne 1 ]; then
