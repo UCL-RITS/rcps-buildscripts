@@ -27,10 +27,10 @@ chgrp -R $GROUP g16
 
 # patch to comment out line that overrides $GV_DIR in g09.profile - we set this in a
 # module and it breaks if gview is not in $g09root.
-cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g16-a03_profile.patch .
-patch -p0 -i gaussian_g16-a03_profile.patch  
 
 cd g16
+cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g16-a03_profile.patch .
+patch -p0 -i gaussian_g16-a03_profile.patch  
 bsd/install
 # Undocumented step that build script doesn't do
 # cd bsd
