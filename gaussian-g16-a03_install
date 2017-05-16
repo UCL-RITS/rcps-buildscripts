@@ -55,6 +55,17 @@ set -e
 mname="`set-mflags x`"
 mflags="`set-mflags`"
 export mg="${mname} -f bsd/g16.make $mflags"
+
+# FIX LINDA 
+# For "reasons" linda has gfortran hard coded in to its build, which the build
+# process then tries to pass PGI options to.
+cd linda9.0/linux64bit/bin/
+sed -i.bak 's/gfortran/pgf77/g' *
+rm *.bak
+sed -i.bak 's/-fno-second-underscore/ /g' *
+rm *.bak
+
+cd $g16root/g16
 $mg linda 2>&1 | tee makelinda.log
 
 # Clear out install prefix hopefully fixes permission problems.  If not, check
