@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Gaussian
+#
+
+NAME=${NAME:-gaussian}
+VERSION=${VERSION:-g16-a03}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Gaussian/sources/Gaussian16/Gaussian_16_A.03/tar/wkssrc.tgz}
+SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/shared/ucl/apps/Gaussian/sources/Gaussian16/TCP_Linda_9/Linux/tar/linda9.0_linux64bit.tbz}
+GROUP=${GROUP:-legg09}
+
+ARCH=${ARCH:-""} # set to nehalem on legion
+
+set -e
+
+mkdir -p /dev/shm/gaussian
+temp_dir=`mktemp -d -p /dev/shm/gaussian`
+
+export PATH=$INSTALL_PREFIX/g16:$PATH
+export g16root=$temp_dir
+
+cd $g16root
+tar -xvf $SRC_ARCHIVE
+chgrp -R $GROUP g16
+
+# patch to comment out line that overrides $GV_DIR in g09.profile - we set this in a
+# module and it breaks if gview is not in $g09root.
+cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g16-a03_profile.patch .
+patch -p0 -i gaussian_g16-a03_profile.patch  
+
+cd g16
+bsd/install
+# Undocumented step that build script doesn't do
+# cd bsd
+# pgcc machine.c -o gau-machine
+# cd ..
+
+# This script does not play well with set -e
+set +e
+source $g16root/g16/bsd/g16.profile
+set -e
+bsd/bldg16 all $ARCH 2>&1 | tee make.log
+
+# now build Linda version 
+cd $g16root/g16
+tar -xvf $SRC_ARCHIVE_LINDA 
+bsd/install
+bsd/fixlinda                 
+set +e         
+source $g16root/g16/bsd/g16.profile    
+set -e
+# these are missing from g16.profile
+mname="`set-mflags x`"
+mflags="`set-mflags`"
+export mg="${mname} -f bsd/g16.make $mflags"
+$mg linda 2>&1 | tee makelinda.log
+
+# Clear out install prefix hopefully fixes permission problems.  If not, check
+# out gaussian-g09-d01_fix script.
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+cp -r $g16root/g16 $INSTALL_PREFIX
+# Linda job setup
+cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
+cd $INSTALL_PREFIX
+
+#for a in flc LindaLauncher ntsnet pmbuild vntsnet
+#do
+#  echo "Patching ${a}..."
+#  sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
+#done
+
+chgrp -R $GROUP $INSTALL_PREFIX  
+chmod -R o-rwx $INSTALL_PREFIX
