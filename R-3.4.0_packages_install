@@ -14,7 +14,7 @@
 # Updated Sep 2016 to updated JAGS version
 # Updated Nov 2016 for R 3.3.2 and extra modules for rgdal and rgeos packages.
 # Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
-# Updated May 2017 for R 3.4.0
+# Updated May 2017 for R 3.4.0 and to add udunits/2.2.20/gnu-4.9.2 module.
 #
 # Using Ian's require function to load modules
 #
@@ -46,6 +46,7 @@ require texinfo/5.2/gnu-4.9.2
 require texlive/2015
 require gsl/1.16/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
+require udunits/2.2.20/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
 require root/5.34.30/gnu-4.9.2

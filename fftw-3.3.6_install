@@ -13,12 +13,19 @@ MD5=${MD5:-927e481edbb32575397eb3d62535a856}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.fftw.org/fftw-${VERSION}.tar.gz}
 # --enabled-shared builds shared libraries in addition to static at the moment
 COMMON_FLAGS=${COMMON_FLAGS:-"--enable-shared --enable-threads --enable-openmp"}
+LEGION_SSE=${LEGION_SSE:-yes}
+# If wanting to build SSE2-only for Legion, add --enable-sse2
+if [ "$LEGION_SSE" == "yes" ]
+then
+  SSE_FLAG="--enable-sse2"
+fi
 
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-temp_dir=`mktemp -d`
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
 
 cd $temp_dir
 
@@ -34,7 +41,7 @@ then
   tar -zxvf ../fftw-${VERSION}.tar.gz
 
   cd fftw-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-float
+  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS $SSE_FLAG --enable-float 
   make && make install
 
   cd ../..
@@ -45,31 +52,39 @@ then
   tar -zxvf ../fftw-${VERSION}.tar.gz
 
   cd fftw-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS
+  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS $SSE_FLAG
   make && make install
 
   cd ../..
 
 # Long-double precision
-  mkdir long-double
-  cd long-double
-  tar -zxvf ../fftw-${VERSION}.tar.gz
+# Don't build long and quad if using SSE2
+  if [ "$LEGION_SSE" != "yes" ]
+  then
+    mkdir long-double
+    cd long-double
+    tar -zxvf ../fftw-${VERSION}.tar.gz
 
-  cd fftw-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-long-double
-  make && make install
+    cd fftw-${VERSION}
+    ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-long-double
+    make && make install
 
-  cd ../..
+    cd ../..
+  fi
 
 # Quad precision __float128
-  mkdir quad
-  cd quad
-  tar -zxvf ../fftw-${VERSION}.tar.gz
+# only works with GCC
+  if [ ${COMPILER_TAG:0:3} == "gnu" ] && [ "$LEGION_SSE" != "yes" ]
+  then
+    mkdir quad
+    cd quad
+    tar -zxvf ../fftw-${VERSION}.tar.gz
 
-  cd fftw-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-quad-precision
-  make && make install
-
+    cd fftw-${VERSION}
+    ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-quad-precision
+    make && make install
+  fi
+  
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
