@@ -34,9 +34,9 @@ patch -p0 -i gaussian_g16-a03_profile.patch
 cd ..
 bsd/install
 # Undocumented step that build script doesn't do
-# cd bsd
-# pgcc machine.c -o gau-machine
-# cd ..
+cd bsd
+pgcc machine.c -o gau-machine
+cd ..
 
 # This script does not play well with set -e
 set +e
@@ -47,7 +47,6 @@ bsd/bldg16 all $ARCH 2>&1 | tee make.log
 # now build Linda version 
 cd $g16root/g16
 tar -xvf $SRC_ARCHIVE_LINDA 
-bsd/install
 bsd/fixlinda                 
 set +e         
 source $g16root/g16/bsd/g16.profile    
