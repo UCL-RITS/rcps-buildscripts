@@ -74,7 +74,7 @@ then
 
 # Quad precision __float128
 # only works with GCC
-  if [ ${COMPILER-TAG:0:3} == "gnu" ] && [ "$LEGION_SSE" != "yes" ]
+  if [ ${COMPILER_TAG:0:3} == "gnu" ] && [ "$LEGION_SSE" != "yes" ]
   then
     mkdir quad
     cd quad
