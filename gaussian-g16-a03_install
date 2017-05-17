@@ -82,7 +82,7 @@ cp -r $g16root/g16 $INSTALL_PREFIX
 cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
 cd $INSTALL_PREFIX
 
-for a in clc clc++ flc LindaLauncher ntsnet pmbuild vntsnet
+for a in clc c++lc flc LindaLauncher ntsnet pmbuild vntsnet
 do
   echo "Patching ${a}..."
   sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g16/linda9.0/linux64bit/bin/$a
