@@ -18,7 +18,6 @@ set -e
 mkdir -p /dev/shm/gaussian
 temp_dir=`mktemp -d -p /dev/shm/gaussian`
 
-#export PATH=$INSTALL_PREFIX/g16:$PATH
 export g16root=$temp_dir
 
 cd $g16root
@@ -33,6 +32,7 @@ cp /shared/ucl/apps/build_scripts/gaussian-patches/gaussian_g16-a03_profile.patc
 patch -p0 -i gaussian_g16-a03_profile.patch  
 cd ..
 bsd/install
+
 # Undocumented step that build script doesn't do
 cd bsd
 pgcc machine.c -o gau-machine
@@ -47,10 +47,13 @@ bsd/bldg16 all $ARCH 2>&1 | tee make.log
 # now build Linda version 
 cd $g16root/g16
 tar -xvf $SRC_ARCHIVE_LINDA 
-bsd/fixlinda                 
+bsd/fixlinda
+
+# This script does not play well with set -e
 set +e         
 source $g16root/g16/bsd/g16.profile    
 set -e
+
 # these are missing from g16.profile
 mname="`set-mflags x`"
 mflags="`set-mflags`"
@@ -74,15 +77,18 @@ rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
 
 cp -r $g16root/g16 $INSTALL_PREFIX
+
 # Linda job setup
 cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl $INSTALL_PREFIX/linda.perl
 cd $INSTALL_PREFIX
 
-#for a in flc LindaLauncher ntsnet pmbuild vntsnet
-#do
-#  echo "Patching ${a}..."
-#  sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g09/linda8.2/opteron-linux/bin/$a
-#done
+for a in clc clc++ flc LindaLauncher ntsnet pmbuild vntsnet
+do
+  echo "Patching ${a}..."
+  sed -i.bak 's|'"$temp_dir"'|'"$INSTALL_PREFIX"'|' g16/linda9.0/linux64bit/bin/$a
+done
 
 chgrp -R $GROUP $INSTALL_PREFIX  
 chmod -R o-rwx $INSTALL_PREFIX
+
+echo Install of Gaussian $VERSION complete in $INSTALL_PREFIX
