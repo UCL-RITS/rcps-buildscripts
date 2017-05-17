@@ -18,7 +18,7 @@ set -e
 mkdir -p /dev/shm/gaussian
 temp_dir=`mktemp -d -p /dev/shm/gaussian`
 
-export PATH=$INSTALL_PREFIX/g16:$PATH
+#export PATH=$INSTALL_PREFIX/g16:$PATH
 export g16root=$temp_dir
 
 cd $g16root
@@ -39,18 +39,18 @@ pgcc machine.c -o gau-machine
 cd ..
 
 # This script does not play well with set -e
-set +e
+#set +e
 source $g16root/g16/bsd/g16.profile
-set -e
+#set -e
 bsd/bldg16 all $ARCH 2>&1 | tee make.log
 
 # now build Linda version 
 cd $g16root/g16
 tar -xvf $SRC_ARCHIVE_LINDA 
 bsd/fixlinda                 
-set +e         
+#set +e         
 source $g16root/g16/bsd/g16.profile    
-set -e
+#set -e
 # these are missing from g16.profile
 mname="`set-mflags x`"
 mflags="`set-mflags`"
