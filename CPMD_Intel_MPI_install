@@ -87,9 +87,10 @@ echo "***** Building cpmd2cube ..."
 cd $temp_dir
 tar xvzf $SRC_ARCHIVE_LOCATION/$SRC_ARCHIVE_CPMD2CUBE
 cd cpmd2cube
+mkdir -p $INSTALL_LOC/cpmd2cube
 ./Configure -DEST=$INSTALL_LOC/cpmd2cube -m Linux-PC-IFORT
 
-cd  $INSTALL_LOC/cpmd2cobe
+cd  $INSTALL_LOC/cpmd2cube
 
 # Need to fix Makefile before building on Legion/Grace/Thomas
 
