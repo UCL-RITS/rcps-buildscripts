@@ -4,6 +4,7 @@
 # Install Bioconductor for UCL R installations.
 #
 # June 2016
+# Updated May 2017
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -32,7 +33,7 @@ biocLite (pkgs="preprocessCore", type="source", lib=mainLib);
 biocLite (pkgs="BiocInstaller", type="source", lib=mainLib);
 biocLite (pkgs="affy", type="source", lib=mainLib);
 biocLite (pkgs="gcrma", type="source", lib=mainLib);
-biocLite (pkgs="afyPLM", type="source", lib=mainLib);
+biocLite (pkgs="affyPLM", type="source", lib=mainLib);
 biocLite (pkgs="genefilter", type="source", lib=mainLib);
 biocLite (pkgs="simpleaffy", type="source", lib=mainLib);
 biocLite (pkgs="affyQCReport", type="source", lib=mainLib);
@@ -115,6 +116,7 @@ biocLite (pkgs="GOstats", type="source", lib=mainLib);
 biocLite (pkgs="DNAcopy", type="source", lib=mainLib);
 biocLite (pkgs="Ringo", type="source", lib=mainLib);
 biocLite (pkgs="affxparser", type="source", lib=mainLib);
+biocLite (pkgs="aroma.light", type="source", lib=mainLib);
 
 install.packages ("aroma.apd", lib=mainLib, repos=repros);
 install.packages ("aroma.affymetrix", lib=mainLib, repos=repros);
@@ -166,7 +168,11 @@ biocLite (pkgs="FDb.InfiniumMethylation.hg19", type="source", lib=mainLib);
 
 biocLite (pkgs="ROC", type="source", lib=mainLib);
 biocLite (pkgs="wateRmelon", type="source", lib=mainLib);
-biocLite (pkgs="RPVM", type="source", lib=mainLib);
+
+# Removed from CRAN and Bioconductor for R 3.4.0
+#
+# biocLite (pkgs="RPVM", type="source", lib=mainLib);
+
 biocLite (pkgs="ChAMP", type="source", lib=mainLib);
 
 # For Ana Paula Leite (ana.leite@ucl.ac.uk) - added June 2016

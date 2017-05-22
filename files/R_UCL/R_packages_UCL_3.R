@@ -26,7 +26,10 @@ install.packages ("saemix", lib=mainLib, repos=repros);
 
 # For Margarida Cabrita Lopes margarida.lopes@ucl.ac.uk
 
-install.packages ("ncdf", lib=mainLib, repos=repros);
+# Removed from CRAN for R 3.4.0 - use RNetCDF
+#
+# install.packages ("ncdf", lib=mainLib, repos=repros);
+
 install.packages ("RNetCDF", lib=mainLib, repos=repros);
 
 
