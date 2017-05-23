@@ -7,10 +7,7 @@
 #
 set -e
 
-module load python3/recommended
-VERSION=${VERSION:-`python /shared/ucl/apps/build_scripts/files/pypiver.py qutip`}
-module remove python3
-module load python2/recommended
+VERSION=${VERSION:-4.1.0}
 
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/qutip/$VERSION}
 
@@ -23,6 +20,3 @@ prereq python2
 
 pip install --install-option="--prefix=$INSTALL_PREFIX" qutip==$VERSION
 
-# need to change the #! to have python3 instead of 1435743341-3 from the bundle when pip was used
-cd $INSTALL_PREFIX/bin
-sed -i.bak '1s|^#!.*|#!/usr/bin/env python2|' *
