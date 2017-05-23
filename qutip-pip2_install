@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -l
 
 ###############################################
 # Installing iva
@@ -21,7 +21,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 prereq compilers/gnu
 prereq python2
 
-pip install --install-option="--prefix=$INSTALL_PREFIX" --install-option=--with-f90mc qutip==$VERSION
+pip install --install-option="--prefix=$INSTALL_PREFIX" qutip==$VERSION --install-option="--with-f90mc"
 
 # need to change the #! to have python3 instead of 1435743341-3 from the bundle when pip was used
 cd $INSTALL_PREFIX/bin
