@@ -52,7 +52,11 @@ install.packages ("abc", lib=mainLib, repos=repros);
 install.packages ("iterators", lib=mainLib, repos=repros);
 install.packages ("codetools", lib=mainLib, repos=repros);
 install.packages ("foreach", lib=mainLib, repos=repros);
-install.packages ("multicore", lib=mainLib, repos=repros);
+
+# Removed from CRAN for R 3.4.0 - use package ‘parallel’ instead.
+#
+# install.packages ("multicore", lib=mainLib, repos=repros);
+
 install.packages ("doMC", lib=mainLib, repos=repros);
 install.packages ("permute", lib=mainLib, repos=repros);
 install.packages ("vegan", lib=mainLib, repos=repros);
