@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing iva
+#
+# by Owain Kenway, 2015 
+#
+set -e
+
+module load python3/recommended
+VERSION=${VERSION:-`python /shared/ucl/apps/build_scripts/files/pypiver.py qutip`}
+module remove python3
+module load python2/recommended
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/qutip/$VERSION}
+
+# Note, you need the following packages loaded to build this:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/gnu
+prereq python2
+
+pip install --install-option="--prefix=$INSTALL_PREFIX" --install-option=--with-f90mc qutip==$VERSION
+
+# need to change the #! to have python3 instead of 1435743341-3 from the bundle when pip was used
+cd $INSTALL_PREFIX/bin
+sed -i.bak '1s|^#!.*|#!/usr/bin/env python2|' *
