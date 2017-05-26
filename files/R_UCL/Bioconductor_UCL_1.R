@@ -81,7 +81,10 @@ biocLite (pkgs="hugene10sttranscriptcluster.db", type="source", lib=dbLib);
 
 biocLite (pkgs="GenomeGraphs", type="source", lib=mainLib);
 biocLite (pkgs="GenomicFeatures", type="source", lib=mainLib);
-biocLite (pkgs="VariantAnnotation", type="source", lib=mainLib);
+
+# Removed from Bioconductor 3.5
+# biocLite (pkgs="VariantAnnotation", type="source", lib=mainLib);
+
 biocLite (pkgs="biovizBase", type="source", lib=mainLib);
 biocLite (pkgs="Gviz", type="source", lib=mainLib);
 biocLite (pkgs="annmap", type="source", lib=mainLib);
