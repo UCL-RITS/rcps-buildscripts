@@ -9,7 +9,7 @@ VERSION=${VERSION:-g16-a03}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Gaussian/sources/Gaussian16/Gaussian_16_A.03/tar/wkssrc.tbz}
 SRC_ARCHIVE_LINDA=${SRC_ARCHIVE_LINDA:-/shared/ucl/apps/Gaussian/sources/Gaussian16/TCP_Linda_9/Linux/tar/linda9.0_linux64bit.tbz}
-GROUP=${GROUP:-legg09}
+GROUP=${GROUP:-legg16}
 
 ARCH=${ARCH:-""} # set to nehalem on legion
 
