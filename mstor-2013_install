@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+for i in ${includes_dir:=$(dirname "$0" 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do source "$i"; done
+
+package_name=mstor
+package_version=2013
+package_variant=""
+package_description="MSTor is a program for calculating partition functions, free energies, enthalpies, entropies, and heat capacities of complex molecules including torsional anharmonicity."
+
+module purge
+require gcc-libs
+require compilers/gnu/4.9.2
+
+owd="$(pwd)"
+package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+cd "$build_dir"
+
+bundle=umn-comp-chem-bundle-2017-05-09.tar.gz
+
+cp "/shared/ucl/apps/pkg-store/$bundle" ./
+
+tar -xzf "$bundle"
+cd umn-comp-chem-bundle-2017-05-09
+tar -xzf mstor_v2013.tar.gz
+
+cd mstor
+
+./install.pl
+mkdir -p "$install_prefix/bin"
+cp exe/* "$install_prefix/bin/"
+echo "Executables in: $install_prefix/bin"
+
+make_module \
+    -p "$install_prefix" \
+    -r gcc-libs \
+    -c mstor \
+    -o "$module_dir/$package_label" \
+    -w "$package_description"
+
+echo "Modules in: $module_dir/$package_label"
+
