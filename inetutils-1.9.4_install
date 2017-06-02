@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+for i in ${includes_dir:=$(dirname "$0" 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do source "$i"; done
+
+package_name=inetutils
+package_version=1.9.4
+package_variant=""
+package_description="GNU inetutils is a package of utilities for performing a range of network tasks including FTP and telnet clients."
+
+module purge
+
+owd="$(pwd)"
+package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}${COMPILER_TAG:+/$COMPILER_TAG}"
+install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+cd "$build_dir"
+
+src_url="http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz"
+src_file="inetutils-1.9.4.tar.xz"
+wget "$src_url"
+tar -xJf "$src_file"
+
+cd "inetutils-1.9.4"
+
+# We disable a *lot* of parts here, because they're not things we want people to use.
+
+./configure \
+    --disable-servers \
+    --disable-dnsdomainname \
+    --disable-hostname \
+    --disable-rcp \
+    --disable-rexec \
+    --disable-rlogin \
+    --disable-rsh \
+    --disable-whois \
+    --disable-ifconfig \
+    --disable-ping \
+    --disable-ping6 \
+    --disable-traceroute \
+    --disable-talk \
+    --disable-logger \
+    --prefix="$install_prefix" \
+
+make
+make check
+make install
+
+echo "Executables in: $install_prefix/bin"
+
+make_module \
+    -p "$install_prefix" \
+    -c inetutils \
+    -o "$module_dir/$package_label" \
+    -w "$package_description"
+
+echo "Modules in: $module_dir/$package_label"
+
