@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GaussView 6
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-gaussview}
+VERSION=${VERSION:-gv6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/gaussian/$NAME}
+MD5=${MD5:-9baa2e34de08fad4e47c41f8fb6dda7d}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gaussian/sources/Gaussian16/GaussView_6/Linux/tar/gv-6016-Linux-x86_64.tbz}
+SRC_SCRIPT=${SRC_SCRIPT:-/shared/ucl/apps/gaussian/sources/}
+GROUP=${GROUP:-legg16}
+
+set -e
+
+CHECKSUM=`md5sum "${SRC_ARCHIVE}"| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xvf $SRC_ARCHIVE
+
+  # put in version specific directory
+  mv gv gv6
+
+  # Legion specific configuration of gview.csh
+  mv $INSTALL_PREFIX/$VERSION/gview.csh $INSTALL_PREFIX/$VERSION/gview.csh.orig
+  cp $SRC_SCRIPT/gview6.csh $INSTALL_PREFIX/$VERSION/gview.sh
+  ln -s gview.csh gview
+
+  chgrp -R $GROUP $VERSION
+ 
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
