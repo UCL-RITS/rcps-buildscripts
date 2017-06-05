@@ -10,6 +10,10 @@
 #
 # For R 3.3.2 Note: R-3.3.2_packages_install should be run first.
 #
+# This is needed on Grace for the Rmpi package to install correctly:
+#
+# export OMPI_MCA_mtl=^psm
+#
 # by Brian Alston, June 2016
 # Updated Nov 2016 for R 3.3.2
 # Updated May 2017 for R 3.4.0
