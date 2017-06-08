@@ -3,12 +3,13 @@
 ###############################################
 # Syncs ~ccspapp/Scratch/R/<R-version> from Legion to Aristotle
 #
-# Default R vesion is 3.3.0-OpenBLAS
+# Default R vesion is 3.4.0-OpenBLAS
 #
 # by Brian Alston, August 2016
 #
+# Updated June 2017 for R 3.4.0
 
-VERSION=${VERSION:-3.3.0-OpenBLAS}
+VERSION=${VERSION:-3.4.0-OpenBLAS}
 INSTALL_PREFIX=${INSTALL_PREFIX:-~ccspapp/Scratch/R/}
 REM_PREFIX=${REM_PREFIX:-Scratch/R}
 
