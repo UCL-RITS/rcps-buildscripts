@@ -48,5 +48,36 @@ function manifest() {
     fi
 }
 
-
+add_prefix_to_env () 
+{ 
+    if [ -z "$1" ] || [ ! -d "$1" ]; then
+        echo "Error: invalid path specified" 1>&2;
+    else
+        CMAKE_PREFIX_PATH="$1:$CMAKE_PREFIX_PATH";
+        if [ -d "$1/bin" ]; then
+            PATH="$1/bin:$PATH";
+        fi;
+        if [ -d "$1/man" ]; then
+            MANPATH="$1/man:$MANPATH";
+        fi;
+        if [ -d "$1/share/man" ]; then
+            MANPATH="$1/share/man:$MANPATH";
+        fi;
+        if [ -d "$1/lib" ]; then
+            LIBRARY_PATH="$1/lib:$LIBRARY_PATH";
+            LD_LIBRARY_PATH="$1/lib:$LD_LIBRARY_PATH";
+        fi;
+        if [ -d "$1/lib64" ]; then
+            LIBRARY_PATH="$1/lib64:$LIBRARY_PATH";
+            LD_LIBRARY_PATH="$1/lib64:$LD_LIBRARY_PATH";
+        fi;
+        if [ -d "$1/lib/pkgconfig" ]; then
+            PKG_CONFIG_PATH="$1/lib/pkgconfig:$PKG_CONFIG_PATH";
+        fi;
+        if [ -d "$1/include" ]; then
+            CPATH="$1/include:$CPATH";
+            INCLUDE_PATH="$1/include:$INCLUDE_PATH";
+        fi;
+    fi
+}
 
