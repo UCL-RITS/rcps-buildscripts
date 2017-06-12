@@ -60,7 +60,7 @@ cd CPMD
 for p in $PATCHES
 do
     echo "Applying patch $p ..."
-    patch -p0 < $p
+    patch -p0 < $SRC_ARCHIVE_LOCATION/$p
 done
 
 INSTALL_LOC=$INSTALL_PREFIX
