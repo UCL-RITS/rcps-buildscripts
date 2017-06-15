@@ -29,8 +29,8 @@ then
   mv gv gv6
 
   # Legion specific configuration of gview.csh
-  cp $SRC_SCRIPT/gview6.csh $INSTALL_PREFIX/$VERSION/gview.csh
-  ln -s gview.csh gview
+ # cp $SRC_SCRIPT/gview6.csh $INSTALL_PREFIX/$VERSION/gview.csh
+ # ln -s gview.csh gview
 
   chgrp -R $GROUP $VERSION
  
