@@ -76,3 +76,11 @@ make install
 cd $temp_dir
 rm $AMBERHOME
 mv $ABNAME $AMBERHOME
+
+# Installl a suitable MPI4PY for MMPBSA
+if [ "${PARALLEL:-}" = "-mpi" ]; then
+  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
+  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
+
+fi
+
