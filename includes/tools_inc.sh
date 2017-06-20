@@ -122,7 +122,7 @@ make_build_env () {
     module_dir="${MODULE_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-modules.XXXXXXXXXX")"}"
 
     if [[ -n "${package_name}" ]] && [[ -n "${package_version}" ]]; then
-        package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}${COMPILER_TAG:+-/$COMPILER_TAG}"
+        package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}${COMPILER_TAG:+/$COMPILER_TAG}"
     else
         echo "Error: package name and package version variables have not been set." >&2
         exit 1
