@@ -97,6 +97,8 @@ make_build_env () {
     local tmp_root_dir
     local prod_apps_dir
 
+    prod_apps_dir="/shared/ucl/apps"
+
     if [[ -n "$1" ]]; then
         prefix="$1"
     elif [[ -n "${package_name}" ]]; then
