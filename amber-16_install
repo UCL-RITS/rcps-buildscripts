@@ -59,7 +59,7 @@ if [ "${PARALLEL:-}" = "-mpi" ]; then
 fi
 
 # Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
-pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
+#pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
 
 
 mkdir -p $INSTALL_PREFIX
