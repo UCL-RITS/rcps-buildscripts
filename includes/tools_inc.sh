@@ -92,3 +92,58 @@ add_prefix_to_env ()
     fi
 }
 
+make_build_env () {
+    local prefix
+    local tmp_root_dir
+    local prod_apps_dir
+
+    if [[ -n "$1" ]]; then
+        prefix="$1"
+    elif [[ -n "${package_name}" ]]; then
+        prefix="${package_name}"
+    else
+        prefix="tmp."
+    fi
+
+    if [[ -n "$2" ]]; then
+        tmp_root_dir="$2"
+    elif [[ -n "$TMPDIR" ]]; then
+        tmp_root_dir="$TMPDIR"
+    else
+        tmp_root_dir="/tmp"
+    fi
+
+    # These definitions are intended to leave the function
+    #  but are *not* exported because only *bash* needs them
+    owd=$(pwd)                                                                    
+    build_dir="${BUILD_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-build.XXXXXXXXXX")"}"
+    module_dir="${MODULE_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-modules.XXXXXXXXXX")"}"
+
+    if [[ -n "${package_name}" ]] && [[ -n "${package_version}" ]]; then
+        package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}${COMPILER_TAG:+-/$COMPILER_TAG}"
+    else
+        echo "Error: package name and package version variables have not been set." >&2
+        exit 1
+    fi
+
+    if [[ -n "$IS_TEST_RUN" ]]; then
+        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
+    else
+        install_prefix="${INSTALL_PREFIX:-${prod_apps_dir}/${package_label}}"
+    fi
+
+    cat <<EOF
+    =====================
+    =    Build Env      =
+    =====================
+
+    Package label:                $package_label
+    Current working dir:          $owd
+    Build will take place in:     $build_dir
+    Modules will be put in:       $module_dir
+    Package will be installed to: $install_prefix
+
+    =====================
+EOF
+}
+
