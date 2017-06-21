@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Build the fftw, blas, lapack interfaces for an Intel compiler, after installing it
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/intel
+prereq mpi/intel
+
+# The Intel compiler module should set $MKLROOT
+cd $MKLROOT/interfaces
+for dir in */; do
+    echo "Building $dir:"
+    make libintel64 compiler=intel INSTALL_DIR=$MKLROOT/lib/intel64
+done
+

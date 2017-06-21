@@ -88,6 +88,9 @@ EOF
   done
 
   echo "Installed to: $install_prefix"
+
+  echo "Now load the module for this install and the relevant Intel MPI"
+  echo "and run intel-compilers-interfaces_install to install the interfaces."
 }
 
 _prepare_module() {
