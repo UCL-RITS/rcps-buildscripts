@@ -39,16 +39,19 @@ then
   
   make all
 
-  cd PW/tests
-  ./check-pw.x.j
+  #cd PW/tests
+  #./check-pw.x.j
 
-  cd ../../CPV/tests
-  ./check-cp.x.j
+  #cd ../../CPV/tests
+  #./check-cp.x.j
 
-  cd ../..
-  make install 
+  #cd ../..
+  #make install 
 
-  mv ../pwgui $install_prefix/bin 
+  # need to copy the whole PWgui directory into the install location
+  pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
+  cp -r $pwguidir $INSTALL_PREFIX
+  cp $pwguidir/pwgui $install_prefix/bin 
 
   echo "Installed to: $INSTALL_PREFIX"
 
