@@ -35,23 +35,16 @@ then
   export CPATH=$MKLROOT/include/fftw:$CPATH
 
   # QE doesn't really seem to *get* how prefixes should work
-  ./configure --prefix=${INSTALL_PREFIX}/bin --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  ./configure --prefix=${INSTALL_PREFIX} --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
   
-  make all
-
-  #cd PW/tests
-  #./check-pw.x.j
-
-  #cd ../../CPV/tests
-  #./check-cp.x.j
-
-  #cd ../..
-  #make install 
+  make all w90 want west couple gui 2>&1 | tee make.log
+  make test-suite
+  make install 
 
   # need to copy the whole PWgui directory into the install location
-  pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
-  cp -r $pwguidir $INSTALL_PREFIX
-  cp $pwguidir/pwgui $install_prefix/bin 
+  #pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
+  #cp -r $pwguidir $INSTALL_PREFIX
+  #cp $pwguidir/pwgui $install_prefix/bin 
 
   echo "Installed to: $INSTALL_PREFIX"
 
