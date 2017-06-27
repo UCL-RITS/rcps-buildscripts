@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Rust
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-rust}
+VERSION=${VERSION:-1.18.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-d2dc36e99b9e2269488b2bcddde43c234e6bde03edf70cba82a027ff49c36111}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://static.rust-lang.org/dist/rustc-${VERSION}-src.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+
+  cd rustc-${VERSION}-src
+  ./configure --prefix=$INSTALL_PREFIX --release-channel=stable --llvmroot=/shared/ucl/apps/llvm/3.9.1/gnu-4.9.2 --enable-llvm-link-shared --disable-codegen-tests --jemalloc-root=/usr/lib64 --enable-local-rust
+
+  export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi"
+
+  python ./x.py build
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
