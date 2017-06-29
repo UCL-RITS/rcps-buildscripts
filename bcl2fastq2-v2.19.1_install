@@ -26,7 +26,7 @@ CHECKSUM=`md5sum $archive| awk '{print $1}'`
 if [ "$MD5" == "$CHECKSUM" ]
 then
   unzip bcl2fastq2-${VERSION}-tar.zip
-  tar xvf bcl2fastq2-${VERSION}.1.403.tar.gz
+  tar xvf bcl2fastq2-${VERSION}.403.tar.gz
   cd bcl2fastq
   mkdir build
   cd build
