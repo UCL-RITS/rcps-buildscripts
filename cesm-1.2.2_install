@@ -51,16 +51,24 @@ then
   make
 
   # build CLM tools which have to be done separately
-  echo "Building CLM 4.5 tools."
-
-  cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_5/mksurfdata_map/src
   export INC_NETCDF=$INSTALL_PREFIX/support/netcdf-2017/include
   export LIB_NETCDF=$INSTALL_PREFIX/support/netcdf-2017/lib
-  gmake
+
+  echo "Building CLM 4.5 tools."
+
+  for a in mksurfdata_map interpinic 
+  do
+    cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_5/$a/src
+    gmake
+  done 
 
   echo "Building CLM 4.0 tools."
-  cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_0/mksurfdata_map/src
-  gmake
+
+  for a in mksurfdata_map interpinic 
+  do
+    cd ${INSTALL_PREFIX}/cesm${VERSION}/models/lnd/clm/tools/clm4_0/$a/src
+    gmake
+  done
 fi
 
 
