@@ -38,7 +38,7 @@ then
   cd "${NAME}2-${VERSION}"
   if [ "${BLAS_TAG}" == "openblas" ]
   then
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl" CXXFLAGS="-O2 -axSSE2,AVX"
   elif [ "${BLAS_TAG}" == "atlas" ]
   then
     ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
