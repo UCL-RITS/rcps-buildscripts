@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MCL 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-mcl}
+VERSION=${VERSION:-14-137}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-bc8740456cf51019d0a9ac5eba665bb5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.micans.org/mcl/src/mcl-${VERSION}.tar.gz}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+
+  cd mcl-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make 
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
