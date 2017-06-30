@@ -57,7 +57,6 @@ module_dir=$(mktemp -d -p /dev/shm)
 make_module -r gcc-libs \
             -r compilers/intel/2015/update2 \
             -r mpi/intel/2015/update3/intel \
-#            -r libmatheval \
             -r flex \
             -r openblas/0.2.14/intel-2015-update2 \
             -r plumed/2.2.3/intel-2015-update2 \
