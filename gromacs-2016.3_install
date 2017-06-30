@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GROMACS with PLUMED
+#
+# NOTE: build with UCL_PLATFORM_OPTS="-DGMX_SIMD=SSE4.1" on Legion 
+
+NAME=${NAME:-gromacs}
+VERSION=${VERSION:-2016.3}
+SHA1=${SHA1:-1ae1ea922b94c74f43ee066e3ea64bafa1c6c3b6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$VERSION.tar.gz}
+
+for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+module purge
+require gcc-libs
+require compilers/intel/2017/update1
+require mpi/intel/2017/update1/intel
+#require libmatheval
+require flex
+require openblas/0.2.14/intel-2015-update2
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+set -e
+
+temp_dir=$(mktemp -d -p /dev/shm)
+
+cd "$temp_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+echo "Checking hashes:"
+sha1sum -c <<<"$SHA1  $tarfile"
+
+tar -xf "$tarfile"
+
+cd "${NAME}-${VERSION}"
+
+mkdir build
+cd build
+
+# Only build the MPI versions of GROMACS
+# need to tell it to build shared libs or it won't since it didn't do a serial build first
+
+echo "Building and installing MPI, double precision GROMACS"
+cmake .. -DGMX_DOUBLE=on -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl $UCL_PLATFORM_OPTS -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DBUILD_SHARED_LIBS=ON
+make
+make install
+
+echo "Building and installing MPI, single precision GROMACS"
+cmake .. -DGMX_DOUBLE=off -DGMX_MPI=on -DGMX_BUILD_MDRUN_ONLY=OFF -DGMX_FFT_LIBRARY=mkl $UCL_PLATFORM_OPTS -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DBUILD_SHARED_LIBS=ON
+make
+make install
+
+module_dir=$(mktemp -d -p /dev/shm)
+make_module -r gcc-libs \
+            -r compilers/intel/2015/update2 \
+            -r mpi/intel/2015/update3/intel \
+#            -r libmatheval \
+            -r flex \
+            -r openblas/0.2.14/intel-2015-update2 \
+            -r plumed/2.2.3/intel-2015-update2 \
+            -p "$INSTALL_PREFIX" \
+            -c "$NAME" \
+            -w "GROMACS 2016.3 molecular dynamics package, built with Intel 2017 compilers, and OpenBLAS 0.2.14." \
+            -o "$module_dir/$NAME/$VERSION/$COMPILER_TAG"
+echo "Modules created in $module_dir"
+
+
+
