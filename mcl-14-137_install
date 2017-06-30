@@ -14,7 +14,8 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.micans.org/mcl/src/mcl-${VERSION}.tar.gz}
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/mcl
+temp_dir=`mktemp -d -p /dev/shm/mcl`
 
 cd $temp_dir
 
