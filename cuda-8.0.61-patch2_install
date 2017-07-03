@@ -56,12 +56,8 @@ _build() {
     --samplespath=$install_prefix 
   ./$actual_file_name2 \
     --silent \
-    --verbose \
-    --tmpdir=$build_dir \
-    --toolkit \
-    --toolkitpath=$install_prefix \
-    --samples \
-    --samplespath=$install_prefix 
+    --installdir=$install_prefix \
+    --accept-eula
   echo "Installed to: $install_prefix"
 }
 
