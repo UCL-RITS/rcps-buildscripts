@@ -29,7 +29,7 @@ archive=$(basename "${SRC_ARCHIVE}")
 
 #md5sum -c <<< $MD5 $archive
 #sha1sum -c <<< $SHA1 $archive
-sha256sum -c <<< $SHA256 $archive
+sha256sum -c <<< "$SHA256 $archive"
 #sha512sum -c <<< $SHA512 $archive
 
 
