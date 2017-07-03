@@ -63,7 +63,6 @@ _build() {
 
 _prepare_module() {
   make_module -p $install_prefix \
-              -n "${package_name}" \
               -c "${package_name}" \
               -o $module_dir/$package_label \
               -r gcc-libs/4.9.2 \
