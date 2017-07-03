@@ -26,11 +26,12 @@ export EIGEN_CFLAGS="-I/shared/ucl/apps/eigen/3.2.5/gnu-4.9.2/include/eigen3"
 #  but there's no install script
 # Playing it safe for now
 
-cd "$install_prefix"/..
 install_prefix="${install_prefix%/}"  # just in case
+mkdir -p "$install_prefix"
+cd "$install_prefix"/..
 
 # v-- if you download a release archive, you can't run the tests (it uses subtree to a different repo to grab the test data)
-git clone --recursive --branch "${package_version}" https://github.com/MRtrix3/mrtrix3.git "${install_prefix##*/}"
+git clone --recursive --branch "${package_version}" https://github.com/MRtrix3/mrtrix3.git "$install_prefix"
 cd "$install_prefix"
 python configure -nogui
 python build
