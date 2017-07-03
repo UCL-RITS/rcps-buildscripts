@@ -54,7 +54,14 @@ _build() {
     --toolkitpath=$install_prefix \
     --samples \
     --samplespath=$install_prefix 
-  ./$actual_file_name2
+  ./$actual_file_name2 \
+    --silent \
+    --verbose \
+    --tmpdir=$build_dir \
+    --toolkit \
+    --toolkitpath=$install_prefix \
+    --samples \
+    --samplespath=$install_prefix 
   echo "Installed to: $install_prefix"
 }
 
