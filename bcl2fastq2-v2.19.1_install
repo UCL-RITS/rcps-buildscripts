@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bcl2fastq2 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-bcl2fastq2}
+VERSION=${VERSION:-v2.19.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-baba7a02767fd868e87cb36781d2be26}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://webdata2:*password*@ussd-ftp.illumina.com/downloads/software/bcl2fastq/bcl2fastq2-${VERSION}-tar.zip}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip bcl2fastq2-${VERSION}-tar.zip
+  tar xvf bcl2fastq2-${VERSION}.403.tar.gz
+  cd bcl2fastq
+  mkdir build
+  cd build
+  ../src/configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
