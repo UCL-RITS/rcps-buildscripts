@@ -6,6 +6,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SHA256=${SHA256:-4c19c8076b95d01ac298982cfc3e1b5f60611fb6cf4175689aef2f350c5e23bf}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://qe-forge.org/gf/download/frsrelease//240/1075/qe-${VERSION}.tar.gz}
 BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
+COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp model strict"}
 
 set -o errexit -o nounset
 
@@ -35,10 +36,10 @@ then
   export CPATH=$MKLROOT/include/fftw:$CPATH
 
   # QE doesn't really seem to *get* how prefixes should work
-  ./configure --prefix=${INSTALL_PREFIX} --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  ./configure --prefix=${INSTALL_PREFIX} FFLAGS=$COMPILE_FLAGS --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
   
   make all w90 want west couple gui 2>&1 | tee make.log
-  make test-suite
+  make test-suite 2>&1 | tee test.log
   make install 
 
   # need to copy the whole PWgui directory into the install location
