@@ -41,7 +41,7 @@ then
   export CPATH=$MKLROOT/include/fftw:$CPATH
 
   # QE doesn't really seem to *get* how prefixes should work
-  ./configure --prefix=${INSTALL_PREFIX} FFLAGS=$COMPILE_FLAGS --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  ./configure --prefix=${INSTALL_PREFIX} FFLAGS="${COMPILE_FLAGS}" --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
   
   make all w90 want west couple gui 2>&1 | tee make.log
   if [ "$RUN_TESTS" == "yes" ]
