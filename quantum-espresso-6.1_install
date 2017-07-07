@@ -52,9 +52,9 @@ then
   make install 
 
   # need to copy the whole PWgui directory into the install location
-  #pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
-  #cp -r $pwguidir $INSTALL_PREFIX
-  #cp $pwguidir/pwgui $install_prefix/bin 
+  pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
+  cp -r $pwguidir $INSTALL_PREFIX
+  cp $pwguidir/pwgui $install_prefix/bin 
 
   echo "Installed to: $INSTALL_PREFIX"
 
