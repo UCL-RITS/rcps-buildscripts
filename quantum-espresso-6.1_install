@@ -20,8 +20,8 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 prereq gcc-libs
-prereq compilers/intel/2017/update1
-prereq mpi/intel/2017/update1/intel
+prereq compilers/intel
+prereq mpi/intel
 
 cd $BUILD_DIR
 echo "Starting to build in: $BUILD_DIR"
