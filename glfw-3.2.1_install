@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-glfw}
+VERSION=${VERSION:-3.2.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-91b8250b6edcc26c9f5205555070a504}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/glfw/glfw/releases/download/${VERSION}/glfw-${VERSION}.zip}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON
+make
+make install
