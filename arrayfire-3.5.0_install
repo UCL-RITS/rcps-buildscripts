@@ -30,7 +30,7 @@ git checkout v${VERSION}
 
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_NON_FREE=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so -DGLFW_INCLUDE_PATH=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2/include -DGLFW_LIBRARY=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2/lib/libglfw.so
+cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_NON_FREE=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so -DGLFW_INCLUDE_DIR=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2/include -DGLFW_LIBRARIES=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2/lib
 
 make
 make install
