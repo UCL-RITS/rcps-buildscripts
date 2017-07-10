@@ -29,5 +29,12 @@ md5sum -c <<< "$MD5 $archive"
 unzip $archive
 
 cd FreeImage
+
+# Fix root requirement.
+
+sed -i 's|-o root -g wheel| |g' Makefile.*
+sed -i 's|-o root -g root| |g' Makefile.*
+
+
 make
 make DESTDIR=${INSTALL_PREFIX} install
