@@ -28,6 +28,6 @@ md5sum -c <<< "$MD5 $archive"
 
 unzip $archive
 
-cd ${NAME}-${VERSION}
+cd FreeImage
 make
 make DESTDIR=${INSTALL_PREFIX} install
