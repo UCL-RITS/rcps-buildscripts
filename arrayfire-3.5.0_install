@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ArrayFire
+#
+# by Owain Kenway, 2017
+#
+
+# NOTE: Due to nVidia trying to get you to avoid openCL, must be built on a 
+# node with the nVidia *drivers*.
+
+NAME=${NAME:-arrayfire}
+VERSION=${VERSION:-3.5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/cuda-8.061}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/arrayfire/arrayfire.git}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+# Clone and switch to our chosen version's tag.
+git clone $SRC_ARCHIVE
+cd arrayfire
+git checkout v${VERSION}
+
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_NON_FREE=ON -DBUILD_EXAMPLES=ON
+
+make
+make install
