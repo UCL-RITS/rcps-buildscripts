@@ -9,6 +9,17 @@
 # NOTE: Due to nVidia trying to get you to avoid openCL, must be built on a 
 # node with the nVidia *drivers*.
 
+#prereq gcc-libs/4.9.2
+#prereq glfw/3.2.1/gnu-4.9.2
+#prereq llvm/3.9.1
+#prereq mesa/13.0.6/gnu-4.9.2
+#prereq freeimage/3.17.0/gnu-4.9.2
+#prereq python/3.5.2
+#prereq boost/1_63_0/gnu-4.9.2
+#prereq cuda/8.0.61-patch2/gnu-4.9.2
+#prereq glbinding/2.1.2/gnu-4.9.2
+#prereq forge/1.0.0
+
 NAME=${NAME:-arrayfire}
 VERSION=${VERSION:-3.5.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/cuda-8.061}
@@ -33,7 +44,8 @@ export GLFW_DIR=$GLFW_ROOT
 
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so 
+cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so -DUSE_SYSTEM_FORGE=ON -DUSE_SYSTEM_GLBINDING=ON
+
 
 make
 make install
