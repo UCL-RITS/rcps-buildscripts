@@ -42,7 +42,8 @@ cd build
 export GLFW_ROOT=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2
 export GLFW_DIR=$GLFW_ROOT
 
-cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DGLFW_INCLUDE_DIR=${GLFW_DIR}/include -DGLFW_LIBRARY=${GLFW_DIR}/lib/libglfw.so -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so 
+
 
 make
 make install
