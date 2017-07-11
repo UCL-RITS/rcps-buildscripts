@@ -34,4 +34,6 @@ patch < xmalloc.c.patch
 
 make 
 make sc.1 psc.1
+
+mkdir -p $INSTALL_PREFIX
 make prefix=${INSTALL_PREFIX} MANDIR="${INSTALL_PREFIX}/share/man/man1" install 
