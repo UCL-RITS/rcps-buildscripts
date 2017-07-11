@@ -6,6 +6,11 @@
 # by Owain Kenway, 2017
 #
 
+# Modules:
+# glfw/3.2.1/gnu-4.9.2
+# llvm/3.9.1
+# mesa/13.0.6/gnu-4.9.2
+
 NAME=${NAME:-glbinding}
 VERSION=${VERSION:-2.1.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
@@ -31,6 +36,11 @@ tar -xvf $archive
 cd ${NAME}-${VERSION}
 mkdir build
 cd build
+
+export GLFW_ROOT=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2
+export GLFW_DIR=$GLFW_ROOT
+
+
 cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_TESTS=OFF
 
 make
