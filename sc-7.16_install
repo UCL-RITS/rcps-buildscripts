@@ -29,6 +29,7 @@ md5sum -c <<< "$MD5 $archive"
 tar -xvf $archive
 
 cd ${NAME}-${VERSION}
-make
-make sc.1 psc.1
+sed -i "s|extern char     *malloc();||g" xmalloc.c
+make sc
+make sc.1 
 make prefix=${INSTALL_PREFIX} MANDIR="${INSTALL_PREFIX}/share/man/man1" install 
