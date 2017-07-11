@@ -43,6 +43,7 @@ git checkout v${VERSION}
 
 export GLFW_ROOT=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2
 export GLFW_DIR=$GLFW_ROOT
+export OPENCL_ROOT=/shared/ucl/apps/cuda/8.0.61/gnu-4.9.2
 
 mkdir build
 cd build
