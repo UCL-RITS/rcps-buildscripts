@@ -36,5 +36,6 @@ make
 make sc.1 psc.1
 
 mkdir -p $INSTALL_PREFIX/bin
+mkdir -p $INSTALL_PREFIX/lib
 mkdir -p $INSTALL_PREFIX/share/man/man1
 make prefix=${INSTALL_PREFIX} MANDIR="${INSTALL_PREFIX}/share/man/man1" install 
