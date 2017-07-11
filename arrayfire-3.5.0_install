@@ -19,6 +19,8 @@
 #prereq cuda/8.0.61-patch2/gnu-4.9.2
 #prereq glbinding/2.1.2/gnu-4.9.2
 #prereq forge/1.0.0
+#prereq openblas/0.2.14/gnu-4.9.2
+#prereq fftw/3.3.6-pl2/gnu-4.9.2
 
 NAME=${NAME:-arrayfire}
 VERSION=${VERSION:-3.5.0}
