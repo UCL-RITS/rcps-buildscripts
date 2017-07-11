@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-sc}
+VERSION=${VERSION:-7.16}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-1db636e9b2dc7cd73c40aeece6852d47}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.ibiblio.org/pub/Linux/apps/financial/spreadsheet/sc-${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+make
+make sc.1 psc.1
+make prefix=${INSTALL_PREFIX} MANDIR="${INSTALL_PREFIX}/share/man/man1" install 
