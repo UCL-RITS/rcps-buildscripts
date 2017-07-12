@@ -49,5 +49,5 @@ mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so -DUSE_SYSTEM_FORGE=ON -DUSE_SYSTEM_GLBINDING=ON -DOPENCL_INCLUDE_DIRS=${OpenCL_INCLUDE_DIR}
 
-make
+make -j 12
 make install
