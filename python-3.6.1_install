@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Python
+#
+
+package_name="python"
+package_version="3.6.1"
+SHA=${SHA:=91d880a2a9fcfc6753cbfa132bf47a47e17e7b16}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.python.org/ftp/python/${package_version}/Python-${package_version}.tar.xz}
+
+set -e
+
+source includes/source_includes.sh
+ 
+module purge
+require  gcc-libs
+require  compilers/gnu
+
+make_build_env
+
+export PATH="$install_prefix/bin:$PATH"
+export LD_LIBRARY_PATH="$install_prefix/lib:$LD_LIBRARY_PATH"
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+
+manifest \
+    "sha1:$SHA" "Python-${package_version}.tar.xz" 
+
+tar -xf "Python-${package_version}.tar.xz"
+
+cd "Python-${package_version}"
+./configure --prefix="$install_prefix" \
+            --enable-shared \
+            --with-threads \
+            --enable-ipv6 \
+            --with-ensurepip
+
+make -l "$(nproc)" -j && make install
+pip3 install --upgrade pip
+pip3 install virtualenv
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -c python \
+    -r gcc-libs \
+    -p "$install_prefix" \
+    -w "Adds Python 3.5.2 with pip and virtualenv to your environment variables." 
+
+chmod -R a+rX "$module_dir"
+echo "Modules in: $module_dir/$package_label"
