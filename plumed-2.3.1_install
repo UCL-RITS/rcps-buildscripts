@@ -56,6 +56,9 @@ then
     ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90
   fi
 
+# Turn on Crystallization module
+  touch src/crystallization.on
+
   make 2>&1 | tee make.log
   make install
   
