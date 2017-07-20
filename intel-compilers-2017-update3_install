@@ -5,7 +5,7 @@ set \
 
 source includes/source_includes.sh
 
-package_name="intel-compilers"
+package_name="intel"
 package_version="2017.Update3"
 package_description="This is the package for the Intel C, C++, and Fortran compilers."
 
@@ -27,12 +27,13 @@ fi
 #  which is too big for /dev/shm and too big for /tmp
 # (I don't know how *much* more yet)
 mkdir -p "$HOME/temporary-intel-dirs"
-INSTALL_PREFIX="/shared/ucl/apps/intel/$package_version"
+unset COMPILER_TAG
 make_build_env "$package_name" "$HOME/temporary-intel-dirs"
 
 # Package label is set by make_build_env but we need to override it
-#  (if we didn't, the label would include the gcc compiler tag)
+#  (to include the compilers top-level)
 package_label="compilers/intel/$package_version"
+
 
 cd "$build_dir"
 
