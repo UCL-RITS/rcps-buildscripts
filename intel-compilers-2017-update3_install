@@ -27,6 +27,7 @@ fi
 #  which is too big for /dev/shm and too big for /tmp
 # (I don't know how *much* more yet)
 mkdir -p "$HOME/temporary-intel-dirs"
+INSTALL_PREFIX="/shared/ucl/apps/intel/$package_version"
 make_build_env "$package_name" "$HOME/temporary-intel-dirs"
 
 # Package label is set by make_build_env but we need to override it
