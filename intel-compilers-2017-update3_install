@@ -26,6 +26,7 @@ fi
 # At peak, this uses more than 12 GB of storage during the install
 #  which is too big for /dev/shm and too big for /tmp
 # (I don't know how *much* more yet)
+mkdir -p "$HOME/temporary-intel-dirs"
 make_build_env "$package_name" "$HOME/temporary-intel-dirs"
 
 # Package label is set by make_build_env but we need to override it
