@@ -38,7 +38,7 @@ package_label="compilers/intel/$package_version"
 cd "$build_dir"
 
 cp "/shared/ucl/apps/pkg-store/$src_file" ./
-manifest sha1:098d2bca573658524b5bfc79bc664c074c700d6b l_psxe_2017.3.053.tgz
+manifest sha1:9e219e9b2755069dfa5904be813d8d6253da5535 l_psxe_2017.3.053.tgz
 
 tar -xf "$src_file"
 
