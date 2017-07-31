@@ -13,7 +13,7 @@ VERSION=${VERSION:-4_1}
 TYPE=${TYPE:-popt}
 ARCH=${ARCH:-UCL-x86-64-gfortran}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
 
 set -e
