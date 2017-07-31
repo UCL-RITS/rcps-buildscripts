@@ -9,8 +9,8 @@ LD         = mpif90
 AR         = ar -r
 ACML_INC   = /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/include
 ACML_LIB   = /shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib
-FFTW_INC   = /shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/include
-FFTW_LIB   = /shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib
+FFTW_INC   = /shared/ucl/apps/fftw/3.3.4-threads/gnu-4.9.2/include
+FFTW_LIB   = /shared/ucl/apps/fftw/3.3.4-threads/gnu-4.9.2/lib
 LIBINT_INC = /shared/ucl/apps/libint/1.1.4/gnu-4.9.2/include
 LIBINT_LIB = /shared/ucl/apps/libint/1.1.4/gnu-4.9.2/lib
 LIBXC_INC  = /shared/ucl/apps/libxc/2.2.2/gnu-4.9.2/include
@@ -27,4 +27,4 @@ FCFLAGS    = $(DFLAGS) -pthread -O2 -ffree-form -ffree-line-length-none\
              -mtune=native\
              -I$(ACML_INC) -I$(FFTW_INC)  -I$(LIBINT_INC) -I$(LIBXC_INC) -I$(QUIP_INC) 
 LDFLAGS    = $(FCFLAGS) -pthread -static-libgfortran 
-LIBS       = $(SMM_LIB) $(QUIP_LIB)/libquip.a $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a 
+LIBS       = $(SMM_LIB) $(QUIP_LIB)/libquip.a $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3_threads.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a 
