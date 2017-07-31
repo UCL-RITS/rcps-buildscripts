@@ -19,7 +19,7 @@ mkdir -p /dev/shm/${NAME}
 temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
-
+wget "${SRC_ARCHIVE}"
 archive=$(basename "${SRC_ARCHIVE}")
 
 sha256sum -c <<< "$SHA256 $archive"
