@@ -21,9 +21,9 @@ git clone --recursive $SRC_ARCHIVE
 #VERSION=${VERSION:-`git rev-parse --short HEAD`}
 VERSION=${VERSION:-18c5440}
 
-git checkout $VERSION
 
 cd QUIP
+git checkout $VERSION
 
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}-threads}
 
