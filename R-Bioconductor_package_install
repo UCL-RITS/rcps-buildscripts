@@ -27,8 +27,8 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-# require r/recommended
-require r/new
+require r/recommended
+# require r/new
 
 if [ $# -ne 1 ]; then
 	echo "usage: R-package_install <R package name>"
