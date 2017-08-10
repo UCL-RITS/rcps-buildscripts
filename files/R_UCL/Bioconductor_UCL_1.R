@@ -191,6 +191,10 @@ biocLite (pkgs="copynumber", type="source", lib=mainLib);
 biocLite (pkgs="goseq", type="source", lib=mainLib);
 biocLite (pkgs="missMethyl", type="source", lib=dbLib);
 
+# For Evgeny Galimov (e.galimov@ucl.ac.uk) - added Aug 2017
+
+biocLite (pkgs="DEXSeq", type="source", lib=mainLib);
+
 # End of Bioconductor_UCL_1
 
 # biocLite (pkgs="XXX", type="source", lib=mainLib);
