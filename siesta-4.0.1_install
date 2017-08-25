@@ -42,7 +42,7 @@ then
   cd ${NAME}-${VERSION}/Obj
 
   ../Src/obj_setup.sh
-  cp $ARCH_FILE .
+  cp $ARCH_FILE arch.make
   make
 
   echo "Installed to: $INSTALL_PREFIX"
