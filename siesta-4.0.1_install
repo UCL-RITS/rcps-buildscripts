@@ -51,4 +51,4 @@ else
   echo "Hash mismatch."
   echo "Expected: $MD5"
   echo "Got: $CHECKSUM"
-
+fi
