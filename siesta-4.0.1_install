@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#
+# SIESTA with Intel compiler, MPI and MKL
+#
+
+NAME=${NAME:-siesta}
+VERSION=${VERSION:-4.0.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-5cb60ce068f2f6e84fa9184ffca94c08}
+# Get the major-minor version number
+shortversion=$(echo "$osv" | awk -F. 'BEGIN{OFS="."}{print $1,$2}')
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://launchpad.net/${NAME}/${shortversion}/${VERSION}/+download/${NAME}-${VERSION}.tar.gz}
+DOWNLOAD_DIR=${DOWNLOAD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}_dl.XXXXXXXX)}
+ARCH_FILE=${ARCH_FILE:-/shared/ucl/apps/build_scripts/files/siesta_4.0.1_arch.make}
+
+set -o errexit -o nounset
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/intel
+prereq mpi/intel
+
+cd $DOWNLOAD_DIR
+wget $SRC_ARCHIVE
+
+echo "Downloaded to: $DOWNLOAD_DIR"
+
+wget $SRC_ARCHIVE
+archive=$(basename "$SRC_ARCHIVE")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xvf ${DOWNLOAD_DIR}/$archive
+  # This is provided as a build directory
+  cd ${NAME}-${VERSION}/Obj
+
+  ../Src/obj_setup.sh
+  cp $ARCH_FILE .
+  make
+
+  echo "Installed to: $INSTALL_PREFIX"
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+
