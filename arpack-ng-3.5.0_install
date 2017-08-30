@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+source includes/source_includes.sh
+
+package_name="arpack-ng"
+package_version="3.5.0"
+src_urls="https://github.com/opencollab/arpack-ng/archive/${package_version}.tar.gz"
+# Optional: 
+# package_variant=""
+package_description="ARPACK-NG is a collection of Fortran77 subroutines designed to solve large scale eigenvalue problems."
+
+actual_file_name=${package_version}.tar.gz
+actual_file_md5=9762c9ae6d739a9e040f8201b1578874
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2017
+require mpi/intel/2017
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+}
+
+_setup_files() {
+  basename=$(tar -tf $actual_file_name | head -n 1 | sed -e 's_/__')
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd ${basename}
+  ./bootstrap
+  ./configure \
+      --with-blas=-mkl \
+      --with-lapack=-mkl \
+      --enable-mpi \
+      --prefix="$install_prefix"
+  make
+  make check
+  make install
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p "$install_prefix" \
+              -c "${package_name}" \
+              -r "gcc-libs/4.9.2" \
+              -r "compilers/intel/2017" \
+              -r "mpi/intel/2017" \
+              -o "$module_dir/$package_label" \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
