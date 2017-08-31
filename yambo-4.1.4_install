@@ -52,6 +52,7 @@ _build() {
 _post_build() {
     cd "$unpack_dir"
     #make install
+    mkdir -p "$install_prefix"
     cp -r bin doc "$install_prefix"/
     make_module \
         -o "${module_dir}/${package_label}" \
