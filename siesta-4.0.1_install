@@ -45,6 +45,12 @@ then
   ../Src/obj_setup.sh
   cp $ARCH_FILE arch.make
   make
+  echo "Main SIESTA build completed"
+
+  # Build as many utils as possible
+  echo "Building utils"
+  cd ../Util
+  ./build_all.sh
 
   echo "Installed to: $INSTALL_PREFIX"
 
