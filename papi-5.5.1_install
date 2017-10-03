@@ -33,7 +33,11 @@ _file_setup() {
 _pre_build() {
     cd "$build_dir/$unpack_dir/src"
 
-    ./configure --prefix="$install_prefix" --with-shared-lib=yes --with-static-lib=yes
+    ./configure \
+        --prefix="$install_prefix" \
+        --with-shared-lib=yes \
+        --with-static-lib=yes \
+        --with-components="appio coretemp infiniband net lustre"
 
     cd "$owd"
 }
