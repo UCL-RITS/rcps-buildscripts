@@ -10,6 +10,7 @@ MD5=${MD5:-4ec7147562cc5d63b1790019064cd723}
 
 set -e
 startDir=`pwd`
+mkdir -p /dev/shm/Gurobi
 temp_dir=`mktemp -d -p /dev/shm/Gurobi`
 
 cd $temp_dir
