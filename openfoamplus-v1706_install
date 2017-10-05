@@ -42,6 +42,8 @@ source OpenFOAM-${VERSION}/etc/bashrc
 # Right - build third party stuff
 
 cd $WM_THIRD_PARTY_DIR
+
+./makeQT
 ./makeParaView
 
 export cgal_version=CGAL-4.9
