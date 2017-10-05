@@ -10,10 +10,10 @@ NAME=${NAME:-openfoamplus}
 VERSION=${VERSION:-v1706}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-630d30770f7b54d6809efbf94b7d7c8f}
-3PMD5=${MD5:-630d30770f7b54d6809efbf94b7d7c8f}
+TPMD5=${MD5:-630d30770f7b54d6809efbf94b7d7c8f}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/OpenFOAM-${VERSION}.tgz}
-3PSRC_ARCHIVE=${3PSRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/ThirdParty-${VERSION}.tgz}
+TPSRC_ARCHIVE=${TPSRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/ThirdParty-${VERSION}.tgz}
 
 set -e
 
@@ -23,13 +23,13 @@ cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
-3parchive=$(basename "${3PSRC_ARCHIVE}")
+tparchive=$(basename "${TPSRC_ARCHIVE}")
 
 md5sum -c <<< "$MD5 $archive"
-md5sum -c <<< "$3PMD5 $3parchive"
+md5sum -c <<< "$TPMD5 $tparchive"
 
 tar -xvf $archive
-tar -xvf $3parchive
+tar -xvf $tparchive
 
 sed -i.bak "s|FOAM_INST_DIR=\$HOME/\$WM_PROJECT|FOAM_INST_DIR=${INSTALL_PREFIX}\$WM_PROJECT|g" OpenFOAM-${VERSION}/etc/bashrc
 
