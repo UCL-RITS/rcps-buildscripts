@@ -10,7 +10,7 @@ NAME=${NAME:-openfoamplus}
 VERSION=${VERSION:-v1706}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-630d30770f7b54d6809efbf94b7d7c8f}
-TPMD5=${MD5:-630d30770f7b54d6809efbf94b7d7c8f}
+TPMD5=${MD5:-003d38fe3f97ccaa291bafbf94c768eb}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/OpenFOAM-${VERSION}.tgz}
 TPSRC_ARCHIVE=${TPSRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/ThirdParty-${VERSION}.tgz}
