@@ -17,11 +17,15 @@ TPSRC_ARCHIVE=${TPSRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/fil
 
 set -e
 
+rm -rf $INSTALL_PREFIX
+
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
+wget $TPSRC_ARCHIVE
+
 archive=$(basename "${SRC_ARCHIVE}")
 tparchive=$(basename "${TPSRC_ARCHIVE}")
 
