@@ -55,5 +55,5 @@ export boost_version=boost_1_62_0
 
 cd $WM_PROJECT_DIR
 foamSystemCheck
-foam
+
 ./Allwmake
