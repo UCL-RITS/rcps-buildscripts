@@ -37,6 +37,12 @@ tar -xvf $tparchive
 
 sed -i.bak "s|FOAM_INST_DIR=\$HOME/\$WM_PROJECT|FOAM_INST_DIR=${INSTALL_PREFIX}\$WM_PROJECT|g" OpenFOAM-${VERSION}/etc/bashrc
 
+# Fix for Intel compilers.
+if [ "${COMPILER_TAG:0:5}" == "intel" ]
+then
+  sed -i.bak2 "s|export WM_COMPILER=Gcc|export WM_COMPILER=Icc|g" OpenFOAM-${VERSION}/etc/bashrc
+fi
+
 source OpenFOAM-${VERSION}/etc/bashrc
 
 # Right - build third party stuff
