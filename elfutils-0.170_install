@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="elfutils"
+package_version="0.170"
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require  gcc-libs
+    require  compilers/gnu
+
+    make_build_env ""
+
+    unpack_dir="elfutils-${package_version}"
+    package_file="${unpack_dir}.tar.bz2"
+    package_url="https://sourceware.org/elfutils/ftp/${package_version}/${package_file}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:aca0b5e271138eaf86e36505ffb101181207b151e833e6cd7c18986ac50678542a5ecd2250f8dd6923ca497142f197c8b08fd225e4130b16b6203c24013d6d28 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" 
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+    make check 
+    make install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c libelf \
+        -c elfutils \
+        -w "Adds elfutils ${package_version} to your environment. Elfutils provides utilities for manipulating binary ELF files, and is one possible provider of libelf." \
+        -r gcc-libs 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
