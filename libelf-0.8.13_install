@@ -56,6 +56,7 @@ _install() {
               -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
+              -c "elfutils" \
               -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}/${COMPILER_TAG} \
               -w "Adds libelf 0.8.13 to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
