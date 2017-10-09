@@ -45,19 +45,8 @@ fi
 
 source OpenFOAM-${VERSION}/etc/bashrc
 
-# Right - build third party stuff
-
-#cd $WM_THIRD_PARTY_DIR
-
-#./makeQt
-#./makeParaView
-
 export cgal_version=CGAL-4.9
 export boost_version=boost_1_62_0
-
-#cd ..
-
-# OpenFOAM
 
 cd $WM_PROJECT_DIR
 foamSystemCheck
