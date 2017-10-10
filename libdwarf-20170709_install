@@ -12,7 +12,7 @@ _env_setup() {
     module purge
     require  gcc-libs
     require  compilers/gnu
-    require  elfutils
+    require  elfutils # Note, not needed in module 
 
     make_build_env ""
 
