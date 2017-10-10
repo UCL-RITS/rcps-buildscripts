@@ -10,12 +10,12 @@ python-Levenshtein
 pandas
 ephem
 networkx
-pysam=0.12.0
+pysam==0.12.0
+pysamstats
 obspy
 cvxopt
 cutadapt
 lxml
-pysamstats
 astropy
 pyspglib
 scikit-learn
