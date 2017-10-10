@@ -10,7 +10,7 @@ python-Levenshtein
 pandas
 ephem
 networkx
-pysam==0.9.1
+pysam
 obspy
 cvxopt
 cutadapt
@@ -25,3 +25,8 @@ Pmw
 ipython
 tabulate
 sshpubkeys
+appdirs
+rply
+astor
+clint
+hy
