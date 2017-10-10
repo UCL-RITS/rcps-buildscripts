@@ -12,7 +12,7 @@ PYTHON_VERSION=${PYTHON_VERSION:-3}
 TIME_STAMP=`date +"%s"`
 
 # Disable wheels for some packages
-PIPNOBIN=${PIPNOBIN:-numpy,scipy,cvxopt}
+PIPNOBIN=${PIPNOBIN:-numpy,scipy}
 
 set -e
 
@@ -38,19 +38,19 @@ source venv/bin/activate
 LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 
-CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
-CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
-CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
-CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
+#CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
+#CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
+#CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
+#CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
 
 
 export LAPACK
 export BLAS
 
-export CVXOPT_BLAS_LIB_DIR
-export CVXOPT_BLAS_LIB
-export CVXOPT_LAPACK_LIB_DIR
-export CVXOPT_LAPACK_LIB
+#export CVXOPT_BLAS_LIB_DIR
+#export CVXOPT_BLAS_LIB
+#export CVXOPT_LAPACK_LIB_DIR
+#export CVXOPT_LAPACK_LIB
 
 pip3 install --upgrade pip
 
