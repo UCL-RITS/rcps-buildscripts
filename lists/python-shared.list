@@ -1,3 +1,5 @@
+pysam
+pysamstats
 requests
 nose
 numpy
@@ -10,8 +12,6 @@ python-Levenshtein
 pandas
 ephem
 networkx
-pysam==0.11.2
-pysamstats
 obspy
 cvxopt
 cutadapt
