@@ -28,7 +28,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   unzip $archive
   cd ${NAME}-${VERSION}
-  python setup.py install --prefix=$INSTALL_PREFIX
+  python3 setup.py install --prefix=$INSTALL_PREFIX
 
 else
   echo "Hash mismatch."
