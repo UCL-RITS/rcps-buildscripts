@@ -18,9 +18,9 @@
 # to prove to us they have read and agreed to license.
 
 APPNAME=${APPNAME:-gatk}
-VERSION=${VERSION:-3.4-46}
+VERSION=${VERSION:-3.8-0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gatk/sources/GenomeAnalysisTK-3.4-46.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gatk/sources/GenomeAnalysisTK-${VERSION}.tar.bz2}
 GATK_GROUP=${GATK_GROUP:-leggatk}
 
 set -e
