@@ -33,7 +33,7 @@ tar jxvf $SRC_ARCHIVE
 if [ ! -f $INSTALL_PREFIX/GenomeAnalysisTK.jar ]; then
    echo "The Developers have packaged the jar file in a sub-dir for reasons."
    echo -n "Locating..."
-   gatk_silly_location= `find . -name GenomeAnalysisTK.jar`
+   gatk_silly_location=`find . -name GenomeAnalysisTK.jar`
    # should exit here if it fails thanks to -e
    echo "Found: ${gatk_silly_location}"
    echo -n "Correcting..."
