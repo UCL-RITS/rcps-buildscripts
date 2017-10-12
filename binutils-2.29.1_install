@@ -34,7 +34,7 @@ _file_setup() {
 _pre_build() {
     cd "$build_dir/$unpack_dir/"
 
-    ./configure --prefix="$install_prefix" --enable-shared --disable-gold --disable-ld
+    ./configure --prefix="$install_prefix" --enable-shared --disable-gold --disable-ld --enable-install-libiberty
 
     cd "$owd"
 }
@@ -53,6 +53,12 @@ _post_build() {
     make check 
 
     make install
+
+    # If these become the first in the path, they break gcc
+    #  and cause errors like:
+    # /usr/bin/ld: /tmp/cc7A0CW5.o: access beyond end of merged section (479)
+    mv "$install_prefix/bin/as" "$install_prefix/bin/as.x"
+    mv "$install_prefix/x86_64-pc-linux-gnu/bin/as" "$install_prefix/x86_64-pc-linux-gnu/bin/as.x"
 
     make_module \
         -o "${module_dir}/${package_label}" \
