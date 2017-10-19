@@ -39,6 +39,9 @@ then
   # patch systemvars after above copy
   #patch -p0 -i fsl-5.0.9_systemvars.patch
 
+  sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+
   ./build
 
   mkdir -p $INSTALL_PREFIX
