@@ -15,7 +15,8 @@ PATCHES=${PATCHES:-/shared/ucl/apps/build_scripts/fsl-patches}
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/fsl
+temp_dir=`mktemp -d -p /dev/shm/fsl`
 
 cd $temp_dir
 
