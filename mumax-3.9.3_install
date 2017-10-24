@@ -31,9 +31,9 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-mkdir -p $GOPATH/src/github.com/mumax/3/cmd
+mkdir -p $GOPATH/src/github.com/mumax/3
 
-mv 3-${VERSION} $GOPATH/src/github.com/mumax/3/cmd/mumax3
+mv 3-${VERSION} $GOPATH/src/github.com/mumax/3
 
 cd $GOPATH/src/github.com/mumax/3/cmd/mumax3
 go install
