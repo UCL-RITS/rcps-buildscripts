@@ -31,7 +31,7 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-mkdir -p $GOPATH/src/github.com/mumax/3
+mkdir -p $GOPATH/src/github.com/mumax/
 
 mv 3-${VERSION} $GOPATH/src/github.com/mumax/3
 
