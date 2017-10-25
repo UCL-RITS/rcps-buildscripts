@@ -98,6 +98,7 @@ make_build_env () {
     local prod_apps_dir
 
     prod_apps_dir="/shared/ucl/apps"
+    service_user="ccspapp"
 
     if [[ -n "$1" ]]; then
         prefix="$1"
@@ -129,6 +130,13 @@ make_build_env () {
     fi
 
     if [[ -n "$IS_TEST_RUN" ]]; then
+        reason_for_test_install="IS_TEST_RUN was set"
+    elif [[ "$LOGNAME" != "$service_user" ]]; then
+        reason_for_test_install="current user is not service user"
+    fi
+    
+    if [[ -n "$reason_for_test_install" ]]; then
+        echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
         install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
     else
         install_prefix="${INSTALL_PREFIX:-${prod_apps_dir}/${package_label}}"
