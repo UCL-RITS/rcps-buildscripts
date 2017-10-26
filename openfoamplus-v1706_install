@@ -49,6 +49,9 @@ export cgal_version=CGAL-4.9
 export boost_version=boost_1_62_0
 
 cd ThirdParty-v1706/scotch_6.0.3/src
+
+ln -s ../../etc/wmakeFiles/scotch/Makefile.inc.i686_pc_linux2.shlib-OpenFOAM Makefile.inc
+
 make scotch
 
 export LD_LIBRARY_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/lib:LD_LIBRARY_PATH
