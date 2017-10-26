@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="dimemas"
+package_version="5.3.3"
+package_description="Dimemas is an abstracted network simulator for message-passing programs."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+
+    # This is a binary distribution but there's no proper way to handle that at the moment
+    export COMPILER_TAG="bindist"
+    make_build_env ""
+
+    #unpack_dir="wx${package_name}-${package_version}-Linux_x86_64"
+    package_file="${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+    package_url="https://ftp.tools.bsc.es/${package_name}/${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:ecc67505d0b9d2f3a897022253361929e91f3312abb6997319bf86ca4ad83165a66bd0e3148f19ad789c9fa653d4e1ccc22b7750a7fe8b65c4c28a090390f79d ${package_file}
+
+}
+
+_install() {
+    mkdir -p "$install_prefix"
+    cd "$install_prefix"
+
+    tar --strip-components=1 -xf "$build_dir/$package_file"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_install
+_clean_up
+
