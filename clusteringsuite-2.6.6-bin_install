@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="clusteringsuite"
+package_version="2.6.6"
+package_description="Clustering Suite is a set of tools to automatically expose the main performance trends in applications' computation structure."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+
+    # This is a binary distribution but there's no proper way to handle that at the moment
+    export COMPILER_TAG="bindist"
+    make_build_env ""
+
+    package_file="${package_name}-${package_version}-linux_x86_64.tar.gz"
+    package_url="https://ftp.tools.bsc.es/${package_name}/${package_name}-${package_version}-linux_x86_64.tar.gz"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:94e7a3490ac28e14badb1b692719215c61d049adc2971ccd3b41de1c7483c6ec193ba821e5330b12b658d7d50c3cf39f80442a41c07daafd4a10713b65e3459e ${package_file}
+
+}
+
+_install() {
+    mkdir -p "$install_prefix"
+    cd "$install_prefix"
+
+    tar --strip-components=1 -xf "$build_dir/$package_file"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_install
+_clean_up
+
