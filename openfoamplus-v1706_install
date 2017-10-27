@@ -48,17 +48,17 @@ source OpenFOAM-${VERSION}/etc/bashrc
 export cgal_version=CGAL-4.9
 export boost_version=boost_1_62_0
 
-cd ThirdParty-v1706/scotch_6.0.3/src
+#cd ThirdParty-v1706/scotch_6.0.3/src
 
-ln -s ../../etc/wmakeFiles/scotch/Makefile.inc.i686_pc_linux2.shlib-OpenFOAM Makefile.inc
+#ln -s ../../etc/wmakeFiles/scotch/Makefile.inc.i686_pc_linux2.shlib-OpenFOAM Makefile.inc
 
-make scotch
+#make scotch
 
-export LD_LIBRARY_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/lib:LD_LIBRARY_PATH
-export PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/bin:$PATH
-export INCLUDE_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/include:$INCLUDE_PATH
-export CPATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/include:$CPATH
-export CMAKE_PREFIX_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3:$CMAKE_PREFIX_PATH
+#export LD_LIBRARY_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/lib:LD_LIBRARY_PATH
+#export PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/bin:$PATH
+#export INCLUDE_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/include:$INCLUDE_PATH
+#export CPATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3/include:$CPATH
+#export CMAKE_PREFIX_PATH=$INSTALL_PREFIX/ThirdParty-v1706/scotch_6.0.3:$CMAKE_PREFIX_PATH
 
 
 cd $WM_PROJECT_DIR
