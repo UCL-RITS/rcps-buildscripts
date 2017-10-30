@@ -4,6 +4,7 @@
 # Install 5th batch of add on R packages for UCL R instllations.
 #
 # June 2016
+# Latest update October 2017
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -144,6 +145,9 @@ install.packages ("tmap", lib=mainLib, repos=repros);
 
 # For Lucia Conde (l.conde@ucl.ac.uk) May 2017
 install.packages ("rmarkdown", lib=mainLib, repos=repros);
+
+# For RStudio server Oct 2017
+install.packages ("tidyverse", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
