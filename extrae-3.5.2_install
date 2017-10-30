@@ -24,6 +24,7 @@ _env_setup() {
     require fftw/3.3.6-pl2/gnu-4.9.2
     require spectral/3.4.0/bindist 
     require clusteringsuite/2.6.6/bindist
+    require libxml2/2.9.4/gnu-4.9.2
 
     make_build_env ""
 
@@ -102,7 +103,8 @@ _post_build() {
         -r papi/5.5.1/gnu-4.9.2 \
         -r fftw/3.3.6-pl2/gnu-4.9.2 \
         -r spectral/3.4.0/bindist \
-        -r clusteringsuite/2.6.6/bindist
+        -r clusteringsuite/2.6.6/bindist \
+        -r libxml2
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"
