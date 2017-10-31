@@ -8,14 +8,14 @@
 set -e
 
 VERSION=${VERSION:-`python3 /shared/ucl/apps/build_scripts/files/pypiver.py iva`}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION/$PYTHON_VERSION_TAG}
 
 # Note, you need the following packages loaded to build this:
 dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 prereq compilers/gnu
-prereq python3
+prereq python3/$PYTHON_VERSION_TAG
 prereq kmc
 prereq mummer
 prereq trimmomatic
