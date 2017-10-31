@@ -8,7 +8,7 @@
 set -e
 
 VERSION=${VERSION:-`python3 /shared/ucl/apps/build_scripts/files/pypiver.py iva`}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION/$PYTHON_VERSION_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/iva/$VERSION/python$PYTHON_VERSION_TAG}
 
 # Note, you need the following packages loaded to build this:
 dirname=$(dirname $0 2>/dev/null)
