@@ -23,7 +23,7 @@ package_description="textract extracts text from a wide range of document types.
 VERSION=${VERSION:-$package_version}
 
 module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
-install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$package_version/python$PYTHON_VERSION_TAG}"
+install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$VERSION/python$PYTHON_VERSION_TAG}"
 
 pip install --prefix "$install_prefix" "$package_name==$VERSION"
 
