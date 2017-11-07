@@ -4,7 +4,6 @@ set -o errexit -o nounset
 for i in "${includes_dir:-$(dirname "$0" 2>/dev/null)/includes}"/{module_maker,require}_inc.sh; do source "$i"; done
 
 # Normally we'd put requirements after package info, but we need a Python module to get pip
-module purge
 require gcc-libs/4.9.2
 package_py=python/3.5.2
 PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG:-3.5}
