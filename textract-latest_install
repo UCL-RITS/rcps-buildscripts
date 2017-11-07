@@ -15,7 +15,7 @@ fi
 require $package_py
 
 package_name="textract"
-package_version="$( pip search textract | sed -n -e 's/^textract (\([0-9.]*\)) .*$/\1/p' )"
+package_version="$( pip3 search textract | sed -n -e 's/^textract (\([0-9.]*\)) .*$/\1/p' )"
 # ^-- gets current version number from pypi
 
 package_description="textract extracts text from a wide range of document types."
@@ -25,7 +25,7 @@ VERSION=${VERSION:-$package_version}
 module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
 install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$VERSION/python$PYTHON_VERSION_TAG}"
 
-pip install --prefix "$install_prefix" "$package_name==$VERSION"
+pip3 install --prefix "$install_prefix" "$package_name==$VERSION"
 
 make_module \
           -d \
