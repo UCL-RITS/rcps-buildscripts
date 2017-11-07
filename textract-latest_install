@@ -10,6 +10,7 @@ package_py=python/3.5.2
 PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG:-3.5}
 if [ $PYTHON_VERSION_TAG == "3.6" ] 
 then
+  echo "DETECTED PYTHON 3.6"
   package_py=python/3.6.3
 fi
 require $package_py
