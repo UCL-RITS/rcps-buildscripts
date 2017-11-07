@@ -7,7 +7,8 @@ for i in "${includes_dir:-$(dirname "$0" 2>/dev/null)/includes}"/{module_maker,r
 module purge
 require gcc-libs/4.9.2
 package_py=python/3.5.2
-if $[ $PYTHON_VERSION_TAG="3.6" ] then
+if $[ $PYTHON_VERSION_TAG="3.6" ] 
+then
   package_py=python/3.6.3
 fi
 require $package_py
