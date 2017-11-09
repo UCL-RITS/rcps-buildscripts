@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing 
+# Installing VMD (binary)
 #
 # by Owain Kenway, 2017
 #
 
-NAME=${NAME:-}
-VERSION=${VERSION:-}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-}
-SHA1=${SHA1:-}
-SHA256=${SHA256:-}
+NAME=${NAME:-vmd}
+VERSION=${VERSION:-1.9.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/text-only}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/vmd/source/vmd-$VERSION.bin.LINUXAMD64.text.tar.gz}
 
 set -e
 
@@ -23,17 +20,11 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
-archive=$(basename "${SRC_ARCHIVE}")
-
-md5sum -c <<< "$MD5 $archive"
-sha1sum -c <<< "$SHA1 $archive"
-sha256sum -c <<< "$SHA256 $archive"
-
-tar -xvf $archive
+tar -xvf $SRC_ARCHIVE
 
 cd ${NAME}-${VERSION}
+export VMDINSTALLBINDIR=$INSTALL_PREFIX/bin
+export VMDINSTALLLIBRARYDIR=$INSTALL_PREFIX/lib
 
-./configure --prefix=$INSTALL_PREFIX
-make 
+./configure 
 make install
