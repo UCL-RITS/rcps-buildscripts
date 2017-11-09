@@ -27,4 +27,5 @@ export VMDINSTALLBINDIR=$INSTALL_PREFIX/bin
 export VMDINSTALLLIBRARYDIR=$INSTALL_PREFIX/lib
 
 ./configure 
+cd src
 make install
