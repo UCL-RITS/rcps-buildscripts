@@ -1,9 +1,9 @@
 MKLROOT = /shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl
 MAKE = make
 F90 = mpif90
-F90_OPTS = -O3 -ip -openmp -I$(MKLROOT)/include
+F90_OPTS = -O3 -ip -qopenmp -I$(MKLROOT)/include
 F77 = mpif90
-F77_OPTS = -O3 -ip -openmp
+F77_OPTS = -O3 -ip -qopenmp
 AR = ar
 LIB_SYS =
 LIB_LPK = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm -openmp -lfftw3_threads -lfftw3
