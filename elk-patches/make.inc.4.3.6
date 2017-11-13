@@ -1,12 +1,12 @@
 MKLROOT = /shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl
 MAKE = make
 F90 = mpiifort
-F90_OPTS = -O3 -ip -qopenmp -fp-model strict -I$(MKLROOT)/include
+F90_OPTS = -O3 -ip -qopenmp -fp-model precise -fma -I$(MKLROOT)/include
 F77 = mpiifort
-F77_OPTS = -O3 -ip -qopenmp -fp-model strict 
+F77_OPTS = -O3 -ip -qopenmp -fp-model precise -fma
 AR = ar
 LIB_SYS =
-LIB_LPK = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm -qopenmp -fp-model strict 
+LIB_LPK = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm -qopenmp -fp-model precise -fma
 SRC_MPI =
 LIB_libxc = libxcf90.a libxc.a
 SRC_libxc = libxc_funcs.f90 libxc.f90 libxcifc.f90
