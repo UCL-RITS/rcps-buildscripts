@@ -32,7 +32,7 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 
-cp /shared/ucl/apps/buildscripts/elk-patches/make.inc.${VERSION} make.ink
+cp /shared/ucl/apps/build_scripts/elk-patches/make.inc.${VERSION} make.ink
 
 # Library fixing
 # This step is referenced in make.inc
