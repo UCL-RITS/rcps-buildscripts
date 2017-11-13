@@ -31,6 +31,7 @@ install.packages ("combinat", lib=mainLib, repos=repros);
 install.packages ("Formula", lib=mainLib, repos=repros);
 install.packages ("RColorBrewer", lib=mainLib, repos=repros);
 install.packages ("latticeExtra", lib=mainLib, repos=repros);
+install.packages ("shiny", lib=mainLib, repos=repros);
 install.packages ("Hmisc", lib=mainLib, repos=repros);
 
 
