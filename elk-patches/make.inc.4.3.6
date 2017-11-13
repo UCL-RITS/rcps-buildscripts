@@ -1,0 +1,17 @@
+MKLROOT = /shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl
+MAKE = make
+F90 = mpif90
+F90_OPTS = -O3 -ip -openmp -I$(MKLROOT)/include
+F77 = mpif90
+F77_OPTS = -O3 -ip -openmp
+AR = ar
+LIB_SYS =
+LIB_LPK = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm -openmp -lfftw3_threads -lfftw3
+SRC_MPI =
+LIB_libxc = libxcf90.a libxc.a
+SRC_libxc = libxc_funcs.f90 libxc.f90 libxcifc.f90
+SRC_FFT = zfftifc_fftw.f90
+
+# It's not clear whether we need mkl_dfti.f90 as the instructions are contradictory
+#SRC_FFT = mkl_dfti.f90 zfftifc_mkl.f90
+
