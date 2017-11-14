@@ -92,6 +92,7 @@ biocLite (pkgs="annmap", type="source", lib=mainLib);
 # For Adam Levine (a.levine@ucl.ac.uk) - added August 2013
 
 biocLite (pkgs="impute", type="source", lib=mainLib);
+install.packages ("WGCNA", lib=mainLib, repos=repros);
 
 # For Dr Gioia Altobelli g.altobelli@ucl.ac.uk - added Oct 2013 updated Mar 2014
 
