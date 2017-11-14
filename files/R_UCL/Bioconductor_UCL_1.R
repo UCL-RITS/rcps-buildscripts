@@ -176,6 +176,7 @@ biocLite (pkgs="wateRmelon", type="source", lib=mainLib);
 #
 # biocLite (pkgs="RPVM", type="source", lib=mainLib);
 
+install.packages ("ruv", lib=mainLib, repos=repros);
 biocLite (pkgs="ChAMP", type="source", lib=mainLib);
 
 # For Ana Paula Leite (ana.leite@ucl.ac.uk) - added June 2016
