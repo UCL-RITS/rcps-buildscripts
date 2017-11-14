@@ -52,7 +52,7 @@ install.packages ("dynamicTreeCut", lib=mainLib, repos=repros);
 install.packages ("flashClust", lib=mainLib, repos=repros);
 install.packages ("reshape", lib=mainLib, repos=repros);
 install.packages ("doParallel", lib=mainLib, repos=repros);
-install.packages ("WGCNA", lib=mainLib, repos=repros);
+# install.packages ("WGCNA", lib=mainLib, repos=repros);
 
 # For Dr Elsa Arcaute (e.arcaute@ucl.ac.uk) - added September 2013
 
