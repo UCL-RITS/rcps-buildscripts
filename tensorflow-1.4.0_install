@@ -10,7 +10,7 @@ NAME=${NAME:-tensorflow}
 VERSION=${VERSION:-1.4.0}
 TYPE=${TYPE:-cpu}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
-CONFIG_OPTS="--config=mkl --copt=\"-DEIGEN_USE_VML\" -c opt "
+CONFIG_OPTS="--config=mkl"
 if [ "$TYPE" == "gpu" ] 
 then
   CONFIG_OPTS="--config=cuda"
