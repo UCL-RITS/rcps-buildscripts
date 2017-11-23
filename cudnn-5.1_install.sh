@@ -18,4 +18,4 @@ set -e
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
-tar -xvf $archive
+tar -xvf $SRC_ARCHIVE
