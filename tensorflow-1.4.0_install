@@ -28,7 +28,7 @@ cd $temp_dir
 
 git clone $SRC_ARCHIVE
 cd tensorflow
-git checkout $VERSION
+git checkout v$VERSION
 
 ./configure
 bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package
