@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-1.4.0}
+TYPE=${TYPE:-cpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
+CONFIG_OPTS=""
+if [ "$TYPE" == "gpu" ] 
+then
+  CONFIG_OPTS="--config=cuda"
+fi
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tensorflow/tensorflow}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd tensorflow
+git checkout $VERSION
+
+./configure
+bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
+
+pip3 install --install-option="--prefix=$INSTALL_PREFIX" $temp_dir/tf_pip/tensorflow-$VERSION-py3-*.whl
+
