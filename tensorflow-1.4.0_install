@@ -26,9 +26,9 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
-virtualenv tf-build-python
-source  tf-build-python/bin/activate
-pip3 install numpy
+#virtualenv tf-build-python
+#source  tf-build-python/bin/activate
+#pip3 install numpy
 
 export PYTHON_BIN_PATH=`which python3`
 
@@ -44,7 +44,7 @@ bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_p
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
 
 cd $temp_dir
-source tf-build-python/bin/deactivate
+#source tf-build-python/bin/deactivate
 
 builtname=`ls $temp_dir/tf_pip/tensorflow-$VERSION-*.whl`
 
