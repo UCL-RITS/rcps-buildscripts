@@ -26,6 +26,12 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
+virtualenv tf-build-python
+source  tf-build-python/bin/activate
+pip3 install numpy
+
+export PYTHON_BIN_PATH=`which python3`
+
 git clone $SRC_ARCHIVE
 cd tensorflow
 git checkout v$VERSION
