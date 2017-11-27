@@ -63,5 +63,5 @@ rm METADATA.bak metadata.json.bak
 cd $temp_dir/tf_pip/tmp
 zip -r $base_builtname tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
 
-pip3 install --install-option="--prefix=$INSTALL_PREFIX" $base_builtname
+pip3 install --target=$INSTALL_PREFIX $base_builtname
 
