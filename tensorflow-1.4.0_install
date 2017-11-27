@@ -48,5 +48,20 @@ cd $temp_dir
 
 builtname=`ls $temp_dir/tf_pip/tensorflow-$VERSION-*.whl`
 
-pip3 install --install-option="--prefix=$INSTALL_PREFIX" $builtname
+# Time to fix the wheel for reasons.
+
+cd $temp_dir/tf_pip/
+mkdir tmp
+cd tmp
+unzip $builtname
+cd  tensorflow-$VERSION.dist-info
+sed -i.bak 's|Requires-Dist: enum34 (>=1.1.6)||g' METADATA
+sed -i.bak 's|"enum34 (>=1.1.6)",||g' metadata.json
+rm METADATA.bak metadata.json.bak
+
+cd $temp_dir/tf_pip/tmp
+zip -r ../tensorflow-${VERSION}-UCL.whl tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
+
+cd $temp_dir/tf_pip
+pip3 install --install-option="--prefix=$INSTALL_PREFIX" tensorflow-${VERSION}-UCL.whl
 
