@@ -47,6 +47,7 @@ cd $temp_dir
 #source tf-build-python/bin/deactivate
 
 builtname=`ls $temp_dir/tf_pip/tensorflow-$VERSION-*.whl`
+base_builtname=`basename $builtname`
 
 # Time to fix the wheel for reasons.
 
@@ -60,8 +61,7 @@ sed -i.bak 's|"enum34 (>=1.1.6)",||g' metadata.json
 rm METADATA.bak metadata.json.bak
 
 cd $temp_dir/tf_pip/tmp
-zip -r ../tensorflow-${VERSION}-UCL.whl tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
+zip -r $base_builtname tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
 
-cd $temp_dir/tf_pip
-pip3 install --install-option="--prefix=$INSTALL_PREFIX" tensorflow-${VERSION}-UCL.whl
+pip3 install --install-option="--prefix=$INSTALL_PREFIX" $base_builtname
 
