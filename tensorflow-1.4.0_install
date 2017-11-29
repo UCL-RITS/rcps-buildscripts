@@ -39,6 +39,7 @@ git checkout v$VERSION
 ./configure
 
 sed -i.bak 's|HAVE_STROPTS_H 1|HAVE_STROPTS_H 0|g' third_party/curl.BUILD
+rm third_party/curl.BUILD
 
 bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
