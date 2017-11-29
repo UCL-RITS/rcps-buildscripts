@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+set -o errexit 
+
+
+package_name="castep"
+package_version="17.21"
+# Optional: 
+package_variant=""
+package_description="CASTEP is a program that uses density functional theory to calculate the properties of materials from first principles."
+
+source includes/source_includes.sh
+
+package_file="CASTEP-Releases-$package_version.tar.gz"
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    require compilers/intel
+    require mpi/intel
+
+    # The CASTEP tests are about 2GB so we build in /dev/shm instead of /tmp (the default)
+    make_build_env "castep" "/dev/shm"
+
+    # Many tests fail on Legion when compiled with the 'fast' setting
+    if [[ "$(facter domain)" == "data.legion.ucl.ac.uk" ]]; then
+        build_opt_level="intermediate"
+    else
+        build_opt_level="fast"
+    fi
+
+}
+
+_file_setup() {
+    cd "$build_dir"
+
+    cp "/shared/ucl/apps/pkg-store/$package_file" ./
+    manifest sha1:a971a541bce1a190bd9dfe0c160081ce497ecb9b "$package_file"
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "CASTEP-Releases-${package_version}"
+    tar -xf "CASTEP-${package_version}.tar.gz"
+}
+
+_build() {
+    cd "CASTEP-${package_version}"
+    mkdir -p "$install_prefix/bin" # if it doesn't exist, the make process will read from stdin to ask
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        BUILD="$build_opt_level" \
+        INSTALL_DIR="$install_prefix/bin"
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        BUILD="$build_opt_level" \
+        INSTALL_DIR="$install_prefix/bin" \
+        check
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        BUILD="$build_opt_level" \
+        INSTALL_DIR="$install_prefix/bin" \
+        install 
+
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        COMMS_ARCH=mpi \
+        SUBARCH=mpi \
+        BUILD="$build_opt_level" \
+        INSTALL_DIR="$install_prefix/bin" 
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        COMMS_ARCH=mpi \
+        SUBARCH=mpi \
+        BUILD=fast \
+        INSTALL_DIR="$install_prefix/bin" \
+        check
+    make -l 10 -j \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        COMMS_ARCH=mpi \
+        SUBARCH=mpi \
+        BUILD=fast \
+        INSTALL_DIR="$install_prefix/bin" \
+        install
+    echo "Installed to: $install_prefix"
+    echo "Unpacking pseudopotentials..."
+    cd ..
+    mkdir -p "$install_prefix/psps"
+    cd "$install_prefix/psps"
+    tar -xf "$build_dir/CASTEP-Releases-${package_version}/Opium-Rappe-Bennett-recpots-2012.tar.gz"
+    tar -xf "$build_dir/CASTEP-Releases-${package_version}/Opium-Kr_Extra_recpots.tar.gz"
+}
+
+_prepare_module() {
+    make_module -p "$install_prefix" \
+        -c "${package_name}" \
+        -r gcc-libs \
+        -r compilers/intel \
+        -r mpi/intel \
+        -v "PSPOT_DIR=$install_prefix/psps" \
+        -o "$module_dir/$package_label" \
+        -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+}
+
+_clean_up() {
+    cd "$owd"
+    if [ -n "$build_dir" ]; then
+        rm -Rf "${build_dir}"
+    fi
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_prepare_module
+_clean_up
+
