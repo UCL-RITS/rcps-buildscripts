@@ -26,6 +26,9 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
+# Clear bazel cache.
+rm -rf ~/.cache/bazel/
+
 #virtualenv tf-build-python
 #source  tf-build-python/bin/activate
 #pip3 install numpy
