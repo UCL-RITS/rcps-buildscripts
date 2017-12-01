@@ -10,7 +10,7 @@ source includes/source_includes.sh
 
 _env_setup() {
     module purge
-    require gcc-libs/4.9.2
+    require gcc-libs
     require compilers/intel/2017
 
     make_build_env ""
@@ -59,7 +59,7 @@ _post_build() {
     make install
 
     make_module \
-        -o "${module_dir}/${package_label}" \
+        -o "${module_dir}/mpi/${package_label}" \
         -p "$install_prefix" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
         -c "mpi" \
@@ -75,7 +75,7 @@ _post_build() {
         -e "INCLUDE_PATH:${install_prefix}/include" \
         -e "CMAKE_PREFIX_PATH:${install_prefix}" \
         -r gcc-libs \
-        -r compilers/intel/2017 
+        -r compilers/intel/2017
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"
