@@ -10,8 +10,8 @@ source includes/source_includes.sh
 
 _env_setup() {
     module purge
-    require gcc-libs/4.9.2
-    require compilers/intel/2017/update1
+    require gcc-libs
+    require compilers/intel/2017
 
     make_build_env ""
     module_dir="$module_dir"
@@ -59,12 +59,23 @@ _post_build() {
     make install
 
     make_module \
-        -o "${module_dir}/${package_label}" \
+        -o "${module_dir}/mpi/${package_label}" \
         -p "$install_prefix" \
-        -c "${package_name}" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "mpi" \
+        -d \
+        -v "MPI_HOME=${install_prefix}" \
+        -v "MPI_RUN=${install_prefix}/bin/mpirun" \
+        -v "GERUN_LAUNCHER=openmpi-sge" \
+        -e "PATH:${install_prefix}/bin" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper/bin" \
+        -e "LD_RUN_PATH:${install_prefix}/lib" \
+        -e "LD_LIBRARY_PATH:${install_prefix}/lib" \
+        -e "CPATH:${install_prefix}/include" \
+        -e "INCLUDE_PATH:${install_prefix}/include" \
+        -e "CMAKE_PREFIX_PATH:${install_prefix}" \
         -r gcc-libs \
-        -r compilers/intel/2017/update1 
+        -r compilers/intel/2017
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"
