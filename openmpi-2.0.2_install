@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="openmpi"
+package_version="2.0.2"
+package_description="The Open MPI Project is an open source Message Passing Interface implementation."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/intel/2017/update1
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.bz2"
+    package_url="https://www.open-mpi.org/software/ompi/v${package_version%\.?}/downloads/${package_name}-${package_version}.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:80e39bc76ac2e3caf958a3db9985a9c81fddb8a6 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" \
+        --with-sge \
+        --without-verbs
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make check 
+
+    make install
+
+    make_module \
+        -o "${module_dir}/mpi/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "mpi" \
+        -d \
+        -v "MPI_HOME=${install_prefix}" \
+        -v "MPI_RUN=${install_prefix}/bin/mpirun" \
+        -v "GERUN_LAUNCHER=openmpi-sge" \
+        -e "PATH:${install_prefix}/bin" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper/bin" \
+        -e "LD_RUN_PATH:${install_prefix}/lib" \
+        -e "LD_LIBRARY_PATH:${install_prefix}/lib" \
+        -e "CPATH:${install_prefix}/include" \
+        -e "INCLUDE_PATH:${install_prefix}/include" \
+        -e "CMAKE_PREFIX_PATH:${install_prefix}" \
+        -r gcc-libs \
+        -r compilers/intel/2017
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
