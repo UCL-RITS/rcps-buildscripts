@@ -59,7 +59,7 @@ _post_build() {
     make install
 
     make_module \
-        -o "${module_dir}/${package_label}" \
+        -o "${module_dir}/mpi/${package_label}" \
         -p "$install_prefix" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
         -c "mpi" \
