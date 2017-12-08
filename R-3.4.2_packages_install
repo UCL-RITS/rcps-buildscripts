@@ -64,11 +64,6 @@ require geos/3.5.0/gnu-4.9.2
 require r/3.4.2-openblas/gnu-4.9.2
 require v8/3.15
 require protobuf/12-2017/gnu-4.9.2
-module unload python/2.7.12
-module load python/2.7.9
-require postgresql/9.5.3/gnu-4.9.2
-module unload python/2.7.9
-module load python/2.7.12
 
 # temp_dir=`mktemp -d -p /dev/shm`
 temp_dir='/home/ccspapp/Software/R/Packages'
