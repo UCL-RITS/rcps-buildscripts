@@ -44,8 +44,8 @@ temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-
-cd protobuf
+tar xvzf $SRC_ARCHIVE
+cd jq-$VERSION
 ./configure --prefix=${INSTALL_PREFIX}
 make | tee make_log
 make check | tee make-check_log
