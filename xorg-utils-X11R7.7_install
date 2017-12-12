@@ -187,7 +187,7 @@ then
   cd $temp_dir
   tar -xvf $xkeyboard_config_archive
   cd $XKEYBOARD_CONFIG_NAME
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX --with-xkb-rules-symlink=xorg
   make 2>&1 | tee make.log
   make install
 
