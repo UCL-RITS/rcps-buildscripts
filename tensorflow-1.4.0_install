@@ -32,6 +32,7 @@ LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 
 export LAPACK
+export BLAS
 
 pip3 install install --no-binary $PIPNOBIN --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
 
