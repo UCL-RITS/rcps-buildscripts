@@ -20,3 +20,5 @@ set -e
 
 pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
 
+# Remove enum34 because we have a newer python than Google expects.
+rm -rf ${INSTALL_PREFIX}/enum*
