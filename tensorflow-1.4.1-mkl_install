@@ -70,3 +70,8 @@ cd $temp_dir/tf_pip/tmp
 zip -r $base_builtname tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
 
 pip3 install $base_builtname
+
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
