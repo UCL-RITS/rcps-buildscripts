@@ -54,14 +54,22 @@ export BLAS
 
 pip3 install --upgrade pip
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
-   pip3 install --no-binary $PIPNOBIN $a
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip3 install --no-binary $PIPNOBIN $entry
+   fi
 done
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
 do
-   pip3 install --no-binary $PIPNOBIN $a
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip3 install --no-binary $PIPNOBIN $entry
+   fi
 done
 
 

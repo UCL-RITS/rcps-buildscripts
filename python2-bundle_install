@@ -44,14 +44,20 @@ export BLAS
 
 pip install --upgrade pip
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
-   pip install --no-binary $PIPNOBIN $a
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip install --no-binary $PIPNOBIN $entry
+   fi
 done
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-2.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-2.list`
 do
-   pip install --no-binary $PIPNOBIN $a
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip install --no-binary $PIPNOBIN $entry
+   fi
 done
 
 
