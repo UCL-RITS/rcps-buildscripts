@@ -6,7 +6,9 @@
 #
 # by Brian Alston, January 2017
 #
-# Will need modules: rcps-core/1.0.0, mathematica/11.0.1,git/2.10.2
+# Updated January 2018 for Mathematica 11.2.
+#
+# Will need modules: rcps-core/1.0.0, mathematica/11.2.0,git/2.10.2
 
 VERSION=${VERSION:-2.2.20}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
