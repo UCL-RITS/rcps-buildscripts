@@ -41,5 +41,5 @@ cd Tunnel
 
 cd $MATHEMATICA_BASE/Kernel
 cp tunnel.m tunnel.m_dist
-cp ~/Software/Mathematica/Tunnel/Tunnel/scripts/tunnel.m .
+cp ~ccaabaa/Software/Mathematica/Tunnel/Tunnel/scripts/tunnel.m .
 
