@@ -26,7 +26,7 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
-require mathematica/11.0.1
+require mathematica/11.2.0
 require git/2.10.2
 
 temp_dir=`mktemp -d -p /dev/shm`
