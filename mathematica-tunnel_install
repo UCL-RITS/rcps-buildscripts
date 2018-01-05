@@ -45,3 +45,10 @@ cd $MATHEMATICA_BASE/Kernel
 cp tunnel.m tunnel.m_dist
 cp $EXTRA_FILES/Tunnel/scripts/tunnel.m .
 
+# Fix minor bug in helper scripts
+
+cd $MATHEMATICA_USERBASE/FrontEnd
+cp tunnel.sh tunnel.sh_dist
+sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel.sh_dist > tunnel.sh
+cp tunnel_sub.sh tunnel_sub.sh_dist
+sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel_sub.sh_dist > tunnel_sub.sh
