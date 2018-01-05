@@ -15,6 +15,7 @@ COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/UDUNITS/${VERSION}-${COMPILER_TAG}}
 MD5=${MD5:-1586b70a49dfe05da5fcc29ef239dce0}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/sakra/Tunnel.git}
+EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
 
 set -e
 
@@ -38,9 +39,9 @@ git clone $SRC_ARCHIVE
 cd Tunnel
 ./install-tunnel.sh
 
-# replace tunnel.m version containing correct /shared/ucl/apps lcoations for legion/Grace
+# replace tunnel.m version containing correct /shared/ucl/apps lcoations for legion/Grace etc.
 
 cd $MATHEMATICA_BASE/Kernel
 cp tunnel.m tunnel.m_dist
-cp ~ccaabaa/Software/Mathematica/Tunnel/Tunnel/scripts/tunnel.m .
+cp $EXTRA_FILES/Tunnel/scripts/tunnel.m .
 
