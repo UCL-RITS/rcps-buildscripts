@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# This script installs NAG Fortran Library Mark 26 for GCC.
+# Brian Alston January 2018
+#
+# Updated May 2016 to set execute permission on installer ( needed for older versions).
+# Updated Jan 2018 for Mark 26
+#
+# Based on spm12_install by Owain Kenway
+
+
+VERSION=${VERSION:-26}
+PRODUCT=${PRODUCT:-fll6i26dfl}
+DOC=${DOC:-mk${VERSION}_doc}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-library}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$PRODUCT.tgz}
+DOC_ARCHIVE=${DOC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$DOC.tgz}
+# MD5_SRC=${MD5_SRC:-1c370fe9eec4e4ea210e566f388018cd}
+# MD5_DOC=${MD5_DOC:-d5d88b864f9e2ea7d19770a19c766d1b}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+wget $DOC_ARCHIVE
+
+tar xvzf $PRODUCT.tgz
+gunzip $DOC.tgz
+
+chmod +x install.sh
+./install.sh -accept -installdir=$INSTALL_PREFIX \
+   -docinstalldir=$INSTALL_PREFIX/doc
+
