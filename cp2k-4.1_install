@@ -7,6 +7,7 @@
 #
 
 # YOU SHOULD BUILD WITH GNU 4.9.2 AND OpenMPI 1.8.4
+# The tests take hours and use 2 cores, so shouldn't be run on a login node.
 
 APPNAME=${APPNAME:-cp2k}
 VERSION=${VERSION:-4_1}
@@ -17,6 +18,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/${TYPE}/$C
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
 dotversion=$(echo $VERSION | sed 's|_|\.|g')
 ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
+REGTEST=${REGTEST:-no}
 
 set -e
 
@@ -33,12 +35,19 @@ cd cp2k-${VERSION}/cp2k
 mkdir -p ${INSTALL_PREFIX}/data
 cp -R data/* ${INSTALL_PREFIX}/data
 
-cp $ARCHFILE arch
+cp ${ARCHFILE} arch
 
 cd makefiles
 
 make ARCH=${ARCH} VERSION="${TYPE}"
-make ARCH=${ARCH} VERSION="${TYPE}" test
+
+# Only run the regression tests somewhere we aren't affecting users.
+if [[ ${REGTEST} == "yes" ]]
+then
+  make ARCH=${ARCH} VERSION="${TYPE}" test
+else
+  echo "REGTEST set to no in buildscript so not running tests"
+fi
 
 mkdir -p ${INSTALL_PREFIX}/bin
 mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
