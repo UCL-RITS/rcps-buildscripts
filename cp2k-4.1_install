@@ -15,6 +15,8 @@ ARCH=${ARCH:-UCL-x86-64-gfortran}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
+dotversion=$(echo $VERSION | sed 's|_|\.|g')
+ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
 
 set -e
 
@@ -31,7 +33,7 @@ cd cp2k-${VERSION}/cp2k
 mkdir -p ${INSTALL_PREFIX}/data
 cp -R data/* ${INSTALL_PREFIX}/data
 
-cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/${ARCH}.${TYPE} arch
+cp $ARCHFILE arch
 
 cd makefiles
 
