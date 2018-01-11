@@ -8,6 +8,7 @@
 
 # YOU SHOULD BUILD WITH GNU 4.9.2 AND OpenMPI 1.8.4
 # The tests take hours and use 2 cores, so shouldn't be run on a login node.
+# SVN checkouts are frequently failing, so probably need to get separately first.
 
 APPNAME=${APPNAME:-cp2k}
 VERSION=${VERSION:-4_1}
@@ -16,9 +17,11 @@ ARCH=${ARCH:-UCL-x86-64-gfortran}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-/shared/ucl/apps/cp2k/sources/cp2k-${VERSION}}
 dotversion=$(echo $VERSION | sed 's|_|\.|g')
 ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
 REGTEST=${REGTEST:-no}
+USE_SVN=${USE_SVN:-no}
 
 set -e
 
@@ -29,7 +32,14 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
+# Either use local copy of source or get from SVN
+if [[ ${USE_SVN} == "yes" ]]
+then
+  svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
+else
+  cp -r ${LOCAL_ARCHIVE} .
+fi
+
 cd cp2k-${VERSION}/cp2k
 
 mkdir -p ${INSTALL_PREFIX}/data
