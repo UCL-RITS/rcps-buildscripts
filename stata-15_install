@@ -48,7 +48,7 @@ EOF
 
 echo ""
 echo "STATA/MP is only licensed for Legion so the next step may only be run on Legion."
-echo "You will need to license details supplied by Procurement before continuing."
+echo "You will need the license details supplied by Procurement before continuing."
 echo ""
 read -p "Do you wish to run the STATA license setup? [y/n] " answer
 
@@ -56,5 +56,10 @@ if [ "$answer" == "y" ]
 then
     ./stinit
 fi
+
+echo ""
+echo "After testing that STATA is working OK, run the internal update"
+echo "procedure to bring STATA up to the latest version."
+echo ""
 
 
