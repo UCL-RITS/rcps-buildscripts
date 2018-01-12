@@ -1,6 +1,6 @@
 # Build options for parallel build on UCL RC platforms.
 # Use gnu compilers 4.9.2
-# OpenMPI 1.8.4
+# OpenMPI 3.0.0 (and have gone to -D__MPI_VERSION=3 below, 2 was necessary with 1.8.4)
 
 CC         = mpicc
 CPP        =
@@ -20,7 +20,7 @@ QUIP_INC   = /shared/ucl/apps/quip/18c5440/include
 DATA_DIR   = /shared/ucl/apps/cp2k/5_1/gnu-4.9.2/data
 SMM_LIB    = /shared/ucl/apps/libsmm/cp2k-4_1/gnu-4.9.2/lib/libsmm_dnn_linux.gnu.a
 SCALAPACK_LIB = /shared/ucl/apps/scalapack/2.0.2/gnu-4.9.2-ompi-1.8.4/openblas/lib
-DFLAGS     = -D__FFTW3 -D__MPI_VERSION=2 -D__parallel -D__SCALAPACK -D__HAS_smm_dnn -D__QUIP -D__LIBINT -D__LIBXC2 
+DFLAGS     = -D__FFTW3 -D__MPI_VERSION=3 -D__parallel -D__SCALAPACK -D__HAS_smm_dnn -D__QUIP -D__LIBINT -D__LIBXC2 
 CPPFLAGS   = 
 FCFLAGS    = $(DFLAGS) -pthread -O2 -ffree-form -ffree-line-length-none\
              -ftree-vectorize -funroll-loops\
