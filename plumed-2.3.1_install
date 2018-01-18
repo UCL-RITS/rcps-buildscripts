@@ -69,7 +69,7 @@ then
   export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
 
   # If you don't add -fopenmp here, linking the test executable fails with the Intel compiler
-  make check LDFLAGS+="-fopenmp"
+  make check LDFLAGS+="-fopenmp" 2>&1 | tee test.log
 
 else
   echo "Hash mismatch."
