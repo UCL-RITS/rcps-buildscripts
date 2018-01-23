@@ -94,7 +94,7 @@ cp Linux-ifort_XE_openmpi_avx2.inc Linux-ifort_XE_openmpi_avx2.inc_dist
 sed -e '/MKL=/s/\/apps\/intel\/2017\/compilers_and_libraries_2017.2.174\/linux\/mkl/$(MKLROOT)/' Linux-ifort_XE_openmpi_avx2.inc_dist >  Linux-ifort_XE_openmpi_avx2.inc
 cd ..
 cp Makefile Makefile_dist
-sed -e '/VERSION =/s/v1.0/v1.0.1/' Makfile_dist > Makefile
+sed -e '/VERSION =/s/v1.0/v1.0.1/' Makefile_dist > Makefile
 
 make all
 cd ../bin/Linux-ifort_XE_openmpi_avx2/$VERSION
