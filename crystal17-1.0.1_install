@@ -18,7 +18,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Crystal17}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Crystal17/archives}
 CRYSTAL17_ARC=${CRYSTAL17_ARC:-crystal17_${SRC_VERSION}_Linux-ifort17_XE_openmpi2.1_emt64.tar.gz}
 UTILS17_ARC=${UTILS17_ARC:-utils17.zip}
-# INPUTS_ARC=${INPUTS_ARC:-inputs_wf.tar.gz}
+INPUTS_ARC=${INPUTS_ARC:-inputs_wf.tar.gz}
 CRGRA2006_ARC=${CRGRA2006_ARC:-crgra2006.tar.gz}
 CRYSTAL17_PAROBJ=${CRYSTAL17_PAROBJ:-Pdistrib-Linux-ifort_XE_openmpi_avx2-v1.0.tar.gz}
 
