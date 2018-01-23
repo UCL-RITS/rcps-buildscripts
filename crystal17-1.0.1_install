@@ -98,8 +98,8 @@ sed -e '/VERSION =/s/v1.0/v1.0.1/' Makefile_dist > Makefile
 
 make all
 cd ../bin/Linux-ifort_XE_openmpi_avx2/$VERSION
-cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
-cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
+cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort17_XE_openmpi2.1.0_emt64/$VERSION/
+cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort17_XE_openmpi2.1.0_emt64/$VERSION/
 
 # Change ownership to reserved app group
 
