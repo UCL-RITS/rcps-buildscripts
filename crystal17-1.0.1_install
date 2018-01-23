@@ -70,7 +70,7 @@ cd ..
 
 echo "Unpacking the examples archive ..."
 cd $temp_dir
-wget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
+qwget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
 cd $INSTALL_PREFIX/$VERSION
 tar xvzf $temp_dir/$INPUTS_ARC
 
@@ -87,6 +87,7 @@ tar xvzf $temp_dir/$CRGRA2006_ARC
 
 echo "Rebuilding the parallel versions for OpenMPI 2.1.2 and Infinband  ..."
 cd $temp_dir
+pwd
 tar xvzf $SRC_ARCHIVE/$CRYSTAL17_PAROBJ
 # cd build/Xmakes
 # cp Linux-ifort_XE_emt64.inc Linux-ifort_XE_emt64.inc_dist
@@ -94,6 +95,7 @@ tar xvzf $SRC_ARCHIVE/$CRYSTAL17_PAROBJ
 # cp Linux-ifort_XE_openmpi_emt64.inc Linux-ifort_XE_openmpi_emt64.inc_dist
 # sed -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
 # cd ..
+cd build
 make all
 cd ../bin/Linux-ifort_XE_emt64/$VERSION
 cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
