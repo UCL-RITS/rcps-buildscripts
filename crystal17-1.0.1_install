@@ -89,17 +89,17 @@ echo "Rebuilding the parallel versions for OpenMPI 2.1.2 and Infinband  ..."
 cd $temp_dir
 pwd
 tar xvzf $SRC_ARCHIVE/$CRYSTAL17_PAROBJ
-# cd build/Xmakes
-# cp Linux-ifort_XE_emt64.inc Linux-ifort_XE_emt64.inc_dist
-# sed -e '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort_XE_emt64.inc_dist > Linux-ifort_XE_emt64.inc
-# cp Linux-ifort_XE_openmpi_emt64.inc Linux-ifort_XE_openmpi_emt64.inc_dist
-# sed -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
-# cd ..
-cd build
+cd build/Xmakes
+cp Linux-ifort_XE_openmpi_avx2.inc Linux-ifort_XE_openmpi_avx2.inc_dist
+sed -e '/MKL=/s/\/apps\/intel\/2017\/compilers_and_libraries_2017.2.174\/linux\/mkl/$(MKLROOT)/' Linux-ifort_XE_openmpi_avx2.inc_dist >  Linux-ifort_XE_openmpi_avx2.inc
+cd ..
+cp Makefile Makefile_dist
+sed -e '/VERSION =/s/v1.0/v1.0.1/' Makfile_dist > Makefile
+
 make all
-cd ../bin/Linux-ifort_XE_emt64/$VERSION
-cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
-cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
+cd ../bin/Linux-ifort_XE_openmpi_avx2/$VERSION
+cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
+cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$VERSION/
 
 # Change ownership to reserved app group
 
