@@ -70,7 +70,7 @@ cd ..
 
 echo "Unpacking the examples archive ..."
 cd $temp_dir
-qwget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
+wget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
 cd $INSTALL_PREFIX/$VERSION
 tar xvzf $temp_dir/$INPUTS_ARC
 
