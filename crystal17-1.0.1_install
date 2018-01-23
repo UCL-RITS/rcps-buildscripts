@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# This script installs Crystal17 Versaion 1.0.1
+# Brian Alston Jan 2018
+# 
+# Updated from crystal14-1.0.4_install Jan 2018
+#
+# Based on spm12_install by Owain Kenway
+
+# You need to download the Crystal17 archives from the Crystal17 Licence Portal
+# (https://www.crystalsolutions.eu/login.html) using a UK academic login.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE etc
+# variables appropriately.
+
+VERSION=${VERSION:-v1.0.1}
+SRC_VERSION=${SRC_VERSION:-v1_0_1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Crystal17}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Crystal17/archives}
+CRYSTAL17_ARC=${CRYSTAL17_ARC:-crystal17_${SRC_VERSION}_Linux-ifort17_XE_openmpi2.1_emt64.tar.gz}
+UTILS17_ARC=${UTILS17_ARC:-utils17.zip}
+# INPUTS_ARC=${INPUTS_ARC:-inputs_wf.tar.gz}
+CRGRA2006_ARC=${CRGRA2006_ARC:-crgra2006.tar.gz}
+CRYSTAL17_PAROBJ=${CRYSTAL17_PAROBJ:-Pdistrib-Linux-ifort_XE_openmpi_avx2-v1.0.tar.gz}
+
+set -e
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$CRYSTAL17_ARC ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find Crysta17 archives"
+    echo ""
+    echo "You need to download the Crystal17 archives from the Crystal17 Licence Portal"
+    echo "(https://www.crystalsolutions.eu/login.html) using a UK academic login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE etc." 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers/intel
+require mpi/openmpi/2.1.2/intel-2017
+
+echo "Installing into $INSTALL_PREFIX/$VERSION ..."
+
+# Unpack the Crystal17 archive.
+
+echo "Unpacking the Crystal17 archive ..."
+mkdir -p $INSTALL_PREFIX/$VERSION
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $SRC_ARCHIVE/$CRYSTAL17_ARC
+
+# Unpack the utilities archive
+
+echo "Unpacking the utilities archive ..."
+mkdir -p utils17
+cd utils17
+unzip -x $SRC_ARCHIVE/$UTILS17_ARC
+chmod a+x run*
+cd ..
+
+# Unpack the input files for the supplied examples
+
+echo "Unpacking the examples archive ..."
+cd $temp_dir
+wget http://www.crystal.unito.it/test_cases/$INPUTS_ARC
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $temp_dir/$INPUTS_ARC
+
+# Unpack the crgra2006 untility
+
+echo "Unpacking the crgra utility archive ..."
+cd $temp_dir
+wget http://www.crystal.unito.it/crgra2006/crgra2006.tar.gz
+cd $INSTALL_PREFIX/$VERSION
+tar xvzf $temp_dir/$CRGRA2006_ARC
+
+# Rebuild parallel versions Pcrystal and Ppropertis to work on UCL Grace/Thomas with infiniband
+# and OpenMPI 2.1.2 - version optimised for Thomas by 
+
+echo "Rebuilding the parallel versions for OpenMPI 2.1.2 and Infinband  ..."
+cd $temp_dir
+tar xvzf $SRC_ARCHIVE/$CRYSTAL17_PAROBJ
+# cd build/Xmakes
+# cp Linux-ifort_XE_emt64.inc Linux-ifort_XE_emt64.inc_dist
+# sed -e '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort_XE_emt64.inc_dist > Linux-ifort_XE_emt64.inc
+# cp Linux-ifort_XE_openmpi_emt64.inc Linux-ifort_XE_openmpi_emt64.inc_dist
+# sed -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort_XE_openmpi_emt64.inc_dist > Linux-ifort_XE_openmpi_emt64.inc
+# cd ..
+make all
+cd ../bin/Linux-ifort_XE_emt64/$VERSION
+cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
+cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort_XE_openmpi_emt64/$SRC_VERSION/
+
+# Change ownership to reserved app group
+
+cd $INSTALL_PREFIX/..
+chgrp -R legcryst Crystal17
+
+echo "Finished."
+
+cd $startDir
