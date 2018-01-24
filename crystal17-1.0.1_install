@@ -105,6 +105,7 @@ cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort17_XE_openmpi2.1.0_emt64/
 
 cd $INSTALL_PREFIX/..
 chgrp -R legcryst Crystal17
+chmod -R o-rwx Crystal17
 
 echo "Finished."
 
