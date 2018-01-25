@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing tree
+#
+#
+
+NAME=${NAME:-tree}
+VERSION=${VERSION:-1.7.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-6957c20e82561ac4231638996e74f4cfa4e6faabc5a2f511f0b4e3940e8f7b12}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://mama.indstate.edu/linux/${NAME}/${NAME}-${VERSION}.tgz}
+
+set -e
+
+temp_dir=$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  make
+  make install prefix=${INSTALL_PREFIX}
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
