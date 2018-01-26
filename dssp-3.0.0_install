@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="dssp"
+package_version="3.0.0"
+package_description="DSSP calculates DSSP entries from Protein Databank (PDB) entries."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    # NB: ideally we'd use the same compiler as GROMACS here for user convenience,
+    #     but this has old, no-longer-on-standard C++, and won't compile with the Intel compiler at all
+    #     or the GNU compiler without specific flags
+    require compilers/gnu/4.9.2
+    require python/2.7.12 # prereq for boost module
+    require boost/1_63_0/gnu-4.9.2
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tgz"
+    package_url="ftp://ftp.cmbi.ru.nl/pub/software/dssp/${package_name}-${package_version}.tgz"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha256:25d39a2107767b622a59dd9fa790112c1516564b8518fc6ac0fab081d5ac3ab0 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    # The makefile tries to build a static version, but we don't have static installations 
+    #  of libz and libbz2 it needs, so rather than install new versions with static options,
+    #  making it build with dynamic linking seemed more sensible.
+    sed -i -e 's/-static//' makefile
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    # The version in the makefile is 2.1.1 but the release on the website is labelled 3.0.0 so *shrug*
+    make \
+        CXX="$CXX -std=c++0x" \
+        VERSION=3.0.0 \
+        DEST_DIR="$install_prefix"
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+
+    make install DEST_DIR="$install_prefix"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "dssp" \
+        -r gcc-libs \
+        -r boost/1_63_0/gnu-4.9.2
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
