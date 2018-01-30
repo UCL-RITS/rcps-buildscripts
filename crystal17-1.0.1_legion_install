@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# This script installs Crystal17 Versaion 1.0.1
+# This script installs Crystal17 Versaion 1.0.1 on the older legion
+# cluster which cannot run the optimised version installed on Grace and
+# Thomas.
+#
 # Brian Alston Jan 2018
 # 
-# Updated from crystal14-1.0.4_install Jan 2018
+# Updated from crystal17-1.0.1_install Jan 2018
 #
 # Based on spm12_install by Owain Kenway
 
@@ -20,13 +23,25 @@ CRYSTAL17_ARC=${CRYSTAL17_ARC:-crystal17_${SRC_VERSION}_Linux-ifort17_XE_openmpi
 UTILS17_ARC=${UTILS17_ARC:-utils17.zip}
 INPUTS_ARC=${INPUTS_ARC:-inputs_wf.tar.gz}
 CRGRA2006_ARC=${CRGRA2006_ARC:-crgra2006.tar.gz}
-CRYSTAL17_PAROBJ=${CRYSTAL17_PAROBJ:-Pdistrib-Linux-ifort_XE_openmpi_avx2-v1.0.tar.gz}
+
+# For Legion use the un-optimised version.
+CRYSTAL17_PAROBJ=${CRYSTAL17_PAROBJ:-crystal17_${SRC_VERSION}_Linux-ifort17_emt64_Pdistrib.tar.gz}
 
 set -e
 startDir=`pwd`
 
 temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
+
+# Other clusters use the optimised build so only install on Legion.
+
+if [ $SGE_CLUSTER_NAME != "LegProd" ]
+then
+    echo ""
+    echo "*** ERROR: Not on Legion so not installing."
+    echo ""
+    exit 1
+fi
 
 if [ ! -f $SRC_ARCHIVE/$CRYSTAL17_ARC ]
 then
@@ -42,7 +57,8 @@ then
 fi
 
 
-dirname=$(dirname $0 2>/dev/null || pwd)
+#dirname=$(dirname $0 2>/dev/null || pwd)
+dirname=/shared/ucl/apps/build_scripts
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
@@ -84,22 +100,20 @@ wget http://www.crystal.unito.it/crgra2006/crgra2006.tar.gz
 cd $INSTALL_PREFIX/$VERSION
 tar xvzf $temp_dir/$CRGRA2006_ARC
 
-# Rebuild parallel versions Pcrystal and Ppropertis to work on UCL Grace/Thomas with infiniband
-# and OpenMPI 2.1.2 - version optimised for Thomas by 
+# Rebuild parallel versions Pcrystal and Ppropertis to work on UCL Legion with infiniband
+# and OpenMPI 2.1.2 - this is the un-optimised version becuase of the older hardware. 
 
-echo "Rebuilding the parallel versions for OpenMPI 2.1.2 and Infinband  ..."
+echo "Rebuilding the parallel versions for OpenMPI 2.1.2 and Infinband for Legion  ..."
 cd $temp_dir
 pwd
 tar xvzf $SRC_ARCHIVE/$CRYSTAL17_PAROBJ
 cd build/Xmakes
-cp Linux-ifort_XE_openmpi_avx2.inc Linux-ifort_XE_openmpi_avx2.inc_dist
-sed -e '/MKL=/s/\/apps\/intel\/2017\/compilers_and_libraries_2017.2.174\/linux\/mkl/$(MKLROOT)/' Linux-ifort_XE_openmpi_avx2.inc_dist >  Linux-ifort_XE_openmpi_avx2.inc
+cp Linux-ifort17_XE_emt64.inc Linux-ifort17_XE_emt64.inc_dist
+sed -e '/MPIBIN  = /s/$/$(MPI_HOME)\/bin/' -e '/F90FLAGS =/s/-i-static/-static-intel/' -e '/LDLIBS  =/s/$/ -lifcore/' Linux-ifort17_XE_emt64.inc_dist > Linux-ifort17_XE_emt64.inc
 cd ..
-cp Makefile Makefile_dist
-sed -e '/VERSION =/s/v1.0/v1.0.1/' Makefile_dist > Makefile
 
 make all
-cd ../bin/Linux-ifort_XE_openmpi_avx2/$VERSION
+cd ../bin/Linux-ifort17_XE_emt64/$VERSION
 cp Pcrystal $INSTALL_PREFIX/$VERSION/bin/Linux-ifort17_XE_openmpi2.1.0_emt64/$VERSION/
 cp Pproperties $INSTALL_PREFIX/$VERSION/bin/Linux-ifort17_XE_openmpi2.1.0_emt64/$VERSION/
 
