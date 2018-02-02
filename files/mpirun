@@ -22,6 +22,6 @@ then
 
 # Otherwise, business as usual (Infiniband).
 else 
-  $MPI_LAUNCHER --mca mtl '^psm2' -mca pml cm "$@"
+  $MPI_LAUNCHER "$@"
 fi
 
