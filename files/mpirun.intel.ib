@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# This version is for Intel IB clusters where we must disable psm2.
+
+# Owain Kenway, UCL, 2/2/2018
+
+MPI_LAUNCHER=$MPI_RUN
+
+# If the job is running on one node only.
+if [[ "$NHOSTS" == "1" ]]
+then
+  $MPI_LAUNCHER "$@"
+
+# If the job is running interactively. 
+elif [[ "$NHOSTS" == "" ]]
+then
+  $MPI_LAUNCHER "$@"
+
+# Otherwise, disbale PSM2 as usual (Infiniband).
+else 
+  $MPI_LAUNCHER -psm "$@"
+fi
+
