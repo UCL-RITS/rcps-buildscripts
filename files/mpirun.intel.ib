@@ -4,7 +4,7 @@
 
 # Owain Kenway, UCL, 2/2/2018
 
-MPI_LAUNCHER=$MPI_RUN
+MPI_LAUNCHER=$INTEL_MPI_PATH/intel64/bin/mpirun
 
 # If the job is running on one node only.
 if [[ "$NHOSTS" == "1" ]]
