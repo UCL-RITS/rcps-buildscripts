@@ -149,6 +149,10 @@ install.packages ("rmarkdown", lib=mainLib, repos=repros);
 # For RStudio server Oct 2017
 install.packages ("tidyverse", lib=mainLib, repos=repros);
 
+# For RStudio server Feb 2018 (Stephen Jivraj)
+install.packages ("mosaic", lib=mainLib, repos=repros);
+install.packages ("vcd", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
