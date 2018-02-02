@@ -157,3 +157,17 @@ make_build_env () {
 EOF
 }
 
+function github_download() {
+    while [[ "$1" != "" ]]; do
+        url="$1";
+        repo_name="${url##https://github.com/}";
+        repo_name="${repo_name#*/}";
+        repo_name="${repo_name%%/*}";
+        version="${url##*/}";
+        version="${version#v}";
+        wget -O "${repo_name}-${version}" "$url";
+        shift;
+    done
+}
+
+
