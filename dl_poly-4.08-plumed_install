@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="dl_poly"
+package_version="4.08"
+package_description="DL_POLY is a general purpose classical molecular dynamics (MD) simulation software developed at Daresbury Laboratory."
+
+
+access_control_group="lgdlp408"
+
+source includes/source_includes.sh
+
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    # NB: ideally we'd use the same compiler as GROMACS here for user convenience,
+    #     but this has old, no-longer-on-standard C++, and won't compile with the Intel compiler at all
+    #     or the GNU compiler without specific flags
+    require compilers/intel/2017/update1
+    require mpi/intel/2017/update1/intel
+    require openblas/0.2.14/intel-2015-update2
+    require flex/2.5.39
+    require libmatheval/1.1.11
+    require plumed/2.3.1/intel-2017-update1
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}_${package_version}"
+    package_file="${package_name}_${package_version}.zip"
+    package_url="ftp://ftp.dl.ac.uk/ccp5/DL_POLY/TRANSFERS/${package_name}_${package_version}.zip"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha256:afccfd4c4aa5592f355251144070bb4dae957a022872040a4603bcf9ac5eebdf ${package_file}
+
+    # The zip file is password protected.
+    unzip -P "$(cat /shared/ucl/apps/pkg-store/dl_poly_4.08_pass)" ${package_name}_${package_version}.zip
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    mkdir a_build
+    cd a_build
+
+    # I don't know why, but using `which mpif90` instead of mpiifort fails to build the communications module
+    # Also, the string values with backslashes here aren't quoted properly when used so you have
+    #  to get the strings *into* the values C_C
+    cmake ../ \
+        -DWITH_PLUMED=ON \
+        -DWITH_MPI=ON \
+        -DHOST=\\\"login01\\\" \
+        -DBUILDER=\\\"'UCL_RCPS_Build_Script'\\\" \
+        -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+        -DCMAKE_Fortran_COMPILER="$(which mpiifort)" \
+        -DBUILD_SHARED_LIBS=ON
+
+    make
+
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    cd a_build
+
+    make install 
+  
+    # The correct legdlp group needs to have been created and ccspapp has to be in it
+    chgrp -Rv "$access_control_group" "$install_prefix"
+    chmod -Rv o-rwx "$install_prefix"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "$package_name" \
+        -r gcc-libs  \
+        -r compilers/intel/2017/update1 \
+        -r mpi/intel/2017/update1/intel \
+        -r openblas/0.2.14/intel-2015-update2 \
+        -r plumed/2.3.1/intel-2017-update1 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
