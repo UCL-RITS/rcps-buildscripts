@@ -4,8 +4,8 @@ set -e
 
 package_name="dl_poly"
 package_version="4.08"
-package_description="DL_POLY is a general purpose classical molecular dynamics (MD) simulation software developed at Daresbury Laboratory."
-
+package_description="DL_POLY is a general purpose classical molecular dynamics (MD) simulation software developed at Daresbury Laboratory. This version has been linked against the PLUMED metadynamics library."
+package_variant="plumed-2.3.1"
 
 access_control_group="lgdlp408"
 
