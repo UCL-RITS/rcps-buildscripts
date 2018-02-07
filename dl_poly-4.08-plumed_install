@@ -19,6 +19,7 @@ _env_setup() {
     #     but this has old, no-longer-on-standard C++, and won't compile with the Intel compiler at all
     #     or the GNU compiler without specific flags
     require compilers/intel/2017/update1
+    require cmake
     require mpi/intel/2017/update1/intel
     require openblas/0.2.14/intel-2015-update2
     require flex/2.5.39
