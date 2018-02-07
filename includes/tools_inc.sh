@@ -135,11 +135,13 @@ make_build_env () {
         reason_for_test_install="current user is not service user"
     fi
     
+    default_install_prefix="${INSTALL_PREFIX:-${prod_apps_dir}/${package_label}}"
     if [[ -n "$reason_for_test_install" ]]; then
         echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
+        echo "         otherwise install prefix would have been $default_install_prefix"
         install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
     else
-        install_prefix="${INSTALL_PREFIX:-${prod_apps_dir}/${package_label}}"
+        install_prefix="$default_install_prefix"
     fi
 
     cat <<EOF
