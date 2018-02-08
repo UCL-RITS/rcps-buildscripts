@@ -19,6 +19,7 @@ lxml
 astropy
 pyspglib
 scikit-learn
+scikit-image
 weblogo
 nibabel
 Pmw
