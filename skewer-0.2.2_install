@@ -20,9 +20,8 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 cd $temp_dir
 
 git clone $SRC_ARCHIVE
-git checkout $VERSION
-
 cd ${NAME}
+git checkout $VERSION
 
 # Fix install path.
 mkdir -p ${INSTALL_PREFIX}/bin
