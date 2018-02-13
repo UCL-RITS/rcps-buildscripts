@@ -24,7 +24,9 @@ git checkout $VERSION
 
 cd ${NAME}
 
-sed -i.bak "s|/usr/local/bin|${INSTALL_PREFIX}|g" Makefile
+# Fix install path.
+mkdir -p ${INSTALL_PREFIX}/bin
+sed -i.bak "s|/usr/local/bin|${INSTALL_PREFIX}/bin|g" Makefile
 
 make 
 make install
