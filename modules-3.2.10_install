@@ -14,6 +14,8 @@ MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles
 TCL_VERSION=8.6.4
 
 
+SHA256=${SHA256:-fb05c82a83477805a1d97737a9f0ca0db23f69b7bce504f1609ba99477b03955}
+TCLSHA256=${TCLSHA256:-9e6ed94c981c1d0c5f5fefb8112d06c6bf4d050a7327e95e71d417c416519c8d}
 
 set -e
 
@@ -24,6 +26,10 @@ cd $temp_dir
 wget \
   http://downloads.sourceforge.net/project/modules/Modules/modules-${VERSION}/modules-${VERSION}.tar.gz \
   ftp://ftp.tcl.tk/pub/tcl/tcl8_6/tcl${TCL_VERSION}-src.tar.gz
+
+
+sha256sum -c <<< "$SHA256 modules-${VERSION}.tar.gz"
+sha256sum -c <<< "$TCLSHA256 tcl${TCL_VERSION}-src.tar.gz"
 
 tar -xf modules-${VERSION}.tar.gz
 tar -xf tcl${TCL_VERSION}-src.tar.gz
