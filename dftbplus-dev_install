@@ -27,13 +27,13 @@ _file_setup() {
     cd "$build_dir"
 
     git clone $package_url
-    git submodule update --init --recursive
     
     
 }
 
 _pre_build() {
     cd "$unpack_dir"
+    git submodule update --init --recursive
     git checkout $package_version
     cp sys/make.x86_64-linux-intel ./make.arch
     sed -i.bak "s|mpif90|mpiifort|g" make.arch
