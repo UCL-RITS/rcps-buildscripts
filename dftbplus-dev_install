@@ -27,6 +27,8 @@ _file_setup() {
     cd "$build_dir"
 
     git clone $package_url
+    git submodule update --init --recursive
+    
     
 }
 
