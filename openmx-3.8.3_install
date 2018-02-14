@@ -40,6 +40,10 @@ tar -xvf $archive
 
 cd ${NAME}${BASE_VERSION}
 
+
+mkdir -p ${INSTALL_PREFIX}/work
+cp -R work/* ${INSTALL_PREFIX}/work
+
 # Patch files
 cd source
 tar zxvf ../../$patcharchive
@@ -48,9 +52,7 @@ tar zxvf ../../$patcharchive
 cp /shared/ucl/apps/build_scripts/openmx-patches/makefile.patch .
 patch < makefile.patch
 
-sed -i.bak "s|../work|${INSTALL_PREFIX}|g" makefile
-
-mkdir -p $INSTALL_PREFIX
+sed -i.bak "s|../work|${INSTALL_PREFIX}/work|g" makefile
 
 make 
 make install
