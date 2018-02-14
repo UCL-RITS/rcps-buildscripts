@@ -26,7 +26,7 @@ _env_setup() {
 _file_setup() {
     cd "$build_dir"
 
-    git clone https://github.com/dftbplus/dftbplus.git
+    git clone $package_url
     
 }
 
