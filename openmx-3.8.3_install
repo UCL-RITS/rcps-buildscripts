@@ -43,6 +43,7 @@ cd ${NAME}${BASE_VERSION}
 
 mkdir -p ${INSTALL_PREFIX}/work
 cp -R work/* ${INSTALL_PREFIX}/work
+cp -R DFT_DATA13 ${INSTALL_PREFIX}
 
 # Patch files
 cd source
