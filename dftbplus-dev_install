@@ -42,7 +42,7 @@ _pre_build() {
 
 _build() {
     cd "$unpack_dir"
-    WITH_MPI=1 make LIB_BLAS=-mkl MKL_LIBDIR= OTHERLIBS=-qopenmp LNOPT= INSTALLDIR="$install_prefix"
+    WITH_MPI=1 make LIB_BLAS=-mkl LNOPT= INSTALLDIR="$install_prefix"
     cd ..
 }
 
