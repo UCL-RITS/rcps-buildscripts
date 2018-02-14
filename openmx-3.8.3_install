@@ -38,7 +38,7 @@ sha256sum -c <<< "$PATCHSHA256 $patcharchive"
 
 tar -xvf $archive
 
-cd ${NAME}${VERSION}
+cd ${NAME}${BASE_VERSION}
 
 # Patch files
 cd source
