@@ -1,0 +1,16 @@
+--- makefile.old	2018-02-14 10:09:30.000000000 +0000
++++ makefile	2018-02-14 10:14:31.000000000 +0000
+@@ -135,10 +135,9 @@
+ # LIB= -L/opt/acml5.3.0/ifort64_mp/lib -lacml_mp -liomp5 -Wl,-rpath=/opt/acml5.3.0/ifort64_mp/lib -Wl,-rpath=/opt/acml5.3.0/ifort64_mp/lib -L/opt/fftw-3.3.3/lib -lfftw3 -pgf90libs
+ #
+ 
+-
+-CC = mpicc -O3 -xHOST -ip -no-prec-div -openmp -I/opt/intel/mkl/include/fftw
+-FC = mpif90 -O3 -xHOST -ip -no-prec-div -openmp
+-LIB= -L/opt/intel/mkl/lib -mkl=parallel -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lpthread -lifcore -lmpi -lmpi_f90 -lmpi_f77
++CC = mpicc -O3 -xHOST -ip -no-prec-div -openmp -I/shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl/include/fftw
++FC = mpiifort -O3 -xHOST -ip -no-prec-div -openmp
++LIB= -L/shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl/lib -mkl=parallel -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lpthread -lifcore -lmpi -lmpi_f90 -lmpi_f77
+ 
+ 
+ 

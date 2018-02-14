@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-openmx}
+VERSION=${VERSION:-3.8.3}
+BASE_VERSION=${BASE_VERSION:-${VERSION%\.?}}
+PATCH_FATE=${PATCH_DATE:-17Mar08}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-36ee10d8b1587b25a2ca1d57f110111be65c4fb4dc820e6d93e1ed2b562634a1}
+
+PATCHSHA256=${PATCHSHA256:-d30b08301966dec913b6b42acdce17b543f7f4f5098bb2668a8db1e6b9067570}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.openmx-square.org/openmx${BASE_VERSION}.tar.gz}
+PATCH_ARCHIVE=${PATCH_ARCHIVE:-http://www.openmx-square.org/bugfixed/${PATCH_DATE}/patch${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+wget $PATCH_ARCHIVE
+patcharchive=$(basename "${PATCH_ARCHIVE}")
+
+sha256sum -c <<< "$PATCHSHA256 $patcharchive"
+
+tar -xvf $archive
+
+cd ${NAME}${VERSION}
+
+# Patch files
+cd source
+tar zxvf ../../$patcharchive
+
+# Patch makefile
+cp /shared/ucl/apps/build_scripts/openmx-patches/makefile.patch .
+patch < makefile.patch
+
+sed -i.bak "s|../work|${INSTALL_PREFIX}|g" makefile
+
+mkdir -p $INSTALL_PREFIX
+
+make 
+make install
