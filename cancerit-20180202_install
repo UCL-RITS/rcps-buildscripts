@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="cancerit"
+package_version="20180202"
+package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    require compilers/gnu/4.9.2
+    require python/2.7.12 # prereq for boost module
+    require boost/1_63_0/gnu-4.9.2
+    require pstreams
+    require perl
+    require htslib
+    require curl
+
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    github_download \
+        https://github.com/cancerit/alleleCount/archive/v3.3.1.tar.gz \
+        https://github.com/cancerit/ascatNgs/archive/v4.1.1.tar.gz \
+        https://github.com/cancerit/BRASS/archive/v6.0.6.tar.gz \
+        https://github.com/cancerit/CaVEMan/archive/1.11.5.tar.gz \
+        https://github.com/cancerit/cgpBigWig/archive/0.4.4.tar.gz \
+        https://github.com/cancerit/cgpCaVEManPostProcessing/archive/1.7.2.tar.gz \
+        https://github.com/cancerit/cgpPindel/archive/v2.2.4.tar.gz \
+        https://github.com/cancerit/cgpVcf/archive/v2.0.4.tar.gz \
+        https://github.com/cancerit/grass/archive/v2.1.0.tar.gz \
+        https://github.com/cancerit/PCAP-core/archive/4.0.5.tar.gz \
+        https://github.com/cancerit/VAGrENT/archive/v3.2.3.tar.gz
+
+    manifest  \
+        sha256:92335eb071125e3b344e3edfe5e687694f27408aed06d3c970c51355ed00ea7b  alleleCount-3.3.1.tar.gz \
+        sha256:9e227f35f3dce977d1cff697fc2070028d834a18faec2cde2e8732fe5f72f2ee  ascatNgs-4.1.1.tar.gz \
+        sha256:ebfb153682e274cef8c5cfc03dd75e1bfcb55152da5e19390f0c2dceb14b6937  BRASS-6.0.6.tar.gz \
+        sha256:21d1c85a2f6313571b709765815644ef18a8c287568e92b9ccce183e4417ecb9  CaVEMan-1.11.5.tar.gz \
+        sha256:8898fbf1bf980278ff3476299954cb38092c4bde7ac13041f778b4e99a12fed2  cgpBigWig-0.4.4.tar.gz \
+        sha256:1526a0257e1d351f5f43c751c1905fad25c67b2cef805f7c3be2d856d6c72862  cgpCaVEManPostProcessing-1.7.2.tar.gz \
+        sha256:7cdf4b010ac2225ebbc477fa5814705b15dbf3c5dfda344d32122fe59ca74ded  cgpPindel-2.2.4.tar.gz \
+        sha256:53054c32ab5561407a7339cff1b664d3e45eb6eaffaac9b676b8df4005be3b01  cgpVcf-2.0.4.tar.gz \
+        sha256:6fe5a6660ca876a80ed056b2b1896bf4fa4d79538dff702474acd1ec37db3d4d  grass-2.1.0.tar.gz \
+        sha256:5f32f88bf2e15fe6fc4357f4091d629855a7b85da89f9d59b966826fcfe44b72  PCAP-core-4.0.5.tar.gz \
+        sha256:a34c02a93e2b8ce64288308d950d5ca9035ed6980e4f437151340b6e3599f388  VAGrENT-3.2.3.tar.gz 
+
+    for file in \
+        alleleCount-3.3.1.tar.gz \
+        ascatNgs-4.1.1.tar.gz \
+        BRASS-6.0.6.tar.gz \
+        CaVEMan-1.11.5.tar.gz \
+        cgpBigWig-0.4.4.tar.gz \
+        cgpCaVEManPostProcessing-1.7.2.tar.gz \
+        cgpPindel-2.2.4.tar.gz \
+        cgpVcf-2.0.4.tar.gz \
+        grass-2.1.0.tar.gz \
+        PCAP-core-4.0.5.tar.gz \
+        VAGrENT-3.2.3.tar.gz 
+    do
+        tar -xf "$file"
+        /usr/bin/rm "$file"
+    done
+}
+
+_pre_build() {
+    cd "$build_dir"
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir"
+
+
+    # These are in an order that satisfies dependencies. Do not shuffle.
+    # See: https://user-images.githubusercontent.com/479061/35330098-1b9d07e2-00fa-11e8-9c13-c516bde69646.png
+    for dir in  \
+        cgpBigWig-0.4.4 \
+        PCAP-core-4.0.5 \
+        alleleCount-3.3.1 \
+        cgpVcf-2.0.4 \
+        ascatNgs-4.1.1 \
+        cgpPindel-2.2.4 \
+        cgpCaVEManPostProcessing-1.7.2 \
+        VAGrENT-3.2.3 \
+        grass-2.1.0 \
+        BRASS-6.0.6 
+    do
+        echo "Running setup in ${dir}..."
+        (cd "$dir" && ./setup.sh "$install_prefix")
+    done
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "${package_name}" \
+        -r  gcc-libs \
+        -r  compilers/gnu/4.9.2 \
+        -r  python/2.7.12 \
+        -r  boost/1_63_0/gnu-4.9.2 \
+        -r  perl \
+        -r  htslib
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
