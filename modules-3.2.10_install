@@ -54,6 +54,7 @@ sed --in-place -e 's/^@\([^M]\)/#@\1/' init/.modulespath.in
   --with-tcl=${temp_dir}/tmp_tcl_prefix/lib \
   --with-tcl-ver=8.6 \
   --without-tclx \
+  --without-tclx-ver \
   --with-module-path=${MODULE_ROOT_PATH} \
   CPPFLAGS="-DUSE_INTERP_ERRORLINE" \
   CFLAGS="-ldl -lz"  
