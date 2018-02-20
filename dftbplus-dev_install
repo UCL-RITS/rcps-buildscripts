@@ -44,7 +44,7 @@ _pre_build() {
 
 _build() {
     cd "$unpack_dir"
-    make WITH_MPI=1 LIB_BLAS=-mkl INSTALLDIR="$install_prefix"
+    make WITH_MPI=1 WITH_SOCKETS=0 LIB_BLAS=-mkl INSTALLDIR="$install_prefix"
     cd ..
 }
 
@@ -52,8 +52,12 @@ _post_build() {
     cd "$unpack_dir"
     # This sed removes two tests that aren't implemented in 17.1 and 
     #  would otherwise mark the test process as failed.
-    sed -i -e '/^sockets\/H2O/d' -e '/^sockets\/diamond/d' test/prog/dftb+/tests
-    make test
+    
+    # remove via make system
+    # sed -i -e '/^sockets\/H2O/d' -e '/^sockets\/diamond/d' test/prog/dftb+/tests
+    
+    # should also set value for TESTPROC if more than 1 processor required :
+    make test WITH_MPI=1 WITH_SOCKETS=0
 
     make INSTALLDIR="$install_prefix" install
 
