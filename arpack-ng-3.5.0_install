@@ -15,8 +15,8 @@ actual_file_md5=9762c9ae6d739a9e040f8201b1578874
 
 module purge
 require gcc-libs/4.9.2
-require compilers/intel/2017
-require mpi/intel/2017
+require compilers/intel/2017/update1
+require mpi/intel/2017/update1/intel
 
 _env_setup() {
   owd=$(pwd)
