@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+source includes/source_includes.sh
+
+# Normally we'd put requirements after package info, but we need a Python module to get pip
+module purge
+require gcc-libs/4.9.2
+package_py=python3/3.6
+require $package_py
+require gsl/1.16/gnu-4.9.2
+
+package_name="pygsl"
+package_version="$( pip3 search "$package_name" | grep "^$package_name " | cut -f 2 -d ' ' | tr -d '()' )"
+# ^-- gets current version number from pypi
+
+package_description="PyGSL provides a Python interface to the GNU Scientific Library."
+
+VERSION=${VERSION:-$package_version}
+
+module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
+install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$VERSION/python$PYTHON_VERSION_TAG}"
+
+echo "Installing to: $install_prefix"
+pip3 install \
+    --no-binary :all: \
+    --install-option="--prefix=$install_prefix" \
+    --install-option="--install-headers=$install_prefix/include" \
+    "$package_name==$VERSION"
+
+make_module \
+          -d \
+          -c "${package_name}" \
+          -r "gcc-libs/4.9.2" \
+          -r "$package_py" \
+          -r "gsl/1.16/gnu-4.9.2" \
+          -o "$module_dir/$package_name/$package_version" \
+          -e "CPATH:$install_prefix/include" \
+          -e "INCLUDEPATH:$install_prefix/include" \
+          -e "PYTHONPATH:$install_prefix/lib/python$PYTHON_VERSION_TAG/site-packages" \
+          -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+echo "Module files put in: $module_dir" >&2
+chmod a+rx "$module_dir"
