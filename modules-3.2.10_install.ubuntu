@@ -13,6 +13,7 @@ MODULE_ROOT_PATH=/shared/ucl/apps/modulefiles/applications:/shared/ucl/apps/modu
 
 TCL_VERSION=8.6.4
 
+TCL_PREFIX=$INSTALL_PREFIX/tcl/$TCL_VERSION
 
 SHA256=${SHA256:-fb05c82a83477805a1d97737a9f0ca0db23f69b7bce504f1609ba99477b03955}
 TCLSHA256=${TCLSHA256:-9e6ed94c981c1d0c5f5fefb8112d06c6bf4d050a7327e95e71d417c416519c8d}
@@ -36,7 +37,7 @@ tar -xf tcl${TCL_VERSION}-src.tar.gz
 
 cd tcl${TCL_VERSION}/unix
 
-./configure --prefix=${temp_dir}/tmp_tcl_prefix --disable-shared --enable-64bit --disable-threads
+./configure --prefix=$TCL_PREFIX --disable-shared --enable-64bit --disable-threads
 make && make install
 # Unfortunately the build tests for Tcl require threads, which require shared libraries, which disables static library building.
 # C_C
@@ -49,9 +50,9 @@ sed --in-place -e 's/^@\([^M]\)/#@\1/' init/.modulespath.in
 ./configure \
   --prefix=${INSTALL_PREFIX} \
   --with-static=yes \
-  --with-tcl-inc=${temp_dir}/tmp_tcl_prefix/include \
-  --with-tcl-lib=${temp_dir}/tmp_tcl_prefix/lib \
-  --with-tcl=${temp_dir}/tmp_tcl_prefix/lib \
+  --with-tcl-inc=$TCL_PREFIX/include \
+  --with-tcl-lib=$TCL_PREFIX/lib \
+  --with-tcl=$TCL_PREFIX/lib \
   --with-tcl-ver=8.6 \
   --with-tclx-ver=8.6 \
   --without-tclx \
