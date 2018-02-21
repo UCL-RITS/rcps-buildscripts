@@ -1,43 +1,44 @@
 #!/usr/bin/env bash
 
-set -o errexit -o nounset
+set -o errexit
+
+#Normally these blocks are in an order that aids readability, but here we need the Python version before we
+#  can determine the labels for the build environment
+
 source includes/source_includes.sh
 
-# Normally we'd put requirements after package info, but we need a Python module to get pip
 module purge
 require gcc-libs/4.9.2
-package_py=python3/3.6
-require $package_py
+require compilers/gnu/4.9.2
+require "python3/$python_version_tag"
 require gsl/1.16/gnu-4.9.2
 
+python_version_tag="${PYTHON_VERSION_TAG:-3.6}"
+package_variant="python$python_version_tag"
+
 package_name="pygsl"
-package_version="$( pip3 search "$package_name" | grep "^$package_name " | cut -f 2 -d ' ' | tr -d '()' )"
-# ^-- gets current version number from pypi
+package_version=${VERSION:-$(python3 /shared/ucl/apps/build_scripts/files/pypiver.py $package_name)}
+package_description="PyGSL provides Python bindings for the GNU Scientific Library."
 
-package_description="PyGSL provides a Python interface to the GNU Scientific Library."
+make_build_env ""
 
-VERSION=${VERSION:-$package_version}
-
-module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
-install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$VERSION/python$PYTHON_VERSION_TAG}"
-
-echo "Installing to: $install_prefix"
-pip3 install \
-    --no-binary :all: \
+pip install \
     --install-option="--prefix=$install_prefix" \
-    --install-option="--install-headers=$install_prefix/include" \
-    "$package_name==$VERSION"
+    --install-option="--install-headers=$install_prefix/includes" \
+    pygsl=="${package_version}"
 
 make_module \
-          -d \
-          -c "${package_name}" \
-          -r "gcc-libs/4.9.2" \
-          -r "$package_py" \
-          -r "gsl/1.16/gnu-4.9.2" \
-          -o "$module_dir/$package_name/$package_version" \
-          -e "CPATH:$install_prefix/include" \
-          -e "INCLUDEPATH:$install_prefix/include" \
-          -e "PYTHONPATH:$install_prefix/lib/python$PYTHON_VERSION_TAG/site-packages" \
-          -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+    -o "${module_dir}/${package_label}" \
+    -p "$install_prefix" \
+    -e "PYTHONPATH:$install_prefix/lib/python$PYTHON_VERSION_TAG/site-packages" \
+    -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -r "compilers/gnu/4.9.2" \
+    -r "python3/$python_version_tag" \
+    -r "gsl/1.16/gnu-4.9.2"
 echo "Module files put in: $module_dir" >&2
 chmod a+rx "$module_dir"
+
+
+
