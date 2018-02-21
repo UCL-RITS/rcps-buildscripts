@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="lapack"
+package_version="3.8.0"
+package_description="LAPACK is a reference library of routines for Linear Algebra. It is not recommended for use, as its ABI is replicated in the much higher-performance libraries OpenBLAS, MKL, or ATLAS instead."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+
+    make_build_env ""
+
+    package_url="http://www.netlib.org/lapack/lapack-${package_version}.tar.gz"
+    package_file="lapack-${package_version}.tar.gz"
+    unpack_dir="lapack-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha256:deb22cc4a6120bff72621155a9917f485f96ef8319ac074a7afbc68aab88bcf6 lapack-3.8.0.tar.gz
+
+    tar -xf "$package_file"
+
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    mkdir build
+    cd build
+    cmake \
+        -DBUILD_SHARED_LIBS=ON \
+        -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+        -DCBLAS=ON \
+        -DBUILD_TESTING=ON \
+        ..
+    cd ..
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+    cd build
+
+    # This can build in parallel and otherwise takes a little while.
+    use_nprocs="$(( $(nproc) - 1 ))"
+    if [[ "$use_nprocs" -lt 1 ]]; then use_nprocs=1; fi
+
+    make -l "$use_nprocs" -j
+    cd ..
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    cd build
+    make test
+
+    make install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs \
+        -c "$package_name" \
+        -w "$package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+    cd ..
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
