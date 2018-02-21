@@ -11,8 +11,8 @@ source includes/source_includes.sh
 _env_setup() {
     module purge
     require gcc-libs
-    require compilers/intel/2017
-    require mpi/intel/2017
+    require compilers/intel/2017/update1
+    require mpi/intel/2017/update1/intel
     require arpack-ng
     require python2
 
