@@ -11,7 +11,7 @@ VERSION=${VERSION:-2.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SHA1=${SHA1:-5db17d71306139b811a218d8a8cf98e12e1f58ae}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gnu.org/gnu/gsl/gsl-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/gsl/gsl-${VERSION}.tar.gz}
 
 OPTS=""
 
