@@ -18,10 +18,6 @@ OPTS=""
 
 set -e
 
-if [ "${COMPILER_TAG:0:5}" == "intel" ]; then
-  echo "DETECTED INTEL COMPILERS - SETTING FP MODEL TO STRICT"
-  OPTS='CFLAGS="-fp-model strict"'
-fi
 
 mkdir -p /dev/shm/${NAME}
 
@@ -38,7 +34,12 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 
-./configure --prefix=$INSTALL_PREFIX ${OPTS}
+if [ "${COMPILER_TAG:0:5}" == "intel" ]; then
+  echo "DETECTED INTEL COMPILERS - SETTING FP MODEL TO STRICT"
+  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-fp-model strict" 
+else
+  ./configure --prefix=$INSTALL_PREFIX 
+fi
 make
 make check
 make install
