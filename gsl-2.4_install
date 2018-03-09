@@ -35,8 +35,8 @@ tar -xvf $archive
 cd ${NAME}-${VERSION}
 
 if [ "${COMPILER_TAG:0:5}" == "intel" ]; then
-  echo "DETECTED INTEL COMPILERS - SETTING FP MODEL TO STRICT"
-  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O2 -fp-model strict" 
+  echo "DETECTED INTEL COMPILERS - SETTING FP MODEL TO PRECISE"
+  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O2 -fp-model precise" 
 elif [ "${COMPILER_TAG}" == "gnu-4.9.2" ]; then
   echo "DETECTED BUGGY GNU COMPILERS - DISABLING OPTIMIZATION"
   ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O1" 
