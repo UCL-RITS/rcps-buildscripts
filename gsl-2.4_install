@@ -39,7 +39,8 @@ if [ "${COMPILER_TAG:0:5}" == "intel" ]; then
   ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-fp-model strict" 
 elif [ "${COMPILER_TAG}" == "gnu-4.9.2" ]; then
   echo "DETECTED BUGGY GNU COMPILERS - DISABLING OPTIMIZATION"
-  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O0" 
+  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O1" 
+
 else
   ./configure --prefix=$INSTALL_PREFIX 
 fi
