@@ -8,7 +8,7 @@ SHELL = /bin/sh
 
 CC =		mpiicpc 
 CCFLAGS =	-g -O3 -qopenmp -DLAMMPS_MEMALIGN=64 -qno-offload \
-                -xSSE4.2 -fno-alias -ansi-alias -restrict q-override-limits
+                -xSSE4.2 -fno-alias -ansi-alias -restrict -qoverride-limits
 SHFLAGS =	-fPIC
 DEPFLAGS =	-M
 
