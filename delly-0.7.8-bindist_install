@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="delly"
+package_version="0.7.8"
+package_description="Delly is an integrated structural variant (SV) prediction method that can discover, genotype and visualize deletions, tandem duplications, inversions and translocations at single-nucleotide resolution in short-read massively parallel sequencing data."
+package_variant="bindist"
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+
+    make_build_env ""
+
+    package_url="https://github.com/dellytools/delly/releases/download/v0.7.8/delly_v${package_version}_parallel_linux_x86_64bit"
+    package_file="delly_v${package_version}_parallel_linux_x86_64bit"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha256:0ea0dcc5d068d42eeef05369602e612fb106c5495db24b7a051e088b99b27461 "${package_file}"
+}
+
+_pre_build() {
+    :
+}
+
+_build() {
+    :
+}
+
+_post_build() {
+    cd "$build_dir"
+
+    mkdir -p "$install_prefix/bin"
+    cp "$package_file" "$install_prefix/bin/"
+   
+    pushd "$install_prefix"
+    ln -s "$package_file" delly
+    popd
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "$package_name" \
+        -w "$package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+    cd ..
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
