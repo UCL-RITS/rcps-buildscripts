@@ -6,14 +6,15 @@
 # by Brian Alston, October 2016 V1.1 
 # Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
 # Updated May 2017 to default to R 3.4.0
+# Updated March 2018 to default to R 3.4.2
 #
 # usage: R-package_install <R package name>
 #
-# Will need modules: r/recommended
+# Will need modules: r/recommended or possibly r/new
 
 set -e
 
-VERSION=${VERSION:-3.4.0}
+VERSION=${VERSION:-3.4.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
