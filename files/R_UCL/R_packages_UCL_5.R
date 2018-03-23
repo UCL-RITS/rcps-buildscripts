@@ -149,6 +149,9 @@ install.packages ("rmarkdown", lib=mainLib, repos=repros);
 # For RStudio server Oct 2017
 install.packages ("tidyverse", lib=mainLib, repos=repros);
 
+# For Cheng Zhang (cheng.zhang@ucl.ac.uk) March 2018
+install.packages ("bio3d", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
