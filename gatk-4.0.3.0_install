@@ -8,7 +8,7 @@
 
 APPNAME=${APPNAME:-gatk}
 VERSION=${VERSION:-4.0.3.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${APPNAME}-bsd/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/gatk/releases/download/${VERSION}/gatk-${VERSION}.zip}
 SHA256=${SHA256:-2b0bd87743cce2d489f430433049684bbd0229c2fbdd0a4daa4c3294a8cb8eed}
 
