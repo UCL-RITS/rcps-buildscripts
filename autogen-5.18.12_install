@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="autogen"
+package_version="5.18.12"
+package_description="AutoGen is a tool designed to simplify the creation and maintenance of programs that contain large amounts of repetitious text."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+    require libbdwgc/7.4.2/gnu-4.9.2
+    require guile/2.0.11/gnu-4.9.2
+
+    make_build_env ""
+
+    package_url="http://ftp.gnu.org/gnu/autogen/rel${package_version}/autogen-${package_version}.tar.xz"
+    package_file="autogen-${package_version}.tar.xz"
+    unpack_dir="autogen-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha256:be3ba62e883185b6ee8475edae97d7197d701d6b9ad9c3d2df53697110c1bfd8 autogen-5.18.12.tar.xz
+
+    tar -xf "$package_file"
+
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    ./configure --prefix="${install_prefix}"
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+    make 
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    make check
+
+    make install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs/gnu-4.9.2 \
+        -r libbdwgc/7.4.2/gnu-4.9.2 \
+        -r guile/2.0.11/gnu-4.9.2 \
+        -c "$package_name" \
+        -w "$package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
