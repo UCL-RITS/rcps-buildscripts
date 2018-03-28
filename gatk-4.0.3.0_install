@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gatk BSD three clause version.
+#
+# by Owain Kenway, 2018
+#
+
+APPNAME=${APPNAME:-gatk}
+VERSION=${VERSION:-4.0.3.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/gatk/releases/download/${VERSION}/gatk-${VERSION}.zip}
+SHA256=${SHA256:-2b0bd87743cce2d489f430433049684bbd0229c2fbdd0a4daa4c3294a8cb8eed}
+
+
+set -e
+
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+unzip $archive
