@@ -22,14 +22,24 @@ cd $temp_dir
 wget $SRC_ARCHIVE
 # wget $DOC_ARCHIVE
 
+# Unfortunately this doesn't work from within a script!!!!! Horror!!
 tar xvzf $PRODUCT.tgz
 # gunzip $DOC.tgz
 cd $PRODUCT
-sh ./INSTALL <<EOF
-Y
-accept
-/shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a
-/shared/ucl/apps/Matlab/R2018a/full
-N
-N
-EOF
+
+# Unfortunately this doesn't work from within a script!!!!! Horror!!
+# sh ./INSTALL <<EOF
+# Y
+# accept
+# /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a
+# /shared/ucl/apps/Matlab/R2018a/full
+# N
+# N
+# EOF
+
+echo ""
+echo "Cannot be installed from a script please install by hand from $temp_dir"
+echo ""
+echo "use: /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a"
+echo "     /shared/ucl/apps/Matlab/R2018a/full"
+echo ""
