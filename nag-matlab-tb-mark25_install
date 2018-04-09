@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # This script installs NAG Toolbox for Matlab Mark 25.
 # Brian Alston April 2018
@@ -25,7 +25,7 @@ wget $SRC_ARCHIVE
 tar xvzf $PRODUCT.tgz
 # gunzip $DOC.tgz
 cd $PRODUCT
-bash ./INSTALL <<EOF
+sh ./INSTALL <<EOF
 Y
 accept
 /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a
