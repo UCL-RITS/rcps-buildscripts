@@ -25,7 +25,7 @@ wget $SRC_ARCHIVE
 tar xvzf $PRODUCT.tgz
 # gunzip $DOC.tgz
 cd $PRODUCT
-./INSTALL <<EOF
+bash ./INSTALL <<EOF
 Y
 accept
 /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a
