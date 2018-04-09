@@ -30,6 +30,6 @@ tar -xvf $archive
 
 cd lmdb-LMDB_${VERSION}/libraries/liblmdb
 
-sed -i.bak "s|/usr/local/|${INSTALL_PREFIX}|g" Makefile
+sed -i.bak "s|/usr/local|${INSTALL_PREFIX}|g" Makefile
 make 
 make install
