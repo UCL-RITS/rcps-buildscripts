@@ -33,6 +33,6 @@ cd ${NAME}-${VERSION}
 mkdir build
 cd build
 
-cmake ../ -DCMAKE_INSTALL_PREFIX="$install_prefix" 
+cmake ../ -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" 
 make 
 make install
