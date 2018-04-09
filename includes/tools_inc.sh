@@ -100,21 +100,39 @@ make_build_env () {
     prod_apps_dir="/shared/ucl/apps"
     service_user="ccspapp"
 
-    if [[ -n "$1" ]]; then
-        prefix="$1"
-    elif [[ -n "${package_name}" ]]; then
+    if [[ -n "${1:-}" ]]; then
+        if [[ "${1:0:2}" == "--" ]] && [[ ${#1} -gt 2 ]]; then
+            while [[ -n "${1:-}" ]]; do
+                case "$1" in
+                    --tmp-root=*)
+                        tmp_root_dir="${1#--tmp-root=}"
+                        ;;
+                    --prefix=*)
+                        prefix="${1#--prefix=}"
+                        ;;
+                    *)
+                        echo "Error: unrecognised option passed to make_build_env" >&2
+                        exit 1
+                        ;;
+                esac
+                shift
+            done
+        else
+            prefix="$1"
+            if [[ -n "${2:-}" ]]; then
+                tmp_root_dir="$2"
+            elif [[ -n "$TMPDIR" ]]; then
+                tmp_root_dir="$TMPDIR"
+            else
+                tmp_root_dir="/tmp"
+            fi
+        fi
+    elif [[ -n "${package_name:-}" ]]; then
         prefix="${package_name}"
     else
         prefix="tmp."
     fi
 
-    if [[ -n "$2" ]]; then
-        tmp_root_dir="$2"
-    elif [[ -n "$TMPDIR" ]]; then
-        tmp_root_dir="$TMPDIR"
-    else
-        tmp_root_dir="/tmp"
-    fi
 
     # These definitions are intended to leave the function
     #  but are *not* exported because only *bash* needs them
@@ -122,8 +140,8 @@ make_build_env () {
     build_dir="${BUILD_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-build.XXXXXXXXXX")"}"
     module_dir="${MODULE_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-modules.XXXXXXXXXX")"}"
 
-    if [[ -n "${package_name}" ]] && [[ -n "${package_version}" ]]; then
-        package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}${COMPILER_TAG:+/$COMPILER_TAG}"
+    if [[ -n "${package_name:-}" ]] && [[ -n "${package_version:-}" ]]; then
+        package_label="${package_name}/${package_version}${package_variant:+-${package_variant:-}}${COMPILER_TAG:+/$COMPILER_TAG}"
     else
         echo "Error: package name and package version variables have not been set." >&2
         exit 1
