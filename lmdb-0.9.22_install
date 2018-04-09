@@ -28,7 +28,7 @@ sha512sum -c <<< "$SHA512 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}/libraries/liblmdb
+cd lmdb-LMDB_${VERSION}/libraries/liblmdb
 
 sed -i.bak "s|/usr/local/|${INSTALL_PREFIX}|g" Makefile
 make 
