@@ -33,6 +33,8 @@ cd ${NAME}-${VERSION}
 mkdir build
 cd build
 
+export CXXFLAGS="-fPIC"
+
 cmake ../ -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" 
 make 
 make install
