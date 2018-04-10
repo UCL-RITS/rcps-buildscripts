@@ -40,8 +40,8 @@ make
 make install
 
 # make static version:
-mkdir build-static
-cd build-static
+mkdir ../build-static
+cd ../build-static
 
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ../
 
