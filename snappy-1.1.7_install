@@ -30,10 +30,21 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 
-mkdir build
-cd build
+# make shared version:
+mkdir build-shared
+cd build-shared
 
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_STATIC_LIBS=yes -DBUILD_SHARED_LIBS=yes ../
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=yes ../
 
 make 
 make install
+
+# make static version:
+mkdir build-static
+cd build-static
+
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ../
+
+make 
+make install
+
