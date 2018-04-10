@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Google Protocol Buffers
+#
+
+VERSION=${VERSION:-3.5.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/protobuf/${VERSION}/${COMPILER_TAG}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/protobuf.git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# Use the same environment used for building R
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python/3.6.3
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+cd protobuf
+
+git checkout v${VERSION}
+
+# Install C++ version
+
+./autogen.sh
+./configure --prefix=${INSTALL_PREFIX}
+make | tee make_log
+make check | tee make-check_log
+make install | tee make-install_log
+
+# Install python 3 version
+
+
