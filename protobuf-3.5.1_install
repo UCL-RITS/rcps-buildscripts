@@ -19,7 +19,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-require python/3.6.3
+require python3/3.6
 
 temp_dir=`mktemp -d -p /dev/shm`
 
@@ -39,6 +39,9 @@ make | tee make_log
 make check | tee make-check_log
 make install | tee make-install_log
 
-# Install python 3 version
+export PATH=$INSTALL_PREFIX/bin:$PATH
+export LD_LIBARAY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PREFIX
 
+# Install python 3 version
+python3 setup.py install --prefix=${INSTALL_PREFIX}
 
