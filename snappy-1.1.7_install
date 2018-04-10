@@ -33,7 +33,7 @@ cd ${NAME}-${VERSION}
 mkdir build
 cd build
 
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ../
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_STATIC_LIBS=yes -DBUILD_SHARED_LIBS=yes ../
 
 make 
 make install
