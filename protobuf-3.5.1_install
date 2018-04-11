@@ -47,5 +47,6 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 export LD_LIBARAY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PREFIX
 
 # Install python 3 version
+cd python
 python3 setup.py install --prefix=${INSTALL_PREFIX}
 
