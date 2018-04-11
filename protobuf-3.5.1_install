@@ -4,6 +4,8 @@
 # Installing Google Protocol Buffers
 #
 
+set -e
+
 VERSION=${VERSION:-3.5.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/protobuf/${VERSION}/${COMPILER_TAG}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/protobuf.git}
