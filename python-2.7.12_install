@@ -7,9 +7,9 @@
 #
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-2.7.9}
+VERSION=${VERSION:-2.7.12}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-38d530f7efc373d64a8fb1637e3baaa7}
+MD5=${MD5:-57dffcee9cee8bb2ab5f82af1d8e9a69}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.xz}
 
 set -e
