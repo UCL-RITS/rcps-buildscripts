@@ -100,6 +100,9 @@ make_build_env () {
     prod_apps_dir="/shared/ucl/apps"
     service_user="ccspapp"
 
+    prefix="${package_name:-tmp.}"
+    tmp_root_dir="${TMPDIR:-/tmp}"
+
     if [[ -n "${1:-}" ]]; then
         if [[ "${1:0:2}" == "--" ]] && [[ ${#1} -gt 2 ]]; then
             while [[ -n "${1:-}" ]]; do
@@ -121,16 +124,8 @@ make_build_env () {
             prefix="$1"
             if [[ -n "${2:-}" ]]; then
                 tmp_root_dir="$2"
-            elif [[ -n "$TMPDIR" ]]; then
-                tmp_root_dir="$TMPDIR"
-            else
-                tmp_root_dir="/tmp"
             fi
         fi
-    elif [[ -n "${package_name:-}" ]]; then
-        prefix="${package_name}"
-    else
-        prefix="tmp."
     fi
 
 
