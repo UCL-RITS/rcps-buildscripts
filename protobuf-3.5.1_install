@@ -21,6 +21,8 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require python3/3.6
 
+mkdir -p /dev/shm/protobuf
+
 temp_dir=`mktemp -d -p /dev/shm/protobuf`
 
 cd $temp_dir
