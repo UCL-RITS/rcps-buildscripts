@@ -82,7 +82,7 @@ _post_build() {
         -e PATH:"$install_prefix/bin" \
         -e MANPATH:"$install_prefix/man" \
         -p "$install_prefix" \
-        -c "gcc-libs/${package_version}" \
+        -c "gcc-libs" \
         -w "Base module for $package_name ${package_version} -- does not set the standard compiler environment variables. $package_description"
     make_module \
         -o "${module_dir}/compilers/gnu/${package_version}" \
