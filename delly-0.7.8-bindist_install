@@ -40,7 +40,8 @@ _post_build() {
     mkdir -p "$install_prefix/bin"
     cp "$package_file" "$install_prefix/bin/"
    
-    pushd "$install_prefix"
+    pushd "$install_prefix/bin"
+    chmod a+x "$package_file"
     ln -s "$package_file" delly
     popd
 
