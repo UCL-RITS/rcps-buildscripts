@@ -73,12 +73,9 @@ _build() {
 _post_build() {
     cd "$unpack_dir"
 
-    # The MPFR tests check the version of GMP using the wrong header -- the system header instead of the temporary in-tree build one
-    #  That makes the tests fail if they're not the same.
-    # I tried copying the header out to a new path and adding that to CPATH or INCLUDE_PATH but neither worked, so I'm just going to ignore it for now.
     export CPATH="$(pwd)/host-x86_64-pc-linux-gnu/gmp/gmp.h:$CPATH"
     export INCLUDE_PATH="$(pwd)/host-x86_64-pc-linux-gnu/gmp/gmp.h:$INCLUDE_PATH"
-    make check || echo "We expect the tversion test for MPFR fail due to the test using the system gmp.h instead of the new one. Please check for other errors." >&2
+    make check
 
     make install
 
