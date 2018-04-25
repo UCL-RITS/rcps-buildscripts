@@ -5,10 +5,11 @@
 #
 # 
 #
+OCVPYVER=${OCVPYVER:-2}
 
 NAME=${NAME:-opencv}
 VERSION=${VERSION:-2.4.13}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}/python-${OCVPYVER}
 MD5=${MD5:-8feb45a71adad89b8017a777477c3eff}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/${NAME}/${NAME}/archive/${VERSION}.tar.gz}
 
@@ -20,7 +21,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 prereq gcc-libs
 prereq compilers/gnu
-prereq python2/recommended
+prereq python${OCVPYVER}/recommended
 
 mkdir -p /dev/shm/$NAME
 temp_dir=`mktemp -d -p /dev/shm/$NAME`
