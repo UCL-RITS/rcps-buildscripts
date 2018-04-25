@@ -34,7 +34,7 @@ archive=$(basename "${SRC_ARCHIVE}")
 
 sha256sum -c <<< "$SHA256 $archive"
 
-tar -xvf $archive
+unzip $archive
 cd ${NAME}-${VERSION}
 mkdir build
 cd build
