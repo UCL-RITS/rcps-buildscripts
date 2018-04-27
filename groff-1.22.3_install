@@ -10,7 +10,7 @@
 
 VERSION=${VERSION:-1.22.3}
 # VER=`echo $VERSION | sed 's/\.//'`
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/groff/${VERSION}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/groff/${VERSION}}
 MD5=${MD5:-cc825fa64bc7306a885f2fb2268d3ec5}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/groff/groff-${VERSION}.tar.gz}
 
