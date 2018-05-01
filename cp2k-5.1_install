@@ -22,6 +22,13 @@ dotversion=$(echo $VERSION | sed 's|_|\.|g')
 ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
 REGTEST=${REGTEST:-}
 USE_SVN=${USE_SVN:-}
+USE_PLUMED=${USE_PLUMED:-}
+
+if [[ "${USE_PLUMED}" == "yes" ]] 
+then
+  ARCH=${ARCH}-plumed
+  echo ">>> USING PLUMED <<<"
+fi
 
 set -e
 
