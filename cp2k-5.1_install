@@ -11,7 +11,7 @@
 # SVN checkouts are frequently failing, so probably need to get separately first.
 
 APPNAME=${APPNAME:-cp2k}
-VERSION=${VERSION:-4_1}
+VERSION=${VERSION:-5_1}
 TYPE=${TYPE:-popt}
 ARCH=${ARCH:-UCL-x86-64-gfortran}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
