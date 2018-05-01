@@ -31,6 +31,18 @@ archive=$(basename "${SRC_ARCHIVE}")
 
 CHECKSUM=$(sha1sum "$archive"| awk '{print $1}')
 
+# Disable Intel only options if we detect GCC
+IFCORE="-lifcore"
+ISTRICT="-fp-model strict"
+IOPTS="-axSSE2,AVX"
+
+if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
+then
+  IFCORE=""
+  ISTRICT=""
+  IOPTS=""
+fi
+
 if [ "$SHA1" == "$CHECKSUM" ]
 then
   tar -xzf "$archive"
@@ -39,10 +51,10 @@ then
   if [ "${BLAS_TAG}" == "openblas" ]
   then
     # -fp-model strict required to help the tests pass.
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX -fp-model strict"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas ${IFCORE} -lmatheval -lfl" CXXFLAGS="-O3 ${IOPTS} ${ISTRICT}"
   elif [ "${BLAS_TAG}" == "atlas" ]
   then
-    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl" CXXFLAGS="-O3 ${IOPTS}"
   elif [ "${BLAS_TAG}" == "mkl" ]
   then
     echo "------------------------------------------------"
