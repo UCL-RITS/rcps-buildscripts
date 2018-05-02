@@ -2,6 +2,10 @@
 # Use gnu compilers 4.9.2
 # OpenMPI 3.0.0 (and have gone to -D__MPI_VERSION=3 below, 2 was necessary with 1.8.4)
 
+# PLUMED
+include /shared/ucl/apps/plumed/2.4.1/gnu-4.9.2/openblas/lib/plumed/src/lib/Plumed.inc
+EXTERNAL_OBJECTS=$(PLUMED_STATIC_DEPENDENCIES)
+
 CC         = mpicc
 CPP        =
 FC         = mpif90
@@ -29,6 +33,3 @@ FCFLAGS    = $(DFLAGS) -pthread -O2 -ffree-form -ffree-line-length-none\
 LDFLAGS    = $(FCFLAGS) -pthread -static-libgfortran -fopenmp
 LIBS       = $(SMM_LIB) $(QUIP_LIB)/libquip.a $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a -lz -ldl -lstdc++ 
 
-# PLUMED
-include /shared/ucl/apps/plumed/2.4.1/gnu-4.9.2/openblas/lib/plumed/src/lib/Plumed.inc
-EXTERNAL_OBJECTS=$(PLUMED_STATIC_DEPENDENCIES)
