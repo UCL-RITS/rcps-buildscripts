@@ -27,7 +27,7 @@ FCFLAGS    = $(DFLAGS) -pthread -O2 -ffree-form -ffree-line-length-none\
              -mtune=native\
              -I$(ACML_INC) -I$(FFTW_INC)  -I$(LIBINT_INC) -I$(LIBXC_INC) -I$(QUIP_INC) 
 LDFLAGS    = $(FCFLAGS) -pthread -static-libgfortran 
-LIBS       = $(SMM_LIB) $(QUIP_LIB)/libquip.a $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a -lz -ldl -lstdc++ -lmpi_cxx -lrt
+LIBS       = $(SMM_LIB) $(QUIP_LIB)/libquip.a $(SCALAPACK_LIB)/libscalapack.a $(ACML_LIB)/libopenblas.a $(FFTW_LIB)/libfftw3.a $(LIBXC_LIB)/libxcf90.a $(LIBXC_LIB)/libxc.a $(LIBINT_LIB)/libderiv.a $(LIBINT_LIB)/libint.a -lz -ldl -lstdc++ 
 
 # PLUMED
 include /shared/ucl/apps/plumed/2.4.1/gnu-4.9.2/openblas/lib/plumed/src/lib/Plumed.inc
