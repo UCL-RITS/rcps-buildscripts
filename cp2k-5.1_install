@@ -19,7 +19,6 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/$COMPILER_
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
 LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-/shared/ucl/apps/cp2k/sources/cp2k-${VERSION}}
 dotversion=$(echo $VERSION | sed 's|_|\.|g')
-ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
 REGTEST=${REGTEST:-}
 USE_SVN=${USE_SVN:-}
 USE_PLUMED=${USE_PLUMED:-}
@@ -29,6 +28,8 @@ then
   ARCH=${ARCH}-plumed
   echo ">>> USING PLUMED <<<"
 fi
+
+ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
 
 set -e
 
