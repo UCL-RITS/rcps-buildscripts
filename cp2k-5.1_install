@@ -27,6 +27,7 @@ if [[ "${USE_PLUMED}" == "yes" ]]
 then
   ARCH=${ARCH}-plumed
   echo ">>> USING PLUMED <<<"
+  INSTALL_PREFIX=${INSTALL_PREFIX}/plumed
 fi
 
 ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
