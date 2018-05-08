@@ -33,5 +33,5 @@ cd ${NAME}-${VERSION}
 cp /shared/ucl/apps/build_scripts/files/caffe-${TYPE}.Makefile.config Makefile.config
 make 
 make all
-#make test
-#make runtest
+make test
+make runtest
