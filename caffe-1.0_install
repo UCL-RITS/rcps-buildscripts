@@ -13,7 +13,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
 SHA256=${SHA256:-71d3c9eb8a183150f965a465824d01fe82826c22505f7aa314f700ace03fa77f}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/BVLC/caffe/archive/${VERSION}.tar.gz}
-
+TESTS=yes
 
 set -e
 
@@ -33,5 +33,8 @@ cd ${NAME}-${VERSION}
 cp /shared/ucl/apps/build_scripts/files/caffe-${TYPE}.Makefile.config Makefile.config
 make 
 make all
-make test
-make runtest
+if [ "$TESTS" == "yes" ]
+then
+  make test
+  make runtest
+fi
