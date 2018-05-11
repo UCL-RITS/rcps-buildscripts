@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NAMD
+#
+# by Owain Kenway, 2015 
+#
+# Updated after NAMD 2.12 bug discovered on Thomas IN:02970633 May 2018
+
+# You need to register and download a copy of NAMD and put the tar file 
+# somehwere.
+
+# Need to use the following modules:
+#
+# module unload compilers mpi
+# module load compilers/intel/2015/update2
+# module load mpi/intel/2015/update3/intel
+# module load fftw/2.1.5/intel-2015-update2
+
+
+VERSION=${VERSION:-2.12}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/intel2015}
+NANAME=${NANAME:-NAMD_${VERSION}_Source}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
+
+CHARMVER=${CHARMVER:-6.7.1}
+CHARMARC=${CHARMARC:-"mpi-linux-x86_64"}
+
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+
+mkdir -p /dev/shm/namd
+temp_dir=`mktemp -d -p /dev/shm/namd`
+
+cd $temp_dir
+
+tar zxvf $SRC_ARCHIVE
+
+ln -fsT `pwd`/${NANAME} ${INSTALL_PREFIX}/${NANAME}
+
+cd ${INSTALL_PREFIX}/${NANAME}
+
+# Fix for charm not being able to find f90
+mkdir uclbuildsupport
+ln -s `which $FC` uclbuildsupport/f90
+ln -s `which $FC` uclbuildsupport/f77
+ln -s `which $FC` uclbuildsupport/g77
+
+export PATH=`pwd`/uclbuildsupport:$PATH
+
+tar xvf charm-${CHARMVER}.tar
+export MPICXX=mpicxx
+
+cd charm-${CHARMVER}
+./build charm++ ${CHARMARC} --no-build-shared --with-production
+
+cd ..
+
+# Overwrite make.charm with the real location
+echo "CHARMBASE = ${INSTALL_PREFIX}/${NANAME}/charm-${CHARMVER}" > Make.charm
+
+cd arch
+cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
+patch < Linux-x86_64.tcl.patch
+patch < Linux-x86_64.fftw.patch
+
+cd ..
+./config Linux-x86_64-icc --charm-arch ${CHARMARC}
+
+cd Linux-x86_64-icc
+make
+
+cd ${temp_dir}/${NANAME}/Linux-x86_64-icc
+rm ${INSTALL_PREFIX}/${NANAME}
+mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
+for a in flipbinpdb flipdcd namd2 psfgen
+do
+  echo "Installing $a"
+  cp $a ${INSTALL_PREFIX}/${NANAME}/bin
+done
