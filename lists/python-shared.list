@@ -34,3 +34,6 @@ hy
 qutip
 xlsxwriter
 xlutils
+emcee
+mpmath
+hankel
