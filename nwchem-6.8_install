@@ -96,6 +96,7 @@ cp -r libraries "$INSTALL_PREFIX/data"
 cd "$NWCHEM_TOP/src/nwpw"
 cp -r libraryps "$INSTALL_PREFIX/data"
 chmod -R a+rx "$INSTALL_PREFIX/data"
+cp -r "$NWCHEM_TOP/examples" "$INSTALL_PREFIX"
 
 # create .nwchemrc
 cat <<EOT >> $INSTALL_PREFIX/.nwchemrc
