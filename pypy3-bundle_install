@@ -2,7 +2,7 @@
 
 # Package bundle builder for Pypy3
 
-python_compat_version=${PYTHON_COMPAT_VERSION:-3.5.0}
+python_compat_version=${PYTHON_COMPAT_VERSION:-3.5}
 install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/pypy/bundles}
 python_major_version=${PYTHON_MAJ_VERSION:-3}
 timestamp=$(date +"%s")
