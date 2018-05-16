@@ -1,19 +1,21 @@
-pysam==0.13
-pysamstats
+Cython
 requests
 nose
 numpy
 scipy
 matplotlib
-Cython
 biopython
 acora
 python-Levenshtein
+# Cython problems
 pandas
-ephem
+qutip
+#
+# Commented out because their C extensions need some testing with pypy
+# ephem
+# cvxopt
 networkx
 obspy
-cvxopt
 cutadapt
 lxml
 astropy
@@ -31,7 +33,6 @@ rply
 astor
 clint
 hy
-qutip
 xlsxwriter
 xlutils
 emcee

@@ -44,6 +44,8 @@ export BLAS
 
 pip install --upgrade pip
 
+old_IFS="$IFS"
+IFS=$'\n'
 for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
@@ -59,7 +61,7 @@ do
        pip install --no-binary $PIPNOBIN $entry
    fi
 done
-
+IFS="$old_IFS"
 
 cd ..
 ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}

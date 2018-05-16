@@ -54,6 +54,8 @@ export BLAS
 
 pip3 install --upgrade pip
 
+old_IFS="$IFS"
+IFS=$'\n'
 for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
    # Ignore blank and comment lines in the lists
@@ -71,7 +73,7 @@ do
        pip3 install --no-binary $PIPNOBIN $entry
    fi
 done
-
+IFS="$old_IFS"
 
 cd ..
 ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}
