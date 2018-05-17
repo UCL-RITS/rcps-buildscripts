@@ -32,7 +32,7 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 contrib/download_prerequisites
-./configure --prefix=$INSTALL_PREFIX --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-libgcj-multifile --enable-languages=c,c++,fortran,java,lto,objc --with-cpu=corei7 --disable-multilib
+./configure --prefix=$INSTALL_PREFIX --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-libgcj-multifile --enable-languages=c,c++,fortran,java,lto,objc --disable-multilib
 make -j 4
 
 make check
