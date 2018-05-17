@@ -2,7 +2,7 @@
 
 # Package bundle builder for Pypy3
 
-python_compat_version=${PYTHON_COMPAT_VERSION:-3.5.0}
+python_compat_version=${PYTHON_COMPAT_VERSION:-3.5}
 install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/pypy/bundles}
 python_major_version=${PYTHON_MAJ_VERSION:-3}
 timestamp=$(date +"%s")
@@ -33,6 +33,7 @@ require openblas/0.2.14/gnu-4.9.2
 mkdir -p "$install_prefix"
 
 cd "$install_prefix"
+echo "Making bundle install directory: $install_prefix/$timestamp-$python_major_version"
 mkdir "$timestamp-$python_major_version"
 cd "$timestamp-$python_major_version"
 
@@ -89,3 +90,4 @@ IFS="$old_IFS"
 
 cd ..
 ln -Tfs "$timestamp-$python_major_version" "pypy${python_major_version}-${python_compat_version}"
+echo "Linked bundle install directory to label-link: pypy${python_major_version}-${python_compat_version}"
