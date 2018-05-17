@@ -31,7 +31,6 @@ sha512sum -c <<< "$SHA512 $archive"
 tar -xvf $archive
 
 cd ${NAME}-${VERSION}
-contrib/download_prerequisites
 ./configure --prefix=$INSTALL_PREFIX --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-libgcj-multifile --enable-languages=c,c++,fortran,java,lto,objc --disable-multilib
 make -j 4
 
