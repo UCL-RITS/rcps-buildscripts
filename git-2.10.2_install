@@ -7,9 +7,10 @@
 #
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-2.3.5}
+VERSION=${VERSION:-2.10.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/git/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-be8c0bbb0c5ee6ab7cdcffd2c9375fe6}
+#MD5=${MD5:-be8c0bbb0c5ee6ab7cdcffd2c9375fe6}
+MD5=${MD5:-3cd1dca37be60668f482545716923b72}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.kernel.org/pub/software/scm/git/git-${VERSION}.tar.xz}
 
 set -e
