@@ -10,7 +10,7 @@
 VERSION=${VERSION:-1.8.13}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/subversion/$VERSION}
 MD5=${MD5:-4413417b529d7bdf82f74e50df02e88b}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https:/archive.apache.org/dist/subversion//subversion-${VERSION}.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://archive.apache.org/dist/subversion//subversion-${VERSION}.tar.bz2}
 
 SERF_VERSION=${SERF_VERSION:-1.3.8}
 SERF_MD5=${SERF_MD5:-92a9e90bf77d203de659d13adc2d1605}
