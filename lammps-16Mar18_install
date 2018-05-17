@@ -42,6 +42,9 @@ then
   elif hostname -A | grep -q thomas
   then
     cluster="thomas"
+  elif hostname -A | grep -q myriad
+  then
+    cluster="myriad"
   else
     echo "Unknown machine, exiting: $(hostname -A)"
     exit 1
