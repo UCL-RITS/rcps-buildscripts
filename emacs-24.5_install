@@ -10,7 +10,7 @@ NAME=${NAME:-emacs}
 VERSION=${VERSION:-24.5}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-50560ee00bac9bb9cf0e822764cd0832}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.heanet.ie/mirrors/gnu/emacs/emacs-${VERSION}.tar.xz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.gnu.org/gnu/emacs/emacs-${VERSION}.tar.xz}
 
 set -e
 
