@@ -6,9 +6,10 @@
 #
 # by Brian Alston, January 2017
 #
-# Updated January 2018 for Mathematica 11.2.
+# Updated January 2018 for Mathematica 11.3.
+# Updated May 2018 for MAthematica 11.3
 #
-# Will need modules: rcps-core/1.0.0, mathematica/11.2.0,git/2.10.2
+# Will need modules: rcps-core/1.0.0, mathematica/11.3.0 ,git/2.10.2
 
 VERSION=${VERSION:-2.2.20}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
@@ -28,7 +29,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
 require xorg-utils/X11R7.7
-require mathematica/11.2.0
+require mathematica/11.3.0
 require git/2.10.2
 
 temp_dir=`mktemp -d -p /dev/shm`
