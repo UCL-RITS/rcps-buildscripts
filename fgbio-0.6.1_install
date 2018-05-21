@@ -5,10 +5,10 @@
 #
 
 NAME=${NAME:-fgbio}
-VERSION=${VERSION:-0.5.1}
+VERSION=${VERSION:-0.6.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/fulcrumgenomics/fgbio/releases/download/${VERSION}/${NAME}-${VERSION}.jar}
-SHA256SUM=${SHA256SUM:-66bc4828f53565207c8c21070ada31a5fbe5eaffec30dbd8dcd5ecb07c0dac56}
+SHA256SUM=${SHA256SUM:-c35286ccf82158ffcc8944a063461b9aa8636499bb99f9df92a592adba95c854}
 
 set -e
 
