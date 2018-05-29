@@ -21,25 +21,16 @@ temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 
-CHECKSUM=`md5sum ${NAME}_${VERSION}.zip| awk '{print $1}'`
+unzip ${SRC_ARCHIVE}
 
-if [ "$MD5" == "$CHECKSUM" ]
-then
-  unzip ${SRC_ARCHIVE}
+cd ${NAME}_${VERSION}/source
+cp ../build/Makefile_MPI Makefile
+make hpc
 
-  cd ${NAME}_${VERSION}/source
-  cp ../build/Makefile_MPI Makefile
-  make hpc
+mkdir -p $INSTALL_PREFIX
+cp -R ../execute $INSTALL_PREFIX
 
-  mkdir -p $INSTALL_PREFIX
-  cp -R ../execute $INSTALL_PREFIX
+# The correct legdlp group needs to have been created and ccspapp has to be in it
+chgrp -Rv $GROUP $INSTALL_PREFIX
+chmod -Rv o-rwx $INSTALL_PREFIX
 
-  # The correct legdlp group needs to have been created and ccspapp has to be in it
-  chgrp -Rv $GROUP $INSTALL_PREFIX
-  chmod -Rv o-rwx $INSTALL_PREFIX
-
-else
-  echo "Hash mismatch."
-  echo "Expected: $MD5"
-  echo "Got: $CHECKSUM"
-fi
