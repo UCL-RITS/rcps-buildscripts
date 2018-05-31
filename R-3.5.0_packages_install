@@ -24,7 +24,7 @@
 
 set -e
 
-VERSION=${VERSION:-3.5.0}
+VERSION=${VERSION:-3.5.0}   
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
@@ -42,7 +42,7 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require openblas/0.2.14/gnu-4.9.2
 require java/1.8.0_92
-require fftw/3.3.4/gnu-4.9.2
+require fftw/3.3.6-pl2/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 require texinfo/5.2/gnu-4.9.2
 require texlive/2015
