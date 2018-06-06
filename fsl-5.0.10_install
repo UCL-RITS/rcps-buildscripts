@@ -49,7 +49,6 @@ then
   ./build
 
   mkdir -p $INSTALL_PREFIX
-  mv $INSTALL_PREFIX ${INSTALL_PREFIX}-old
   cp -r $FSLDIR $INSTALL_PREFIX
 
 # Disable until fixed for 5.0.10
