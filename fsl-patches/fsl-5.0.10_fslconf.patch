@@ -1,0 +1,16 @@
+--- etc/fslconf/fsl.sh.old      2015-10-01 15:01:17.703211488 +0100
++++ etc/fslconf/fsl.sh  2015-10-01 15:12:11.221398204 +0100
+@@ -49,10 +49,10 @@
+
+ # Set up development variables (not for the faint-hearted)
+ # Uncomment the following if you wish to compile FSL source code
+-#FSLCONFDIR=$FSLDIR/config
+-#FSLMACHTYPE=`$FSLDIR/etc/fslconf/fslmachtype.sh`
++FSLCONFDIR=$FSLDIR/config
++FSLMACHTYPE=`$FSLDIR/etc/fslconf/fslmachtype.sh`
+
+-#export FSLCONFDIR FSLMACHTYPE
++export FSLCONFDIR FSLMACHTYPE
+
+
+ ###################################################
