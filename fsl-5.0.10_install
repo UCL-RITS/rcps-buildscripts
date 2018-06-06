@@ -7,9 +7,9 @@
 #
 
 NAME=${NAME:-fsl}
-VERSION=${VERSION:-5.0.9}
+VERSION=${VERSION:-5.0.10}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-45ff914dd3509a9deba21caabea260f4}
+MD5=${MD5:-7f114cbf2d9155f45994b627523418fd}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-${VERSION}-sources.tar.gz}
 PATCHES=${PATCHES:-/shared/ucl/apps/build_scripts/fsl-patches}
 
