@@ -52,7 +52,7 @@ then
   cp -r $FSLDIR $INSTALL_PREFIX
 
 # Disable until fixed for 5.0.10
-cd $INSTALL_PREFIX/bin
+cd $INSTALL_PREFIX/fsl/bin
 patch -p0 -i ../fsl-${VERSION}_parallel.patch
 
 else
