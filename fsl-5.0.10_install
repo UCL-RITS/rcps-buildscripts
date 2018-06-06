@@ -52,7 +52,8 @@ then
   cp -r $FSLDIR $INSTALL_PREFIX
 
 # Disable until fixed for 5.0.10
-#  patch -p0 -i fsl-${VERSION}_parallel.patch
+# cd $INSTALL_PREFIX/bin
+#  patch -p0 -i ../fsl-${VERSION}_parallel.patch
 
 else
   echo "Hash mismatch."
