@@ -3,8 +3,6 @@
 ###############################################
 # Installing FSL
 #
-# by Heather Kelly, 2015
-#
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-5.0.10}
@@ -32,7 +30,7 @@ then
 
   cp $PATCHES/*.patch $FSLDIR
   cd $FSLDIR
-  patch -p0 -i fsl-5.0.9_fslconf.patch
+  patch -p0 -i fsl-${VERSION}_fslconf.patch
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
   cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
@@ -52,6 +50,9 @@ then
 
   mkdir -p $INSTALL_PREFIX
   cp -r $FSLDIR $INSTALL_PREFIX
+
+# Disable until fixed for 5.0.10
+#  patch -p0 -i fsl-${VERSION}_parallel.patch
 
 else
   echo "Hash mismatch."
