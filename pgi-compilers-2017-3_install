@@ -59,6 +59,7 @@ _build() {
   export PGI_INSTALL_MPI=true
   export PGI_MPI_GPU_SUPPORT=true
   ./install
+  cat /shared/ucl/apps/build_scripts/pgi-patches/2017.3-siterc >> $install_prefix/linux86-64/17.3/bin/siterc
   echo "Installed to: $install_prefix"
 }
 
