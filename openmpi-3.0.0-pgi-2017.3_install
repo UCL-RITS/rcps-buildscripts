@@ -11,6 +11,8 @@ source includes/source_includes.sh
 _env_setup() {
     module purge
     require gcc-libs
+    require binutils/2.29.1/gnu-4.9.2
+    require libtool/2.4.6
     require compilers/pgi/2017.3
 
     make_build_env ""
