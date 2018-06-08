@@ -65,15 +65,7 @@ _build() {
 }
 
 _prepare_module() {
-  mkdir -p $module_dir/compilers/pgi/20${package_version}
-  cp -v $install_prefix/modulefiles/pgi64/${package_version} $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "# Customisation below" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "setenv COMPILER_TAG pgi-20${package_version}" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "conflict compilers" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "prereq gcc-libs/4.9.2" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "setenv LM_LICENSE_FILE $LM_LICENSE_FILE" >> $module_dir/compilers/pgi/20${package_version}/${COMPILER_TAG}
-  echo "Module files put in: $module_dir" >&2
-  chmod a+rx $module_dir
+  echo "Modules stuff is broken, ignoring."
 }
 
 _clean_up() {
