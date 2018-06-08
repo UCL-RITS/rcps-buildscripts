@@ -7,7 +7,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 package_name="PGI"
 package_version="18.5"
-src_urls=/shared/ucl/apps/PGI/installers/pgilinux-20${package_version:0:2}-${package_version:0:2}${package_version##*\.}-x86_64.tar.gz
+src_urls=/shared/ucl/apps/PGI/installers/pgilinux-20${package_version:0:2}-${package_version:0:2}${package_version##*\.}-x86-64.tar.gz
 # Optional: 
 # package_variant=""
 package_description="The PGI Compilers are primarily installed to build Gaussian, which is not compatible with other compilers. Please do not use these over the Intel or GNU compilers unless you have a good reason for doing so."
@@ -25,11 +25,12 @@ LM_LICENSE_FILE=27000@lic-pgi.ucl.ac.uk
 
 
 _env_setup() {
+  mkdir -p /dev/shm/${package_name}
   owd=$(pwd)
   package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
-  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
-  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  build_dir=${BUILD_DIR:-$(mktemp -d -p  /dev/shm/${package_name}/${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -p /dev/shm/${package_name}/${package_name}-modules.XXXXXXXX)}
   basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
   cd $build_dir
 }
