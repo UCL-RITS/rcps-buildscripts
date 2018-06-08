@@ -29,7 +29,7 @@ _env_setup() {
   owd=$(pwd)
   package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
-  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/${package_name}}
+  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/${package_name})}
   module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
   basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
   cd $build_dir
