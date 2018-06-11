@@ -35,7 +35,7 @@ make_build_env "$package_name" "$HOME/temporary-intel-dirs"
 # Package label is set by make_build_env but we need to override it
 #  (to include the compilers top-level)
 package_label="compilers/intel/$package_version"
-mpi_package_label="mpi/intel/2017/update3/intel"
+mpi_package_label="mpi/intel/2018/update3/intel"
 
 cd "$build_dir"
 
@@ -129,20 +129,20 @@ make_module -p "$install_prefix" \
             -e CLASSPATH:"$nprefix/linux/daal/lib/daal.jar" \
             -e MANPATH:"$cprefix/man/common" \
             -e MANPATH:"$nprefix/linux/man/en_US" \
-            -e MANPATH:"$cprefix/documentation_2017/en/debugger/gdb-ia/man/" \
-            -e MANPATH:"$cprefix/documentation_2017/en/debugger/gdb-mic/man/" \
-            -e MANPATH:"$cprefix/documentation_2017/en/debugger/gdb-igfx/man/" \
-            -e INFOPATH:"$cprefix/documentation_2017/en/debugger/gdb-ia/info/" \
-            -e INFOPATH:"$cprefix/documentation_2017/en/debugger/gdb-mic/info/" \
-            -e INFOPATH:"$cprefix/documentation_2017/en/debugger/gdb-igfx/info/" \
-            -v GDBSERVER_MIC="$cprefix/debugger_2017/gdb/targets/mic/bin/gdbserver" \
-            -v GDB_CROSS="$cprefix/debugger_2017/gdb/intel64_mic/bin/gdb-mic" \
-            -v MPM_LAUNCHER="$cprefix/debugger_2017/mpm/mic/bin/start_mpm.sh" \
-            -v INTEL_PYTHONHOME="$cprefix/debugger_2017/python/intel64/" \
-            -e PATH:"$cprefix/debugger_2017/gdb/intel64_mic/bin" \
-            -e LD_LIBRARY_PATH:"$cprefix/debugger_2017/libipt/intel64/lib" \
-            -e NLSPATH:"$cprefix/debugger_2017/gdb/intel64_mic/share/locale/%l_%t/%N" \
-            -e NLSPATH:"$cprefix/debugger_2017/gdb/intel64/share/locale/%l_%t/%N" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-ia/man/" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-mic/man/" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-igfx/man/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-ia/info/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-mic/info/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-igfx/info/" \
+            -v GDBSERVER_MIC="$cprefix/debugger_2018/gdb/targets/mic/bin/gdbserver" \
+            -v GDB_CROSS="$cprefix/debugger_2018/gdb/intel64_mic/bin/gdb-mic" \
+            -v MPM_LAUNCHER="$cprefix/debugger_2018/mpm/mic/bin/start_mpm.sh" \
+            -v INTEL_PYTHONHOME="$cprefix/debugger_2018/python/intel64/" \
+            -e PATH:"$cprefix/debugger_2018/gdb/intel64_mic/bin" \
+            -e LD_LIBRARY_PATH:"$cprefix/debugger_2018/libipt/intel64/lib" \
+            -e NLSPATH:"$cprefix/debugger_2018/gdb/intel64_mic/share/locale/%l_%t/%N" \
+            -e NLSPATH:"$cprefix/debugger_2018/gdb/intel64/share/locale/%l_%t/%N" \
             -r gcc-libs/4.9.2 \
             -d \
             -w "[$package_name/$package_version] $package_description"
