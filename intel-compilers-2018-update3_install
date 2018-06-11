@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# This needs to installed on a LOGIN node on Legion because as part of the
+# license check it writes to ~/intel.
+# Insert suitable face here.
+
 set \
     -o errexit 
 
