@@ -19,7 +19,7 @@
 
 
 VERSION=${VERSION:-2.12}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/intel2015}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}}
 NANAME=${NANAME:-NAMD_${VERSION}_Source}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
 
