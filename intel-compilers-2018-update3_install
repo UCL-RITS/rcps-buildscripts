@@ -39,7 +39,7 @@ mpi_package_label="mpi/intel/2017/update3/intel"
 
 cd "$build_dir"
 
-cp "/shared/ucl/apps/pkg-store/$src_file" ./
+cp "/shared/ucl/apps/intel/installers/$src_file" ./
 manifest sha1:423dc2f6383b59b9d78f98970a8561c50f808edc $src_file
 
 tar -xf "$src_file"
