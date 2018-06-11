@@ -17,7 +17,7 @@
 # module load mpi/intel/2015/update3/intel
 # module load fftw/2.1.5/intel-2015-update2
 
-
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-2.12}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}}
 NANAME=${NANAME:-NAMD_${VERSION}_Source}
