@@ -7,7 +7,7 @@
 #
 # Updated May 2018 to use fftw 3.3.6 for R 3.5
 #
-# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.6-pl2/gnu-4.9.2 and gsl/1.16/gnu_4.9.2
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.6-pl2/gnu-4.9.2 and gsl/1.16/gnu-4.9.2
 
 VERSION=${VERSION:-5.34.30}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION-FFTW-3.3.6/$COMPILER_TAG}

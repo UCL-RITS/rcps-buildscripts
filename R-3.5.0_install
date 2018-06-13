@@ -9,7 +9,8 @@
 #
 # May 2017 updated for R 3.4.0
 # October 2017 updated for R 3.4.2
-# May 2018 updated for R 3.5.0 and using fftw 3.3.6
+# May 2018 updated for R 3.5.0 and using fftw 3.3.6 and ROOT built
+#          using fftw 3.3.6
 #
 # Using Ian's require function to load modules
 #
@@ -47,7 +48,7 @@ require udunits/2.2.20/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 # require jags/3.4.0/gnu.4.9.2-openblas
 require jags/4.2.0/gnu.4.9.2-openblas
-require root/5.34.30/gnu-4.9.2
+require root/5.34.30/gnu-4.9.2-fftw-3.3.6
 #
 # And for doing the MPI support:
 # require mpi/openmpi/1.8.4/gnu-4.9.2
