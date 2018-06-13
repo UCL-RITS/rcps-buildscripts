@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-pycuda}
+VERSION=${VERSION:-2017.1.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+PYTHON_VER=${PYTHON_VER:-3}
+
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/gnu
+prereq python${PYTHON_VER}/recommended
+prereq cuda/8.0.61-patch2
+
+pip3 install --install-option="--prefix=$INSTALL_PREFIX" pycuda==$VERSION
