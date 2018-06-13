@@ -8,8 +8,8 @@
 
 NAME=${NAME:-pycuda}
 VERSION=${VERSION:-2017.1.1}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 PYTHON_VER=${PYTHON_VER:-3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$PYTHON_VER}
 
 source ${INCLUDES_DIR}/require_inc.sh
 prereq compilers/gnu
