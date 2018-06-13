@@ -5,11 +5,12 @@
 #
 # by Brian Alston, June 2015
 #
+# Updated May 2018 to use fftw 3.3.6 for R 3.5
 #
-# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.4/gnu-4.9.2 and gsl/1.16/gnu_4.9.2
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.6-pl2/gnu-4.9.2 and gsl/1.16/gnu_4.9.2
 
 VERSION=${VERSION:-5.34.30}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION-FFTW-3.3.6/$COMPILER_TAG}
 MD5=${MD5:-1c4bb094a555e71daf6897401218d36c}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://root.cern.ch/download/root_v${VERSION}.source.tar.gz}
 
@@ -27,7 +28,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf root_v${VERSION}.source.tar.gz
    cd root
-   ./configure --prefix=${INSTALL_PREFIX} --etcdir=/shared/ucl/apps/ROOT/5.34.30/gnu-4.9.2/etc \
+   ./configure --prefix=${INSTALL_PREFIX} --etcdir=/shared/ucl/apps/ROOT/5.34.30-FFTW-3.3.6/gnu-4.9.2/etc \
 	    --enable-shared \
 	    --with-fftw3-incdir=$FFTWINCLUDE \
 	    --with-fftw3-libdir=$FFTWLIBDIR
