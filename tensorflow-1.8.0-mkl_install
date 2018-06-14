@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-1.8.0}
+TYPE=${TYPE:-mkl}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/$VERSION/$TYPE}
+CONFIG_OPTS="--config=mkl"
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tensorflow/tensorflow}
+
+initdir=`pwd`
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+# Clear bazel cache.
+rm -rf ~/.cache/bazel/
+
+# Set up our environment.
+# This is a cludge, I know.
+virtualenv $INSTALL_PREFIX
+source $INSTALL_PREFIX/bin/activate
+pip3 install tensorflow==${VERSION}
+pip3 uninstall tensorflow
+pip3 uninstall enum34
+
+export PYTHON_BIN_PATH=`which python3`
+
+git clone $SRC_ARCHIVE
+cd tensorflow
+git checkout v$VERSION
+
+# kludge for intel licensing
+export action_env="INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk"
+
+./configure
+
+sed -i.bak 's|"#  define HAVE_STROPTS_H 1",||g' third_party/curl.BUILD
+rm third_party/curl.BUILD.bak
+
+bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
+
+cd $temp_dir
+#source tf-build-python/bin/deactivate
+
+builtname=`ls $temp_dir/tf_pip/tensorflow-$VERSION-*.whl`
+base_builtname=`basename $builtname`
+
+# Time to fix the wheel for reasons.
+
+cd $temp_dir/tf_pip/
+mkdir tmp
+cd tmp
+unzip $builtname
+cd  tensorflow-$VERSION.dist-info
+sed -i.bak 's|Requires-Dist: enum34 (>=1.1.6)||g' METADATA
+sed -i.bak 's|"enum34 (>=1.1.6)",||g' metadata.json
+rm METADATA.bak metadata.json.bak
+
+cd $temp_dir/tf_pip/tmp
+zip -r $base_builtname tensorflow-${VERSION}.data tensorflow-${VERSION}.dist-info
+
+pip3 install $base_builtname
+
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
