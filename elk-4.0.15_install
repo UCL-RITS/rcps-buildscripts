@@ -6,7 +6,6 @@
 
 NAME=${NAME:-elk}
 VERSION=${VERSION:-4.0.15}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SHA256=${SHA256:-0abbbe15f3c0cf1f03b552ef54b3611d432b0d119fc21c69b4d505ef4d53b7be}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/elk/files/elk-${VERSION}.tgz}
@@ -17,6 +16,7 @@ module purge
 module load gcc-libs/4.9.2
 module load compilers/intel/2018/update3
 module load mpi/intel/2018/update3/intel
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
 set -e
 
