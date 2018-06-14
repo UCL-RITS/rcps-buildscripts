@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="cuda"
+package_version="9.0.176"
+src_urls=https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
+
+src_urls2=https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/1/cuda_9.0.176.1_linux-run
+
+src_urls3=https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/2/cuda_9.0.176.2_linux-run
+
+src_urls4=https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/3/cuda_9.0.176.3_linux-run
+
+
+# Optional: 
+# package_variant=""
+package_description="This is for compiling CUDA code to run on NVIDIA GPUs."
+
+actual_file_name=cuda_9.0.176_384.81_linux-run
+actual_file_md5=7a00187b2ce5c5e350e68882f42dd507
+
+actual_file_name2=cuda_9.0.176.1_linux-run
+actual_file_md52=8477e5733c8250dd3e110ee127002b9c
+
+actual_file_name3=cuda_9.0.176.2_linux-run
+actual_file_md53=4d3113ffd68a4c67511ca66e497badba
+
+actual_file_name4=cuda_9.0.176.3_linux-run
+actual_file_md54=0d7d07dc3084e0f0ce7d861b5a642f19
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+  wget ${actual_file_name2:+-O $actual_file_name2} $src_urls2
+  md5sum -c <<<"$actual_file_md52  $actual_file_name2"
+  wget ${actual_file_name3:+-O $actual_file_name3} $src_urls3
+  md5sum -c <<<"$actual_file_md53  $actual_file_name3"
+  wget ${actual_file_name4:+-O $actual_file_name24} $src_urls4
+  md5sum -c <<<"$actual_file_md54  $actual_file_name4"
+
+}
+
+_setup_files() {
+  :
+}
+
+_build() {
+  chmod +x $actual_file_name $actual_file_name2
+  ./$actual_file_name \
+    --silent \
+    --verbose \
+    --tmpdir=$build_dir \
+    --toolkit \
+    --toolkitpath=$install_prefix \
+    --samples \
+    --samplespath=$install_prefix 
+  ./$actual_file_name2 \
+    --silent \
+    --installdir=$install_prefix \
+    --accept-eula
+  ./$actual_file_name3 \
+    --silent \
+    --installdir=$install_prefix \
+    --accept-eula
+  ./$actual_file_name4 \
+    --silent \
+    --installdir=$install_prefix \
+    --accept-eula
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r compilers/gnu/4.9.2 \
+              -e PATH:$install_prefix/libnsight \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
