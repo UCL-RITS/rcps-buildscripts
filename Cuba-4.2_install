@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Cuba 4.2
+#
+# by Brian Alston, 2018
+#
+# Numerical integration library for Mathematica 11.3
+#
+# Will need modules: gcc-libs/4.9.2, compilers/gnu/4.9.2
+# qt/5.4.2/gnu-4.9.2, xorg-utils/X11R7.7, mathematica/11.3.0
+
+VERSION=${VERSION:-4.2}
+VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Cuba/${VERSION}_gnu-4.9.2}
+MD5=${MD5:-a3eb0751d4872a3f86401694bc5bedae}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.feynarts.de/cuba/Cuba-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+require qt/5.4.2/gnu-4.9.2
+require xorg-utils/X11R7.7
+require mathematica/11.3.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum Cuba-${VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf Cuba-${VERSION}.tar.gz
+   cd Cuba-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   make check
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
