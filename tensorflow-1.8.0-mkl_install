@@ -42,15 +42,15 @@ cd tensorflow
 git checkout v$VERSION
 
 # kludge for intel licensing
-export action_env="INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk"
+#INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk
 
 ./configure
 
 sed -i.bak 's|"#  define HAVE_STROPTS_H 1",||g' third_party/curl.BUILD
 rm third_party/curl.BUILD.bak
 
-bazel build --config=opt $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package
-bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
+bazel build --config=opt $CONFIG_OPTS --action-env=INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk
+//tensorflow/tools/pip_package:build_pip_package bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
 
 cd $temp_dir
 #source tf-build-python/bin/deactivate
