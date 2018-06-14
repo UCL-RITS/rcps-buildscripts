@@ -49,7 +49,7 @@ _fetch_files() {
   md5sum -c <<<"$actual_file_md52  $actual_file_name2"
   wget ${actual_file_name3:+-O $actual_file_name3} $src_urls3
   md5sum -c <<<"$actual_file_md53  $actual_file_name3"
-  wget ${actual_file_name4:+-O $actual_file_name24} $src_urls4
+  wget ${actual_file_name4:+-O $actual_file_name4} $src_urls4
   md5sum -c <<<"$actual_file_md54  $actual_file_name4"
 
 }
