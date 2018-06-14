@@ -1,4 +1,3 @@
-MKLROOT = /shared/ucl/apps/intel/2017.Update1/compilers_and_libraries_2017.1.132/linux/mkl
 MAKE = make
 F90 = mpiifort
 F90_OPTS = -O3 -ip -qopenmp -fp-model precise -fma -I$(MKLROOT)/include
