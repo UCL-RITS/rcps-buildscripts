@@ -30,7 +30,7 @@ unzip $archive
 
 if [ ${COMPILER_TAG:0:5} = "intel" ]
 then
-  sed -i.back "s|--host_platform|--action_env=INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk --host-plaftorm|g" compile.sh
+  sed -i.back "s|--host_platform|--action_env=INTEL_LICENSE_FILE=28518@lic-intel.ucl.ac.uk --host-platform|g" compile.sh
 fi
 
 ./compile.sh
