@@ -25,6 +25,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
 require qt/5.4.2/gnu-4.9.2
 require xorg-utils/X11R7.7
 require mathematica/11.3.0
