@@ -59,7 +59,7 @@ _setup_files() {
 }
 
 _build() {
-  chmod +x $actual_file_name $actual_file_name2
+  chmod +x $actual_file_name $actual_file_name2 $actual_file_name3 $actual_file_name4  
   ./$actual_file_name \
     --silent \
     --verbose \
