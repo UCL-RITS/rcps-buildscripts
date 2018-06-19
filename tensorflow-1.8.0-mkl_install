@@ -53,7 +53,7 @@ cd $temp_dir
 # This is a cludge, I know.
 virtualenv $INSTALL_PREFIX
 source $INSTALL_PREFIX/bin/activate
-pip3 install tensorflow==${VERSION}
+pip3 install -y tensorflow==${VERSION}
 pip3 uninstall tensorflow
 
 export PYTHON_BIN_PATH=`which python3`
@@ -63,7 +63,23 @@ git clone $SRC_ARCHIVE
 cd tensorflow
 git checkout v$VERSION
 
-# You should answer yes to jMalloc and nothing else.
+# You should answer yes to jemalloc and nothing else.
+export TF_NEED_JEMALLOC=1
+export TF_NEED_GCP=0
+export TF_NEED_HDFS=0
+export TF_NEED_S3=0
+export TF_NEED_KAFKA=0
+export TF_ENABLE_XLA=0
+export TF_NEED_GDR=0
+export TF_NEED_VERBS=0
+export TF_DOWNLOAD_CLANG=0
+export TF_NEED_OPENCL_SYCL=0
+export TF_NEED_CUDA=0
+export TF_CUDA_CLANG=0
+export TF_NEED_MPI=0
+export TF_SET_ANDROID_WORKSPACE=0
+export TF_NEED_COMPUTECPP=0
+
 ./configure
 
 # It's not clear this fix for curl is still needed but just in case.
