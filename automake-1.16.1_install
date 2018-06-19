@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GNU Automake 1.16.1
+#
+# by Brian Alston, June 2018
+#
+#
+# Will need modules: gcc-libs/4.9.2
+
+VERSION=${VERSION:-1.16.1}
+# VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Automake/${VERSION}}
+MD5=${MD5:-83cc2463a4080efd46a72ba2c9f6b8f5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gnu.org/gnu/autoconf/automake-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require autoconf/2.69
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum automake-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf automake-${VERSION}.tar.gz
+   cd automake-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   # Commented out make check as it takes a long time.
+   # make check
+   make install
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
