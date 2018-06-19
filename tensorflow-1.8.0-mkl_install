@@ -53,8 +53,8 @@ cd $temp_dir
 # This is a cludge, I know.
 virtualenv $INSTALL_PREFIX
 source $INSTALL_PREFIX/bin/activate
-pip3 install -y tensorflow==${VERSION}
-pip3 uninstall tensorflow
+pip3 install tensorflow==${VERSION}
+pip3 uninstall -y tensorflow
 
 export PYTHON_BIN_PATH=`which python3`
 
