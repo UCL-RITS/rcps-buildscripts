@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+package_name="samblaster"
+package_version="0.1.24"
+package_description="samblaster is a program for marking duplicates in read-id grouped paired-end SAM files."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget "https://github.com/GregoryFaust/samblaster/releases/download/v.${package_version}/samblaster-v.${package_version}.tar.gz"
+manifest sha256:72c42e0a346166ba00152417c82179bd5139636fea859babb06ca855af93d11f samblaster-v.0.1.24.tar.gz 
+
+tar -xf "${package_name}-v.${package_version}.tar.gz"
+cd "${package_name}-v.${package_version}"
+
+make
+
+mkdir -p "$install_prefix/bin"
+
+cp samblaster "$install_prefix/bin"
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -p "$install_prefix" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -w "$package_description"
+
+
