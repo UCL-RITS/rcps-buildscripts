@@ -57,6 +57,7 @@ pip3 install tensorflow==${VERSION}
 pip3 uninstall -y tensorflow
 
 export PYTHON_BIN_PATH=`which python3`
+export PYTHON_LIB_PATH=${INSTALL_PREFIX}/lib/python3.6/site-packages
 
 # Checkout the version of tensorflow we want.
 git clone $SRC_ARCHIVE
@@ -79,6 +80,7 @@ export TF_CUDA_CLANG=0
 export TF_NEED_MPI=0
 export TF_SET_ANDROID_WORKSPACE=0
 export TF_NEED_COMPUTECPP=0
+export CC_OPT_FLAGS=" -march=${MARCH} "
 
 ./configure
 
