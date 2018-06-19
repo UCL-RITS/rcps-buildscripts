@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing EPACTS 3.3.0
+#
+# by Brian Alston, June 2018
+#
+# Using Ian's require function to load modules
+#
+# 
+
+VERSION=${VERSION:-3.3.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/EPACTS/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/statgen/EPACTS.git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require r/recommended
+require gnuplot/5.0.1
+require groff/1.22.3/gnu-4.9.2
+require autoconf/2.69
+require automake/1.16.1
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/EPACTS'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+cd EPACTS
+aclocal
+autoconf
+automake --add-missing
+./configure --prefix=$INSTALL_PREFIX
+make
+
+# No make check provided.
+
+make install
