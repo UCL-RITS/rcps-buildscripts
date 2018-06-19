@@ -6,7 +6,7 @@ function manifest() {
     local digest
     local file
     local digest_type
-    while [[ -n "$1" ]] && [[ -n "$2" ]]; do
+    while [[ -n "${1:-}" ]] && [[ -n "${2:-}" ]]; do
         digest="$1"
         file="$2"
 
@@ -42,7 +42,7 @@ function manifest() {
         esac
         shift 2
     done
-    if [[ -n "$1" && -z "$2" ]]; then
+    if [[ -n "${1:-}" && -z "${2:-}" ]]; then
         echo "Error: improper number of arguments"
         return 2
     fi
@@ -142,9 +142,9 @@ make_build_env () {
         exit 1
     fi
 
-    if [[ -n "$IS_TEST_RUN" ]]; then
+    if [[ -n "${IS_TEST_RUN:-}" ]]; then
         reason_for_test_install="IS_TEST_RUN was set"
-    elif [[ "$LOGNAME" != "$service_user" ]]; then
+    elif [[ "${LOGNAME:-}" != "$service_user" ]]; then
         reason_for_test_install="current user is not service user"
     fi
     
