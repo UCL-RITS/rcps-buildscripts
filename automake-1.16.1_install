@@ -12,7 +12,7 @@ VERSION=${VERSION:-1.16.1}
 # VER=`echo $VERSION | sed 's/\.//'`
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Automake/${VERSION}}
 MD5=${MD5:-83cc2463a4080efd46a72ba2c9f6b8f5}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gnu.org/gnu/autoconf/automake-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gnu.org/gnu/automake/automake-${VERSION}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
