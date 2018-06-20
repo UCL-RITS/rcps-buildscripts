@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing Tensorflow 1.8.0 with MKL
+# Installing Tensorflow 1.8.0 with a build on local  GPUS.
+
+# NOTE THIS DOES NOT WORK YET.
+
 #
 # by Owain Kenway, 2018
 #
