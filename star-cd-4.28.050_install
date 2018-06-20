@@ -12,7 +12,7 @@ BUILD=${BUILD:-201801291142}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/STAR-CD/installers/${NAME}_${VERSION}_${BUILD}-Linux_x86_64.tar}
 LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
 GROUP=${GROUP:-legstarc}
-ICE_VER=${ICE_VER:-4.28.050}
+ICE_VER=${ICE_VER:-4.28.053}
 ICE_ARCH=${ICE_ARCH:-linux64_2.6-x86-glibc_2.5.0-gcc_4.4.3-ifort_11.0}
 
 set -e
