@@ -5,7 +5,7 @@
 #
 # by Owain Kenway, 2018
 #
-
+NAME=${NAME:-lammps}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-16Mar18}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/$VERSION/$COMPILER_TAG}
