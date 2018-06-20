@@ -7,12 +7,12 @@ SHELL = /bin/sh
 # specify flags and libraries needed for your compiler
 
 CC =		mpiicpc 
-CCFLAGS =	-g -O3 -qopenmp -DLAMMPS_MEMALIGN=64 -qno-offload -xHost -fno-alias -ansi-alias -restrict -qoverride-limits -DLMP_INTEL_USELRT -DLMP_USE_MKL_RNG
+CCFLAGS =	-O3 -qopenmp -DLAMMPS_MEMALIGN=64 -qno-offload -xHost -fno-alias -ansi-alias -restrict -qoverride-limits -DLMP_INTEL_USELRT -DLMP_USE_MKL_RNG
 SHFLAGS =	-fPIC
 DEPFLAGS =	-M
 
 LINK =		mpiicpc
-LINKFLAGS =	-g -O3 -qopenmp -xHost
+LINKFLAGS =	-O3 -qopenmp -xHost
 LIB =           -ltbbmalloc
 SIZE =		size
 
