@@ -19,7 +19,7 @@ set -e
 module purge
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-require python3/3.6
+require python/3.6.3
 
 mkdir -p ${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages
 export PYTHONPATH=${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages:$PYTHONPATH
