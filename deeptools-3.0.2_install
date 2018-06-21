@@ -24,7 +24,7 @@ require python/3.6.3
 virtualenv $INSTALL_PREFIX
 source $INSTALL_PREFIX/bin/activate
 
-pip3 install --install-option="--prefix=${INSTALL_PREFIX}" deeptools==${VERSION}
+pip3 install deeptools==${VERSION}
 
 rm -rf ${INSTALL_PREFIX}/bin/pip*
 rm -rf ${INSTALL_PREFIX}/bin/python*
