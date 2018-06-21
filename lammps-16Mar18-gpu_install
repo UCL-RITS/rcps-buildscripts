@@ -64,7 +64,7 @@ then
   fi
 
   pwd
-  cp ~/Source/lammps/Makefile.${cluster}-gpu ../lib/gpu/Makefile.uclgpu
+  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.${cluster}-gpu ../lib/gpu/Makefile.uclgpu
   cd ../lib/gpu
   make -f Makefile.uclgpu
   cd ../../src
