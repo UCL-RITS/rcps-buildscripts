@@ -5,21 +5,22 @@
 #
 # by Owain Kenway, 2017
 #
-
-NAME=${NAME:-deeptools}
-VERSION=${VERSION:-3.0.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+set -e
 
 dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
-set -e
 
 module purge
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require python/3.6.3
+
+NAME=${NAME:-deeptools}
+VERSION=${VERSION:-3.0.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
 
 virtualenv $INSTALL_PREFIX
 source $INSTALL_PREFIX/bin/activate
