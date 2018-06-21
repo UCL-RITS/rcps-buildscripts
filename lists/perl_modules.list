@@ -163,3 +163,4 @@ Config::IniFiles
 JSON
 Proc::PID::File
 Term::UI
+Term::ReadKey
