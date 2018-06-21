@@ -33,7 +33,7 @@ rm -rf ${INSTALL_PREFIX}/bin/activate*
 rm -rf ${INSTALL_PREFIX}/bin/easy_install*
 rm -rf ${INSTALL_PREFIX}/bin/__pycache__
 
-cd ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}/bin
 
 for a in * ; do sed -i 's|/shared/ucl/apps/deeptools/3.0.2/gnu-4.9.2/bin/python3.6|/usr/bin/env python3|g' $a; done
 
