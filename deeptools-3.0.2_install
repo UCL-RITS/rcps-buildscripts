@@ -14,10 +14,12 @@ dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
+set -e
+
 module purge
-module require gcc-libs/4.9.2
-module require compilers/gnu/4.9.2
-module require python3/3.6
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python3/3.6
 
 mkdir -p ${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages
 export PYTHONPATH=${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages:$PYTHONPATH
