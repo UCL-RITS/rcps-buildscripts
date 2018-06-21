@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-deeptools}
+VERSION=${VERSION:-3.0.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+module purge
+module require gcc-libs/4.9.2
+module require compilers/gnu/4.9.2
+module require python3/3.6
+
+mkdir -p ${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages
+export PYTHONPATH=${INSTALL_PREFIX}/python3.6/lib/python3.6/site-packages:$PYTHONPATH
+
+
+pip3 install --install-option="--prefix=${INSTALL_PREFIX}" deeptools==${VERSION}
+
