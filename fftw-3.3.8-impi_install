@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+package_name="fftw"
+package_version=3.3.8
+package_variant=impi
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+make_build_env ""
+
+cd "$build_dir"
+wget http://www.fftw.org/fftw-${package_version}.tar.gz
+
+manifest md5:8aac833c943d8e90d51b697b27d4384d  fftw-3.3.8.tar.gz \
+         sha256:6113262f6e92c5bd474f2875fa1b01054c4ad5040f6b0da7c03c98821d9ae303  fftw-3.3.8.tar.gz
+
+
+# Unpack and build
+tar -xf fftw-${package_version}.tar.gz
+
+__sub_build() {
+  mkdir "$BUILD_LABEL"
+  cd "$BUILD_LABEL"
+  echo "../fftw-${package_version}/configure" --prefix="$install_prefix" --enable-mpi --enable-sse2 ${CONFIGURE_ADD_OPTS}
+  "../fftw-${package_version}/configure" --prefix="$install_prefix" --enable-mpi --enable-sse2 ${CONFIGURE_ADD_OPTS}
+  make
+  # make wisdom # use this for single-arch, single node-class systems
+  make check
+  make install
+  cd "$build_dir"
+}
+
+BUILD_LABEL="single" CONFIGURE_ADD_OPTS="--enable-float" __sub_build
+BUILD_LABEL="double" CONFIGURE_ADD_OPTS=""               __sub_build
+BUILD_LABEL="single-shared" CONFIGURE_ADD_OPTS="--enable-float --enable-shared" __sub_build
+BUILD_LABEL="double-shared" CONFIGURE_ADD_OPTS="--enable-shared"                  __sub_build
+
+# Builds complete, make an env module
+
+make_module -p "$install_prefix" \
+          -c "$package_name" \
+          -r gcc-libs/4.9.2 \
+          -r compilers/intel/2018/update3 \
+          -r mpi/intel/2018/update3/intel \
+          -o "$module_dir/$package_label" \
+          -w "Adds ${package_name} ${package_name} (built with Intel MPI) to your environment."
+echo "Module files put in: $MODULE_DIR" >&2
+
+
+# clean up
+if [ -n "$build_dir" ]; then
+    rm -Rf "$build_dir"
+fi
+
