@@ -51,6 +51,9 @@ make_module -p "$install_prefix" \
           -r gcc-libs/4.9.2 \
           -r compilers/intel/2018/update3 \
           -r mpi/intel/2018/update3/intel \
+          -v FFTWLIBDIR=/shared/ucl/apps/fftw/3.3.6-pl2/intel-2017/lib \
+          -v FFTWINCLUDE=/shared/ucl/apps/fftw/3.3.6-pl2/intel-2017/include \
+          -v FFTWLIB=fftw \
           -o "$module_dir/$package_label" \
           -w "Adds ${package_name} ${package_name} (built with Intel MPI) to your environment."
 echo "Module files put in: $module_dir" >&2
