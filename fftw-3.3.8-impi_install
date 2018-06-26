@@ -53,7 +53,7 @@ make_module -p "$install_prefix" \
           -r mpi/intel/2018/update3/intel \
           -o "$module_dir/$package_label" \
           -w "Adds ${package_name} ${package_name} (built with Intel MPI) to your environment."
-echo "Module files put in: $MODULE_DIR" >&2
+echo "Module files put in: $module_dir" >&2
 
 
 # clean up
