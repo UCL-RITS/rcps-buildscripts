@@ -17,11 +17,11 @@ NATIVE_LIB=${NATIVE_LIB:-NO}
 
 set -e
 
-mkdir -p $INSTALL_PREFIX
+mkdir -p "$INSTALL_PREFIX"
 
-cd $INSTALL_PREFIX
+cd "$INSTALL_PREFIX"
 
-wget $SRC_ARCHIVE
+wget "$SRC_ARCHIVE"
 
 echo "Checking hashes:"
 archive=$(basename "${SRC_ARCHIVE}")
@@ -41,11 +41,11 @@ fi
 # create wrappers for each command
 for a in $(cat /shared/ucl/apps/build_scripts/picard-patches/commandlist-2.18.list)
 do
-cat > $a <<EOF
+cat > "$a" <<EOF
 #!/bin/bash
 
-${INSTALL_PREFIX}/bin/picard $a "\$\@"
+${INSTALL_PREFIX}/bin/picard $a "\$@"
 EOF
-chmod +x $a
+chmod +x "$a"
 done
 
