@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Picard 2 with wrappers
+#
+#  
+#
+
+APPNAME=${APPNAME:-picard-tools}
+VERSION=${VERSION:-2.18.9}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SHA256=${SHA256:-7efe60795cad21865301a9f8de2ce6aad1e1e90c92c69799655e7e5d0effbe56}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/picard/releases/download/${VERSION}/picard.jar}
+
+# Use Intel deflate library (uses AVX for compression)
+NATIVE_LIB=${NATIVE_LIB:-NO}
+
+set -e
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+echo "Checking hashes:"
+archive=$(basename "${SRC_ARCHIVE}")
+sha256sum -c <<<"$SHA256 $archive"
+
+mkdir bin
+cd bin
+
+if [ "$NATIVE_LIB" == "NO" ]
+then
+   cp /shared/ucl/apps/build_scripts/picard-patches/picard.nonative ./picard
+   #rm ../libIntelDeflater.so
+else
+   cp /shared/ucl/apps/build_scripts/picard-patches/picard .
+fi
+
+# create wrappers for each command
+for a in $(cat /shared/ucl/apps/build_scripts/picard-patches/commandlist-2.18.list)
+do
+cat > $a <<EOF
+#!/bin/bash
+
+${INSTALL_PREFIX}/bin/picard $a "\$\@"
+EOF
+chmod +x $a
+done
+
