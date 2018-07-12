@@ -27,7 +27,7 @@ CHECKSUM=`md5sum netcdf-${VERSION}.tar.gz| awk '{print $1}'`
 
 HDF_TAG=$COMPILER_TAG
 
-if [[ "$COMPILER_TAG" == "intel-2015-update2" ]]
+if [[ "${COMPILER_TAG:0:5}" == "intel" ]]
 then
    HDF_TAG="Intel_2015"
 fi
