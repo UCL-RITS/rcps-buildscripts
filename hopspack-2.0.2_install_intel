@@ -32,11 +32,11 @@ cd ${APPNAME}-${VERSION}-src
 mkdir build-serial
 mkdir build-mpi
 cd build-serial
-cmake ../ -Dmpi=OFF  -Ddebug=OFF -DLAPACK_LIBS=-mkl
+cmake ../ -Dmpi=OFF  -Ddebug=OFF -DLAPACK_LIBS="-mkl"
 make
 cp HOPSPACK_main_serial $INSTALL_PREFIX/bin
 cd ../build-mpi
-cmake ../ -Dmpi=ON -Ddebug=OFF -DLAPACK_LIBS=-mkl
+cmake ../ -Dmpi=ON -Ddebug=OFF -DLAPACK_LIBS="-mkl"
 make
 cp HOPSPACK_main_mpi $INSTALL_PREFIX/bin
 
