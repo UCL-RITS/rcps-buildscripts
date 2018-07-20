@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HOPSPACK
+#
+# by Owain Kenway, 2015 
+#
+
+# You need to register for this package and download it, place the tar.gz in 
+# $SRC_ARCHIVE
+
+APPNAME=${APPNAME:-hopspack}
+VERSION=${VERSION:-2.0.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/hopspack/sources/${APPNAME}-${VERSION}-src.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+mkdir -p $INSTALL_PREFIX/bin
+
+cd $temp_dir
+
+tar -zxvf $SRC_ARCHIVE
+
+cd ${APPNAME}-${VERSION}-src
+mkdir build-serial
+mkdir build-mpi
+cd build-serial
+cmake ../ -Dmpi=OFF  -Ddebug=OFF -DLAPACK_LIBS=-mkl
+make
+cp HOPSPACK_main_serial $INSTALL_PREFIX/bin
+cd ../build-mpi
+cmake ../ -Dmpi=ON -Ddebug=OFF -DLAPACK_LIBS=-mkl
+make
+cp HOPSPACK_main_mpi $INSTALL_PREFIX/bin
+
