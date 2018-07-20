@@ -36,9 +36,15 @@ echo LAPACK_LIBS:FILEPATH=-mkl > CMakeCache.txt
 cmake ../ -Dmpi=OFF  -Ddebug=OFF 
 make
 cp HOPSPACK_main_serial $INSTALL_PREFIX/bin
+mkdir -p $INSTALL_PREFIX/lib-serial
+cp src/*/*.a  $INSTALL_PREFIX/lib-serial
+
+
 cd ../build-mpi
 echo LAPACK_LIBS:FILEPATH=-mkl > CMakeCache.txt
 cmake ../ -Dmpi=ON -Ddebug=OFF 
 make
 cp HOPSPACK_main_mpi $INSTALL_PREFIX/bin
+mkdir -p $INSTALL_PREFIX/lib-mpi
+cp src/*/*.a  $INSTALL_PREFIX/lib-mpi
 
