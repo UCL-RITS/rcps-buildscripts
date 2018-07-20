@@ -11,7 +11,7 @@ VERSION=${VERSION:-2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/chrchang/plink-ng.git}
-
+LEGION=${LEGION:-no}
 set -e
 
 mkdir -p /dev/shm/${NAME}
@@ -42,7 +42,12 @@ cd build_dynamic
 cp /shared/ucl/apps/build_scripts/plink-patches/plink2-makefile.patch .
 patch <  plink2-makefile.patch 
 
-# patch makefile
+if [ '$LEGION' == 'yes' ]
+then
+  echo "Building without AVX2"
+  sed -i "s|NO_AVX2 =|NO_AVX2 = 1|g" Makefile
+fi
+
 
 make
 pwd
