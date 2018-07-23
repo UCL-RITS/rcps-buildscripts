@@ -1,11 +1,11 @@
 --- util/modular/build.sh.bak   2018-07-23 15:22:37.000000000 +0100
-+++ util/modular/build.sh       2018-07-23 15:23:21.000000000 +0100
++++ util/modular/build.sh       2018-07-23 15:55:40.000000000 +0100
 @@ -728,7 +728,7 @@
      fi
-
-
--    if [ $use_autogen != 0 ] || [ $use_configure != 0]; then
+ 
+ 
+-    if [ $use_autogen != 0 ] || [ $use_configure != 0]; then 
 +    if [ $use_autogen != 0 ] || [ $use_configure != 0 ]; then
-        BUILDCMD="${MAKE} $MAKEFLAGS"
-        BUILDCMD_VERBOSE="${BUILDCMD} V=1"
-        BUILDCMD_CHECK="${BUILDCMD} check"
+ 	BUILDCMD="${MAKE} $MAKEFLAGS"
+ 	BUILDCMD_VERBOSE="${BUILDCMD} V=1"
+ 	BUILDCMD_CHECK="${BUILDCMD} check"
