@@ -1,0 +1,11 @@
+--- configure.ac.bak    2018-07-24 14:39:07.000000000 +0100
++++ configure.ac        2018-07-24 14:39:32.000000000 +0100
+@@ -50,7 +50,7 @@
+ 
+ # We don't link against libX11, just use its locale.alias data file
+ PKG_CHECK_EXISTS(x11, [],
+-	[AC_MSG_WARN([libX11 not found.  luit may not be able to find locale aliases without it.])])
++	AC_MSG_WARN([libX11 not found.  luit may not be able to find locale aliases without it.]))
+ 
+ AC_CANONICAL_HOST
+ case $host_os in
