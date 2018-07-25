@@ -1,0 +1,20 @@
+--- util/modular/build.sh.bak   2018-07-23 15:22:37.000000000 +0100
++++ util/modular/build.sh^I2018-07-25 15:36:10.000000000 +0100
+@@ -419,7 +419,7 @@
+                     pkg_stem="libdrm"
+                     ;;
+                 "mesa")
+-                    pkg_stem="MesaLib"
++                    pkg_stem="mesa"
+                     ;;
+             esac
+             ;;
+@@ -728,7 +728,7 @@
+     fi
+ 
+ 
+-    if [ $use_autogen != 0 ] || [ $use_configure != 0]; then
++    if [ $use_autogen != 0 ] || [ $use_configure != 0 ]; then
+ 	BUILDCMD="${MAKE} $MAKEFLAGS"
+ 	BUILDCMD_VERBOSE="${BUILDCMD} V=1"
+ 	BUILDCMD_CHECK="${BUILDCMD} check"
