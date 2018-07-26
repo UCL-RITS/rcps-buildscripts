@@ -15,7 +15,8 @@ set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/hdf5
+temp_dir=`mktemp -d -p /dev/shm/hdf5`
 
 cd $temp_dir
 
