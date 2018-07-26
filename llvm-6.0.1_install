@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LLVM
+# Built with GCC
+# 
+#
+
+NAME=${NAME:-llvm}
+VERSION=${VERSION:-6.0.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-b6d6c324f9c71494c0ccaf3dac1f16236d970002b42bb24a6c9e1634f7d0f4e2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://releases.llvm.org/${VERSION}/${NAME}-${VERSION}.src.tar.xz}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/gnu
+require cmake/3.7.2
+
+cd "$BUILD_DIR"
+
+wget "$SRC_ARCHIVE"
+archive=$(basename "${SRC_ARCHIVE}")
+
+echo "Checking hashes:"
+sha256sum -c <<<"$SHA256  $archive"
+
+tar -xvf "$archive"
+cd "${NAME}"-"${VERSION}".src
+mkdir build
+cd build
+cmake                                           \
+  -DCMAKE_BUILD_TYPE=Release                    \
+  -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX"      \
+  -DLLVM_BUILD_LLVM_DYLIB=ON                    \
+  -DLLVM_ENABLE_RTTI=ON                         \
+  -DLLVM_INSTALL_UTILS=ON                       \
+  -DLLVM_TARGETS_TO_BUILD:STRING=X86 ..
+make 2>&1 | tee make.log
+make install
+
