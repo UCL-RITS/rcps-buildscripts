@@ -11,6 +11,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/serial/${COMPIL
 MD5=${MD5:-41fb9347801b546fba323523a1c1af51}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
 
+set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -24,7 +25,7 @@ CHECKSUM=`md5sum hdf${VERSION}.tar.bz2| awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
-   tar xvzf hdf${VERSION}.tar.bz2
+   tar xvf hdf${VERSION}.tar.bz2
    cd hdf${VERSION}
    ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-cxx
    make
