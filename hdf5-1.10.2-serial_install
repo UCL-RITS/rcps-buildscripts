@@ -20,11 +20,11 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum hdf${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum hdf${VERSION}.tar.bz2| awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
-   tar xvzf hdf${VERSION}.tar.gz
+   tar xvzf hdf${VERSION}.tar.bz2
    cd hdf${VERSION}
    ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-cxx
    make
