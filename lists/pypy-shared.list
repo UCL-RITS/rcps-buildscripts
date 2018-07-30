@@ -7,8 +7,8 @@ matplotlib
 biopython
 acora
 python-Levenshtein
-# Cython problems
-pandas
+# Segfaults in testing
+# pandas
 qutip
 #
 # Commented out because their C extensions need some testing with pypy
