@@ -8,7 +8,8 @@
 
 VERSION=${VERSION:-4.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
-PYTHON_VERSION=${PYTHON_VERSION:-3}
+PYTHON_VERSION=${PYTHON_VERSION_TAG:-3}
+
 TIME_STAMP=`date +"%s"`
 
 # Disable wheels for some packages
