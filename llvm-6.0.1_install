@@ -34,10 +34,14 @@ tar -xvf "$archive"
 cd "${NAME}"-"${VERSION}".src
 mkdir build
 cd build
+# Building and linking the dylib gives you a single shared libllvm.so
+# as well as the individual static libraries. If you don't do -DLLVM_LINK_LLVM_DYLIB
+# as well, then you get a shared library that llvm-config won't link correctly.
 cmake                                           \
   -DCMAKE_BUILD_TYPE=Release                    \
   -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX"      \
   -DLLVM_BUILD_LLVM_DYLIB=ON                    \
+  -DLLVM_LINK_LLVM_DYLIB=ON                     \
   -DLLVM_ENABLE_RTTI=ON                         \
   -DLLVM_INSTALL_UTILS=ON                       \
   -DLLVM_TARGETS_TO_BUILD:STRING=X86 ..
