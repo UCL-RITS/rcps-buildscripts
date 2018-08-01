@@ -49,5 +49,4 @@ ${temp_dir}/pgplot/makemake ${temp_dir}/pgplot linux ifort
 
 make
 
-# Make C bindings.
-make cpg
+
