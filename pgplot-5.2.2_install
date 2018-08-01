@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-pgplot}
+VERSION=${VERSION:-5.2.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-e8a6e8d0d5ef9d1709dfb567724525ae}
+vershort=$(echo $VERSION | sed 's/\.//g')
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.astro.caltech.edu/pub/pgplot/pgplot${vershort}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}
+
+rm -rf ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}
+
+cp sys_linux/gcc.conf sys_linux/ifort.conf
+sed -i.bak 's|g77|ifort|g' sys_linux/ifort.conf
+sed -i.bak 's|gcc|icc|g' sys_linux/ifort.conf
+
+sed -i.bak 's|! CGDRIV|CGDRIV|g' drivers.list
+sed -i.bak 's|! PSDRIV|PSDRIV|g' drivers.list
+sed -i.bak 's|! PPDRIV|PPDRIV|g' drivers.list
+sed -i.bak 's|! LXDRIV|LXDRIV|g' drivers.list
+
+cp drivers.list ${INSTALL_PREFIX}
+
+cd ${INSTALL_PREFIX}
+${temp_dir}/pgplot/makemake ${temp_dir}/pgplot linux ifort
+
+make
+
+# Make C bindings.
+make cpg
