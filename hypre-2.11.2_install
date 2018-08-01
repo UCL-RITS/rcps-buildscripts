@@ -28,7 +28,7 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}
+cd ${NAME}-${VERSION}/src
 
 ./configure --prefix=$INSTALL_PREFIX --with-blas-lib=-mkl --with-lapack-lib=-mkl
 make 
