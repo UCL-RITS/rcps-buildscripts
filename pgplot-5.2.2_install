@@ -33,7 +33,7 @@ cd ${NAME}
 rm -rf ${INSTALL_PREFIX}
 mkdir -p ${INSTALL_PREFIX}
 
-cp sys_linux/gcc.conf sys_linux/ifort.conf
+cp sys_linux/g77.conf sys_linux/ifort.conf
 sed -i.bak 's|g77|ifort|g' sys_linux/ifort.conf
 sed -i.bak 's|gcc|icc|g' sys_linux/ifort.conf
 
