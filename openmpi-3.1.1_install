@@ -10,8 +10,8 @@ source includes/source_includes.sh
 
 _env_setup() {
     module purge
-    require gcc-libs/4.9.2
-    require compilers/intel/2018/update3
+    require gcc-libs
+    require compilers/intel/2018
 
     make_build_env ""
     module_dir="$module_dir"
@@ -75,7 +75,7 @@ _post_build() {
         -e "INCLUDE_PATH:${install_prefix}/include" \
         -e "CMAKE_PREFIX_PATH:${install_prefix}" \
         -r gcc-libs \
-        -r compilers/intel/2017
+        -r compilers/intel/2018
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"
