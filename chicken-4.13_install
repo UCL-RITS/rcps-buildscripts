@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Chicken Scheme
+#
+# by Owain Kenway, 2019
+#
+
+NAME=${NAME:-chicken}
+VERSION=${VERSION:-4.13.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-add549619a31363d6608b39e0cf0e68b9d5e6ff2a719b5691ddeba57229c6c43}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://code.call-cc.org/releases/${VERSION}/chicken-${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+mkdir - ${INSTALL_PREFIX}
+make PLATFORM=linux PREFIX=${INSTALL_PREFIX}
+make PLATFORM=linux PREFIX=${INSTALL_PREFIX} install
