@@ -30,6 +30,6 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 
-mkdir - ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}
 make PLATFORM=linux PREFIX=${INSTALL_PREFIX}
 make PLATFORM=linux PREFIX=${INSTALL_PREFIX} install
