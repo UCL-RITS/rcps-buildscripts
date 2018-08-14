@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing rlwrap
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-rlwrap}
+VERSION=${VERSION:-0.43}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-361d54b7127374e5761e0738eb7b88fb}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/hanslub42/rlwrap/archive/v${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+./configure --prefix=$INSTALL_PREFIX
+make 
+make install
