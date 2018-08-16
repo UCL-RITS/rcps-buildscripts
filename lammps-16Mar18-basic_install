@@ -64,10 +64,37 @@ then
   fi
 
 # Add some necessary packages that aren't included by default for some reason
-  make yes-kspace
-  make yes-replica
-  make yes-rigid
-  make yes-class2
+# All the packages which don't need external libs.
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd
+  do
+    make yes-${a}
+  done
+
+# These packages need external libs but provide the source with LAMMPS
+#  for a in meam poems reax
+  for a in meam poems reax
+  do
+    # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
+    sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
+    make lib-${a} args="-m mpi"  
+    make yes-${a}
+  done
+  
+
+# Voro++
+  cd ../lib/voronoi
+  wget http://math.lbl.gov/voro++/download/dir/voro++-0.4.6.tar.gz
+  md5sum -c <<<"2338b824c3b7b25590e18e8df5d68af9  voro++-0.4.6.tar.gz"
+  tar zxvf voro++-0.4.6.tar.gz
+  cd voro++-0.4.6
+  sed -i.bak "s|CXX=g++|CXX=icpc|g" config.mk
+  make
+  cd ..
+  ln -s voro++-0.4.6/src includelink
+  ln -s voro++-0.4.6/src liblink
+  
+  cd ../../src
+  make yes-voronoi
 
 # Make binaries, libraries
   make $cluster
