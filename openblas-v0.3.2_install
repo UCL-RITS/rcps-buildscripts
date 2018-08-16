@@ -57,7 +57,12 @@ for package_variant in "serial" "native-threads" "openmp"; do
         -p "$install_prefix" \
         -r gcc-libs \
         -r compilers/gnu/4.9.2 \
-        -c openblas
+        -c openblas \
+        -c atlas \
+        -v BLAS_TAG=openblas \
+        -v OPENBLASROOT="$install_prefix"
+        #  ^-- this is a convenience variable for other installations
+        #      not automatically supported by anything 
 
     module_dir_list+=("$module_dir")
 
