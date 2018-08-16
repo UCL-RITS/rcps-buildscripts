@@ -108,6 +108,7 @@ then
   
 # Move install into /shared
   cd ../..
+  rm -rf $INSTALL_PREFIX
   mkdir -p $INSTALL_PREFIX
   mv lammps-${VERSION} $INSTALL_PREFIX
 
