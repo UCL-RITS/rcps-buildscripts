@@ -65,6 +65,7 @@ for package_variant in "serial" "native-threads" "openmp"; do
         #      not automatically supported by anything 
 
     module_dir_list+=("$module_dir")
+    chmod -R +rX "$module_dir"
 
     cd "$owd"
 done
