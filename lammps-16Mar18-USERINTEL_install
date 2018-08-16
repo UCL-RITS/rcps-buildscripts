@@ -89,6 +89,7 @@ then
   ln -s voro++-0.4.6/src liblink
   
   cd ../../src
+  make yes-voronoi
 
 # Intel optimisations
   make yes-user-intel
