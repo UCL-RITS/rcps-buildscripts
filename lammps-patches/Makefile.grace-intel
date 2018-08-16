@@ -13,7 +13,7 @@ SHFLAGS =	-fPIC
 DEPFLAGS =	-M
 
 LINK =		mpiicpc
-LINKFLAGS =	-O3 -qopenmp -xHost
+LINKFLAGS =	-O3 -qopenmp -xHost -lifcore
 LIB =           
 SIZE =		size
 

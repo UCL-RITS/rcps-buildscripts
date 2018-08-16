@@ -12,7 +12,7 @@ SHFLAGS =	-fPIC
 DEPFLAGS =	-M
 
 LINK =		mpiicpc
-LINKFLAGS =	-O3 -qopenmp -xSSE4.2 
+LINKFLAGS =	-O3 -qopenmp -xSSE4.2 -lifcore
 LIB =           -ltbbmalloc
 SIZE =		size
 
