@@ -32,6 +32,6 @@ tar -xvf "$SRC_ARCHIVE"
 cd "${NAME}"-"${VERSION}"/Src
 
 # patch getmachine to tell it to build with MPI
-patch -p0 "$PATCH"
+patch -p0 -i "$PATCH"
 make 2>&1 | tee make.log
 
