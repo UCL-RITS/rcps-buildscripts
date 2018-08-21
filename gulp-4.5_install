@@ -8,7 +8,6 @@
 
 NAME=${NAME:-gulp}
 VERSION=${VERSION:-4.5}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gulp/sources/$NAME-$VERSION.tgz}
 BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
 PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/GULP_getengine_mpi.patch}
