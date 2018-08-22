@@ -32,6 +32,5 @@ cd "${NAME}"-"${VERSION}"/Src
 
 # patch getmachine to tell it to build with MPI, No FoX and no lapack.o
 patch -p0 -i "$PATCH"
-make 2>&1 | tee make.log
 make lib 2>&1 | tee makelib.log
 
