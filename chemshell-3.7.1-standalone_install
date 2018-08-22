@@ -34,5 +34,5 @@ make 2>&1 | tee make.log
 # Tests: results get written to validate.log
 cd ../examples
 ./run_validation.tcsh
-echo "Test output was saved in $INSTALL_PREFIX/examples/validate.log"
+echo "Test output was saved in $INSTALL_PREFIX/chemsh-${VERSION}/examples/validate.log"
 
