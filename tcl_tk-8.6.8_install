@@ -8,8 +8,8 @@
 
 NAME=${NAME:-tcl}
 VERSION=${VERSION:-8.6.8}
-TCL_SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/${NAME}${VERSION}-src.tar.gz}
-TK_SRC_ARCHIVE=${TCL_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/tk${VERSION}-src.tar.gz}
+TCL_SRC_ARCHIVE=${TCL_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/${NAME}${VERSION}-src.tar.gz}
+TK_SRC_ARCHIVE=${TK_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/tk${VERSION}-src.tar.gz}
 TCL_SHA256=${TCL_SHA256:-c43cb0c1518ce42b00e7c8f6eaddd5195c53a98f94adc717234a65cbcfd3f96a}
 TK_SHA256=${TK_SHA256:-49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33}
 BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
