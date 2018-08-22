@@ -8,7 +8,7 @@
 
 NAME=${NAME:-chemshell}
 VERSION=${VERSION:-3.7.1}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/chemshell/sources/chemsh-${VERSION}.tgz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/chemshell/sources/chemsh-${VERSION}.tar.gz}
 
 set -e
 
