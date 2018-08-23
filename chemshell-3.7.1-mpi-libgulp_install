@@ -9,6 +9,7 @@
 NAME=${NAME:-chemshell}
 VERSION=${VERSION:-3.7.1}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/chemshell/sources/chemsh-${VERSION}.tar.gz}
+GULP_VERSION=${GULP_VERSION:-4.5}
 
 set -e
 
@@ -17,11 +18,12 @@ source includes/source_includes.sh
 module purge
 require gcc-libs
 require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
 require tcl
 require gulp/4.5/libgulp/intel-2018
 
 # need to set this after compiler module is loaded
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/mpi-gulp/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/mpi-gulp$GULP_VERSION/$COMPILER_TAG}
 
 # builds in place
 mkdir -p "$INSTALL_PREFIX"
