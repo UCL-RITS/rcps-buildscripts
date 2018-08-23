@@ -10,7 +10,7 @@ src_urls="https://github.com/opencollab/arpack-ng/archive/${package_version}.tar
 # package_variant=""
 package_description="ARPACK-NG is a collection of Fortran77 subroutines designed to solve large scale eigenvalue problems."
 
-package_variant="-serial"
+package_variant="serial"
 
 actual_file_name=${package_version}.tar.gz
 actual_file_md5=9762c9ae6d739a9e040f8201b1578874
