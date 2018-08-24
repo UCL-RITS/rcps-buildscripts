@@ -39,7 +39,7 @@ _setup_files() {
 _build() {
   cd SuiteSparse
   require gcc-libs
-  require compilers/gnu-4.9.2
+  require compilers/gnu/4.9.2
   # Note: 4.5.5 builds METIS without OpenMP. That's probably okay, because this should just be doing MPI.
   make
   make install INSTALL="$install_prefix"
