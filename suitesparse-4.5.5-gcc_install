@@ -10,6 +10,8 @@ src_urls="http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-${package_ve
 # package_variant=""
 package_description="SuiteSparse is a suite of sparse matrix algorithms."
 
+package_variant="serial"
+
 actual_file_name="SuiteSparse-${package_version}.tar.gz"
 actual_file_sha256=b9a98de0ddafe7659adffad8a58ca3911c1afa8b509355e7aa58b02feb35d9b6
 
