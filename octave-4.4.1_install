@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-octave}
+VERSION=${VERSION:-4.4.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-21a1f13e2145fa530f2169254d19442b572745d65b91453ba1f552f6eda6aecfead57dbe0260b3293a29db0aa0f27cfd4f26df332e6d640848a822b20c1232f8}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.gnu.org/gnu/octave/octave-${VERSION}.tar.gz}
+
+set -e
+
+#module load compilers/gnu/4.9.2 openblas/0.3.2-serial/gnu-4.9.2 fftw/3.3.6-pl2/gnu-4.9.2 arpack-ng/3.5.0/gnu-4.9.2-serial suitesparse/4.5.5/gnu-4.9.2-serial
+
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+./configure --prefix=$INSTALL_PREFIX
+make 
+make install
