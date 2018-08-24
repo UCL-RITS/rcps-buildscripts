@@ -40,7 +40,7 @@ _build() {
   cd SuiteSparse
   require gcc-libs
   require compilers/gnu/4.9.2
-  require openblas/0.3.2-serial/gnu-4.9.2
+  require openblas/0.3.2-native-threads/gnu-4.9.2
   # Note: 4.5.5 builds METIS without OpenMP. That's probably okay, because this should just be doing MPI.
   make BLAS="-L/shared/ucl/apps/openblas/0.3.2-serial/gnu-4.9.2/lib -lopenblas" LAPACK="-L/shared/ucl/apps/openblas/0.3.2-serial/gnu-4.9.2/lib -lopenblas"
   make install INSTALL="$install_prefix"
