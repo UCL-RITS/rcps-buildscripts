@@ -12,8 +12,8 @@ require gcc-libs
 require compilers/gnu/4.9.2 
 require openblas/0.3.2-native-threads/gnu-4.9.2
 require fftw/3.3.6-pl2/gnu-4.9.2 
-require arpack-ng/3.5.0/gnu-4.9.2-serial 
-require suitesparse/4.5.5/gnu-4.9.2-serial 
+require arpack-ng/3.5.0/gnu-4.9.2-threaded
+require suitesparse/4.5.5/gnu-4.9.2-threaded 
 require ghostscript/9.19/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2 
 require java/1.8.0_92 
@@ -55,4 +55,7 @@ cd ${NAME}-${VERSION}
 
 ./configure --prefix=$INSTALL_PREFIX
 make 
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
 make install
