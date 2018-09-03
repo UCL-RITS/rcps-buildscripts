@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="suitesparse"
+package_version="4.5.5"
+src_urls="http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-${package_version}.tar.gz"
+# Optional: 
+# package_variant=""
+package_description="SuiteSparse is a suite of sparse matrix algorithms."
+
+package_variant="serial"
+
+actual_file_name="SuiteSparse-${package_version}.tar.gz"
+actual_file_sha256=b9a98de0ddafe7659adffad8a58ca3911c1afa8b509355e7aa58b02feb35d9b6
+
+module purge
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}-gcc-4.9.2"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  sha256sum -c <<<"$actual_file_sha256  $actual_file_name"
+}
+
+_setup_files() {
+  basename=$(tar -tf $actual_file_name | head -n 1 | sed -e 's_/__')
+  tar -xf $actual_file_name
+}
+
+_build() {
+  cd SuiteSparse
+  require gcc-libs
+  require compilers/gnu/4.9.2
+  require openblas/0.3.2-serial/gnu-4.9.2
+  # Note: 4.5.5 builds METIS without OpenMP. That's probably okay, because this should just be doing MPI.
+  make BLAS="-L/shared/ucl/apps/openblas/0.3.2-serial/gnu-4.9.2/lib -lopenblas" LAPACK="-L/shared/ucl/apps/openblas/0.3.2-serial/gnu-4.9.2/lib -lopenblas"
+  make install INSTALL="$install_prefix"
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p "$install_prefix" \
+              -c "${package_name}" \
+              -o "$module_dir/$package_label" \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
