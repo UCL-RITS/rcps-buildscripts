@@ -42,8 +42,8 @@ for package_variant in "serial" "native-threads" "openmp"; do
     fi 
 
     cd "OpenBLAS-${package_version}"
-    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREADS="$use_threads" USE_OPENMP="$use_openmp"
-    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREADS="$use_threads" USE_OPENMP="$use_openmp" install
+    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREAD="$use_threads" USE_OPENMP="$use_openmp"
+    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREAD="$use_threads" USE_OPENMP="$use_openmp" install
 
     # Fixes for various packages e.g. numpy with broken search routines.
     cd $install_prefix/lib
