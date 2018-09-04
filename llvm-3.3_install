@@ -45,7 +45,7 @@ then
     -DLLVM_ENABLE_RTTI=ON                         \
     -DLLVM_INSTALL_UTILS=ON                       \
     -DLLVM_TARGETS_TO_BUILD:STRING=X86 ..
-  make 2>&1 | tee make.log
+  make -j 12 2>&1 | tee make.log
   make install
 
 else
