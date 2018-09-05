@@ -53,12 +53,12 @@ cd "$INSTALL_PREFIX"/..
 git clone $SRC_ARCHIVE "$INSTALL_PREFIX"
 cd "$INSTALL_PREFIX"
 ./configure -nogui
-# ./build
+./build
 
 
 # Fix PATH here to include scripts dir, otherwise population_template test fails
 # running "population_template"... 0 of 1 passed    <-------- ERROR
 export PATH="$PATH:$(pwd)/scripts"
 
-# ./run_tests
+./run_tests
 
