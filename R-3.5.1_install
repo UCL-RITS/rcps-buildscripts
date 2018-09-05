@@ -21,9 +21,9 @@
 #
 # 
 
-VERSION=${VERSION:-3.5.0}
+VERSION=${VERSION:-3.5.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
-MD5=${MD5:-c0455dbfa76ca807e4dfa93d49dcc817}
+MD5=${MD5:-8620686bc237cf80288afff336fcc93c}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
 # LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
 # SRC_ARCHIVE=${SRC_ARCHIVE:- /home/ccaabaa/Software/R//R-${VERSION}.tar.gz}
