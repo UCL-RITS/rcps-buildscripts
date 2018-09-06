@@ -39,8 +39,10 @@ make install
 make_module \
     -o "$module_dir/$package_label" \
     -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
     -r "compilers/intel/2018/update3" \
     -r "mpi/intel/2018/update3/intel" \
+    -e "GAROOT=$install_prefix" \
     -p "$install_prefix" \
     -w "$package_description"
 
