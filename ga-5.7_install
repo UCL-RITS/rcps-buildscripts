@@ -11,6 +11,8 @@ package_description="Global Arrays (GA) is a library that provides a Partitioned
 package_source="https://github.com/GlobalArrays/ga/archive/v${package_version}.tar.gz"
 
 source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
 
