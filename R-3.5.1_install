@@ -52,8 +52,8 @@ require jags/4.2.0/gnu.4.9.2-openblas
 require root/5.34.30/gnu-4.9.2-fftw-3.3.6
 #
 # And for doing the MPI support:
-# require mpi/openmpi/1.8.4/gnu-4.9.2
-# require mpi/openmpi/1.10.1/gnu-4.9.2
+# 
+# require mpi/openmpi/3.0.0/gnu-4.9.2
 
 # temp_dir=`mktemp -d -p /dev/shm`
 temp_dir='/home/ccspapp/Software/R'
