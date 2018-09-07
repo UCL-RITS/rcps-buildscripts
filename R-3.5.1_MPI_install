@@ -79,6 +79,7 @@ read -p "Press [Enter] key to start ..."
 cd $temp_dir
 mkdir -p $RLIB_DB
 
+export OMPI_MCA_btl=vader,self
 
 # Note: some old packages need to be installed from local files that have had minor updates applied eg:
 #
