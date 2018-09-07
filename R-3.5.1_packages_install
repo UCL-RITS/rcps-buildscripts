@@ -18,7 +18,7 @@
 # Updated October 2017 for R 3.4.2
 # Updated May 2018 for R 3.5.0
 # Updated June 2018 to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
-# Updated September 2018 for R 3.5.1
+# Updated September 2018 for R 3.5.1 and ROOT 5.34.36
 #
 # Using Ian's require function to load modules
 #
@@ -53,7 +53,7 @@ require hdf/5-1.8.15/gnu-4.9.2
 require udunits/2.2.20/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
-require root/5.34.30/gnu-4.9.2-fftw-3.3.6
+require root/5.34.36/gnu-4.9.2-fftw-3.3.6
 require glpk/4.60/gnu-4.9.2
 require mpi/openmpi/3.0.0/gnu-4.9.2
 require perl/5.22.0
