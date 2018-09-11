@@ -19,6 +19,7 @@
 # Updated May 2018 for R 3.5.0
 # Updated June 2018 to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
 # Updated September 2018 for R 3.5.1 and ROOT 5.34.36
+# Also updated for udunits 2.2.26
 #
 # Using Ian's require function to load modules
 #
@@ -50,7 +51,7 @@ require texinfo/5.2/gnu-4.9.2
 require texlive/2015
 require gsl/1.16/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
-require udunits/2.2.20/gnu-4.9.2
+require udunits/2.2.26/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
 require root/5.34.36/gnu-4.9.2-fftw-3.3.6
