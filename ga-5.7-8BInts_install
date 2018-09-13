@@ -1,0 +1,51 @@
+#!/bin/env bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+package_name="ga"
+package_version="5.7"
+package_variant="8BInts"
+package_description="Global Arrays (GA) is a library that provides a Partitioned Global Address Space (PGAS) programming model. This version has been compiled with 8-byte integers in the Fortran code."
+
+package_source="https://github.com/GlobalArrays/ga/archive/v${package_version}.tar.gz"
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+make_build_env ""
+
+cd "$build_dir"
+wget "$package_source"
+manifest sha256:92548ca30c72c54c72b17140f77cc717529acd847d459960c55d54236d6bb73a "v${package_version}.tar.gz"
+
+tar -xzf "v${package_version}.tar.gz"
+cd "${package_name}-${package_version}"
+
+autoreconf -i
+./configure --prefix="$install_prefix" --enable-shared --with-mpi --with-mpi3 --with-blas=-mkl --enable-i8 --with-blas8="-mkl" --with-scalapack=-mkl --with-lapack=-mkl LIBS=-mkl
+
+make
+
+# The GA tests are broken. See: https://github.com/UCL-RITS/rcps-buildscripts/issues/204
+#make checkprogs MPIEXEC="mpirun -np %NP% -m \$TMPDIR/machines"
+
+make install
+
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -r "compilers/intel/2018/update3" \
+    -r "mpi/intel/2018/update3/intel" \
+    -e "GAROOT=$install_prefix" \
+    -p "$install_prefix" \
+    -w "$package_description"
+
+chmod -R a+rX "$module_dir"
+echo "Modules are in: $module_dir"
