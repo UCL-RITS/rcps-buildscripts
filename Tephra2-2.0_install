@@ -56,5 +56,5 @@ cp -r probability_scripts $INSTALL_PREFIX
 
 # Install UCL version of run-inversion script to run all Tephra2 steps.
 
-cp files/Tephra2/run-inversion-UCL $INSTALL_PREFIX/bin
+cp /shared/ucl/apps/build_scripts/files/Tephra2/run-inversion-UCL $INSTALL_PREFIX/bin
 
