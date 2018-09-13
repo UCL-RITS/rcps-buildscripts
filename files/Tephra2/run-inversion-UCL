@@ -1,0 +1,109 @@
+#!/bin/bash -l
+
+#####################################
+# This script runs tephra2-inversion
+# and additional plotting scripts
+# to visualize the results. Any line
+# can be commented out with a # sign.
+#####################################
+
+#####################################
+# This version is for use on Aristotle 
+# and UCL clusters.
+#####################################
+
+# Will need to following module commands:
+
+# module unload compilers mpi
+# module load compilers/gnu/4.9.2
+# module load mpi/openmpi/3.1.1/gnu-4.9.2
+# module load gmt/recommended
+# module load tephra2/2.0/gnu-4.9.2
+
+#Path to the inversion code (example shown)
+EXEI=tephra2012_inversion
+echo $EXEI
+
+# T2INPUTS is set in the module file.
+
+INPUT=$T2INPUTS/colima_59wgs84z13.xyz
+echo $INPUT
+#
+#Selected wind field 
+WIND=$T2INPUTS/wind1
+#
+echo $WIND
+#
+#Inversion configuration file
+ICONF=$T2INPUTS/tephra2-inversion.conf
+echo $ICONF
+#
+#Path to forward model
+EXE=tephra2-2012 
+echo $EXE
+#
+#Grid file for final forward model
+GRID=$T2INPUTS/colima.data.grid
+echo $GRID
+#
+#Vent location
+VENT=$T2INPUTS/vent.xy
+echo $VENT
+
+#Machine file for MPI - not used directly as using gerun
+MACHINE=$TMPDIR/machines
+echo $MACHINE
+
+#Integration steps for column and particles
+COLUMN=200
+PARTICLE=100
+echo $COLUMN $PARTICLE
+
+#Number of slave nodes to use for inversion - set by schedular
+# NODES=6
+echo $NODES
+###############################
+date
+# Do the inversion (example shown)
+RUN="gerun $EXEI $ICONF $INPUT $WIND"
+echo $RUN
+$RUN
+date
+#
+# T2PLOTS is set in the module file.
+#
+# Generate a plot of the plume model (beta function)
+RUN="perl $T2PLOTS/plume.gmt.pl plume.dat plume.eps"
+echo $RUN
+$RUN
+#
+# Plot equiline plot (calculated vs. observed)
+RUN="perl $T2PLOTS/in_vs_out.gmt.pl $INPUT in_vs_out.eps"
+echo $RUN
+$RUN
+#
+# Write out a configuration file for tephra2
+#
+# Make a copy of the original in the current directory to update.
+cp $T2INPUTS/tephra2.conf .
+RUN="perl $T2PLOTS/write_conf.pl parameters.README tephra2.conf $COLUMN $PARTICLE nrmse"
+echo $RUN
+$RUN
+#
+# Generate a wind diagram
+RUN="perl $T2PLOTS/psrose.gmt.pl wind_levels.out psrose.in psrose0.eps"
+echo $RUN
+$RUN
+#
+# Run the tephra2 forward model
+echo "$EXE tephra2.conf $GRID wind_levels.out >tephra2.out"
+`$EXE tephra2.conf $GRID wind_levels.out >tephra2.out`
+#
+# Parse the output data and create a plotting file
+echo "perl $T2PLOTS/parse_tephra.out.pl tephra2.out >tephra2.out.xyz"
+`perl $T2PLOTS/parse_tephra.out.pl tephra2.out >tephra2.out.xyz`
+#
+# Plot a contour map of the tephra deposit from tephra2 model
+RUN="perl $T2PLOTS/plot_tephra_contours.gmt.pl $INPUT tephra2.out.xyz contours.eps $VENT"
+echo $RUN
+$RUN
