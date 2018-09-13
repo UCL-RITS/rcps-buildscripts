@@ -23,23 +23,22 @@ require compilers/intel
 require mpi/intel
 require cmake/3.7.2
 
-#export PATH=$INSTALL_PREFIX/execute:$PATH
-
+mkdir -p "$INSTALL_PREFIX"
 cd "$BUILD_DIR"
 
 # this will ask you for the password
 unzip "${SRC_ARCHIVE}"
 
-cd ${NAME}_${VERSION}
+cd "${NAME}_${VERSION}"
 
 # If you want to test, add -DBUILD_TESTING=ON and make test.
 # This takes some time to download the tests.
 cmake .
 make
 
-cp -r "$BUILD_DIR/*" "$INSTALL_PREFIX"
+cp -r "$BUILD_DIR/${NAME}_${VERSION}"/* "$INSTALL_PREFIX"
 
 # The correct legdlp group needs to have been created and the installing user has to be in it
-chgrp -Rv $GROUP $INSTALL_PREFIX
-chmod -Rv o-rwx $INSTALL_PREFIX
+chgrp -Rv "$GROUP" "$INSTALL_PREFIX"
+chmod -Rv o-rwx "$INSTALL_PREFIX"
 
