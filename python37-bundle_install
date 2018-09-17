@@ -57,12 +57,12 @@ pip3 install --upgrade pip
 
 old_IFS="$IFS"
 IFS=$'\n'
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared37-fixed.list`
 do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
-       pip3 install --no-binary $PIPNOBIN $entry
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
    fi
 done
 
@@ -71,7 +71,7 @@ do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
-       pip3 install --no-binary $PIPNOBIN $entry
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
    fi
 done
 IFS="$old_IFS"
