@@ -1,4 +1,4 @@
-pysam
+pysam==0.13
 pysamstats
 requests
 nose
