@@ -50,7 +50,7 @@ sha256sum -c <<<"$SHA256  $archive"
 # Disable Intel only options if we detect GCC
 IFCORE="-lifcore"
 ISTRICT="-fp-model precise"
-IOPTS="-axSSE2,AVX,AVX2"
+IOPTS="-axSSE4.2,AVX,AVX2"
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
