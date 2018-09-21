@@ -49,8 +49,8 @@ sha256sum -c <<<"$SHA256  $archive"
 
 # Disable Intel only options if we detect GCC
 IFCORE="-lifcore"
-ISTRICT="-fp-model strict"
-IOPTS="-axSSE2,AVX"
+ISTRICT="-fp-model precise"
+IOPTS="-axSSE2,AVX,AVX2"
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
@@ -62,7 +62,7 @@ fi
 tar -xzf "$archive"
 
 cd "${NAME}2-${VERSION}"
-# -fp-model strict required to help the tests pass.
+# -fp-model precise required to help the tests pass.
 ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas ${IFCORE} -lmatheval -lfl" CXXFLAGS="-O3 ${IOPTS} ${ISTRICT}"
 
 # Turn on Crystallization module
