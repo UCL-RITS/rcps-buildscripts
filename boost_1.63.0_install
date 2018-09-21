@@ -32,6 +32,11 @@ if [ "$SHA256" == "$CHECKSUM" ]
 then
   tar -xvf $tarfile
 
+  if [ "$MPI" == "no" ]
+  then
+    INSTALL_PREFIX=/shared/ucl/apps/$NAME/$VERSION/nompi/$COMPILER_TAG
+  fi
+
   cd ${NAME}_${VERSION}
   ./bootstrap.sh --with-libraries=all --with-python=python --prefix=$INSTALL_PREFIX
 
