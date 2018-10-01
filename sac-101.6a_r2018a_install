@@ -38,7 +38,7 @@ cd ${APPNAME}-${VERSION}
 cp src/mat/matBlackBoardVars.c src/mat/matBlackBoardVars.c.old
 sed ''"$REDEC_BUG"'d' src/mat/matBlackBoardVars.c.old > src/mat/matBlackBoardVars.c 
 
-./configure --prefix=$INSTALL_PREFIX --enable-xpm --enable-zlib --enable-png --enable-xft --enable-optim=2 --with-matlab=/shared/ucl/apps/Matlab/R2018a/full
+./configure --prefix=$INSTALL_PREFIX --enable-xpm --enable-zlib --enable-png --enable-xft --enable-optim=2 --with-matlab=/shared/ucl/apps/Matlab/R2016b/full
 make 
 
 # This step needs X11
