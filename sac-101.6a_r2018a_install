@@ -17,7 +17,7 @@
 APPNAME=${APPNAME:-sac}
 VERSION=${VERSION:-101.6a}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}_R2018a/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}_R2016b/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/sac/sources/sac-101.6a_source.tar.gz}
 REDEC_BUG=${REDEC_BUG:-106}
 # By default don't do tests as they need an X11 session.
