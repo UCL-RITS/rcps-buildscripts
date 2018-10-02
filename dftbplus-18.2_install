@@ -66,3 +66,4 @@ make_module \
     -r "mpi/intel/2018/update3" \
     -r "python2/recommended"
 
+chmod -R +rX "$module_dir"
