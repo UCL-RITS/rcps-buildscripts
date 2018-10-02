@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+set -o errexit \
+    -o nounset
+
+package_name=dftbplus
+package_version=18.2
+package_description="DFTB+ is a software package for carrying out fast quantum mechanical atomistic calculations based on the Density Functional Tight Binding method."
+
+source includes/source_includes.sh
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3
+require python2/recommended
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "http://www.dftbplus.org/fileadmin/DFTBPLUS/public/dftbplus/$package_version/$package_name-$package_version.tar.xz"
+
+manifest sha256:a0cb147915ff50404e58cf6202e9002038a8d027ca6508a2ec557cfef7af4e68  dftbplus-18.2.tar.xz
+
+tar -xf "$package_name-$package_version.tar.xz"
+cd "$package_name-$package_version"
+
+utils/get_opt_externals ALL <<<"y"
+
+cp sys/make.x86_64-linux-intel make.arch
+
+make \
+    INSTALLDIR="$install_prefix" \
+    WITH_MPI=1 \
+    WITH_DFTD3=1 
+
+# Test without *and* with DFTD3
+make \
+    INSTALLDIR="$install_prefix" \
+    WITH_MPI=1 \
+    TEST_MPI_PROCS=4 \
+    TEST_OMP_THREADS=2 \
+    test
+make \
+    INSTALLDIR="$install_prefix" \
+    WITH_MPI=1 \
+    WITH_DFTD3=1 \
+    TEST_MPI_PROCS=4 \
+    TEST_OMP_THREADS=2 \
+    test
+
+make \
+    INSTALLDIR="$install_prefix" \
+    WITH_MPI=1 \
+    WITH_DFTD3=1 \
+    install
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -w "$package_description" \
+    -p "$install_prefix" \
+    -c "dftb+" \
+    -c "dftbplus" \
+    -e PYTHONPATH:"$install_prefix/lib/python2.7" \
+    -r "gcc-libs/4.9.2" \
+    -r "compilers/intel/2018/update3" \
+    -r "mpi/intel/2018/update3" \
+    -r "python2/recommended"
+
