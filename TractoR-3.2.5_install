@@ -17,7 +17,7 @@ MD5=${MD5:-e8ae15ef2bf415f9a77f960dda3d9bbf}
 
 set -e
 
-# Require the R modules. Using GCC. As far as I knoiw the FSL module is not needed
+# Require the R modules. Using GCC. As far as I know the FSL module is not needed
 # during building.
 
 dirname=$(dirname $0 2>/dev/null || pwd)
@@ -38,6 +38,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
     # TractoR has to be build in place so:
 
+    mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
     tar -zxvf $temp_dir/$LOCAL_ARCHIVE
     cd tractor
