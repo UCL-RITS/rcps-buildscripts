@@ -13,7 +13,7 @@
 VERSION=${VERSION:-2017.101.GU}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/CMG}
 # INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccaabaa/apps/CMG}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/CMG/installers}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/CMG/installers/${VERSION}.zip}
 # SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccaabaa/Software/CMG/installers/${VERSION}.zip}
 CMG_INSTALLER=${CMG_INSTALLER:-unixinst.sh}
 
