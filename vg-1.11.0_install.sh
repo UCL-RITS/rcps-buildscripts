@@ -29,7 +29,7 @@ cd $INSTALL_PREFIX
 git clone --recursive $SRC_ARCHIVE
 
 cd vg
-git checkout ${VERSION}
+git checkout v${VERSION}
 
 source source_me.sh
 make static
