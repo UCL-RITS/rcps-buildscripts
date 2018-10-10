@@ -20,6 +20,7 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require bison
 require flex
+require jansson
 
 mkdir -p $INSTALL_PREFIX
 
