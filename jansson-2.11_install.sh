@@ -11,7 +11,7 @@ VERSION=${VERSION:-2.11}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SHA256=${SHA256:-783132e2fc970feefc2fa54199ef65ee020bd8e0e991a78ea44b8586353a0947}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/akheron/jansson/archive/v${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.digip.org/jansson/releases/jansson-${VERSION}.tar.bz2}
 
 set -e
 
