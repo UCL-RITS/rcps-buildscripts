@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-leveldb}
+VERSION=${VERSION:-1.20}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-df11440c30deed5987263730180225db98de9f57}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/leveldb/archive/v${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha1sum -c <<< "$SHA1 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# Note - in the development branch they have moved to CMAKE
+
+make
+
+mkdir -p $INSTALL_PREFIX
+cp -R ./* $INSTALL_PREFIX

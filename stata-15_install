@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# This script installs StataMP 15 
+# Brian Alston January 2018
+
+# Based on spm12_install by Owain Kenway
+
+# You need to download the Stata installer from the UCL Software Database
+# before running this build script.
+# Set the SRC_ARCHIVE & STATA_INSTALLER variables appropriately.
+
+VERSION=${VERSION:-15}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/StataMP}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/STATA/Stata${VERSION}Linux64.tar.gz}
+STATA_INSTALLER=${STATA_INSTALLER:-install}
+# EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
+
+
+if [ ! -f $SRC_ARCHIVE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find STATA installer archive"
+    echo ""
+    echo "You need to download the Stata installer from the UCL Software Database"
+    echo "before running this build script."
+    echo ""
+    exit 1
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+# Unpack installer archive
+tar xvzf $SRC_ARCHIVE
+INSTALLER_DIR=$temp_dir
+
+# Run the installer from install location.
+
+mkdir -p $INSTALL_PREFIX/stata$VERSION
+cd $INSTALL_PREFIX/stata$VERSION
+$INSTALLER_DIR/$STATA_INSTALLER <<EOF
+y
+y
+y
+EOF
+
+# install UCL StataMP license for Legion
+
+echo ""
+echo "STATA/MP is only licensed for Legion so the next step may only be run on Legion."
+echo "You will need the license details supplied by Procurement before continuing."
+echo ""
+read -p "Do you wish to run the STATA license setup? [y/n] " answer
+
+if [ "$answer" == "y" ]
+then
+    ./stinit
+fi
+
+echo ""
+echo "After testing that STATA is working OK, run the internal update"
+echo "procedure to bring STATA up to the latest version."
+echo ""
+
+

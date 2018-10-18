@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Lynx 2.8.9
+#
+# by Brian Alston,  March 2018
+# Udated 4th May for 2.8.9dev.17
+#
+# Will need modules: rcps-core/1.0.0
+
+VERSION=${VERSION:-2.8.9dev.17}
+VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Lynx/$VERSION}
+MD5=${MD5:-8a8f442138c17bb5ce225218e45eb8f2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://invisible-island.net/datafiles/release/lynx-cur.tar.gz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-lynx-cur.tar.gz}
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum $LOCAL_ARCHIVE | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf $LOCAL_ARCHIVE
+   cd lynx$VERSION
+   ./configure --prefix=/shared/ucl/apps/Lynx/$VERSION --with-ssl 2>&1 | tee configure-log
+   make 2>&1 | tee make-log
+   make install 2>&1 | tee make_install-log
+   make install-help 2>&1 | tee -a make_install-log
+   make install-doc  2>&1 | tee -a make_install-log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

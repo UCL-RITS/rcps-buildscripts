@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Racket
+#
+# by Owain Kenway, 2017 
+#
+
+APPNAME=${APPNAME:-racket}
+VERSION=${VERSION:-6.8}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-9e543bed0bda5c197d8ade41062d19db010099e6}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://mirror.racket-lang.org/installers/${VERSION}/racket-${VERSION}-src.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}-src.tgz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}-src.tgz
+
+  cd ${APPNAME}-${VERSION}/src
+  ./configure --prefix=$INSTALL_PREFIX --enable-shared
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi

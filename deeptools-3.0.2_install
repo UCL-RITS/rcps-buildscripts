@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+set -e
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python/3.6.3
+
+NAME=${NAME:-deeptools}
+VERSION=${VERSION:-3.0.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+
+virtualenv $INSTALL_PREFIX
+source $INSTALL_PREFIX/bin/activate
+
+pip3 install deeptools==${VERSION}
+
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
+rm -rf ${INSTALL_PREFIX}/bin/__pycache__
+
+cd ${INSTALL_PREFIX}/bin
+
+for a in * ; do sed -i 's|/shared/ucl/apps/deeptools/3.0.2/gnu-4.9.2/bin/python3.6|/usr/bin/env python3|g' $a; done
+

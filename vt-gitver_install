@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -o errexit \
+    -o pipefail \
+    -o nounset
+
+package_name=vt
+package_repo=https://github.com/atks/vt.git
+package_version="$(git ls-remote "$package_repo" master | cut -c -12)"
+package_description="A tool set for short variant discovery in genetic sequence data."
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+
+make_build_env
+
+cd "$build_dir"
+git clone "$package_repo" "${package_name}-${package_version}"
+cd "${package_name}-${package_version}"
+
+make
+make test
+
+echo "Changing install prefix and package label to match"
+echo "   date of last commit instead of git ref..." >&2
+commit_date="$(git log -n 1 --format=format:%ai | cut -c -10)"
+install_prefix="${install_prefix//$package_version/$commit_date}"
+package_label="${package_label//$package_version/$commit_date}"
+echo "Version mark is now: $commit_date" >&2
+echo "Package label: $package_label" >&2
+echo "Install prefix: $install_prefix" >&2
+
+mkdir -p "$install_prefix/bin"
+cp vt "$install_prefix/bin"
+
+mkdir -p "$module_dir"
+make_module \
+    -w "[ref:$package_version] $package_description" \
+    -c vt \
+    -r gcc-libs/4.9.2 \
+    -p "$install_prefix" \
+    -o "$module_dir/$package_label"
+
+chmod -R +rX "$module_dir"
+echo "Modules in: $module_dir"

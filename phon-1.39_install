@@ -11,7 +11,7 @@ VERSION=${VERSION:-1.39}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-3ae321e06b0e74568f6168089946b21b}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://chianti.geol.ucl.ac.uk/~dario/phon.1.39.tar.Z}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://chianti.geol.ucl.ac.uk/~dario/phon.${VERSION}.tar.Z}
 
 set -e
 

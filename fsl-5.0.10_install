@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FSL
+#
+
+NAME=${NAME:-fsl}
+VERSION=${VERSION:-5.0.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-7f114cbf2d9155f45994b627523418fd}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-${VERSION}-sources.tar.gz}
+PATCHES=${PATCHES:-/shared/ucl/apps/build_scripts/fsl-patches}
+
+set -e
+
+mkdir -p /dev/shm/fsl
+temp_dir=`mktemp -d -p /dev/shm/fsl`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  export FSLDIR=$temp_dir/${NAME}
+
+  cp $PATCHES/*.patch $FSLDIR
+  cd $FSLDIR
+  patch -p0 -i fsl-${VERSION}_fslconf.patch
+
+  . ${FSLDIR}/etc/fslconf/fsl.sh
+  cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
+
+  # patch systemvars after above copy
+  #patch -p0 -i fsl-5.0.9_systemvars.patch
+
+  sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+
+  sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
+  sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/lib|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/lib|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
+  sed -i.bak 's|VTKSUFFIX = -7.0|VTKSUFFIX = -6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
+  
+
+  ./build
+
+  mkdir -p $INSTALL_PREFIX
+  cp -r $FSLDIR $INSTALL_PREFIX
+
+# Disable until fixed for 5.0.10
+cd $INSTALL_PREFIX/fsl/bin
+patch -p0 -i ../fsl-${VERSION}_parallel.patch
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

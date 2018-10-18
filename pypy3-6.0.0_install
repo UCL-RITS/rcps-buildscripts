@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="pypy3"
+package_version="6.0.0"
+package_description="Pypy is a JIT-ing interpreter for the Python language. This is the version intended to be compatible with CPython 3.5."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+    require python/2.7.12
+
+    make_build_env ""
+
+    package_url="https://bitbucket.org/pypy/pypy/downloads/${package_name}-v${package_version}-src.tar.bz2"
+    package_file="${package_name}-v${package_version}-src.tar.bz2"
+    unpack_dir="${package_name}-v${package_version}-src"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha256:ed8005202b46d6fc6831df1d13a4613bc40084bfa42f275068edadf8954034a3 pypy3-v6.0.0-src.tar.bz2
+
+    tar -xf "$package_file"
+
+    # We also need this extra package for the translation process, but we can chuck it in our build directory temporarily.
+    wget https://files.pythonhosted.org/packages/8c/2d/aad7f16146f4197a11f8e91fb81df177adcc2073d36a17b1491fd09df6ed/pycparser-2.18.tar.gz
+    manifest sha256:99a8ca03e29851d96616ad0404b4aad7d9ee16f25c9f9708a11faf2810f7b226 pycparser-2.18.tar.gz
+    tar -xf pycparser-2.18.tar.gz
+    export PYTHONPATH="${PYTHONPATH:-}${PYTHONPATH:+:}$build_dir/pycparser-2.18"
+
+}
+
+_build() {
+    cd "$unpack_dir"
+    pushd pypy/goal
+    python ../../rpython/bin/rpython --opt=jit targetpypystandalone
+    popd
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    pushd pypy/tool/release
+    ./package.py --archive-name="${package_name}-${package_version}" --targetdir="${build_dir}"
+    popd
+
+    mkdir -p "$install_prefix"
+    tar \
+        --extract \
+        --directory="$install_prefix" \
+        --strip-components=1 \
+        --file="${build_dir}/${package_name}-${package_version}.tar.bz2" 
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs/4.9.2 \
+        -c "$package_name" \
+        -w "$package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_build
+_post_build
+_clean_up
+

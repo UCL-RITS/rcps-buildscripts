@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+# Build script for PGI compilers and tools version 2017.3 including Accelerator support.
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="PGI"
+package_version="18.5"
+src_urls=/shared/ucl/apps/PGI/installers/pgilinux-20${package_version:0:2}-${package_version:0:2}${package_version##*\.}-x86-64.tar.gz
+# Optional: 
+# package_variant=""
+package_description="The PGI Compilers are primarily installed to build Gaussian, which is not compatible with other compilers. Please do not use these over the Intel or GNU compilers unless you have a good reason for doing so."
+
+actual_file_name=$src_urls
+actual_file_md5=e0bf3a73c633280a414d2eab8e0399be
+
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+# This isn't needed during install, just to create the modulefile
+LM_LICENSE_FILE=27000@lic-pgi.ucl.ac.uk
+
+
+_env_setup() {
+  mkdir -p /dev/shm/${package_name}
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/${package_name})}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
+  cd $build_dir
+}
+
+_fetch_files() {
+  echo -n "Checking MD5: "
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+#  echo -n "Checking SHA: "
+#  shasum -c <<<"$actual_file_sha  $actual_file_name"
+}
+
+_setup_files() {
+  cd $build_dir
+  tar -xvzpf $actual_file_name
+}
+
+_build() {
+  cd $build_dir
+  export PGI_SILENT=true
+  export PGI_ACCEPT_EULA=accept
+  export PGI_INSTALL_TYPE=single
+  export PGI_INSTALL_DIR=$install_prefix
+#  export PGI_INSTALL_LOCAL_DIR=$install_prefix
+  export PGI_INSTALL_NVIDIA=true
+  export PGI_INSTALL_AMD=true
+  export PGI_INSTALL_JAVA=true
+  export PGI_INSTALL_MPI=true
+  export PGI_MPI_GPU_SUPPORT=true
+  ./install
+  cat /shared/ucl/apps/build_scripts/pgi-patches/2017.3-siterc >> $install_prefix/linux86-64/18.5/bin/siterc
+  cat /shared/ucl/apps/build_scripts/pgi-patches/2017.3-siterc >> $install_prefix/linux86-64-llvm/18.5/bin/siterc
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  echo "Modules stuff is broken, ignoring."
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+

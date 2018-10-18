@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-mumax}
+VERSION=${VERSION:-3.9.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-051b5fc238ac057ef86ae95186b5e9bc}
+SHA1=${SHA1:-571361681a42b13581a0e387b8072d8ffe7e0b0e}
+SHA256=${SHA256:-122f9f8b2804fa1558677c696b4424108d5ff68d5a1aaaa99d4fd247bbe84b23}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/mumax/3/archive/v${VERSION}.tar.gz}
+
+set -e
+
+export GOPATH=$INSTALL_PREFIX
+mkdir -p $GOPATH
+
+cd $GOPATH
+
+wget $SRC_ARCHIVE
+
+archive=$(basename "${SRC_ARCHIVE}")
+md5sum -c <<< "$MD5 $archive"
+sha1sum -c <<< "$SHA1 $archive"
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+mkdir -p $GOPATH/src/github.com/mumax/
+
+mv 3-${VERSION} $GOPATH/src/github.com/mumax/3
+
+cd $GOPATH/src/github.com/mumax/3/cmd/mumax3
+go install
+
+
+

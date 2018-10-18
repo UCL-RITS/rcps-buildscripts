@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HDF5 1.10.2 Serial Version with currently loaded compiler
+#
+# by Owain Kenway, 2018
+#
+VERSION=${VERSION:-5-1.10.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/serial/${COMPILER_TAG}}
+MD5=${MD5:-41fb9347801b546fba323523a1c1af51}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/hdf5
+temp_dir=`mktemp -d -p /dev/shm/hdf5`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum hdf${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvf hdf${VERSION}.tar.bz2
+   cd hdf${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-cxx
+   make
+   make check
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

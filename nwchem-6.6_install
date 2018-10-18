@@ -40,12 +40,8 @@ MPI_F90=${mpif90}
 MPI_CC=${mpicc}
 MPI_CXX=${mpicxx}
 
-ARMCI_NETWORK=${ARMCI_NETWORK:-OPENIB}
+ARMCI_NETWORK=${ARMCI_NETWORK:-MPI-PR}
 MSG_COMMS=${MSG_COMMS:-MPI}
-IB_HOME=${IB_HOME:-/usr}
-IB_INCLUDE=${IB_INCLUDE:-$IB_HOME/include}
-IB_LIB=${IB_LIB:-$IB_HOME/lib64}
-IB_LIB_NAME=${IB_LIB_NAME:-"-libverbs"}
 
 PYTHONHOME=${PYTHONHOME:-/shared/ucl/apps/python/2.7.9/gnu-4.9.2/}
 PYTHONVERSION=${PYTHONVERSION:-2.7}
@@ -68,7 +64,8 @@ fi
 
 set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
@@ -107,10 +104,6 @@ then
 
   export ARMCI_NETWORK
   export MSG_COMMS
-  export IB_HOME
-  export IB_INCLUDE
-  export IB_LIB
-  export IB_LIB_NAME
 
   export PYTHONHOME
   export PYTHONVERSION

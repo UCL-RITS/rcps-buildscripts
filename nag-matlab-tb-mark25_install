@@ -1,0 +1,45 @@
+#!/bin/bash -l
+
+# This script installs NAG Toolbox for Matlab Mark 25.
+# Brian Alston April 2018
+# Based on spm12_install by Owain Kenway
+
+
+VERSION=${VERSION:-25}
+PRODUCT=${PRODUCT:-mbl6i25dnl}
+# DOC=${DOC:-mk${VERSION}_doc}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/matlab-toolbox}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$PRODUCT.tgz}
+# DOC_ARCHIVE=${DOC_ARCHIVE:-http://www.nag.co.uk/downloads/impl/$DOC.tgz}
+# MD5_SRC=${MD5_SRC:-1c370fe9eec4e4ea210e566f388018cd}
+# MD5_DOC=${MD5_DOC:-d5d88b864f9e2ea7d19770a19c766d1b}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+# wget $DOC_ARCHIVE
+
+# Unfortunately this doesn't work from within a script!!!!! Horror!!
+tar xvzf $PRODUCT.tgz
+# gunzip $DOC.tgz
+cd $PRODUCT
+
+# Unfortunately this doesn't work from within a script!!!!! Horror!!
+# sh ./INSTALL <<EOF
+# Y
+# accept
+# /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a
+# /shared/ucl/apps/Matlab/R2018a/full
+# N
+# N
+# EOF
+
+echo ""
+echo "Cannot be installed from a script please install by hand from $temp_dir"
+echo ""
+echo "use: /shared/ucl/apps/NAG/matlab-toolbox/MBL6I25DNL_R2018a"
+echo "     /shared/ucl/apps/Matlab/R2018a/full"
+echo ""

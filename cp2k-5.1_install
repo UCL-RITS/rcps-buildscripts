@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CP2K
+#
+# by Owain Kenway, 2017 
+#
+
+# YOU SHOULD BUILD WITH GNU 4.9.2 AND OpenMPI 1.8.4
+# The tests take hours and use 2 cores, so shouldn't be run on a login node.
+# SVN checkouts are frequently failing, so probably need to get separately first.
+
+APPNAME=${APPNAME:-cp2k}
+VERSION=${VERSION:-5_1}
+TYPE=${TYPE:-popt}
+ARCH=${ARCH:-UCL-x86-64-gfortran}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://svn.code.sf.net/p/cp2k/code/branches/cp2k-${VERSION}-branch}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-/shared/ucl/apps/cp2k/sources/cp2k-${VERSION}}
+dotversion=$(echo $VERSION | sed 's|_|\.|g')
+REGTEST=${REGTEST:-}
+USE_SVN=${USE_SVN:-}
+USE_PLUMED=${USE_PLUMED:-}
+
+if [[ "${USE_PLUMED}" == "yes" ]] 
+then
+  ARCH=${ARCH}-plumed
+  echo ">>> USING PLUMED <<<"
+  INSTALL_PREFIX=${INSTALL_PREFIX}/plumed
+fi
+
+ARCHFILE=${ARCHFILE:-/shared/ucl/apps/build_scripts/cp2k-${dotversion}-patches/${ARCH}.${TYPE}}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+# Either use local copy of source or get from SVN
+if [[ ${USE_SVN} == "yes" ]]
+then
+  svn checkout ${SRC_ARCHIVE} cp2k-${VERSION}
+else
+  cp -r ${LOCAL_ARCHIVE} .
+fi
+
+cd cp2k-${VERSION}/cp2k
+
+mkdir -p ${INSTALL_PREFIX}/data
+cp -R data/* ${INSTALL_PREFIX}/data
+
+cp ${ARCHFILE} arch
+
+cd makefiles
+
+make ARCH=${ARCH} VERSION="${TYPE}"
+
+# Only run the regression tests somewhere we aren't affecting users.
+if [[ ${REGTEST} == "yes" ]]
+then
+  make ARCH=${ARCH} VERSION="${TYPE}" test
+else
+  echo "REGTEST set to no in buildscript so not running tests"
+fi
+
+mkdir -p ${INSTALL_PREFIX}/bin
+mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
+
+cd ..
+
+cp exe/${ARCH}/* ${INSTALL_PREFIX}/bin
+cp lib/${ARCH}/${TYPE}/*.a ${INSTALL_PREFIX}/lib/${TYPE}
+
+echo "Finshed building cp2k."
+
+

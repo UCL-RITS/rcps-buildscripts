@@ -1,0 +1,11 @@
+--- config/linux_64-gcc4.9/systemvars.mk.old    2015-10-02 10:18:37.958888025 +0100
++++ config/linux_64-gcc4.9/systemvars.mk        2015-10-02 10:18:55.757193258 +0100
+@@ -4,7 +4,7 @@
+
+ # System dependent commands (NB: the first two are the most platform dependent)
+
+-INSTALL = ginstall -p
++INSTALL = install -p
+ RANLIB = ranlib
+
+ RM = /bin/rm

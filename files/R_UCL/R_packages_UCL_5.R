@@ -4,6 +4,7 @@
 # Install 5th batch of add on R packages for UCL R instllations.
 #
 # June 2016
+# Latest update October 2017
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -43,6 +44,7 @@ install.packages ("dichromat", lib=mainLib, repos=repros);
 install.packages ("colorspace", lib=mainLib, repos=repros);
 install.packages ("munsell", lib=mainLib, repos=repros);
 install.packages ("scales", lib=mainLib, repos=repros);
+install.packages ("shiny", lib=mainLib, repos=repros);
 install.packages ("gtable", lib=mainLib, repos=repros);
 install.packages ("stringr", lib=mainLib, repos=repros);
 install.packages ("reshape2", lib=mainLib, repos=repros);
@@ -131,9 +133,27 @@ install.packages ("arm", lib=mainLib, repos=repros);
 install.packages ("systemfit", lib=mainLib, repos=repros);
 
 # tmap requested by James Cheshire, Geography
+# install V8's dependencies first, otherwise v8conf variables get lost in the interim
+install.packages("Rcpp", lib=mainLib, repos=repros);
+install.packages("jsonlite", lib=mainLib, repos=repros);
+install.packages("curl", lib=mainLib, repos=repros);
 v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
+udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/include --with-udunits2-lib=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/lib';
+install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
 install.packages ("tmap", lib=mainLib, repos=repros);
+
+# For Lucia Conde (l.conde@ucl.ac.uk) May 2017
+install.packages ("rmarkdown", lib=mainLib, repos=repros);
+
+# For RStudio server Oct 2017
+install.packages ("tidyverse", lib=mainLib, repos=repros);
+
+# For Cheng Zhang (cheng.zhang@ucl.ac.uk) March 2018
+install.packages ("bio3d", lib=mainLib, repos=repros);
+
+# For Cheng Zhang  (cheng.zhang@ucl.ac.uk) May 2018
+install.packages ("png", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 

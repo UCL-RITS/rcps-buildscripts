@@ -12,16 +12,16 @@ MPI_LAUNCHER=$MPI_RUN
 # for it and it breaks on the single-node job nodes).
 if [[ "$NHOSTS" == "1" ]]
 then
-  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self $*
+  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self "$@"
 
 # If the job is running interactively, disable Infiniband (i.e. login
 # nodes). 
 elif [[ "$NHOSTS" == "" ]]
 then
-  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self $*
+  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self "$@"
 
 # Otherwise, business as usual (Infiniband).
 else 
-  $MPI_LAUNCHER $*
+  $MPI_LAUNCHER "$@"
 fi
 

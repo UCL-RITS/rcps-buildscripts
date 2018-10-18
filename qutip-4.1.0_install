@@ -1,0 +1,22 @@
+#!/bin/bash -l
+
+###############################################
+# Installing iva
+#
+# by Owain Kenway, 2015 
+#
+set -e
+
+VERSION=${VERSION:-4.1.0}
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/qutip/$VERSION}
+
+# Note, you need the following packages loaded to build this:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq compilers/gnu
+prereq python2
+
+pip install --install-option="--prefix=$INSTALL_PREFIX" qutip==$VERSION
+

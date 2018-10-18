@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# CP2K
+
+## Env setup
+
+set -o errexit
+
+package_name=cp2k
+package_version=6.1
+
+cp2k_build_arch="${ARCH:-UCL-x86-64-gfortran}"
+cp2k_build_type="${TYPE:-popt}"
+cp2k_arch_file="${ARCHFILE:-cp2k-${package_version}-patches/${cp2k_build_arch}.${cp2k_build_type}}"
+run_regression_tests="no"
+# ^-- The tests take hours and use 2 cores, so shouldn't be run on a login node.
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+module load mpi/openmpi/3.1.1/gnu-4.9.2
+
+make_build_env --tmp-root="/dev/shm"
+
+export PATH=$install_prefix/bin:$PATH
+
+original_working_directory="$(dirname "$0")"
+
+## Download and copy in our pre-prepared config
+
+cd "$build_dir"
+
+wget "https://downloads.sourceforge.net/project/cp2k/cp2k-${package_version}.tar.bz2"
+
+manifest sha256:af803558e0a6b9e9d9ce8a3ab955ba32bacd179922455424e061c82c9fefa34b "cp2k-6.1.tar.bz2"
+
+tar -xf "cp2k-${package_version}.tar.bz2"
+
+cd "cp2k-${package_version}"
+cp "${original_working_directory}/${cp2k_arch_file}" arch
+
+
+## Build
+
+cd "makefiles"
+
+make ARCH="${ARCH}" VERSION="${TYPE}"
+
+# Only run the regression tests somewhere we aren't affecting users.
+if [[ "${run_regression_tests}" == "yes" ]]
+then
+  make ARCH=${ARCH} VERSION="${TYPE}" test
+else
+  echo "REGTEST set to no in buildscript so not running tests"
+fi
+
+
+## Install
+
+mkdir -p ${INSTALL_PREFIX}/bin
+mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
+
+mkdir -p ${install_prefix}/data
+cp -R ../data/* ${install_prefix}/data
+
+cd ..
+
+cp exe/${ARCH}/* ${INSTALL_PREFIX}/bin
+cp lib/${ARCH}/${TYPE}/*.a ${INSTALL_PREFIX}/lib/${TYPE}
+
+echo "Finshed building cp2k."
+
+

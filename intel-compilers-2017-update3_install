@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+set \
+    -o errexit 
+
+source includes/source_includes.sh
+
+package_name="intel"
+package_version="2017.Update3"
+package_description="This is the package for the Intel C, C++, and Fortran compilers."
+
+intel_license="28518@lic-intel.ucl.ac.uk"
+
+src_file=l_psxe_2017.3.053.tgz
+
+module purge
+require gcc-libs
+require compilers/gnu
+# Needs a GCC installation to use its C++ headers ¯\_(o_o)_/¯
+
+if [ -d ~/intel ]; then
+  echo "WARNING: this installer may not behave as expected because this installer likes to read settings in from ~/intel . Delete this directory to get expected results." >&2
+  sleep 3
+fi
+
+# At peak, this uses more than 12 GB of storage during the install
+#  which is too big for /dev/shm and too big for /tmp
+# (I don't know how *much* more yet)
+mkdir -p "$HOME/temporary-intel-dirs"
+unset COMPILER_TAG
+make_build_env "$package_name" "$HOME/temporary-intel-dirs"
+
+# Package label is set by make_build_env but we need to override it
+#  (to include the compilers top-level)
+package_label="compilers/intel/$package_version"
+
+
+cd "$build_dir"
+
+cp "/shared/ucl/apps/pkg-store/$src_file" ./
+manifest sha1:9e219e9b2755069dfa5904be813d8d6253da5535 l_psxe_2017.3.053.tgz
+
+tar -xf "$src_file"
+
+cd "$build_dir"
+cat > silent_config_file.cfg <<EOF
+ACCEPT_EULA=accept
+ACTIVATION_LICENSE_FILE=$intel_license
+ACTIVATION_TYPE=exist_lic
+ACTIVATION_TYPE=license_server
+ARCH_SELECTED=ALL
+CLUSTER_INSTALL_TEMP=$(mktemp -p /tmp/ -d intel-compiler-installtempdir.XXXXXXXXXX)
+COMPONENTS=ALL
+CONTINUE_WITH_INSTALLDIR_OVERWRITE=yes
+CONTINUE_WITH_OPTIONAL_ERROR=yes
+NONRPM_DB_DIR=$(mktemp -p /tmp/ -d intel-compiler-nonrpm-db-dir.XXXXXXXXXX)
+PHONEHOME_SEND_USAGE_DATA=no
+PSET_INSTALL_DIR=$install_prefix
+PSET_MODE=install
+EOF
+
+for i in */install.sh; do
+    $i --cli-mode --silent ./silent_config_file.cfg
+done
+
+echo "Installed to: $install_prefix"
+
+echo "Now load the module for this install and the relevant Intel MPI"
+echo "and run intel-compilers-interfaces_install to install the interfaces."
+
+export cprefix=$install_prefix
+make_module -p "$install_prefix" \
+            -c "${package_name}" \
+            -o "$module_dir/$package_label" \
+            -v INTEL_LICENSE_FILE="$intel_license" \
+            -v CC=icc \
+            -v CXX=icpc \
+            -v CXXCPP="\"icpc -E\"" \
+            -v F77=ifort \
+            -v F90=ifort \
+            -v FC=ifort \
+            -v COMPILER_TAG=intel-2017 \
+            -v BLAS_TAG=mkl \
+            -v MKLROOT="$cprefix/compilers_and_libraries_2017.3.191/linux/mkl" \
+            -v IPPROOT="$cprefix/compilers_and_libraries_2017.3.191/linux/ipp" \
+            -v GDBSERVER_MIC="$cprefix/debugger_2017/gdb/targets/mic/bin/gdbserver" \
+            -v TBBROOT="$cprefix/compilers_and_libraries_2017.3.191/linux/tbb" \
+            -v GDB_CROSS="$cprefix/debugger_2017/gdb/intel64_mic/bin/gdb-mic" \
+            -v DAALROOT="$cprefix/compilers_and_libraries_2017.3.191/linux/daal" \
+            -v MPM_LAUNCHER="$cprefix/debugger_2017/mpm/mic/bin/start_mpm.sh" \
+            -v INTEL_PYTHONHOME="$cprefix/debugger_2017/python/intel64/" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/ipp/../compiler/lib/intel64" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/ipp/lib/intel64" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/intel64" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mkl/lib/intel64" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/tbb/lib/intel64/gcc4.4" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/lib/intel64_lin" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/../tbb/lib/intel64_lin/gcc4.4" \
+            -e LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/../compiler/lib/intel64_lin" \
+            -e MIC_LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mpi/mic/lib" \
+            -e MIC_LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mkl/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/tbb/lib/mic" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mpi/intel64/lib" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/ipp/../compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/ipp/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mkl/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/tbb/lib/intel64/gcc4.4" \
+            -e LD_LIBRARY_PATH:"$cprefix/debugger_2017/libipt/intel64/lib" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/lib/intel64_lin" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/../tbb/lib/intel64_lin/gcc4.4" \
+            -e LD_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/../compiler/lib/intel64_lin" \
+            -e MIC_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/mic" \
+            -e MIC_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mpi/mic/lib" \
+            -e MIC_LIBRARY_PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/tbb/lib/mic" \
+            -e CPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/ipp/include" \
+            -e CPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mkl/include" \
+            -e CPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/tbb/include" \
+            -e CPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/include" \
+            -e NLSPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/compiler/lib/intel64/locale/%l_%t/%N" \
+            -e NLSPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mkl/lib/intel64/locale/%l_%t/%N" \
+            -e NLSPATH:"$cprefix/debugger_2017/gdb/intel64_mic/share/locale/%l_%t/%N" \
+            -e NLSPATH:"$cprefix/debugger_2017/gdb/intel64/share/locale/%l_%t/%N" \
+            -e PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/bin/intel64" \
+            -e PATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/mpi/intel64/bin" \
+            -e PATH:"$cprefix/debugger_2017/gdb/intel64_mic/bin" \
+            -e CLASSPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/daal/lib/daal.jar" \
+            -e MANPATH:"$cprefix/man/common" \
+            -e MANPATH:"$cprefix/compilers_and_libraries_2017.3.191/linux/man/en_US" \
+            -e MANPATH:"$cprefix/documentation_2017/en/debugger//gdb-ia/man/" \
+            -e MANPATH:"$cprefix/documentation_2017/en/debugger//gdb-mic/man/" \
+            -e MANPATH:"$cprefix/documentation_2017/en/debugger//gdb-igfx/man/" \
+            -e INFOPATH:"$cprefix/documentation_2017/en/debugger//gdb-ia/info/" \
+            -e INFOPATH:"$cprefix/documentation_2017/en/debugger//gdb-mic/info/" \
+            -e INFOPATH:"$cprefix/documentation_2017/en/debugger//gdb-igfx/info/" \
+            -r gcc-libs/4.9.2 \
+            -d \
+            -w "[$package_name/$package_version] $package_description"
+
+echo "Module files put in: $module_dir" >&2
+chmod a+rx "$module_dir"
+
+cd "$owd"
+if [ -n "$build_dir" ]; then
+    rm -Rf "${build_dir}"
+fi
+
+

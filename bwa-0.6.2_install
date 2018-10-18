@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="bwa"
+package_version="0.6.2"
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require  gcc-libs
+    require  compilers/gnu
+
+    make_build_env ""
+
+    package_url="https://downloads.sourceforge.net/project/bio-bwa/bwa-${package_version}.tar.bz2"
+    package_file="bwa-${package_version}.tar.bz2"
+    unpack_dir="bwa-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:fd3d0666a89d189b642d6f1c4cfa9c29123c12bc bwa-0.6.2.tar.bz2 
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    # Nothing here.
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+
+    make
+
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    #make install
+    mkdir -p "$install_prefix"
+    cp ./* "$install_prefix"/
+    mkdir -p "$install_prefix"/{bin,man/man1,lib}
+
+    cd "$install_prefix"
+
+    cd bin
+    for i in ../bwa ../*.pl; do ln -s "$i" ./; done
+    cd ..
+    (cd man/man1; ln -s ../../bwa.1 ./)
+    (cd lib; ln -s ../libbwa.a ./)
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c bwa \
+        -w "Adds BWA 0.7.12 to your environment. BWA is a software package for mapping DNA sequences against a large reference genome, such as the human genome. " \
+        -r gcc-libs 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd ..
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

@@ -1,0 +1,11 @@
+--- g16.profile.old	2017-05-16 15:23:16.631474857 +0100
++++ g16.profile	2017-05-16 15:24:11.729874921 +0100
+@@ -16,7 +16,7 @@
+ export GAUSS_LEXEDIR="$gr/g16/linda-exe"
+ export GAUSS_ARCHDIR="$gr/g16/arch"
+ export GAUSS_BSDDIR="$gr/g16/bsd"
+-export GV_DIR="$gr/gv"
++# export GV_DIR="$gr/gv"
+ if [ -e "$GV_DIR/gview.app" ]; then
+   alias gv='open $GV_DIR/gview.app'
+ elif [ -e "$GV_DIR/gview.csh" ]; then

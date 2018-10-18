@@ -4,6 +4,7 @@
 # Install Bioconductor for UCL R installations.
 #
 # June 2016
+# Updated May 2017
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -32,7 +33,7 @@ biocLite (pkgs="preprocessCore", type="source", lib=mainLib);
 biocLite (pkgs="BiocInstaller", type="source", lib=mainLib);
 biocLite (pkgs="affy", type="source", lib=mainLib);
 biocLite (pkgs="gcrma", type="source", lib=mainLib);
-biocLite (pkgs="afyPLM", type="source", lib=mainLib);
+biocLite (pkgs="affyPLM", type="source", lib=mainLib);
 biocLite (pkgs="genefilter", type="source", lib=mainLib);
 biocLite (pkgs="simpleaffy", type="source", lib=mainLib);
 biocLite (pkgs="affyQCReport", type="source", lib=mainLib);
@@ -80,7 +81,10 @@ biocLite (pkgs="hugene10sttranscriptcluster.db", type="source", lib=dbLib);
 
 biocLite (pkgs="GenomeGraphs", type="source", lib=mainLib);
 biocLite (pkgs="GenomicFeatures", type="source", lib=mainLib);
+
+# Removed from Bioconductor 3.5
 biocLite (pkgs="VariantAnnotation", type="source", lib=mainLib);
+
 biocLite (pkgs="biovizBase", type="source", lib=mainLib);
 biocLite (pkgs="Gviz", type="source", lib=mainLib);
 biocLite (pkgs="annmap", type="source", lib=mainLib);
@@ -88,6 +92,7 @@ biocLite (pkgs="annmap", type="source", lib=mainLib);
 # For Adam Levine (a.levine@ucl.ac.uk) - added August 2013
 
 biocLite (pkgs="impute", type="source", lib=mainLib);
+install.packages ("WGCNA", lib=mainLib, repos=repros);
 
 # For Dr Gioia Altobelli g.altobelli@ucl.ac.uk - added Oct 2013 updated Mar 2014
 
@@ -115,6 +120,7 @@ biocLite (pkgs="GOstats", type="source", lib=mainLib);
 biocLite (pkgs="DNAcopy", type="source", lib=mainLib);
 biocLite (pkgs="Ringo", type="source", lib=mainLib);
 biocLite (pkgs="affxparser", type="source", lib=mainLib);
+biocLite (pkgs="aroma.light", type="source", lib=mainLib);
 
 install.packages ("aroma.apd", lib=mainLib, repos=repros);
 install.packages ("aroma.affymetrix", lib=mainLib, repos=repros);
@@ -166,7 +172,12 @@ biocLite (pkgs="FDb.InfiniumMethylation.hg19", type="source", lib=mainLib);
 
 biocLite (pkgs="ROC", type="source", lib=mainLib);
 biocLite (pkgs="wateRmelon", type="source", lib=mainLib);
-biocLite (pkgs="RPVM", type="source", lib=mainLib);
+
+# Removed from CRAN and Bioconductor for R 3.4.0
+#
+# biocLite (pkgs="RPVM", type="source", lib=mainLib);
+
+install.packages ("ruv", lib=mainLib, repos=repros);
 biocLite (pkgs="ChAMP", type="source", lib=mainLib);
 
 # For Ana Paula Leite (ana.leite@ucl.ac.uk) - added June 2016
@@ -180,7 +191,11 @@ biocLite (pkgs="copynumber", type="source", lib=mainLib);
 # For Athina Dritsoula (athina.dritsoula.09@ucl.ac.uk) - added Feb and March 2017
 
 biocLite (pkgs="goseq", type="source", lib=mainLib);
-biocLite (pkgs="missMethyl", type="source", lib=mainLib);
+biocLite (pkgs="missMethyl", type="source", lib=dbLib);
+
+# For Evgeny Galimov (e.galimov@ucl.ac.uk) - added Aug 2017
+
+biocLite (pkgs="DEXSeq", type="source", lib=mainLib);
 
 # End of Bioconductor_UCL_1
 

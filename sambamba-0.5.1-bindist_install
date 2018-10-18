@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+package_name="sambamba"
+package_version="0.5.1"
+package_description="A tool for extracting information from SAM/BAM files."
+package_variant="bindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget "https://github.com/biod/sambamba/releases/download/v${package_version}/sambamba_v${package_version}_linux.tar.bz2"
+manifest sha256:d7e94c0ed87ede838d3ef5a128a0f3bd49e8d7f712609c31600552e401da4cb5  sambamba_v0.5.1_linux.tar.bz2
+
+mkdir -p "$install_prefix/bin"
+
+cd "$install_prefix/bin"
+tar -xf "$build_dir/sambamba_v${package_version}_linux.tar.bz2"
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -p "$install_prefix" \
+    -c "$package_name" \
+    -w "$package_description"
+
+

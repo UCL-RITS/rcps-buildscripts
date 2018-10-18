@@ -1,0 +1,56 @@
+# AstroBEAR Makefile.inc. file for UCL clusters.  You need to REMOVE the
+# Intel mpi and 2018 compiler modules from your environment and load the 2017 
+# + OpenMPI ones so assuming you have the default-modules/2018 loaded:
+
+# module remove mpi compilers
+# module load compilers/intel/2017/update4 mpi/openmpi/3.0.0/intel-2017 pgplot/5.2.2/intel-2017 hypre/2.11.2/openmpi-3.0.0/intel-2017 hdf/5-1.8.15/intel-2015-update2
+
+# If you don't have the default-modules/2018 loaded then the required modules
+# to build this are:
+# gcc-libs/4.9.2
+# compilers/intel/2017/update4
+# mpi/openmpi/3.0.0/intel-2017 
+# pgplot/5.2.2/intel-2017 
+# hypre/2.11.2/openmpi-3.0.0/intel-2017 
+# hdf/5-1.8.15/intel-2015-update2
+
+# Dr Owain Kenway, 13th September, 2018
+
+FC = mpif90
+CC = mpicc
+CPP = cpp -P -E -w
+
+FFLAGS += -O3
+CPPFLAGS += -D_MPI
+
+DEBUG_FFLAGS += -g -traceback -check uninit,pointers,bounds 
+LFLAGS += -lifcore
+
+HDF5PATH = /shared/ucl/apps/HDF/5-1.8.15-Intel_2015
+HYPREPATH = $(HYPRE_DIR)
+FFTW3PATH = $(MKLROOT)
+PGPLOTPATH = $(PGPLOT_DIR)
+INCLUDE =
+
+ifdef HDF5PATH
+  CPPFLAGS += -D_HDF5
+  LFLAGS += -L$(HDF5PATH)/lib -lhdf5_fortran -lhdf5
+  INCLUDE += -I$(HDF5PATH)/include
+endif
+
+ifdef HYPREPATH
+  CPPFLAGS += -D_HYPRE
+  LFLAGS += -L$(HYPREPATH)/lib -lHYPRE
+  INCLUDE += -I$(HYPREPATH)/include
+endif
+
+ifdef FFTW3PATH
+  CPPFLAGS += -D_FFTW3
+  LFLAGS += -mkl
+  INCLUDE += -I$(FFTW3PATH)/include/fftw
+endif
+
+ifdef PGPLOTPATH
+  LFLAGS += -L$(PGPLOTPATH) -lpgplot
+endif
+

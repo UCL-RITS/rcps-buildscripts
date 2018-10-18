@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Python
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-2.7.12}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-57dffcee9cee8bb2ab5f82af1d8e9a69}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.python.org/ftp/python/${VERSION}/Python-${VERSION}.tar.xz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum Python-${VERSION}.tar.xz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -Jxvf Python-${VERSION}.tar.xz
+
+  # if /tmp/pip_build_<user> exists from a previous attempt, then
+  # ensurepip will fail, complaining about multiple .dist-info dirs
+  if [ -d "/tmp/pip_build_$USER" ]
+  then
+    rm -r /tmp/pip_build_$USER
+  fi
+
+  cd Python-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX \
+              --enable-shared \
+              --with-threads \
+              --enable-ipv6 \
+              --enable-unicode=ucs4 \
+              --with-ensurepip
+
+  make && make install
+  pip install --upgrade pip
+  pip install virtualenv
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

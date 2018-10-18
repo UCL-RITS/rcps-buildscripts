@@ -1,0 +1,23 @@
+--- Makefile.old	2018-07-20 10:50:04.000000000 +0100
++++ Makefile	2018-07-20 10:57:56.000000000 +0100
+@@ -14,16 +14,16 @@
+ #   32-bit binary (also sets STATIC_ZLIB and ZSTD_O2):
+ #     FORCE_32BIT (warning: you may need to add a zconf.h symlink to make that
+ #     work)
+-NO_AVX2 = 1
++NO_AVX2 = 
+ NO_SSE42 =
+ CPU_CHECK = 1
+ NO_LAPACK =
+ PREFER_CBLAS_F77 =
+ ZSTD_O2 = 1
+ STATIC_ZLIB =
+-DYNAMIC_MKL =
+-MKLROOT = /home/ubuntu/intel/mkl
+-MKL_IOMP5_DIR = /home/ubuntu/intel/compilers_and_libraries_2017.2.174/linux/compiler/lib/intel64
++DYNAMIC_MKL = 1
++#MKLROOT = $(MKLROOT)
++MKL_IOMP5_DIR = $(MKLROOT)/../compiler/lib/intel64
+ FORCE_32BIT =
+ 
+ BASEFLAGS=-DZSTD_MULTITHREAD

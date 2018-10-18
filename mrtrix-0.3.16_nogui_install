@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# NB: Deliberately builds without the GUI
+
+set -o errexit  \
+    -o pipefail 
+
+package_name="mrtrix"
+package_version=0.3.16
+
+for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
+
+module purge
+module load gcc-libs
+module load eigen
+module load compilers/gnu/4.9.2
+module load python3
+
+make_build_env
+
+# Blerg, had to hard-core path for the installer: it doesn't search CPATH or anything
+export EIGEN_CFLAGS="-I/shared/ucl/apps/eigen/3.2.5/gnu-4.9.2/include/eigen3"
+
+
+# I'm still not sure whether it needs to be built in the directory it's going to be installed into
+#  but there's no install script
+# Playing it safe for now
+
+install_prefix="${install_prefix%/}"  # just in case
+mkdir -p "$install_prefix"
+cd "$install_prefix"/..
+
+# v-- if you download a release archive, you can't run the tests (it uses subtree to a different repo to grab the test data)
+git clone --recursive --branch "${package_version}" https://github.com/MRtrix3/mrtrix3.git "$install_prefix"
+cd "$install_prefix"
+python configure -nogui
+python build
+
+
+# Fix PATH here to include scripts dir, otherwise population_template test fails
+# running "population_template"... 0 of 1 passed    <-------- ERROR
+export PATH="$PATH:$(pwd)/scripts"
+
+./run_tests
+
+
+make_module \
+    -w "MRtrix provides a set of tools to perform various advanced diffusion MRI analyses, including constrained spherical deconvolution (CSD), probabilistic tractography, track-density imaging, and apparent fibre density." \
+    -e PATH:"$install_prefix/scripts" \
+    -e PATH:"$install_prefix/release/bin" \
+    -c mrtrix \
+    -r gcc-libs \
+    -r python3 \
+    -d \
+    -o "$module_dir/$package_label/nogui"
+
+echo "Module in: $module_dir/$package_label/nogui"

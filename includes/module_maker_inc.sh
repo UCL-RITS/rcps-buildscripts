@@ -49,7 +49,7 @@ make_module() {
         send_help_and_quit="y"
         ;;
       *)
-        echo "Invalid argument specified: $flag" >&2
+        echo "Module maker: Invalid argument specified: $flag" >&2
         exit 5
         ;;
     esac

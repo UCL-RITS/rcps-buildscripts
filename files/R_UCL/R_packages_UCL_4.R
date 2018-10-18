@@ -38,7 +38,7 @@ install.packages ("leaps", lib=mainLib, repos=repros);
 install.packages ("FactoMineR", lib=mainLib, repos=repros);
 install.packages ("R.methodsS3", lib=mainLib, repos=repros);
 install.packages ("R.oo", lib=mainLib, repos=repros);
-install.packages ("R,utils", lib=mainLib, repos=repros);
+install.packages ("R.utils", lib=mainLib, repos=repros);
 install.packages ("mcmc", lib=mainLib, repos=repros);
 
 

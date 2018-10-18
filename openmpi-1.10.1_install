@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################################################
+#
+# OpenMPI 10.1, not linking against verbs by default
+#
+
+NAME=${NAME:-openmpi}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1.10.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-f0fcd77ed345b7eafb431968124ba16e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.open-mpi.org/software/ompi/v${VERSION%.*}/downloads/${NAME}-${VERSION}.tar.bz2}
+FLAGS=${FLAGS:-"--with-sge --without-verbs"}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum openmpi-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf ${NAME}-${VERSION}.tar.bz2
+
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX ${FLAGS}
+  make && make install
+
+# Install mpirun wrapper
+#  mkdir -p /shared/ucl/apps/openmpi/ucl-wrapper/bin
+#  cp /shared/ucl/apps/build_scripts/files/mpirun /shared/ucl/apps/openmpi/ucl-wrapper/bin
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

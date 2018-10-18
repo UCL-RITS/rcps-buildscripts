@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing julia
+#
+# by Owain Kenway, 2018 
+#
+
+
+VERSION=${VERSION:-1.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
+SHA256=${SHA256:-0e44c99b88c958c1711d7009cf6dd3fc2f0c79bc5b0c0f8ee5401f45d6f0f39b}
+ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
+EXTDIR=${EXTDIR:-julia}
+
+# Target architecture
+# Need to set this so that when built on Legion it builds for nehalem.
+LEGION=${LEGION:-no}
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/julia
+temp_dir=`mktemp -d -p /dev/shm/julia`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum ${ARCHIVENAME}| awk '{print $1}'`
+
+if [ "$SHA256" != "$CHECKSUM" ]
+then
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+  exit 1
+fi
+
+tar -zxvf ${ARCHIVENAME}
+cd $EXTDIR
+
+if [ "$LEGION" == "yes" ]
+then
+  TARGET_ARCH=${TARGET_ARCH:-nehalem}
+  echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
+  echo "MARCH = ${TARGET_ARCH}" >> Make.user
+fi
+
+make
+echo prefix=${INSTALL_PREFIX} >> Make.user
+make install

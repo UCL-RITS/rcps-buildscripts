@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -Xmx2g -jar $PICARDPATH/picard.jar $* TMP_DIR=$TMPDIR
+java -Xmx2g -jar "$PICARDPATH/picard.jar" "$@" TMP_DIR="$TMPDIR"

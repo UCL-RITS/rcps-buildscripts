@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-snappy}
+VERSION=${VERSION:-1.1.7}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-ee9086291c9ae8deb4dac5e0b85bf54a}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/snappy/archive/${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# make shared version:
+mkdir build-shared
+cd build-shared
+
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=yes ../
+
+make 
+make install
+
+# make static version:
+mkdir ../build-static
+cd ../build-static
+
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ../
+
+make 
+make install
+

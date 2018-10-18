@@ -13,7 +13,20 @@ MD5=${MD5:-5c9dad3705a3408d27f696e5b31fb88c}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${VERSION}.tar.gz}
 NETCDF_OPTIONS=${NETCDF_OPTIONS:-"--enable-netcdf4"}
 
+# We need to support installing this into a variety of non standard locations with non-standard builds.
+SPECIAL=${SPECIAL:-NO}
+
 set -e
+
+
+if [[ "$SPECIAL" == "cesm" ]]
+then
+   YEAR=${COMPILER_TAG:6}
+   echo "DETECTED CESM BUILD $YEAR"
+   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf-${YEAR}
+fi
+
+
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -27,7 +40,7 @@ CHECKSUM=`md5sum netcdf-${VERSION}.tar.gz| awk '{print $1}'`
 
 HDF_TAG=$COMPILER_TAG
 
-if [[ "$COMPILER_TAG" == "intel-2015-update2" ]]
+if [[ "${COMPILER_TAG:0:5}" == "intel" ]]
 then
    HDF_TAG="Intel_2015"
 fi

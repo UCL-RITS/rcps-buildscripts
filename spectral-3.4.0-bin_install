@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="spectral"
+package_version="3.4.0"
+package_description="Spectral is a set of tools for performing spectral analysis on traces produced by the BSC profiling toolkit."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+
+    # This is a binary distribution but there's no proper way to handle that at the moment
+    export COMPILER_TAG="bindist"
+    make_build_env ""
+
+    package_file="${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+    package_url="https://ftp.tools.bsc.es/${package_name}/${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:13f67ddfc7a5bd899b8371ffc6375d44c3a2d1d7b50026b15293a2eeb45d1a5070fa6f308ea81f7969213afd3db9d53fbb8c4613eaa6022dd81b0658efd11e4c ${package_file}
+
+}
+
+_install() {
+    mkdir -p "$install_prefix"
+    cd "$install_prefix"
+
+    tar --strip-components=1 -xf "$build_dir/$package_file"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -r "fftw/3.3.6-pl2/gnu-4.9.2" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_install
+_clean_up
+

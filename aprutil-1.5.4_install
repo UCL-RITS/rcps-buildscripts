@@ -10,7 +10,7 @@
 VERSION=${VERSION:-1.5.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/apr-util/$VERSION}
 MD5=${MD5:-2202b18f269ad606d70e1864857ed93c}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.mirrorservice.org/sites/ftp.apache.org//apr/apr-util-${VERSION}.tar.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://archive.apache.org/dist/apr/apr-util-${VERSION}.tar.bz2}
 
 
 set -e

@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# Note that pw_pawatom test will probably fail, so can do second run without tests:
+# RUN_TESTS="no" ./quantum-espresso-6.1_install
+#
+# Includes building d3q add-on
+
+NAME=${NAME:-quantum-espresso}
+VERSION=${VERSION:-6.2.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-6cdd4c8883b4a2262ac98ea452f845ed935294b3988a84b238d833558eb90f0c}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://qe-forge.org/gf/download/frsrelease/247/1132/qe-${VERSION}.tar.gz}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
+COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model strict"}
+RUN_TESTS=${RUN_TESTS:-"yes"}
+
+set -o errexit -o nounset
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/intel
+prereq mpi/intel
+
+cd $BUILD_DIR
+echo "Starting to build in: $BUILD_DIR"
+
+wget $SRC_ARCHIVE
+archive=$(basename "$SRC_ARCHIVE")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+
+  tar -xvf $archive
+  cd qe-${VERSION}
+
+  # Should probably add this to the MKL module but it needs to be set either way
+  export CPATH=$MKLROOT/include/fftw:$CPATH
+
+  ./configure --prefix=${INSTALL_PREFIX} FFLAGS="${COMPILE_FLAGS}" --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  
+  # want and couple not compilable with 6.2.1
+  make all w90 want west couple gui epw d3q 2>&1 | tee make.log
+  if [ "$RUN_TESTS" == "yes" ]
+  then
+    echo "Running tests: pw_pawatom expected to fail (benchmark is serial multithreaded 4)"
+    make test-suite 2>&1 | tee test.log
+  fi
+  make install 
+
+  # need to copy the whole PWgui directory into the install location
+  pwguidir=$(find . -maxdepth 1 -type d -iname 'pwgui*')
+  cp -r $pwguidir $INSTALL_PREFIX
+  cp -r $pwguidir/pwgui $INSTALL_PREFIX/bin
+
+  echo "Installed to: $INSTALL_PREFIX"
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi

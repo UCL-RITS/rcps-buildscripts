@@ -26,7 +26,10 @@ install.packages ("saemix", lib=mainLib, repos=repros);
 
 # For Margarida Cabrita Lopes margarida.lopes@ucl.ac.uk
 
-install.packages ("ncdf", lib=mainLib, repos=repros);
+# Removed from CRAN for R 3.4.0 - use RNetCDF
+#
+# install.packages ("ncdf", lib=mainLib, repos=repros);
+
 install.packages ("RNetCDF", lib=mainLib, repos=repros);
 
 
@@ -49,7 +52,7 @@ install.packages ("dynamicTreeCut", lib=mainLib, repos=repros);
 install.packages ("flashClust", lib=mainLib, repos=repros);
 install.packages ("reshape", lib=mainLib, repos=repros);
 install.packages ("doParallel", lib=mainLib, repos=repros);
-install.packages ("WGCNA", lib=mainLib, repos=repros);
+# install.packages ("WGCNA", lib=mainLib, repos=repros);
 
 # For Dr Elsa Arcaute (e.arcaute@ucl.ac.uk) - added September 2013
 

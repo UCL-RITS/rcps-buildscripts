@@ -4,29 +4,37 @@ set -o errexit -o nounset
 for i in "${includes_dir:-$(dirname "$0" 2>/dev/null)/includes}"/{module_maker,require}_inc.sh; do source "$i"; done
 
 # Normally we'd put requirements after package info, but we need a Python module to get pip
-module purge
 require gcc-libs/4.9.2
-require python/3.5.2
+package_py=python/3.5.2
+PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG:-3.5}
+if [ $PYTHON_VERSION_TAG == "3.6" ] 
+then
+  echo "DETECTED PYTHON 3.6"
+  package_py=python/3.6.3
+fi
+require $package_py
 
 package_name="textract"
-package_version="$( pip search textract | sed -n -e 's/^textract (\([0-9.]*\)) .*$/\1/p' )"
+package_version="$( pip3 search textract | sed -n -e 's/^textract (\([0-9.]*\)) .*$/\1/p' )"
 # ^-- gets current version number from pypi
 
 package_description="textract extracts text from a wide range of document types."
 
-module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
-install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$package_version}"
+VERSION=${VERSION:-$package_version}
 
-pip install --prefix "$install_prefix" "$package_name==$package_version"
+module_dir=$( mktemp -d "/tmp/${MODULE_DIR:-${package_name}_modules.XXXXXXX}" )
+install_prefix="${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$VERSION/python$PYTHON_VERSION_TAG}"
+
+pip3 install --prefix "$install_prefix" "$package_name==$VERSION"
 
 make_module \
           -d \
           -c "${package_name}" \
           -r "gcc-libs/4.9.2" \
-          -r "python/3.5.2" \
+          -r "$package_py" \
           -o "$module_dir/$package_name/$package_version" \
           -e "PATH:$install_prefix/bin" \
-          -e "PYTHONPATH:$install_prefix/lib/python3.5/site-packages" \
+          -e "PYTHONPATH:$install_prefix/lib/python$PYTHON_VERSION_TAG/site-packages" \
           -w "Adds ${package_name} ${package_version} to your environment. $package_description"
 echo "Module files put in: $module_dir" >&2
 chmod a+rx "$module_dir"

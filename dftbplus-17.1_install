@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="dftbplus"
+package_version="17.1"
+package_description="DFTB+ is a quantum mechanical simulation software package, based on the Density Functional Tight Binding (DFTB) method."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    require compilers/intel/2017
+    require mpi/intel/2017
+    require arpack-ng
+    require python2
+
+    make_build_env ""
+
+    package_url="https://github.com/dftbplus/dftbplus/archive/${package_version}.tar.gz"
+    package_file="${package_version}.tar.gz"
+    unpack_dir="dftbplus-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    cp sys/make.x86_64-linux-intel ./make.arch
+    ./utils/get_opt_externals dftd3
+    ./utils/get_opt_externals slakos
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+    make LIB_BLAS=-mkl MKL_LIBDIR= OTHERLIBS=-qopenmp LNOPT= INSTALLDIR="$install_prefix"
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    # This sed removes two tests that aren't implemented in 17.1 and 
+    #  would otherwise mark the test process as failed.
+    sed -i -e '/^sockets\/H2O/d' -e '/^sockets\/diamond/d' test/prog/dftb+/tests
+    make test
+
+    make INSTALLDIR="$install_prefix" install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs \
+        -r compilers/intel/2017 \
+        -r mpi/intel/2017 \
+        -r arpack-ng \
+        -r python2 \
+        -c "$package_name" \
+        -w "$package_description"
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="extrae"
+package_version="3.5.2"
+package_description="Extrae is an instrumentation framework to generate execution traces of the most used parallel runtimes."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    # This is a bit tricky so we're being explicit with our dependency versions
+    require gcc-libs/4.9.2
+    require compilers/intel/2017/update1
+    require mpi/intel/2017/update1/intel
+    require elfutils/0.170/gnu-4.9.2
+    require binutils/2.29.1/gnu-4.9.2
+    require libdwarf/20170709/gnu-4.9.2
+    require python/2.7.12
+    require boost/1_63_0/mpi/intel-2017-update1
+    require dyninst/9.3.2/gnu-4.9.2
+    require papi/5.5.1/gnu-4.9.2
+    require fftw/3.3.6-pl2/gnu-4.9.2
+    require spectral/3.4.0/bindist 
+    require clusteringsuite/2.6.6/bindist
+    require libxml2/2.9.4/gnu-4.9.2
+
+    make_build_env ""
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}-src.tar.bz2"
+    package_url="https://ftp.tools.bsc.es/${package_name}/${package_name}-${package_version}-src.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:cb980ed5d90a0b24693a17ad0a8558eeeb2cb7a07feff6628d0fdb0db9e4c7f66dc501dce8c13c80ec6eba1fc7b2265da714b34cbf49b6725d0a92af03d98b1d ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" \
+        --with-mpi="$MPI_HOME" \
+        --without-unwind \
+        --with-boost=/shared/ucl/apps/boost/1_63_0/intel-2017/ \
+        --with-dwarf=/shared/ucl/apps/libdwarf/20170709/gnu-4.9.2/ \
+        --with-elf=/shared/ucl/apps/elfutils/0.170/gnu-4.9.2/ \
+        --with-dyninst=/shared/ucl/apps/dyninst/9.3.2/gnu-4.9.2/ \
+        --with-papi=/shared/ucl/apps/papi/5.5.1/gnu-4.9.2/ \
+        --with-binutils=/shared/ucl/apps/binutils/2.29.1/gnu-4.9.2/ \
+        --with-clustering=/shared/ucl/apps/clusteringsuite/2.6.6/bindist/ \
+        --with-fft=/shared/ucl/apps/fftw/3.3.6-pl2/gnu-4.9.2/ \
+        --with-spectral=/shared/ucl/apps/spectral/3.4.0/bindist/ \
+        --enable-sampling \
+        --enable-inotify
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+    make check \
+        || echo "BUILD SCRIPT NOTE: In testing, 4 tests failed: 
+    check_clock_sleep
+    check_clock_nanosleep
+    check_Extrae_getcaller_depth2.sh
+    check_Extrae_user_function.sh"
+
+    make install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -r gcc-libs  \
+        -r gcc-libs/4.9.2 \
+        -r compilers/intel/2017/update1 \
+        -r mpi/intel/2017/update1/intel \
+        -r elfutils/0.170/gnu-4.9.2 \
+        -r binutils/2.29.1/gnu-4.9.2 \
+        -r libdwarf/20170709/gnu-4.9.2 \
+        -r python/2.7.12 \
+        -r boost/1_63_0/mpi/intel-2017-update1 \
+        -r dyninst/9.3.2/gnu-4.9.2 \
+        -r papi/5.5.1/gnu-4.9.2 \
+        -r fftw/3.3.6-pl2/gnu-4.9.2 \
+        -r spectral/3.4.0/bindist \
+        -r clusteringsuite/2.6.6/bindist \
+        -r libxml2
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

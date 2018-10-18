@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Mesa 
+# (Gallium, LLVM, GLX, no EGL, no DRI)
+# 
+# Local archive option as the download can be very slow.
+# 
+
+NAME=${NAME:-mesa}
+VERSION=${VERSION:-13.0.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA=${SHA:-29ef104a7fc082d352b1599bd6cb1d040be424ccd22f5e0eb7ee9b0e9acd3597}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.freedesktop.org/pub/mesa/$VERSION/mesa-${VERSION}.tar.xz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-/home/ccspapp/Scratch/mesa-${VERSION}.tar.xz}
+USE_LOCAL_ARCHIVE=${USE_LOCAL_ARCHIVE:-no}
+OPTIONS=${OPTIONS:-""}
+
+set -e
+
+# require modules for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers
+prereq llvm
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+if [ "$USE_LOCAL_ARCHIVE" == "no" ]
+then
+  wget $SRC_ARCHIVE
+  archive=$(basename "${SRC_ARCHIVE}")
+else
+  echo "Using local archive: $LOCAL_ARCHIVE"
+  cp $LOCAL_ARCHIVE .
+  archive=$(basename "${LOCAL_ARCHIVE}")
+fi
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX              \
+  --enable-opengl --disable-gles1 --disable-gles2   \
+  --disable-va --disable-xvmc --disable-vdpau       \
+  --enable-shared-glapi                             \
+  --disable-texture-float                           \
+  --enable-gallium-llvm --enable-llvm-shared-libs   \
+  --with-gallium-drivers=swrast,swr                 \
+  --disable-dri --with-dri-drivers=                 \
+  --disable-egl --with-egl-platforms= --disable-gbm \
+  --enable-glx --enable-glx-tls                                     \
+  --disable-osmesa --enable-gallium-osmesa $OPTIONS
+  
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA"
+  echo "Got: $CHECKSUM"
+fi

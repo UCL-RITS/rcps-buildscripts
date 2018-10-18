@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing fgbio and creating a wrapper script
+#
+
+NAME=${NAME:-fgbio}
+VERSION=${VERSION:-0.6.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/fulcrumgenomics/fgbio/releases/download/${VERSION}/${NAME}-${VERSION}.jar}
+SHA256SUM=${SHA256SUM:-c35286ccf82158ffcc8944a063461b9aa8636499bb99f9df92a592adba95c854}
+
+set -e
+
+source includes/tools_inc.sh
+
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+wget "$SRC_ARCHIVE"
+
+archive=$(basename "${SRC_ARCHIVE}")
+
+manifest sha256:"$SHA256SUM" "$archive"
+
+# Wrapper script with the options fgbio recommends to use as default
+cat > fgbio <<EOF
+#!/bin/bash
+
+java -Xmx4g -XX:+AggressiveOpts -XX:+AggressiveHeap -jar $INSTALL_PREFIX/$archive "\$@"
+EOF
+
+chmod +x fgbio
+

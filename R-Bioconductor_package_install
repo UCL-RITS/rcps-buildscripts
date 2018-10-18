@@ -5,13 +5,15 @@
 #
 # by Brian Alston, November 2016 V1.0 
 #
+# Updated June 2017 for R 3.4.0 / Bioconductor 3.5
+#
 # usage: R-Bioconductor_package_install <R package name>
 #
 # Will need modules: r/recommended
 
 set -e
 
-VERSION=${VERSION:-3.3.2}
+VERSION=${VERSION:-3.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}

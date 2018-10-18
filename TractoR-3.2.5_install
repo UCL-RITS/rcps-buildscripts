@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TractoR 3.2.5
+#
+# by Brian Alston, October 2018 
+#
+
+
+APPNAME=${APPNAME:-TractoR}
+VERSION=${VERSION:-3.2.5}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.tractor-mri.org.uk/tractor.tar.gz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-tractor.tar.gz}
+MD5=${MD5:-e8ae15ef2bf415f9a77f960dda3d9bbf}
+
+set -e
+
+# Require the R modules. Using GCC. As far as I know the FSL module is not needed
+# during building.
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require r/new
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+CHECKSUM=`md5sum $LOCAL_ARCHIVE | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+    # TractoR has to be build in place so:
+
+    mkdir -p $INSTALL_PREFIX
+    cd $INSTALL_PREFIX
+    tar -zxvf $temp_dir/$LOCAL_ARCHIVE
+    cd tractor
+    make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

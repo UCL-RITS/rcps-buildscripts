@@ -3,16 +3,16 @@
 ###############################################
 # Installing Python
 #
-# by Owain Kenway, 2015 
+# by Owain Kenway, 2017 
 #
 
-VERSION=${VERSION:-2.0.0}
+VERSION=${VERSION:-3.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
 PYTHON_VERSION=${PYTHON_VERSION:-3}
 TIME_STAMP=`date +"%s"`
 
 # Disable wheels for some packages
-PIPNOBIN=${PIPNOBIN:-numpy,scipy,cvxopt}
+PIPNOBIN=${PIPNOBIN:-numpy,scipy}
 
 set -e
 
@@ -21,7 +21,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require python/3.5.2
+require python/3.6.3
 require openblas/0.2.14/gnu-4.9.2
 
 mkdir -p $INSTALL_PREFIX
@@ -38,32 +38,42 @@ source venv/bin/activate
 LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
 
-CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
-CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
-CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
-CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
+#CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
+#CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
+#CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
+#CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
 
 
 export LAPACK
 export BLAS
 
-export CVXOPT_BLAS_LIB_DIR
-export CVXOPT_BLAS_LIB
-export CVXOPT_LAPACK_LIB_DIR
-export CVXOPT_LAPACK_LIB
+#export CVXOPT_BLAS_LIB_DIR
+#export CVXOPT_BLAS_LIB
+#export CVXOPT_LAPACK_LIB_DIR
+#export CVXOPT_LAPACK_LIB
 
 pip3 install --upgrade pip
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+old_IFS="$IFS"
+IFS=$'\n'
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
-   pip3 install --no-binary $PIPNOBIN $a
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+   fi
 done
 
-for a in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
 do
-   pip3 install --no-binary $PIPNOBIN $a
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+   fi
 done
-
+IFS="$old_IFS"
 
 cd ..
 ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}

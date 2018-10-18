@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+# Modules:
+# glfw/3.2.1/gnu-4.9.2
+# llvm/3.9.1
+# mesa/13.0.6/gnu-4.9.2
+
+NAME=${NAME:-glbinding}
+VERSION=${VERSION:-2.1.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-d453d375d3e578fc5990ec41ad648d2ad3de73917a448ff6042bd9f555c0c0c0}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cginternals/glbinding/archive/v${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+mkdir build
+cd build
+
+export GLFW_ROOT=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2
+export GLFW_DIR=$GLFW_ROOT
+
+
+cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_TESTS=OFF
+
+make
+
+make install

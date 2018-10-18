@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing mpi4py outside python bundle as it requires an MPI module
+#
+# 
+#
+
+NAME=${NAME:-mpi4py}
+VERSION=${VERSION:-3.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/python$PYTHON_VERSION_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://bitbucket.org/${NAME}/${NAME}/downloads/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-bfe19f20cef5e92f6e49e50fb627ee70}
+# python2 or python3
+PYTHON_VERSION=${PYTHON_VERSION:-python3}
+PATCH_RECV_MPROBE=${PATCH_RECV_MPROBE:-TRUE}
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/gnu
+prereq mpi/openmpi
+
+if [ "$PYTHON_VERSION" == "python2" ]
+then
+  prereq python2
+elif [ "$PYTHON_VERSION" == "python3" ]
+then
+  prereq python3
+fi
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+
+# Patch OPA/TrueScale issues.
+if [ "$PATCH_RECV_MPROBE" == "TRUE" ]
+then
+  echo "PATCHING rc.recv_mprobe TO False in  src/mpi4py/__init__.py"
+  sed -i.bak "s|rc.recv_mprobe = True|rc.recv_mprobe = False|g" src/mpi4py/__init__.py
+  cat src/mpi4py/__init__.py
+fi
+
+# both versions can be happily installed into the same install prefix - 
+# they go into lib/python2.7 and lib/python3.4
+if [ "$PYTHON_VERSION" == "python2" ]
+then
+  python setup.py build 2>&1 | tee build.log
+  python setup.py install --prefix=$INSTALL_PREFIX 2>&1 | tee build.log
+elif [ "$PYTHON_VERSION" == "python3" ]
+then
+  python3 setup.py build 2>&1 | tee build.log
+  python3 setup.py install --prefix=$INSTALL_PREFIX 2>&1 | tee build.log
+fi
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

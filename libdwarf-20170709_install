@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="libdwarf"
+package_version="20170709"
+package_description="libdwarf is a library for interacting with debugging info in the DWARF 2, 3, and 5 formats."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require  gcc-libs
+    require  compilers/gnu
+    require  elfutils # Note, not needed in module 
+
+    make_build_env ""
+
+    unpack_dir="${package_name#lib}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.gz"
+    package_url="https://www.prevanders.net/${package_file}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:afff6716ef1af5d8aae2b887f36b9a6547fb576770bc6f630b82725ed1e59cbd387779aa729bbd1a5ae026a25ac76aacf64b038cd898b2419a8676f9aa8c59f1  ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix"  \
+        --enable-shared
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make all
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+    ## libdwarf only has tests in the git repo
+    # make check 
+
+    ## and has no make install
+    # make install
+
+    # which means we have to do the install ourselves
+    mkdir -p "$install_prefix"/{bin,lib,share/man/man1,include}
+    cp dwarfdump/dwarfdump dwarfgen/dwarfgen "$install_prefix/bin"
+    cp dwarfdump/dwarfdump.1 "$install_prefix/share/man/man1"
+    cp libdwarf/libdwarf.so libdwarf/libdwarf.so.1 libdwarf/libdwarf.a "$install_prefix/lib"
+    cp libdwarf/libdwarf.h libdwarf/dwarf.h "$install_prefix/include"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -r gcc-libs 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

@@ -1,0 +1,31 @@
+--- getmachine.orig	2018-08-21 14:48:54.000000000 +0100
++++ getmachine	2018-08-21 14:55:16.000000000 +0100
+@@ -254,8 +254,10 @@
+ # PG compiler
+ #  	   echo 'RUNF90=pgf90 -Bstatic' >> makefile
+ # Intel compiler
+-  	   echo 'RUNF90=ifort ' >> makefile
+-           echo 'RUNCC=icc ' >> makefile
++#  	   echo 'RUNF90=ifort ' >> makefile
++#           echo 'RUNCC=icc ' >> makefile
++          echo 'RUNF90=mpif90 ' >> makefile
++          echo 'RUNCC=mpicc ' >> makefile
+ # Cray compiler
+ #  	   echo 'RUNF90=ftn -h noomp ' >> makefile
+ #           echo 'RUNCC=cc -h noomp ' >> makefile
+@@ -299,12 +301,13 @@
+ # For Cray remove blas.o and lapack.o 
+            echo 'BLAS=blas.o' >> makefile
+ # for chemshell use, we should have lapack so comment the following line out
+-           echo 'LAPACK=lapack.o' >> makefile
++#           echo 'LAPACK=lapack.o' >> makefile
+            echo 'GULPENV=' >> makefile
+ 	   echo 'CDABS=cdabs.o' >> makefile
+ # If PLUMED is needed then set -DPLUMED
+ #           echo 'DEFS=-DFLUSH -DPLUMED' >> makefile
+-           echo 'DEFS=-DFLUSH ' >> makefile
++#           echo 'DEFS=-DFLUSH ' >> makefile
++           echo 'DEFS=-DFLUSH -DMPI -DNOFOX ' >> makefile
+            echo 'PLUMEDDEFS=-DDL_POLY' >> makefile
+            echo 'ARCHIVE = ar rcv' >> makefile
+            echo 'RANLIB = ar ts' >> makefile

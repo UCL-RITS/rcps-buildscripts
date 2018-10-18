@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ChemShell 3.7.1 standalone serial version
+# Built with Intel compiler and MPI
+# Source downloaded previously 
+# ccspap2 needed for this restricted app group.
+
+NAME=${NAME:-chemshell}
+VERSION=${VERSION:-3.7.1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/chemshell/sources/chemsh-${VERSION}.tar.gz}
+RESERVED_APP_GROUP=${RESERVED_APP_GROUP:-lgchemsh}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+require tcl
+
+# need to set this after compiler module is loaded
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+# builds in place
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+tar -xvf "$SRC_ARCHIVE"
+cd chemsh-"${VERSION}"/src/config
+./configure
+cd ..
+make 2>&1 | tee make.log
+
+# Tests: results get written to validate.log
+cd ../examples
+./run_validation.tcsh
+echo "Test output was saved in $INSTALL_PREFIX/chemsh-${VERSION}/examples/validate.log"
+
+echo "Restricting access to $RESERVED_APP_GROUP"
+chgrp "$RESERVED_APP_GROUP" "$INSTALL_PREFIX"
+chmod o-rwx "$INSTALL_PREFIX"
+

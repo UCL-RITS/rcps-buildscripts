@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GCC 4.9.2
+# This needs a very simple build script as it happens before anything else
+# is built.
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-gcc}
+VERSION=${VERSION:-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SHA512=${SHA512:-35a1386ae2b8629cd464383fbb3c61e94a07f3691f48b8029b97cc62a60c792ffb870aad2343b2ad8185bf46f77e1e1dd62309ecdadc42f919874c6e2c58b936}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.irisa.fr/pub/mirrors/gcc.gnu.org/gcc/releases/gcc-${VERSION}/gcc-${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+./configure --prefix=$INSTALL_PREFIX --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-libgcj-multifile --enable-languages=c,c++,fortran,java,lto,objc --disable-multilib
+make -j 4
+
+make check
+
+make install

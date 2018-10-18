@@ -16,7 +16,9 @@ SPECIAL=${SPECIAL:-NO}
 
 if [[ "$SPECIAL" == "cesm" ]]
 then
-   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf
+   YEAR=${COMPILER_TAG:6}
+   echo "DETECTED CESM BUILD $YEAR"
+   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf-${YEAR}
 fi
 
 set -e
@@ -40,8 +42,9 @@ then
    export LDFLAGS="-L/shared/ucl/apps/NetCDF/4.3.3.1-${COMPILER_TAG}/lib"
    if [[ "$SPECIAL" == "cesm" ]]
    then
-      export CPPFLAGS="-I/shared/ucl/apps/cesm/support/netcdf/include"
-      export LDFLAGS="-L/shared/ucl/apps/cesm/support/lib"
+      echo "DETECTED CESM BUILD $YEAR"
+      export CPPFLAGS="-I/shared/ucl/apps/cesm/support/netcdf-${YEAR}/include"
+      export LDFLAGS="-L/shared/ucl/apps/cesm/support/netcdf-${YEAR}lib"
      
    fi 
 

@@ -4,7 +4,7 @@
     {"EnginePath" -> "/opt/sge", "KernelOptions" -> "-subkernel -mathlink \
 -LinkMode Connect -LinkProtocol TCPIP -LinkName `linkname`", 
      "KernelProgram" -> 
-      "/shared/ucl/apps/Mathematica/11.0.1/bin/math", 
+      "/shared/ucl/apps/Mathematica/11.2/bin/math", 
      "NativeSpecification" -> "", "NetworkInterface" -> "", 
      "ToQueue" -> False}, {"Legion", False, False}]}, 
  Parallel`Palette`paletteConfig["enabledImplementations"] -> 

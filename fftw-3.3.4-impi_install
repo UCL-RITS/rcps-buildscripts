@@ -2,7 +2,7 @@
 
 PACKAGE_NAME="fftw"
 PACKAGE_VERSION="3.3.4"
-PACKAGE_VARIANT="impi"
+PACKAGE_VARIANT=${PACKAGE_VARIANT:-impi}
 
 set -e
 
@@ -10,8 +10,13 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
-require compilers/gnu/4.9.2
-require mpi/intel/2015/update3/gnu-4.9.2
+if [ "${COMPILER_TAG}" == "gnu-4.9.2" ]; then
+  require compilers/gnu/4.9.2
+  require mpi/intel/2015/update3/gnu-4.9.2
+elif [ "${COMPILER_TAG}" == "intel-2017" ]; then
+  require compilers/intel/2017/update1
+  require mpi/intel/2017/update1/intel
+fi
 
 _env_setup() {
   OWD=$(pwd)
@@ -61,7 +66,6 @@ _build() {
 
 _prepare_module() {
   make_module -p $INSTALL_PREFIX \
-              -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -r "mpi/intel/2015/update3/gnu-4.9.2" \
@@ -81,4 +85,4 @@ _fetch_files
 _setup_files
 _build
 _prepare_module
-
+_clean_up

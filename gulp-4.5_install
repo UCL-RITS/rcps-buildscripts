@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GULP 4.5
+# Built with Intel compiler and MPI
+# Source downloaded previously with website credentials 
+#
+
+NAME=${NAME:-gulp}
+VERSION=${VERSION:-4.5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/gulp/sources/$NAME-$VERSION.tgz}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
+PATCH=${PATCH:-/shared/ucl/apps/build_scripts/patches/GULP4.5_getengine_mpi.patch}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+# need to set this after compiler module is loaded
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+# builds in place
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+tar -xvf "$SRC_ARCHIVE"
+cd "${NAME}"-"${VERSION}"/Src
+
+# patch getmachine to tell it to build with MPI
+patch -p0 -i "$PATCH"
+make 2>&1 | tee make.log
+

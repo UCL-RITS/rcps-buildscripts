@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GNU groff 1.22.3
+#
+# by Brian Alston, April 2018
+#
+#
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and perl/5.22.0
+
+VERSION=${VERSION:-1.22.3}
+# VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/groff/${VERSION}}
+MD5=${MD5:-cc825fa64bc7306a885f2fb2268d3ec5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/groff/groff-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require perl/5.22.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum groff-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf groff-${VERSION}.tar.gz
+   cd groff-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   make install
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

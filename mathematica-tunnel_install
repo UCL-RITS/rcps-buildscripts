@@ -6,13 +6,17 @@
 #
 # by Brian Alston, January 2017
 #
-# Will need modules: rcps-core/1.0.0, mathematica/11.0.1,git/2.10.2
+# Updated January 2018 for Mathematica 11.3.
+# Updated May 2018 for MAthematica 11.3
+#
+# Will need modules: rcps-core/1.0.0, mathematica/11.3.0 ,git/2.10.2
 
 VERSION=${VERSION:-2.2.20}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/UDUNITS/${VERSION}-${COMPILER_TAG}}
 MD5=${MD5:-1586b70a49dfe05da5fcc29ef239dce0}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/sakra/Tunnel.git}
+EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
 
 set -e
 
@@ -24,7 +28,8 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
-require mathematica/11.0.1
+require xorg-utils/X11R7.7
+require mathematica/11.3.0
 require git/2.10.2
 
 temp_dir=`mktemp -d -p /dev/shm`
@@ -35,9 +40,16 @@ git clone $SRC_ARCHIVE
 cd Tunnel
 ./install-tunnel.sh
 
-# replace tunnel.m version containing correct /shared/ucl/apps lcoations for legion/Grace
+# replace tunnel.m version containing correct /shared/ucl/apps lcoations for legion/Grace etc.
 
 cd $MATHEMATICA_BASE/Kernel
 cp tunnel.m tunnel.m_dist
-cp ~/Software/Mathematica/Tunnel/Tunnel/scripts/tunnel.m .
+cp $EXTRA_FILES/Tunnel/scripts/tunnel.m .
 
+# Fix minor bug in helper scripts
+
+cd $MATHEMATICA_USERBASE/FrontEnd
+cp tunnel.sh tunnel.sh_dist
+sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel.sh_dist > tunnel.sh
+cp tunnel_sub.sh tunnel_sub.sh_dist
+sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel_sub.sh_dist > tunnel_sub.sh

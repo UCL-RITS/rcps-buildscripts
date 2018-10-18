@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-plink}
+VERSION=${VERSION:-2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/chrchang/plink-ng.git}
+LEGION=${LEGION:-no}
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+
+cd plink-ng
+
+COMMIT=`git rev-parse --verify HEAD`
+
+mkdir -p $INSTALL_PREFIX
+
+rm -rf ${INSTALL_PREFIX}/${COMMIT}
+
+cp -R 2.0 ${INSTALL_PREFIX}/${COMMIT}
+
+cd ${INSTALL_PREFIX}/${COMMIT}
+
+rm -rf $temp_dir
+
+cd build_dynamic
+
+cp /shared/ucl/apps/build_scripts/plink-patches/plink2-makefile.patch .
+patch <  plink2-makefile.patch 
+
+if [ $LEGION == 'yes' ]
+then
+  echo "Building without AVX2"
+  sed -i "s|NO_AVX2 =|NO_AVX2 = 1|g" Makefile
+fi
+
+
+make
+pwd

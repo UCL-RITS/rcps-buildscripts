@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HYPRE
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-hypre}
+VERSION=${VERSION:-2.11.2}
+MPI_TAG=${MPI_TAG:-openmpi-3.1.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/$MPI_TAG}
+SHA256=${SHA256:-25b6c1226411593f71bb5cf3891431afaa8c3fd487bdfe4faeeb55c6fdfb269e}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/download/${NAME}-${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}/src
+
+./configure --prefix=$INSTALL_PREFIX --with-blas-lib=-mkl --with-lapack-lib=-mkl
+make 
+make install

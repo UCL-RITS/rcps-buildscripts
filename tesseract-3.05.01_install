@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-tesseract}
+VERSION=${VERSION:-3.05.01}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-0ac91d57fd35a47f93a9e47b29b63c75}
+TMD5=${TMD5:-c34cfe21063e1b968778dca00c2330b4}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tesseract-ocr/tesseract/archive/${VERSION}.tar.gz}
+
+TVERSION=${TVERSION:-3.04.00}
+
+TRAINING_ARCHIVE=${TRAINING_ARCHIVE:-https://github.com/tesseract-ocr/tessdata/archive/${TVERSION}.zip}
+
+LEPTONICA_DIR=${LEPTONICA_DIR:-/shared/ucl/apps/leptonica/1.74.4}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $TRAINING_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+tarchive=$(basename "${TRAINING_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+md5sum -c <<< "$TMD5 $tarchive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+./autogen.sh
+LIBLEPT_HEADERSDIR=${LEPTONICA_DIR}/include ./configure --prefix=${INSTALL_PREFIX} --with-extra-libraries=${LEPTONICA_DIR}/lib
+make
+make install
+make training
+make training-install
+
+cd $INSTALL_PREFIX
+unzip ${temp_dir}/${tarchive}
+ln -s tessdata-${TVERSION} tessdata
+

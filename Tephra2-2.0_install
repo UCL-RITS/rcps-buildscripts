@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Tephra2 2.0
+#
+# by Brian Alston, August 2018
+#
+# Using Ian's require function to load modules
+#
+# 
+
+VERSION=${VERSION:-2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Tephra2/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/geoscience-community-codes/tephra2.git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.1/gnu-4.9.2
+require gmt/recommended
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/Tephra2'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+cd tephra2
+make
+if [ ! $? ]
+then
+    echo "***** ERROR: make failed"
+    exit 1
+fi
+
+# No make check provided.
+
+# No make install either.
+
+mkdir -p $INSTALL_PREFIX/bin
+cp tephra2012_inversion tephra2-2012 $INSTALL_PREFIX/bin
+cp -r inputs $INSTALL_PREFIX
+cp -r plotting_scripts $INSTALL_PREFIX
+cp -r probability_scripts $INSTALL_PREFIX
+
+# Install UCL version of run-inversion script to run all Tephra2 steps.
+
+cp /shared/ucl/apps/build_scripts/files/Tephra2/run-inversion-UCL $INSTALL_PREFIX/bin
+

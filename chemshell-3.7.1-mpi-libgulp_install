@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ChemShell 3.7.1 MPI version with libgulp
+# Built with Intel compiler and MPI
+# Source downloaded previously 
+# ccspap2 needed for restricted app group.
+
+NAME=${NAME:-chemshell}
+VERSION=${VERSION:-3.7.1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/chemshell/sources/chemsh-${VERSION}.tar.gz}
+GULP_VERSION=${GULP_VERSION:-4.5}
+RESERVED_APP_GROUP=${RESERVED_APP_GROUP:-lgchemsh}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require tcl
+require gulp/4.5/libgulp/intel-2018
+
+# need to set this after compiler module is loaded
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/mpi-gulp$GULP_VERSION/$COMPILER_TAG}
+
+# builds in place
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+tar -xvf "$SRC_ARCHIVE"
+cd chemsh-"${VERSION}"/src/config
+# Can't find mpif.h unless MPIINC is set.
+CC=mpicc F77=mpif90 F90=mpif90 COMPILER_IS_INTEL=1 MPIINC=-I"$MPI_HOME"/include64 ./configure --with-mpi --with-gulp="$LIBGULP_ROOT"
+cd ..
+make 2>&1 | tee make.log
+
+# Tests
+cd ../examples
+../scripts/chemsh -p 4 validate_buildbot.chm 2>&1 | tee validate_buildbot.log
+echo "Test output (4 cores) was saved in $INSTALL_PREFIX/chemsh-${VERSION}/examples/validate_buildbot.log"
+
+echo "Restricting access to $RESERVED_APP_GROUP"
+chgrp "$RESERVED_APP_GROUP" "$INSTALL_PREFIX"
+chmod o-rwx "$INSTALL_PREFIX"
+

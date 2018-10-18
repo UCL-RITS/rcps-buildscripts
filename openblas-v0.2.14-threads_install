@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OpenBLAS
+#
+# by Owain Kenway, 2015 
+#
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-0.2.14}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/openblas/${VERSION}-threads/$COMPILER_TAG}
+MD5=${MD5:-53cda7f420e1ba0ea55de536b24c9701}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/xianyi/OpenBLAS/archive/v${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum v${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf v${VERSION}.tar.gz
+
+  cd OpenBLAS-${VERSION}
+  make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 USE_OPENMP=1
+  make PREFIX=${INSTALL_PREFIX} DYNAMIC_ARCH=1 USE_OPENMP=1 install
+
+# Fixes for various packages e.g. numpy with broken search routines.
+  cd $INSTALL_PREFIX/lib
+  ln -s libopenblas.so liblapack.so
+  ln -s libopenblas.so libblas.so
+  ln -s libopenblas.a liblapack.a
+  ln -s libopenblas.a libblas.a
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

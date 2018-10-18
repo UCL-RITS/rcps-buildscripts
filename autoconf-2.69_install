@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GNU Autoconf 2.69
+#
+# by Brian Alston, May 2018
+#
+#
+# Will need modules: gcc-libs/4.9.2
+
+VERSION=${VERSION:-2.69}
+# VER=`echo $VERSION | sed 's/\.//'`
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Autoconf/${VERSION}}
+MD5=${MD5:-82d05e03b93e45f5a39b828dc9c6c29b}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gnu.org/gnu/autoconf/autoconf-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum autoconf-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf autoconf-${VERSION}.tar.gz
+   cd autoconf-${VERSION}
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   # Commented out make check as it takes a long time.
+   # make check
+   make install
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

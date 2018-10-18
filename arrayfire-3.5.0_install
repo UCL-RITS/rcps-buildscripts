@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ArrayFire
+#
+# by Owain Kenway, 2017
+#
+
+# NOTE: Due to nVidia trying to get you to avoid openCL, must be built on a 
+# node with the nVidia *drivers*.
+
+#prereq gcc-libs/4.9.2
+#prereq glfw/3.2.1/gnu-4.9.2
+#prereq llvm/3.9.1
+#prereq mesa/13.0.6/gnu-4.9.2
+#prereq freeimage/3.17.0/gnu-4.9.2
+#prereq python/3.5.2
+#prereq boost/1_63_0/gnu-4.9.2
+#prereq cuda/8.0.61-patch2/gnu-4.9.2
+#prereq glbinding/2.1.2/gnu-4.9.2
+#prereq forge/1.0.0
+#prereq openblas/0.2.14/gnu-4.9.2
+#prereq fftw/3.3.6-pl2/gnu-4.9.2
+
+NAME=${NAME:-arrayfire}
+VERSION=${VERSION:-3.5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/cuda-8.061}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/arrayfire/arrayfire.git}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+# Clone and switch to our chosen version's tag.
+git clone $SRC_ARCHIVE
+cd arrayfire
+git checkout v${VERSION}
+
+export GLFW_ROOT=/shared/ucl/apps/glfw/3.2.1/gnu-4.9.2
+export GLFW_DIR=$GLFW_ROOT
+export OPENCL_ROOT=/shared/ucl/apps/cuda/8.0.61/gnu-4.9.2
+
+mkdir build
+cd build
+
+cmake .. -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_CPU=ON -DBUILD_OPENCL=ON -DBUILD_CUDA=ON -DBUILD_EXAMPLES=ON -DOpenCL_INCLUDE_DIR=${OpenCL_INCLUDE_DIR} -DFREEIMAGE_INCLUDE_PATH=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/include -DFREEIMAGE_DYNAMIC_LIBRARY=/shared/ucl/apps/freeimage/3.17.0/gnu-4.9.2/usr/lib/libfreeimage.so -DUSE_SYSTEM_FORGE=ON -DUSE_SYSTEM_GLBINDING=ON 
+
+
+# this is a terrible fudge but I can't see any way of getting that variable into the CMake vars for clFFT.  Setting the env var described in FindOpenCL.cmake does nothing.
+set +e
+make
+set -e
+
+cd third_party/clFFT/src/clFFT-ext-build
+cmake ../clFFT-ext/src -DOPENCL_INCLUDE_DIRS=${OpenCL_INCLUDE_DIR} 
+
+cd $temp_dir/arrayfire/build
+
+make
+make install

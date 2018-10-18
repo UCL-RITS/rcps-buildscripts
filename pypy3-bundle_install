@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# Package bundle builder for Pypy3
+
+python_compat_version=${PYTHON_COMPAT_VERSION:-3.5}
+install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/pypy/bundles}
+python_major_version=${PYTHON_MAJ_VERSION:-3}
+timestamp=$(date +"%s")
+
+
+# Use local list dir for testing if exists, else the system one
+if [[ -d "$(pwd)/lists" ]]; then
+    list_dir="$(pwd)/lists"
+else
+    list_dir="/shared/ucl/apps/build_scripts/lists"
+fi
+
+# Disable wheels for some packages
+pip_no_binary_list=${pip_no_binary_list:-:all:}
+
+set -e
+
+# module dependencies:
+dirname=$(dirname "$0" 2>/dev/null)
+includes_dir=${INCLUDES_DIR:-${dirname}/includes}
+source "${includes_dir}/require_inc.sh"
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require pypy3/6.0.0/gnu-4.9.2
+require openblas/0.2.14/gnu-4.9.2
+
+mkdir -p "$install_prefix"
+
+cd "$install_prefix"
+echo "Making bundle install directory: $install_prefix/$timestamp-$python_major_version"
+mkdir "$timestamp-$python_major_version"
+cd "$timestamp-$python_major_version"
+
+
+pypy3 -m venv --system-site-packages venv
+
+source venv/bin/activate
+
+# These are used when installing numpy
+LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
+BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
+
+export LAPACK
+export BLAS
+
+pip3 install --upgrade pip
+
+# You'd *think* you could just do this, BUT NO
+#  SOME package authors think it's fine to break with an error
+#  INSTEAD OF DECLARING THEIR DEPENDENCIES
+#pip3 install --no-binary "$pip_no_binary_list" -r "$list_dir/pypy-shared.list"
+#pip3 install --no-binary "$pip_no_binary_list" -r "$list_dir/pypy-3.list"
+echo "===="
+echo "  Installing lists from $list_dir..."
+echo "===="
+
+old_IFS="$IFS"
+IFS=$'\n'
+for entry in $(cat "$list_dir/pypy-shared.list")
+do
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       echo "---- $entry ----"
+       # The no-build-isolation part here works around a problem with pip 10's
+       #  incomplete implementation of the recent build isolation PEP, that
+       #  breaks some Cython-using packages.
+       pip3 install --no-build-isolation --no-binary "$pip_no_binary_list" "$entry"
+   fi
+done
+
+for entry in $(cat "$list_dir/pypy-3.list")
+do
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       # The no-build-isolation part here works around a problem with pip 10's
+       #  incomplete implementation of the recent build isolation PEP, that
+       #  breaks some Cython-using packages.
+       pip3 install --no-build-isolation --no-binary "$pip_no_binary_list" "$entry"
+   fi
+done
+IFS="$old_IFS"
+
+cd ..
+ln -Tfs "$timestamp-$python_major_version" "pypy${python_major_version}-${python_compat_version}"
+echo "Linked bundle install directory to label-link: pypy${python_major_version}-${python_compat_version}"

@@ -53,7 +53,7 @@ MPI_LIB =
 
 FFT_INC =       -DFFT_MKL 
 FFT_PATH = 
-FFT_LIB =       -L$MKLROOT/lib/intel64/ -lmkl_intel_ilp64 \
+FFT_LIB =       -L${MKLROOT}/lib/intel64/ -lmkl_intel_ilp64 \
                 -lmkl_intel_thread -lmkl_core	
 
 # JPEG and/or PNG library

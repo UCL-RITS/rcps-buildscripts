@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ELK
+#
+
+NAME=${NAME:-elk}
+VERSION=${VERSION:-4.0.15}
+SHA256=${SHA256:-0abbbe15f3c0cf1f03b552ef54b3611d432b0d119fc21c69b4d505ef4d53b7be}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/elk/files/elk-${VERSION}.tgz}
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/intel/2018/update3
+module load mpi/intel/2018/update3/intel
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+set -e
+
+mkdir -p "$INSTALL_PREFIX"
+
+owd="$(pwd)"
+cd "$INSTALL_PREFIX"
+
+wget "$SRC_ARCHIVE"
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf "$archive"
+
+cd "${NAME}-${VERSION}"
+
+cp "$owd/elk-patches/make.inc.${VERSION}" make.inc
+
+# Library fixing
+# This step is referenced in make.inc
+cp /shared/ucl/apps/libxc/2.2.2/intel-2015-update2/lib/libxcf90.a src
+cp /shared/ucl/apps/libxc/2.2.2/intel-2015-update2/lib/libxc.a src
+
+make
+make test

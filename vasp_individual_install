@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+######################################################################
+# Installing a local copy of VASP, no patches, into the user's $HOME
+#
+# Uses Intel compiler, MKL inc FFTW wrapper, Intel MPI
+#
+# To run:
+# cd /shared/ucl/apps/build_scripts
+# ./vasp_individual_install
+#
+# To run this script with different variables:
+# cd /shared/ucl/apps/build_scripts
+# VERSION=x.x.x-date INSTALL_PREFIX=/my/install/location SRC_ARCHIVE=/my/vasp/tar ./vasp_individual_install
+#
+
+NAME="${NAME:-vasp}"
+VERSION="${VERSION:-5.4.4-18apr2017}"
+INSTALL_PREFIX="${INSTALL_PREFIX:-$HOME/$NAME/$VERSION/$COMPILER_TAG}"
+# we are building in a temporary directory in $HOME/build by default
+BUILD_BASE="${BUILD_BASE:-"$HOME/$NAME/$VERSION/$COMPILER_TAG/build"}"
+SRC_ARCHIVE="${SRC_ARCHIVE:-"$HOME/${NAME}-${VERSION}.tgz"}"
+
+set -e
+
+if [[ -e "$INSTALL_PREFIX" ]]; then
+    ip_warn="(Warning: This directory already exists!)"
+fi
+
+if [[ ! -f "$SRC_ARCHIVE" ]]; then
+    echo "Error: Could not find source archive for VASP at: $SRC_ARCHIVE" >&2
+    echo "Please set SRC_ARCHIVE to a file that exists." >&2
+fi
+
+echo "This script will attempt to build VASP in your home directory.
+      VASP will be built in: $BUILD_BASE
+       from source package:  $SRC_ARCHIVE
+      VASP exes will go into: $INSTALL_PREFIX/bin  $ip_warn
+
+      If this is what you want, press 'y' to proceed, or any other key to stop.
+      "
+read -r -n 1 prompt_result
+if [[ "$prompt_result" != "y" ]]; then exit; fi
+
+# === Now actually build it
+
+mkdir -p "$BUILD_BASE" "$INSTALL_PREFIX"
+BUILD_DIR="${BUILD_DIR:-$(mktemp -d -p "$BUILD_BASE" -t "${NAME}-build.XXXXXXXX")}"
+
+# module prereqs for building - checks they are loaded
+dirname=$(dirname "$0" 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source "${INCLUDES_DIR}/require_inc.sh"
+require gcc-libs
+require compilers/intel
+require mpi/intel
+
+cd "$BUILD_DIR"
+
+# untar the source into the build directory
+tar -xvf "${SRC_ARCHIVE}"
+
+# build and log output
+pwd
+cd "${NAME}.${VERSION%-*}"
+cp arch/makefile.include.linux_intel ./makefile.include
+# Unfortunately VASP does not build successfully in parallel
+make -j 1 2>&1 | tee make.log
+
+echo "Build completed"
+echo "Installing to $INSTALL_PREFIX"
+
+mkdir -p "${INSTALL_PREFIX}/bin"
+cp -v "${BUILD_DIR}/${NAME}.${VERSION%-*}/bin/"vasp* "${INSTALL_PREFIX}/bin"
+
+echo "Finished installing."
+echo "This was built in $BUILD_DIR - if all went well, you can delete those files"
+

@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs
+require compilers/gnu/4.9.2 
+require openblas/0.3.2-serial/gnu-4.9.2
+require fftw/3.3.6-pl2/gnu-4.9.2 
+require arpack-ng/3.5.0/gnu-4.9.2-serial
+require suitesparse/4.5.5/gnu-4.9.2-serial 
+require ghostscript/9.19/gnu-4.9.2
+require hdf/5-1.8.15/gnu-4.9.2 
+require java/1.8.0_92 
+require libtool/2.4.6 
+require perl/5.22.0 
+require graphicsmagick/1.3.21 
+require texlive/2015 
+require bison/3.0.4/gnu-4.9.2
+require gnuplot/5.0.1 
+require texinfo/5.2/gnu-4.9.2
+
+
+
+NAME=${NAME:-octave}
+VERSION=${VERSION:-4.4.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-21a1f13e2145fa530f2169254d19442b572745d65b91453ba1f552f6eda6aecfead57dbe0260b3293a29db0aa0f27cfd4f26df332e6d640848a822b20c1232f8}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.gnu.org/gnu/octave/octave-${VERSION}.tar.gz}
+
+
+#module load compilers/gnu/4.9.2 openblas/0.3.2-serial/gnu-4.9.2 fftw/3.3.6-pl2/gnu-4.9.2 arpack-ng/3.5.0/gnu-4.9.2-serial suitesparse/4.5.5/gnu-4.9.2-serial ghostscript/9.19/gnu-4.9.2
+# hdf/5-1.8.15/gnu-4.9.2 java/1.8.0_92 libtool/2.4.6 perl/5.22.0 graphicsmagick/1.3.21 texlive/2015 bison/3.0.4/gnu-4.9.2 gnuplot/5.0.1 texinfo/5.2/gnu-4.9.2
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+./configure --prefix=$INSTALL_PREFIX
+make -j 12
+make check
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+make install

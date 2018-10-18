@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-1.4.1}
+TYPE=${TYPE:-cpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
+PACKAGE_NAME=${NAME}
+if [ "$TYPE" == "gpu" ] 
+then
+  PACKAGE_NAME=${NAME}-gpu
+fi
+
+set -e
+
+pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
+
+# Remove enum34 because we have a newer python than Google expects.
+rm -rf ${INSTALL_PREFIX}/enum*

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-lmdb}
+VERSION=${VERSION:-0.9.22}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-49afca13b9683ed571c274380bb5e111236903b12d19bcb8781d6bbc00f711766b0d62de0b36536c85309cc9ff9e9d0aaa708e27bae9be6cfcaed8ba91e5545d}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/LMDB/lmdb/archive/LMDB_${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd lmdb-LMDB_${VERSION}/libraries/liblmdb
+
+sed -i.bak "s|/usr/local|${INSTALL_PREFIX}|g" Makefile
+make 
+make install

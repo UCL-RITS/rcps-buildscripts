@@ -1,0 +1,25 @@
+--- getmachine.orig	2018-08-20 10:34:22.448913395 +0100
++++ getmachine	2018-08-20 12:10:46.926330821 +0100
+@@ -254,8 +254,10 @@
+ # PG compiler
+ #  	   echo 'RUNF90=pgf90 -Bstatic' >> makefile
+ # Intel compiler
+-  	   echo 'RUNF90=ifort ' >> makefile
+-           echo 'RUNCC=icc ' >> makefile
++#  	   echo 'RUNF90=ifort ' >> makefile
++#           echo 'RUNCC=icc ' >> makefile
++          echo 'RUNF90=mpif90 ' >> makefile
++          echo 'RUNCC=mpicc ' >> makefile
+ # Cray compiler
+ #  	   echo 'RUNF90=ftn -h noomp ' >> makefile
+ #           echo 'RUNCC=cc -h noomp ' >> makefile
+@@ -304,7 +306,8 @@
+ 	   echo 'CDABS=cdabs.o' >> makefile
+ # If PLUMED is needed then set -DPLUMED
+ #           echo 'DEFS=-DFLUSH -DPLUMED' >> makefile
+-           echo 'DEFS=-DFLUSH ' >> makefile
++#           echo 'DEFS=-DFLUSH ' >> makefile
++           echo 'DEFS=-DFLUSH -DMPI ' >> makefile
+            echo 'PLUMEDDEFS=-DDL_POLY' >> makefile
+            echo 'ARCHIVE = ar rcv' >> makefile
+            echo 'RANLIB = ar ts' >> makefile

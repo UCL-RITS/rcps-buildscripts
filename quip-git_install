@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing quip from git
+#
+# by Owain Kenway, 2017 
+#
+
+APPNAME=${APPNAME:-quip}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/libAtoms/QUIP.git}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone --recursive $SRC_ARCHIVE
+cd QUIP
+
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+mkdir -p ${INSTALL_PREFIX}/lib
+mkdir -p ${INSTALL_PREFIX}/include
+mkdir -p ${INSTALL_PREFIX}/structures
+mkdir -p ${INSTALL_PREFIX}/bin
+
+export QUIP_INSTALLDIR=${INSTALL_PREFIX}/bin
+export QUIP_STRUCT_DIR=${INSTALL_PREFIX}/structures
+export QUIP_ARCH=linux_x86_64_gfortran_openmpi
+
+mkdir -p build/${QUIP_ARCH}
+
+cp /shared/ucl/apps/build_scripts/cp2k-4.1-patches/QUIP_Makefile.inc build/${QUIP_ARCH}/Makefile.inc
+
+make
+make libquip
+make install
+
+# Need to manually put stuff in the right place.
+cp build/${QUIP_ARCH}/*.a  ${INSTALL_PREFIX}/lib
+cp build/${QUIP_ARCH}/*.mod  ${INSTALL_PREFIX}/include
+
+echo "Install complete: ${INSTALL_PREFIX}"
+
+
+
+

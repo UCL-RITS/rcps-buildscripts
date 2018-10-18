@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-freeimage}
+VERSION=${VERSION:-3.17.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-459e15f0ec75d6efa3c7bd63277ead86}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/freeimage/FreeImage${VERSION//./}.zip}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+
+unzip $archive
+
+cd FreeImage
+
+# Fix root requirement.
+
+sed -i 's|-o root -g wheel| |g' Makefile.*
+sed -i 's|-o root -g root| |g' Makefile.*
+
+
+make
+make DESTDIR=${INSTALL_PREFIX} install

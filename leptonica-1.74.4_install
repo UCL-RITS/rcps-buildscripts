@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2017
+#
+
+NAME=${NAME:-leptonica}
+VERSION=${VERSION:-1.74.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-2092e126652ff07bc2569971a1d6c6411e1d481539d39c98031534c6f83dfc82}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/DanBloomberg/leptonica/archive/${VERSION}.tar.gz}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+./autobuild
+./configure --prefix=${INSTALL_PREFIX}
+make
+make install

@@ -26,7 +26,7 @@ INCLUDES_DIR=/shared/ucl/apps/build_scripts/includes
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs
 require compilers/intel/2015/update2
-require python2/recommended
+require python/2.7.9
 require flex
 
 if [ "${PARALLEL:-}" = "-mpi" ]; then
@@ -50,6 +50,17 @@ else
 fi
 
 set -e
+
+# Installl a suitable MPI4PY for MMPBSA
+if [ "${PARALLEL:-}" = "-mpi" ]; then
+  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
+  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
+
+fi
+
+# Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
+#pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
+
 
 mkdir -p $INSTALL_PREFIX
 
@@ -76,3 +87,6 @@ make install
 cd $temp_dir
 rm $AMBERHOME
 mv $ABNAME $AMBERHOME
+
+
+

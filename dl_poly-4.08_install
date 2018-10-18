@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing DL_POLY
+#
+# 
+#
+
+NAME=${NAME:-dl_poly}
+VERSION=${VERSION:-4.08}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-71f270e6d7d1a1ccfc7f937fdf418d5c}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/dl_poly/sources/dl_poly_4.08.zip}
+GROUP=${GROUP:-lgdlp408}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/execute:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+unzip ${SRC_ARCHIVE}
+
+cd ${NAME}_${VERSION}/source
+cp ../build/Makefile_MPI Makefile
+make hpc
+
+mkdir -p $INSTALL_PREFIX
+cp -R ../execute $INSTALL_PREFIX
+
+# The correct legdlp group needs to have been created and ccspapp has to be in it
+chgrp -Rv $GROUP $INSTALL_PREFIX
+chmod -Rv o-rwx $INSTALL_PREFIX
+

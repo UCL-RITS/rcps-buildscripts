@@ -5,7 +5,8 @@
 #
 # by Brian Alston, June 2015
 #
-# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.4/gnu.4.9.2 and gsl/1.16/gnu_4.9.2
+#
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.4/gnu-4.9.2 and gsl/1.16/gnu_4.9.2
 
 VERSION=${VERSION:-5.34.30}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION/$COMPILER_TAG}

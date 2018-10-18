@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LLVM
+# Built with GCC
+# 
+#
+
+NAME=${NAME:-llvm}
+VERSION=${VERSION:-3.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-68766b1e70d05a25e2f502e997a3cb3937187a3296595cf6e0977d5cd6727578}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://releases.llvm.org/${VERSION}/${NAME}-${VERSION}.src.tar.gz}
+
+set -e
+
+# require modules for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+prereq gcc-libs
+prereq compilers/gnu
+prereq cmake/3.7.2
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}.src
+  mkdir build
+  cd build
+  cmake                                           \
+    -DCMAKE_BUILD_TYPE=Release                    \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX        \
+    -DLLVM_BUILD_LLVM_DYLIB=ON                    \
+    -DLLVM_ENABLE_RTTI=ON                         \
+    -DLLVM_INSTALL_UTILS=ON                       \
+    -DLLVM_TARGETS_TO_BUILD:STRING=X86 ..
+  make -j 12 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
+

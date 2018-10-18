@@ -33,8 +33,8 @@ then
   make && make install
 
 # Install mpirun wrapper
-  mkdir -p /shared/ucl/apps/openmpi/ucl-wrapper/bin
-  cp /shared/ucl/apps/build_scripts/files/mpirun /shared/ucl/apps/openmpi/ucl-wrapper/bin
+#  mkdir -p /shared/ucl/apps/openmpi/ucl-wrapper/bin
+#  cp /shared/ucl/apps/build_scripts/files/mpirun /shared/ucl/apps/openmpi/ucl-wrapper/bin
 
 else
   echo "Hash mismatch."

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+#Normally these blocks are in an order that aids readability, but here we need the Python version before we
+#  can determine the labels for the build environment
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require "python3/$python_version_tag"
+require gsl/1.16/gnu-4.9.2
+
+python_version_tag="${PYTHON_VERSION_TAG:-3.6}"
+package_variant="python$python_version_tag"
+
+package_name="pygsl"
+package_version=${VERSION:-$(python3 /shared/ucl/apps/build_scripts/files/pypiver.py $package_name)}
+package_description="PyGSL provides Python bindings for the GNU Scientific Library."
+
+make_build_env ""
+
+pip install \
+    --install-option="--prefix=$install_prefix" \
+    --install-option="--install-headers=$install_prefix/includes" \
+    pygsl=="${package_version}"
+
+make_module \
+    -o "${module_dir}/${package_label}" \
+    -p "$install_prefix" \
+    -e "PYTHONPATH:$install_prefix/lib/python$PYTHON_VERSION_TAG/site-packages" \
+    -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -r "compilers/gnu/4.9.2" \
+    -r "python3/$python_version_tag" \
+    -r "gsl/1.16/gnu-4.9.2"
+echo "Module files put in: $module_dir" >&2
+chmod a+rx "$module_dir"
+
+
+

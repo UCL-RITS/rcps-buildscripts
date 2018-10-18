@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="dyninst"
+package_version="9.3.2"
+package_description="DynInst is a library for performing dynamic instrumentation of executables."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    require compilers/gnu
+    require elfutils
+    require libdwarf
+    require python/2.7.12 # <- for boost
+    require boost/1_63_0/gnu-4.9.2
+    require cmake
+
+    make_build_env ""
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.gz"
+    package_url="https://github.com/dyninst/dyninst/archive/v${package_version}.tar.gz"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    mv "v${package_version}.tar.gz" "$package_file"
+
+    manifest sha512:336ebf3a3ec123af2bf148dbfb9e0308be0bd93c81dcd1fa995c88d0eb865a85337aac976909aba4a589224b0872c601f52f20bc3f5f523f4588522308b563cd ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    mkdir -p build
+    cd build
+
+    cmake \
+        -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+        ../
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/build"
+
+    # If you try to build in parallel, binutils fails
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/build"
+    ## dyninst has no tests :(
+    # make check 
+
+    make install
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -r gcc-libs \
+        -r elfutils \
+        -r libdwarf \
+        -r python/2.7.12 \
+        -r boost 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

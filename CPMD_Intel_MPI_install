@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CPMD: MPI with Intel compilers
+#
+# by Brian Alston, May 2017 
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-4.1}
+PLATFORM=${PLATFORM:-INTEL-MPI}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/CPMD/$VERSION/Intel-MPI}
+SRC_ARCHIVE_CPMD=${SRC_ARCHIVE_CPMD:-cpmd-v$VERSION.tar.gz}
+SRC_ARCHIVE_CPMD2CUBE=${SRC_ARCHIVE_CPMD2CUBE:-cpmd2cube.tar.gz}
+SRC_ARCHIVE_LOCATION=${SRC_ARCHIVE_LOCATION:-/shared/ucl/apps/CPMD/sources/}
+PATCHES="patch_3808-3812.txt patch_3812-3813.txt patch_3815-3816.txt"
+LOG_LOCATION=${LOG_LOCATION:-~/Software/CPMD}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require compilers/intel
+require mpi/intel
+
+if [ ! -f $SRC_ARCHIVE_LOCATION/$SRC_ARCHIVE_CPMD ]
+then
+    echo ""
+    echo "***** ERROR: Cannot find CPMD archive"
+    echo ""
+    echo "You need to download the CPMD source archive from the CPMD download portal"
+    echo "(http://cpmd.org/download) using your license login. Note: both Latest"
+    echo "Distribution and pathes are needed. Also the additional packages: "
+    echo "cpmd2cube.tar.gz."
+    echo "Place them somewhere in your file-system and set the SRC_ARCHIVE_*"
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+# Firstly CPMD
+
+echo "***** Building CPMD ..."
+
+# Unpack source archive, apply patches and configure for building in install location.
+ 
+tar xvzf $SRC_ARCHIVE_LOCATION/$SRC_ARCHIVE_CPMD
+cd CPMD
+
+for p in $PATCHES
+do
+    echo "Applying patch $p ..."
+    patch -p0 < $SRC_ARCHIVE_LOCATION/$p
+done
+
+INSTALL_LOC=$INSTALL_PREFIX
+mkdir -p $INSTALL_LOC
+./configure.sh -DEST=$INSTALL_LOC LINUX-X86_64-INTEL-MPI
+
+cd $INSTALL_LOC
+
+# Need to fix Makefile before building on Legion/Grace/Thomas
+
+cp Makefile Makefile_orig
+sed -e '/CPP =/s/-C//' -e '/FC = /s/mpif90/mpiifort/' -e '/LD =/s/mpif90/mpiifort/' Makefile_orig > Makefile
+
+# Build in install location.
+
+echo "Compiling ..."
+make 2>&1 | tee $LOG_LOCATION/CPMD_build.log_`date +%d.%m.%Y-%H.%M`
+
+echo ""
+echo "***** Building cpmd2cube ..."
+
+# Unpack source archive, and configure for building in install location.
+
+cd $temp_dir
+tar xvzf $SRC_ARCHIVE_LOCATION/$SRC_ARCHIVE_CPMD2CUBE
+cd cpmd2cube
+mkdir -p $INSTALL_LOC/cpmd2cube
+
+./Configure -DEST=$INSTALL_LOC/cpmd2cube -m Linux-PC-IFORT
+
+cd  $INSTALL_LOC/cpmd2cube
+
+# Need to fix Makefile before building on Legion/Grace/Thomas
+
+cp Makefile Makefile_orig
+sed -e '/^LFLAGS/s/-i-static/-static-intel/' Makefile_orig > Makefile
+
+# Build in install location
+
+echo "Compiling cpmd2cube ..."
+make 2>&1 | tee $LOG_LOCATION/cpmd2cube_build.log_`date +%d.%m.%Y-%H.%M`
+mv cpmd2cube.x cutcube.x trimcube.x ../bin
+
+echo "Finished."

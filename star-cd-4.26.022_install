@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing STAR-CD
+#
+# Updated for version 4.26.022 May 2018
+
+NAME=${NAME:-STAR-CD}
+VERSION=${VERSION:-4.26.022}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+BUILD=${BUILD:-201609151211}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/STAR-CD/installers/${NAME}_${VERSION}_${BUILD}-Linux_x86_64.tar}
+LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
+GROUP=${GROUP:-legstarc}
+ICE_VER=${ICE_VER:-4.26.030}
+ICE_ARCH=${ICE_ARCH:-linux64_2.6-x86-glibc_2.5.0-gcc_4.4.3-ifort_11.0}
+
+set -e
+
+mkdir -p /dev/shm/star-cd
+temp_dir=`mktemp -d -p /dev/shm/star-cd`
+
+archive=$(basename "${SRC_ARCHIVE}")
+
+cd $temp_dir
+tar -xvf $SRC_ARCHIVE
+
+# pick components and answer questions interactively - choose A for all.
+sh setup
+
+# ICE fix
+cd $INSTALL_PREFIX/ICE/$ICE_VER
+chmod -R a+rwx $ICE_ARCH
+
+# set permissions to restricted group only
+cd $INSTALL_PREFIX
+chgrp -R $GROUP $INSTALL_PREFIX
+chmod o-rx $INSTALL_PREFIX
+
+# Add HPC_SCRATCH and change STARFLAGS in etc/software.ini
+sed -i.bak '/default                     STARFLAGS=/a default                     HPC_SCRATCH=$TMPDIR' $INSTALL_PREFIX/etc/software.ini
+sed -i -e "s|STARFLAGS=|STARFLAGS=-nodefile \$TMPDIR/machines -scratch=\$TMPDIR|" $INSTALL_PREFIX/etc/software.ini
+

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing skewer
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-skewer}
+VERSION=${VERSION:-0.2.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/relipmoc/skewer.git}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd ${NAME}
+git checkout $VERSION
+
+# Fix install path.
+mkdir -p ${INSTALL_PREFIX}/bin
+sed -i.bak "s|/usr/local/bin|${INSTALL_PREFIX}/bin|g" Makefile
+
+make 
+make install

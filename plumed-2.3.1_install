@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PLUMED
+#
+#  Uses libmatheval
+#   which requires flex (else you get an undefined symbol yywrap error)
+
+NAME=${NAME:-plumed}
+VERSION=${VERSION:-2.3.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG/$BLAS_TAG}
+SHA1=${SHA1:-d3b7d41a29492490b496ca930c3c60ddf94ba691}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/plumed/plumed2/archive/v${VERSION}.tar.gz}
+
+set -e
+
+# shellcheck source=/shared/ucl/apps/build_scripts/includes/module_maker_inc.sh 
+source "$(dirname '${0}')/includes/module_maker_inc.sh"
+# shellcheck source=/shared/ucl/apps/build_scripts/includes/require_inc.sh
+source "$(dirname '${0}')/includes/require_inc.sh"
+
+module load flex
+module load libmatheval
+
+temp_dir=$(mktemp -d -p /dev/shm)
+
+cd "$temp_dir"
+
+wget "$SRC_ARCHIVE"
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=$(sha1sum "$archive"| awk '{print $1}')
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -xzf "$archive"
+
+  cd "${NAME}2-${VERSION}"
+  if [ "${BLAS_TAG}" == "openblas" ]
+  then
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas -lifcore -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
+  elif [ "${BLAS_TAG}" == "atlas" ]
+  then
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS=-L"${ATLASROOT}/lib" LIBS="-lsatlas -lmatheval -lfl" CXXFLAGS="-O3 -axSSE2,AVX"
+  elif [ "${BLAS_TAG}" == "mkl" ]
+  then
+    echo "------------------------------------------------"
+    echo "ALERT ALERT, using MKL has previously not worked"
+    echo "  --> when running make check, gives 42 failures"
+    echo "      and various nans                          "
+    echo "------------------------------------------------"
+    echo ""
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-lmatheval -lfl ${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm" CFLAGS="-I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include" CXXFLAGS="-O3 -axSSE2,AVX"
+  else
+    echo "Not using external BLAS"
+    ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90
+  fi
+
+# Turn on Crystallization module
+  touch src/crystallization.on
+
+  make 2>&1 | tee make.log
+  make install
+  
+  # The tests also *seem* to require you to have already installed PLUMED into a prefix
+  export PATH="$INSTALL_PREFIX/bin:$PATH"
+  export CPATH="$INSTALL_PREFIX/include:$CPATH"
+  export LIBRARY_PATH="$INSTALL_PREFIX/lib:$LIBRARY_PATH"
+  export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
+
+  # If you don't add -fopenmp here, linking the test executable fails with the Intel compiler
+  make check LDFLAGS+="-fopenmp" 2>&1 | tee test.log
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi

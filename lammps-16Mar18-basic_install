@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-basic}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-16Mar18}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+MD5=${MD5:-8059f1cac17ac74c099ba6c5a5e3a558} 
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf $archive
+
+  cd lammps-${VERSION}/src
+
+  # Get host machine
+  if hostname -A | grep -q legion
+  then
+    cluster="legion"
+  elif hostname -A | grep -q grace
+  then
+    cluster="grace"
+  elif hostname -A | grep -q thomas
+  then
+    cluster="thomas"
+  elif hostname -A | grep -q myriad
+  then
+    cluster="myriad"
+  else
+    echo "Unknown machine, exiting: $(hostname -A)"
+    exit 1
+  fi
+
+  # Copy in appropriate Makefile with correct architecture flags
+  # For compiler type use the fully-specified compiler version if a makefile exists for it
+  # otherwise use the one for intel, gnu etc.
+  if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} ]
+  then
+    cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
+  else
+    compiler_type=$(echo $COMPILER_TAG | cut -d- -f1)
+    cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-$compiler_type MAKE/MINE/Makefile.$cluster
+  fi
+
+# Add some necessary packages that aren't included by default for some reason
+# All the packages which don't need external libs.
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd
+  do
+    make yes-${a}
+  done
+
+# These packages need external libs but provide the source with LAMMPS
+#  for a in meam poems reax
+  for a in meam poems reax
+  do
+    # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
+    sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
+    make lib-${a} args="-m mpi"  
+    make yes-${a}
+  done
+  
+
+# Voro++
+  cd ../lib/voronoi
+  wget http://math.lbl.gov/voro++/download/dir/voro++-0.4.6.tar.gz
+  md5sum -c <<<"2338b824c3b7b25590e18e8df5d68af9  voro++-0.4.6.tar.gz"
+  tar zxvf voro++-0.4.6.tar.gz
+  cd voro++-0.4.6
+  sed -i.bak "s|CXX=g++|CXX=icpc|g" config.mk
+  make
+  cd ..
+  ln -s voro++-0.4.6/src includelink
+  ln -s voro++-0.4.6/src liblink
+  
+  cd ../../src
+  make yes-voronoi
+
+# Make binaries, libraries
+  make $cluster
+
+# Put them outside the source tree
+  mkdir ../bin
+  mv lmp_${cluster} ../bin
+
+# Wipe out our old object files.
+  make clean-all
+  
+# Move install into /shared
+  cd ../..
+  rm -rf $INSTALL_PREFIX
+  mkdir -p $INSTALL_PREFIX
+  mv lammps-${VERSION} $INSTALL_PREFIX
+
+# Make default binary symlink
+  cd $INSTALL_PREFIX/lammps-${VERSION}/bin
+  ln -s lmp_${cluster} lmp_default
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

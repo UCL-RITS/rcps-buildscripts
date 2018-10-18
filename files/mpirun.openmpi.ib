@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This wrapper "fixes" the OpenMPI mpirun on the single node job nodes.
+# It does this by using the SGE variable $NHOSTS to determine if this
+# is a multi-node job or not an enabling/disabling infinipath support.
+
+# This version is for Intel IB clusters where we must disable psm2.
+
+# Owain Kenway, UCL, 2/2/2018
+
+MPI_LAUNCHER=$MPI_RUN
+
+# If the job is running on one node only, disable Infiniband (no need
+# for it and it breaks on the single-node job nodes).
+if [[ "$NHOSTS" == "1" ]]
+then
+  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self "$@"
+
+# If the job is running interactively, disable Infiniband (i.e. login
+# nodes). 
+elif [[ "$NHOSTS" == "" ]]
+then
+  $MPI_LAUNCHER -mca pml ob1 -mca btl tcp,sm,self "$@"
+
+# Otherwise, business as usual (Infiniband).
+else 
+  $MPI_LAUNCHER --mca mtl '^psm2' -mca pml cm "$@"
+fi
+

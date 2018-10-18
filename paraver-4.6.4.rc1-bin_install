@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="paraver"
+package_version="4.6.4.rc1"
+package_description="Paraver is a trace visualizer for post-mortem trace analysis."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+
+    # This is a binary distribution but there's no proper way to handle that at the moment
+    export COMPILER_TAG="bindist"
+    make_build_env ""
+
+    #unpack_dir="wx${package_name}-${package_version}-Linux_x86_64"
+    package_file="wx${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+    package_url="https://ftp.tools.bsc.es/wx${package_name}/wx${package_name}-${package_version}-Linux_x86_64.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:46522996abdf4943f4ec4f5fade12598e7691559728aecdf3f7c7b1becd86d4312a2766eadbe7ea0cb318207b706630f21d946af64eaa9f873d83ae5e719206c ${package_file}
+
+}
+
+_install() {
+    mkdir -p "$install_prefix"
+    cd "$install_prefix"
+
+    tar --strip-components=1 -xf "$build_dir/$package_file"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_install
+_clean_up
+

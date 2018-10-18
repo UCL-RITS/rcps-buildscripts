@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# This script installs Gurobi Optimizer 7.5.1
+# Brian Alston October 2017
+
+VERSION=${VERSION:-7.5.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Gurobi}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://packages.gurobi.com/7.5/gurobi${VERSION}_linux64.tar.gz}
+MD5=${MD5:-4ec7147562cc5d63b1790019064cd723}
+
+set -e
+startDir=`pwd`
+mkdir -p /dev/shm/Gurobi
+temp_dir=`mktemp -d -p /dev/shm/Gurobi`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+ARCHIVE=`basename $SRC_ARCHIVE`
+CHECKSUM=`md5sum ${ARCHIVE}| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+    # Unpack the archive in the correct location.
+
+    mkdir -p $INSTALL_PREFIX
+    cd $INSTALL_PREFIX
+    tar xvzf $temp_dir/$ARCHIVE
+
+    # Set up client license file for UCL.
+
+    echo "TOKENSERVER=lic-gurobi.ucl.ac.uk" > gurobi.lic
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
