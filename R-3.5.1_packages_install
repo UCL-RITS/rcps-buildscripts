@@ -20,6 +20,7 @@
 # Updated June 2018 to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
 # Updated September 2018 for R 3.5.1 and ROOT 5.34.36
 # Also updated for udunits 2.2.26
+# Updated October 2018 to create ~/.R/Makevars to allow installaion of rstan
 #
 # Using Ian's require function to load modules
 #
@@ -69,6 +70,15 @@ require r/3.5.1-openblas/gnu-4.9.2
 require v8/3.15
 require protobuf/12-2017/gnu-4.9.2
 require jq/1.5/gnu-4.9.2
+
+# Set up ~/.R/Makevars for rstan which needs C++ 2014 stuff
+
+mkdir -p ~/.R
+cd ~/.R
+cat > Makevars <<EOF
+CXX14 = g++ -std=c++1y
+CXX14FLAGS = -Wno-unused-variable -Wno-unused-function -fPIC
+EOF
 
 # temp_dir=`mktemp -d -p /dev/shm`
 temp_dir='/home/ccspapp/Software/R/Packages'
