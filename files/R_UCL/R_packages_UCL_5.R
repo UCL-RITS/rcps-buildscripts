@@ -155,6 +155,14 @@ install.packages ("bio3d", lib=mainLib, repos=repros);
 # For Cheng Zhang  (cheng.zhang@ucl.ac.uk) May 2018
 install.packages ("png", lib=mainLib, repos=repros);
 
+# For QStep programme October 2018
+install.packages ("spgwr", lib=mainLib, repos=repros);
+install.packages ("adehabitatHR", lib=mainLib, repos=repros);
+install.packages ("ca", lib=mainLib, repos=repros);
+install.packages ("lavaan", lib=mainLib, repos=repros);
+install.packages ("poLCA", lib=mainLib, repos=repros);
+install.packages ("mice", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
