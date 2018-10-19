@@ -23,6 +23,8 @@ require flex
 require jansson
 require lz4
 
+rm -rf $INSTALL_PREFIX
+
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
