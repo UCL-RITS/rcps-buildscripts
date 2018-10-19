@@ -21,6 +21,7 @@ require compilers/gnu/4.9.2
 require bison
 require flex
 require jansson
+require lz4
 
 mkdir -p $INSTALL_PREFIX
 
@@ -32,4 +33,4 @@ cd vg
 git checkout v${VERSION}
 
 source source_me.sh
-make static
+make
