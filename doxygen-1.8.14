@@ -17,12 +17,12 @@ require bison/3.0.4/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 
 # These are requireed for graphviz
-require	swig/3.0.5/gnu-4.9.2 
-require	qt/4.8.6/gnu-4.9.2 
-require	python/3.6.3
-require	lua/5.3.1 
-require	perl/5.22.0 
-require graphviz/2.38.0/gnu-4.9.2
+#require	swig/3.0.5/gnu-4.9.2 
+#require	qt/4.8.6/gnu-4.9.2 
+#require	python/3.6.3
+#require	lua/5.3.1 
+#require	perl/5.22.0 
+#require graphviz/2.38.0/gnu-4.9.2
 
 require texlive/2015
 
