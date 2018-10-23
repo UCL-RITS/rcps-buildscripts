@@ -16,18 +16,14 @@ require qt/4.8.6/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2 
 require lua/5.3.1 
 require perl/5.22.0 
-require libbdwgc/7.4.2/gnu-4.9.2
-require guile/2.0.11/gnu-4.9.2
-require autoconf/2.69
-require autogen/5.18.12/gnu-4.9.2
-require automake/1.16.1
 
 
 NAME=${NAME:-graphviz}
 VERSION=${VERSION:-2.40.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://gitlab.com/graphviz/graphviz.git}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://graphviz.gitlab.io/pub/graphviz/stable/SOURCES/graphviz.tar.gz}
+SHA256=${SHA256:-ca5218fade0204d59947126c38439f432853543b0818d9d728c589dfe7f3a421}
 
 
 mkdir -p /dev/shm/${NAME}
@@ -36,12 +32,15 @@ temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
-git clone $SRC_ARCHIVE
-cd graphviz
-git checkout stable_release_${VERSION}
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
 
-./autogen.sh
-autoconf
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
 ./configure --prefix=$INSTALL_PREFIX
 make 
 make install
