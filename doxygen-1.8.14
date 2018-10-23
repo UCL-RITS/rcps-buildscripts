@@ -18,6 +18,15 @@ require flex/2.5.39
 require bison/3.0.4/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 
+# These are requireed for graphviz
+prereq	 swig/3.0.5/gnu-4.9.2 
+prereq	 qt/4.8.6/gnu-4.9.2 
+prereq	 ghostscript/9.16/gnu-4.9.2 
+prereq	 python/3.6.3
+prereq	 lua/5.3.1 
+prereq	 perl/5.22.0 
+
+
 NAME=${NAME:-doxygen}
 VERSION=${VERSION:-1.8.14}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
