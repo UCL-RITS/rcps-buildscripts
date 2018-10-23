@@ -6,13 +6,25 @@
 # by Owain Kenway, 2018
 #
 
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+# Doxygen
+require cmake/3.7.2
+require flex/2.5.39
+require bison/3.0.4/gnu-4.9.2
+require ghostscript/9.19/gnu-4.9.2
+require texlive/2015
+require doxygen/1.8.14
+
 NAME=${NAME:-bcl2fastq}
 VERSION=${VERSION:-1.8.4}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 MD5=${MD5:-48972db9f6a891c2dfa409bf0a740527}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-${VERSION}.tar.bz2}
-
-set -e
 
 temp_dir=`mktemp -d -p /dev/shm`
 
