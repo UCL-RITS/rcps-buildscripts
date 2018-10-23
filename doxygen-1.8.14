@@ -12,19 +12,18 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require cmake/3.7.2
-require graphviz/2.38.0/gnu-4.9.2
 require texlive/2015
 require flex/2.5.39
 require bison/3.0.4/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 
 # These are requireed for graphviz
-prereq	 swig/3.0.5/gnu-4.9.2 
-prereq	 qt/4.8.6/gnu-4.9.2 
-prereq	 ghostscript/9.16/gnu-4.9.2 
-prereq	 python/3.6.3
-prereq	 lua/5.3.1 
-prereq	 perl/5.22.0 
+require	swig/3.0.5/gnu-4.9.2 
+require	qt/4.8.6/gnu-4.9.2 
+require	python/3.6.3
+require	lua/5.3.1 
+require	perl/5.22.0 
+require graphviz/2.38.0/gnu-4.9.2
 
 
 NAME=${NAME:-doxygen}
