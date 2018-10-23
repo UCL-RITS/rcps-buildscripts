@@ -32,8 +32,9 @@ cd $temp_dir
 
 git clone $SRC_ARCHIVE
 cd graphviz
-git checkout stable_release_2.40.1
+git checkout stable_release_${VERSION}
 
+autoconf
 ./configure --prefix=$INSTALL_PREFIX
 make 
 make install
