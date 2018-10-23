@@ -47,7 +47,7 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}
+cd doxygen-Release_1_8_14
 
 mkdir build
 cd build
