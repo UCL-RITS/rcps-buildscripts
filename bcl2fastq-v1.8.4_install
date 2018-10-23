@@ -22,6 +22,8 @@ require compilers/gnu/4.9.2
 require swig/3.0.5/gnu-4.9.2 
 require qt/4.8.6/gnu-4.9.2 
 require lua/5.3.1 
+require	perl/5.22.0 
+
 require graphviz/2.40.1
 
 require doxygen/1.8.14
