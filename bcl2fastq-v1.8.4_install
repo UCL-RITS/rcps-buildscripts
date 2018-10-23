@@ -26,7 +26,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 MD5=${MD5:-48972db9f6a891c2dfa409bf0a740527}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-${VERSION}.tar.bz2}
 
-temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
 
 cd $temp_dir
 
