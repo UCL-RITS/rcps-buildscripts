@@ -43,6 +43,8 @@ cd ${NAME}-${VERSION}
 
 ./configure --prefix=$INSTALL_PREFIX
 make 
-make install
+# Yes, due to a bug in graphviz's makefiles you MUST specify DESTDIR=/ on
+# Legion.
+make DESTDIR=/ install
 
 rm -rf $temp_dir
