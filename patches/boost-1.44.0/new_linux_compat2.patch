@@ -1,0 +1,46 @@
+--- libs/thread/src/pthread/timeconv.inl.old	2010-04-01 16:04:15.000000000 +0100
++++ libs/thread/src/pthread/timeconv.inl	2018-10-24 10:17:26.000000000 +0100
+@@ -20,8 +20,8 @@
+ inline void to_time(int milliseconds, boost::xtime& xt)
+ {
+     int res = 0;
+-    res = boost::xtime_get(&xt, boost::TIME_UTC);
+-    BOOST_ASSERT(res == boost::TIME_UTC);
++    res = boost::xtime_get(&xt, boost::TIME_UTC_);
++    BOOST_ASSERT(res == boost::TIME_UTC_);
+ 
+     xt.sec += (milliseconds / MILLISECONDS_PER_SECOND);
+     xt.nsec += ((milliseconds % MILLISECONDS_PER_SECOND) *
+@@ -57,8 +57,8 @@
+ {
+     boost::xtime cur;
+     int res = 0;
+-    res = boost::xtime_get(&cur, boost::TIME_UTC);
+-    BOOST_ASSERT(res == boost::TIME_UTC);
++    res = boost::xtime_get(&cur, boost::TIME_UTC_);
++    BOOST_ASSERT(res == boost::TIME_UTC_);
+ 
+     if (boost::xtime_cmp(xt, cur) <= 0)
+     {
+@@ -88,8 +88,8 @@
+ {
+     boost::xtime cur;
+     int res = 0;
+-    res = boost::xtime_get(&cur, boost::TIME_UTC);
+-    BOOST_ASSERT(res == boost::TIME_UTC);
++    res = boost::xtime_get(&cur, boost::TIME_UTC_);
++    BOOST_ASSERT(res == boost::TIME_UTC_);
+ 
+     if (boost::xtime_cmp(xt, cur) <= 0)
+         milliseconds = 0;
+@@ -110,8 +110,8 @@
+ {
+     boost::xtime cur;
+     int res = 0;
+-    res = boost::xtime_get(&cur, boost::TIME_UTC);
+-    BOOST_ASSERT(res == boost::TIME_UTC);
++    res = boost::xtime_get(&cur, boost::TIME_UTC_);
++    BOOST_ASSERT(res == boost::TIME_UTC_);
+ 
+     if (boost::xtime_cmp(xt, cur) <= 0)
+         microseconds = 0;

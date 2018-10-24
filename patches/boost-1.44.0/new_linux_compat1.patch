@@ -1,0 +1,20 @@
+--- boost/thread/xtime.hpp.old	2008-06-18 14:01:08.000000000 +0100
++++ boost/thread/xtime.hpp	2018-10-24 10:13:44.000000000 +0100
+@@ -20,7 +20,7 @@
+ 
+ enum xtime_clock_types
+ {
+-    TIME_UTC=1
++    TIME_UTC_=1
+ //    TIME_TAI,
+ //    TIME_MONOTONIC,
+ //    TIME_PROCESS,
+@@ -68,7 +68,7 @@
+ 
+ inline int xtime_get(struct xtime* xtp, int clock_type)
+ {
+-    if (clock_type == TIME_UTC)
++    if (clock_type == TIME_UTC_)
+     {
+         *xtp=get_xtime(get_system_time());
+         return clock_type;
