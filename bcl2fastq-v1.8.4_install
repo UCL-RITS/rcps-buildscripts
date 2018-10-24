@@ -56,7 +56,7 @@ then
   tar xf boost_1_44_0.tar.gz
 
   cd boost_1_44_0
-  cp /shared/ucl/apps/build_script/patches/boost-1.44.0/*.patch .
+  cp /shared/ucl/apps/build_scripts/patches/boost-1.44.0/*.patch .
   
   for a in *.patch
   do
