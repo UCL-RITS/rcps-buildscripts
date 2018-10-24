@@ -61,7 +61,7 @@ then
   for a in *.patch
   do
     echo "Applying patch: $a"
-    patch < $a
+    patch -p0 < $a
   done
 
   cd ..
