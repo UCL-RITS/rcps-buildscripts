@@ -48,6 +48,34 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar xvf bcl2fastq-${VERSION}.tar.bz2
   cd bcl2fastq
+
+# Patch boost.
+  echo "Patching Boost for modern compilers."
+  echo "Unpacking provided Boost."
+  cd redist
+  tar xf boost_1_44_0.tar.gz
+
+  cd boost_1_44_0
+  cp /shared/ucl/apps/build_script/patches/boost-1.44.0/*.patch .
+  
+  for a in *.patch
+  do
+    echo "Applying patch: $a"
+    patch < $a
+  done
+
+  cd ..
+
+  echo "Building new archive..."
+  rm boost_1_44_0.tar.gz
+  tar -cf boost_1_44_0.tar boost_1_44_0
+  gzip boost_1_44_0.tar
+  rm -rf boost_1_44_0
+
+  echo "Done - returning to build."
+
+  cd $temp_dir/bcl2fastq
+
   mkdir build
   cd build
   ../src/configure --prefix=$INSTALL_PREFIX
