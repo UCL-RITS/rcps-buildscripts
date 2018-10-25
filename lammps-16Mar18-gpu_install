@@ -14,6 +14,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COM
 MD5=${MD5:-8059f1cac17ac74c099ba6c5a5e3a558} 
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-${VERSION}.tar.gz}
 
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -34,23 +36,7 @@ then
 
   cd lammps-${VERSION}/src
 
-  # Get host machine
-  if hostname -A | grep -q legion
-  then
-    cluster="legion"
-  elif hostname -A | grep -q grace
-  then
-    cluster="grace"
-  elif hostname -A | grep -q thomas
-  then
-    cluster="thomas"
-  elif hostname -A | grep -q myriad
-  then
-    cluster="myriad"
-  else
-    echo "Unknown machine, exiting: $(hostname -A)"
-    exit 1
-  fi
+  cluster=$WHEREAMI
 
   # Copy in appropriate Makefile with correct architecture flags
   # For compiler type use the fully-specified compiler version if a makefile exists for it
