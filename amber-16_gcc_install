@@ -11,7 +11,7 @@
 VERSION=${VERSION:-16}
 PARALLEL=${PARALLEL:-""} 
 # ^-- useful options are -mpi -openmp and -cuda
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/amber}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/amber-gcc}
 ABNAME=${ABNAME:-amber-${VERSION}${PARALLEL}}
 export AMBERHOME=${INSTALL_PREFIX}/${ABNAME}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2}
