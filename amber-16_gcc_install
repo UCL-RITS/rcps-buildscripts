@@ -25,12 +25,12 @@ INCLUDES_DIR=/shared/ucl/apps/build_scripts/includes
 
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs
-require compilers/intel/2015/update2
+require compilers/gnu/4.9.3
 require python/2.7.9
 require flex
 
 if [ "${PARALLEL:-}" = "-mpi" ]; then
-  require mpi/intel/2015/update3/intel
+  require mpi/openmpi/3.1.1/gnu-4.9.2
 fi
 
 # If intel compilers are loaded, MKLROOT will say where MKL is.
