@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing AMBER
+#
+
+# You need to purchase a copy of AMBER and put the tar file somehwere.  You 
+# should also download the corresponding AmberTools packages.
+# Compiles using -xHost.
+
+VERSION=${VERSION:-16}
+PARALLEL=${PARALLEL:-""} 
+# ^-- useful options are -mpi -openmp and -cuda
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/amber}
+ABNAME=${ABNAME:-amber-${VERSION}${PARALLEL}}
+export AMBERHOME=${INSTALL_PREFIX}/${ABNAME}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2}
+TOOLS_SRC_ARCHIVE=${TOOLS_SRC_ARCHIVE:-/shared/ucl/apps/amber/source/AmberTools${VERSION}.tar.bz2}
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+
+INCLUDES_DIR=/shared/ucl/apps/build_scripts/includes
+
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/intel/2015/update2
+require python/2.7.9
+require flex
+
+if [ "${PARALLEL:-}" = "-mpi" ]; then
+  require mpi/intel/2015/update3/intel
+fi
+
+# If intel compilers are loaded, MKLROOT will say where MKL is.
+export MKL_HOME=$MKLROOT
+
+# AMBER only supports Intel, PGI and GNU compilers.  Work out which we have
+# loaded from the tag.
+
+if [[ "${COMPILER_TAG:0:5}" == "intel" ]] 
+then
+   COMPILER=intel
+elif [[ "${COMPILER_TAG:0:3}" == "pgi" ]]
+then
+   COMPILER=pgi
+else
+   COMPILER=gnu
+fi
+
+set -e
+
+# Installl a suitable MPI4PY for MMPBSA
+if [ "${PARALLEL:-}" = "-mpi" ]; then
+  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
+  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
+
+fi
+
+# Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
+#pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
+
+
+mkdir -p $INSTALL_PREFIX
+
+mkdir -p /dev/shm/amber
+temp_dir=`mktemp -d -p /dev/shm/amber`
+
+cd $temp_dir
+
+tar jxf $SRC_ARCHIVE
+tar jxf $TOOLS_SRC_ARCHIVE
+
+mv amber${VERSION} ${ABNAME}
+
+ln -fsT `pwd`/${ABNAME} $AMBERHOME
+
+cd $AMBERHOME
+
+# There isn't a flag to pre-answer the question of whether to apply patches C_C
+echo 'y' \
+    | ./configure $PARALLEL --with-python `which python` $COMPILER
+source amber.sh
+make install
+
+cd $temp_dir
+rm $AMBERHOME
+mv $ABNAME $AMBERHOME
+
+
+
