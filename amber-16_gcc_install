@@ -25,7 +25,7 @@ INCLUDES_DIR=/shared/ucl/apps/build_scripts/includes
 
 source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs
-require compilers/gnu/4.9.3
+require compilers/gnu/4.9.2
 require python/2.7.9
 require flex
 
