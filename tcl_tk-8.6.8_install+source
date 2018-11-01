@@ -26,6 +26,7 @@ require compilers/gnu
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}-full/$COMPILER_TAG}
 BUILD_DIR=${BUILD_DIR:-$INSTALL_PREFIX}
 
+mkdir -p $BUILD_DIR
 cd "$BUILD_DIR"
 
 wget "$TCL_SRC_ARCHIVE"
