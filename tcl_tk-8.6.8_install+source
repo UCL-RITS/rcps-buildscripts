@@ -45,7 +45,7 @@ cd "${NAME}""${VERSION}"/unix
 ./configure --prefix="$INSTALL_PREFIX"
 make 2>&1 | tee make.log
 make test
-# make install
+make install
 cd ../..
 
 # build tk - will find tcl files it needs if both archives downloaded to same dir
@@ -53,5 +53,5 @@ tar -xvf "$tk_archive"
 cd tk"${VERSION}"/unix
 ./configure --prefix="$INSTALL_PREFIX"
 make 2>&1 | tee make.log
-# make install
+make install
 
