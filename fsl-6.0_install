@@ -13,11 +13,6 @@ PATCHES=${PATCHES:-/shared/ucl/apps/build_scripts/fsl-patches}
 
 set -e
 
-mkdir -p /dev/shm/fsl
-temp_dir=`mktemp -d -p /dev/shm/fsl`
-
-cd $temp_dir
-
 dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
@@ -28,6 +23,10 @@ require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
 require vtk/6.2.0/gnu-4.9.2
 
+mkdir -p /dev/shm/fsl
+temp_dir=`mktemp -d -p /dev/shm/fsl`
+
+cd $temp_dir
 
 wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
