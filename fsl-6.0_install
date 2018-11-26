@@ -18,6 +18,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
+require hdf/5-1.8.15/gnu-4.9.2
 require python2/recommended
 require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
