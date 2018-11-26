@@ -18,6 +18,10 @@ temp_dir=`mktemp -d -p /dev/shm/fsl`
 
 cd $temp_dir
 
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
 require compilers/gnu/4.9.2
 require python2/recommended
 require java/1.8.0_45
