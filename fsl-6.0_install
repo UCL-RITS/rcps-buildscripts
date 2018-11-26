@@ -18,6 +18,14 @@ temp_dir=`mktemp -d -p /dev/shm/fsl`
 
 cd $temp_dir
 
+source includes/source_includes.sh
+require compilers/gnu/4.9.2
+require python2/recommended
+require java/1.8.0_45
+require qt/4.8.6/gnu-4.9.2
+require vtk/6.2.0/gnu-4.9.2
+
+
 wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
 
