@@ -27,7 +27,7 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`sha256sum udunits-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`sha256sum udunits-${VERSION}.tar.xz| awk '{print $1}'`
 
 if [ "$SHA256" == "$CHECKSUM" ]
 then
