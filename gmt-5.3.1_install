@@ -19,12 +19,12 @@ require rcps-core/1.0.0
 require compilers/gnu/4.9.2
 require perl/5.22.0
 require python/2.7.12
-require hdf/5-1.8.15/gnu.4.9.2
-require netcdf/4.3.3.1/gnu.4.9.2
+require hdf/5-1.8.15/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
 require gdal/2.0.0
 require libtool/2.4.6
 require graphicsmagick/1.3.21
-require ghostscript/9.16/gnu.4.9.2
+require ghostscript/9.16/gnu-4.9.2
 require fftw/3.3.4/gnu.4.9.2
 
 
