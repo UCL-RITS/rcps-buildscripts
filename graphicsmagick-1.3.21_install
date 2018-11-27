@@ -11,7 +11,8 @@ VERSION=${VERSION:-1.3.21}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 SHA1=${SHA1:-bd3c543520b810999348e52d4abad6b59069f78b}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/${VERSION}/GraphicsMagick-${VERSION}.tar.xz}
+#SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/${VERSION}/GraphicsMagick-${VERSION}.tar.xz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-${VERSION}.tar.xz}
 
 set -e
 
