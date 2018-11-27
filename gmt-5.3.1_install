@@ -33,7 +33,7 @@ VERSION=${VERSION:-5.3.1}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-77b83f91c65a5ea47e4af1b8e69ab4a3}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/legacy/gmt-${VERSION}-src.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/legacy/gmt-${VERSION}-src.tar.gz}
 
 DATA_PREFIX=${DATA_PREFIX:-/shared/ucl/apps/$APPNAME/data}
 
