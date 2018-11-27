@@ -33,7 +33,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
     tar xvzf `basename $SRC_ARCHIVE`
     cd install-tl-20160405
-    ./install-tl -profile $INSTALL_PROFILE
+    ./install-tl -profile $INSTALL_PROFILE -repository ftp://tug.org/historic/systems/texlive/2015/tlnet-final
 
 else
    echo "***** Hash mismatch,"
