@@ -27,11 +27,11 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`sha256sum udunits-${VERSION}.tar.xz| awk '{print $1}'`
+CHECKSUM=`sha256sum udunits-${VERSION}.orig.tar.xz| awk '{print $1}'`
 
 if [ "$SHA256" == "$CHECKSUM" ]
 then
-  tar -xvf udunits-${VERSION}.tar.xz
+  tar -xvf udunits-${VERSION}.orig.tar.xz
 
   cd udunits-${VERSION}
   ./configure --prefix=$INSTALL_PREFIX
