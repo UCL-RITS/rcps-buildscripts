@@ -37,13 +37,14 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/legacy/gmt-${VERSION}-
 
 DATA_PREFIX=${DATA_PREFIX:-/shared/ucl/apps/$APPNAME/data}
 
+# We can't get 1.1.2 any more
 DCW_VERSION=${DCW_VERSION:-1.1.2}
 DCW_MD5=${DCW_MD5:-45c99d30026742dbc0b1644ea64f496d}
-DCW_ARCHIVE=${DCW_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/dcw-gmt-${DCW_VERSION}.tar.gz}
+DCW_ARCHIVE=${DCW_ARCHIVE:-ftp://ftp.soest.hawaii.edu/dcw/dcw-gmt-${DCW_VERSION}.tar.gz}
 
 GSHHG_VERSION=${GSHHG_VERSION:-2.3.6}
 GSHHG_MD5=${GSHHG_MD5:-108fd757939d3e5f8eaf385e185d6d14}
-GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
+GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/legacy/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
