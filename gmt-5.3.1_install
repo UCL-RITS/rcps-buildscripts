@@ -11,17 +11,21 @@
 
 # Need the following loaded to work:
 
-#rcps-core/1.0.0
-#compilers/gnu/4.9.2
-#perl/5.22.0
-#python/2.7.12
-#hdf/5-1.8.15/gnu.4.9.2
-#netcdf/4.3.3.1/gnu.4.9.2
-#gdal/2.0.0
-#libtool/2.4.6
-#graphicsmagick/1.3.21
-#ghostscript/9.16/gnu.4.9.2
-#fftw/3.3.4/gnu.4.9.2
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require rcps-core/1.0.0
+require compilers/gnu/4.9.2
+require perl/5.22.0
+require python/2.7.12
+require hdf/5-1.8.15/gnu.4.9.2
+require netcdf/4.3.3.1/gnu.4.9.2
+require gdal/2.0.0
+require libtool/2.4.6
+require graphicsmagick/1.3.21
+require ghostscript/9.16/gnu.4.9.2
+require fftw/3.3.4/gnu.4.9.2
 
 
 APPNAME=${APPNAME:-gmt}
@@ -40,8 +44,6 @@ DCW_ARCHIVE=${DCW_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/dcw-gmt-${DCW_VERSIO
 GSHHG_VERSION=${GSHHG_VERSION:-2.3.6}
 GSHHG_MD5=${GSHHG_MD5:-108fd757939d3e5f8eaf385e185d6d14}
 GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-ftp://ftp.geologi.uio.no/pub/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
-
-set -e
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
