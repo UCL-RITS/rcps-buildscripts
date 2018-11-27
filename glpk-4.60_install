@@ -7,6 +7,8 @@
 #
 # Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
 
+set -e
+
 VERSION=${VERSION:-4.60}
 # For live installation:
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/GLPK/$VERSION/gcc}
@@ -22,20 +24,10 @@ temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-wget ${SRC_ARCHIVE}.sig
-
-gpg --verify glpk-${VERSION}.tar.gz.sig
-if [[ $? == 0 ]]
-then
-   tar xvzf glpk-${VERSION}.tar.gz
-   cd glpk-${VERSION}
-   ./configure --prefix=${INSTALL_PREFIX} --with-gmp 2>&1 | tee configure_log
-   make 2>&1 | tee make_log
-   make check 2>&1 | tee make_check_log
-   make install 2>&1 | tee make_install_log
-
-else
-   echo "***** Hash mismatch,"
-   echo "	Expected: $MD5"
-   echo "	Got:      $CHECKSUM"
-fi
+md5sum -c <<< "$MD5 glpk-${VERSION}.tar.gz"
+tar xvzf glpk-${VERSION}.tar.gz
+cd glpk-${VERSION}
+./configure --prefix=${INSTALL_PREFIX} --with-gmp 2>&1 | tee configure_log
+make 2>&1 | tee make_log
+make check 2>&1 | tee make_check_log
+make install 2>&1 | tee make_install_log
