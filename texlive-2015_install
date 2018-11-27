@@ -14,9 +14,8 @@ VERSION=${VERSION:-2015}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
 MD5=${MD5:-47ed6e3b24d6d8ba659ce4553b2721dd}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/install-tl-unx.tar.gz}
-
-
+#SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/install-tl-unx.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/tlnet-final/install-tl-unx.tar.gz}
 INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-patches/texlive-${VERSION}_legion.profile
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
