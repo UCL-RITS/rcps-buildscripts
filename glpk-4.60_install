@@ -14,7 +14,7 @@ VERSION=${VERSION:-4.60}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/GLPK/$VERSION/gcc}
 # For testing:
 # INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccaabaa/lib/apps/GLPK/$VERSION/gcc}
-MD5=${MD5:-e49a664db13d81c968415cd53f62bc8b}
+SHA1=${SHA1:-4e55a3d2aa38b19c5bdd8a195738dbaf44e91e90}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/glpk/glpk-${VERSION}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -24,7 +24,7 @@ temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-md5sum -c <<< "$MD5 glpk-${VERSION}.tar.gz"
+sha1sum -c <<< "$SHA1 glpk-${VERSION}.tar.gz"
 tar xvzf glpk-${VERSION}.tar.gz
 cd glpk-${VERSION}
 ./configure --prefix=${INSTALL_PREFIX} --with-gmp 2>&1 | tee configure_log
