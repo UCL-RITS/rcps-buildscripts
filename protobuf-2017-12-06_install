@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Google Protocol Buffers
+#
+# Primarily for R
+
+
+#
+# by Brian Alston, 2017
+#
+# Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
+
+# Modified by Owain to get the same vesion every time.
+
+VERSION=${VERSION:-12-2017}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/protobuf/$VERSION/gnu-4.9.2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/protobuf.git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# Use the same environment used for building R
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require openblas/0.2.14/gnu-4.9.2
+require java/1.8.0_92
+require fftw/3.3.4/gnu-4.9.2
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/5.2/gnu-4.9.2
+require texlive/2015
+require gsl/1.16/gnu-4.9.2
+require hdf/5-1.8.15/gnu-4.9.2
+require udunits/2.2.20/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
+require jags/4.2.0/gnu.4.9.2-openblas
+require root/5.34.30/gnu-4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+# This commit is the last one before Brian's version of the script.
+git checkout 31c54d1289f2ae44158eff631526762366ba1707
+
+cd protobuf
+./autogen.sh
+./configure --prefix=${INSTALL_PREFIX}
+make | tee make_log
+make check | tee make-check_log
+make install | tee make-install_log
+
+
+
