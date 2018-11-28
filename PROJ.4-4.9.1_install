@@ -46,7 +46,7 @@ then
    make check 2>&1 | tee make-check-log
    make install 2>&1 | tee make-install-log
    cd ${INSTALL_PREFIX}/share/proj
-   wget https://github.com/OSGeo/proj.4/blob/master/nad/proj_def.dat
+   wget https://github.com/OSGeo/proj.4/blob/master/data/proj_def.dat
 else
    echo "***** Hash mismatch,"
    echo "	Expected: $MD5"
