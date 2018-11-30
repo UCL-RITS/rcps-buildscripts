@@ -12,7 +12,7 @@
 VERSION=${VERSION:-2.2.26}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/blast}
 MD5=${MD5:-809798a912f4fb37f62406201456df67}
-SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-${VERSION}-x64-linux.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/${VERSION}/blast-${VERSION}-x64-linux.tar.gz}
 
 
 
