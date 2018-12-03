@@ -5,7 +5,7 @@
  #   University, Oxford, UK
  #   
 -#   
-+#   Modified for use on UCL Legion OS upgrade - January 2015 by BAA  
++#   Modified for use on UCL Legion/Myriad - December 2019 by BAA  
 +#     
  #   LICENCE
  #   
@@ -110,12 +110,12 @@
  #   Imaging of the Brain), Department of Clinical Neurology, Oxford
  #   University, Oxford, UK
  #   
-+#   Modified for use on UCL Legion OS upgrade - January 2015 by BAA  
++#   Modified for use on UCL Legion/Myriad - December 2019 by BAA  
 +#   
  #   
  #   LICENCE
  #   
-@@ -125,12 +127,27 @@
+@@ -126,12 +128,27 @@
      else
  	queue=verylong.q
      fi
