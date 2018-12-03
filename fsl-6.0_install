@@ -24,8 +24,10 @@ require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
 require vtk/6.2.0/gnu-4.9.2
 
-mkdir -p /dev/shm/fsl
-temp_dir=`mktemp -d -p /dev/shm/fsl`
+# Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
+
+temp_dir=~ccspapp/Software/FSL
+mkdir -p $temp_dir
 
 cd $temp_dir
 
