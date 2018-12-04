@@ -254,21 +254,21 @@
        peThreads=`echo $pe_string | cut -d',' -f 2`
        shift;;
    esac
-@@ -451,7 +456,7 @@
+@@ -469,7 +474,7 @@
  
  	if [ "x$tasks" = "x" ] ; then
  	    if [ $scriptmode -ne 1 ] ; then
--		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
-+		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd -l h_rt=$h_rt $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
+-		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
++		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities -l h_rt=$h_rt $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
  	    else
  		sge_command="qsub $LogOpts $sge_arch $sge_hold"
  	    fi
-@@ -461,7 +466,7 @@
+@@ -478,7 +483,7 @@
  	    fi
  	    exec $sge_command $@ | awk '{print $3}'
  	else
--	    sge_command="qsub -V -cwd $queueCmd $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
-+	    sge_command="qsub -V -cwd $queueCmd $pe_options -M $mailto -N $JobName -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
+-	    sge_command="qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
++	    sge_command="qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
  	    if [ $verbose -eq 1 ] ; then 
  		echo sge_command: $sge_command >&2
  		echo control file: $taskfile >&2

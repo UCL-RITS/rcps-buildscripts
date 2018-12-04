@@ -61,14 +61,13 @@ then
 
   ./build
 
-  # Possibly updated for 6.0.0 up to this point! 
-
   mkdir -p $INSTALL_PREFIX
   cp -r $FSLDIR $INSTALL_PREFIX
 
-# Disable until fixed for 5.0.10
+  # Apply UCL patches - mainly for qsub.
+  
 cd $INSTALL_PREFIX/fsl/bin
-patch -p0 -i --ignore-whitespace ../fsl-${VERSION}_parallel.patch
+patch -p0 --ignore-whitespace -i ../fsl-${VERSION}_parallel.patch
 
 else
   echo "Hash mismatch."
