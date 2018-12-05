@@ -69,6 +69,11 @@ then
 cd $INSTALL_PREFIX/fsl/bin
 patch -p0 --ignore-whitespace -i ../fsl-${VERSION}_parallel.patch
 
+export FSLDIR=$INSTALL_PREFIX/$NAME
+cd  $FSLDIR
+rm -rf fslpython
+$FSLDIR/etc/fslconf/fslpython_install.sh
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
