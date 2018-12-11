@@ -31,9 +31,9 @@ require python2/recommended
 # And for doing the MPI support:
 require mpi/openmpi/3.1.1/gnu-4.9.2
 
-echo "Building in $INSTALL_PREFIX/Test-${VERSION}-MPI ..."
-mkdir -p $INSTALL_PREFIX/Test-${VERSION}-MPI
-cd $INSTALL_PREFIX/Test-${VERSION}-MPI
+echo "Building in $INSTALL_PREFIX/Rosetta-${VERSION}-MPI ..."
+mkdir -p $INSTALL_PREFIX/Rosetta-${VERSION}-MPI
+cd $INSTALL_PREFIX/Rosetta-${VERSION}-MPI
 module list
 read -p "Press [Enter] key to start ..."
 
