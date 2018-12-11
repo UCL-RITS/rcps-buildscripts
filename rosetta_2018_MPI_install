@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing Rosetta 2018 serial build
+# Installing Rosetta 2018 MPI build
 #
 # by Brian Alston, 2015
-# Updated for Rosetta 2018 December 2018
+# Updated December 2018 for Rosetta 2018.48.60516 and OpenMPI 3.1.1
 #
 # Using Ian's require function to load modules
 #
@@ -29,11 +29,11 @@ require python2/recommended
 
 #
 # And for doing the MPI support:
-# require mpi/openmpi/1.8.4/gnu-4.9.2
+require mpi/openmpi/3.1.1/gnu-4.9.2
 
-echo "Building in $INSTALL_PREFIX/Rosetta-${VERSION}-serial ..."
-mkdir -p $INSTALL_PREFIX/Rosetta-${VERSION}-serial
-cd $INSTALL_PREFIX/Rosetta-${VERSION}-serial
+echo "Building in $INSTALL_PREFIX/Test-${VERSION}-MPI ..."
+mkdir -p $INSTALL_PREFIX/Test-${VERSION}-MPI
+cd $INSTALL_PREFIX/Test-${VERSION}-MPI
 module list
 read -p "Press [Enter] key to start ..."
 
@@ -51,15 +51,17 @@ then
 fi
 
 tar xvzf $SRC_ARCHIVE/$ROSETTA_BUNDLE 
+mv rosetta_src_${VERSION}_bundle rosetta_src_${VERSION}_MPI_bundle
 
-cd rosetta_src_${VERSION}_bundle
+cd rosetta_src_${VERSION}_MPI_bundle
 cd main/source
 cd tools/build
-cp /shared/ucl/apps/build_scripts/files/Rosetta_2018/Rosetta_2018_serial_site.settings site.settings
+cp /shared/ucl/apps/build_scripts/files/Rosetta_2018/Rosetta_2018_MPI_site.settings site.settings
 
 cd ../..
-./scons.py -j2 mode=release bin  2>&1 | tee build-serial.log
+./scons.py mode=release extras=mpi bin  2>&1 | tee build-MPI.log
 
-cd ../../..
+cd ../..
 pwd
-mv rosetta_src_${VERSION}_bundle $INSTALL_PREFIX
+echo "When happy with build do the following:"
+echo mv rosetta_src_${VERSION}_MPI_bundle $INSTALL_PREFIX
