@@ -46,7 +46,7 @@ then
   fi
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
-  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd user-reaxc
   do
     make yes-${a}
   done
