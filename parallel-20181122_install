@@ -1,0 +1,36 @@
+#!/bin/bash -l
+
+set -o errexit \
+    -o nounset
+
+package_name="parallel"
+package_version=20181122
+package_description="GNU parallel is a shell tool for executing jobs in parallel using one or more computers."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "http://ftp.gnu.org/gnu/parallel/parallel-${package_version}.tar.bz2"
+manifest sha256:2f06580c833ca30f434511ea28a0c097e75e3ee35a87b3a58512bd6d5cf598d5  parallel-20181122.tar.bz2
+
+tar -xf "parallel-${package_version}.tar.bz2"
+cd "parallel-${package_version}"
+
+./configure --prefix="$install_prefix"
+make
+make install
+# Has no tests
+
+make_module \
+    -p "$install_prefix" \
+    -c "${package_name}" \
+    -o "$module_dir/$package_label" \
+    -w "${package_description}"
+
+chmod -R a+rX "$module_dir"
+echo "Modules in: $module_dir"
