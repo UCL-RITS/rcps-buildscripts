@@ -61,7 +61,7 @@ cp /shared/ucl/apps/build_scripts/files/Rosetta_2018/Rosetta_2018_MPI_site.setti
 cd ../..
 ./scons.py mode=release extras=mpi bin  2>&1 | tee build-MPI.log
 
-cd ../..
+cd ../../..
 pwd
 echo "When happy with build do the following:"
 echo mv rosetta_src_${VERSION}_MPI_bundle $INSTALL_PREFIX

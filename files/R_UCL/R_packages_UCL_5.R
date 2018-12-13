@@ -155,6 +155,9 @@ install.packages ("bio3d", lib=mainLib, repos=repros);
 # For Cheng Zhang  (cheng.zhang@ucl.ac.uk) May 2018
 install.packages ("png", lib=mainLib, repos=repros);
 
+# For Laura Zieger (l.zieger@ucl.ac.uk) Dec 2018
+install.packages ("TAM", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
