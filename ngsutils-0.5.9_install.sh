@@ -44,6 +44,6 @@ mv ngsutils-ngsutils-${VERSION} ${NAME}-${VERSION}
 
 cd ${NAME}-${VERSION}
 
-sed -i.bak 's|pysam|pysam==0.13|g' requirements.txt
+sed -i.bak 's|pysam>=0.4.1|pysam==0.13|g' requirements.txt
 
 make 
