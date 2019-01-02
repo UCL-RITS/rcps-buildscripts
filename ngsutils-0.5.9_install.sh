@@ -10,7 +10,7 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-require python/3.6.3
+require python/2.7.12
 
 NAME=${NAME:-ngsutils}
 VERSION=${VERSION:-0.5.9}
@@ -25,8 +25,11 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/ngsutils/ngsutils/archive/ngsutils
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
-wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
+
+if [ ! -f ./${archive} ]; then
+   wget $SRC_ARCHIVE
+fi
 
 md5sum -c <<< "$MD5 $archive"
 sha1sum -c <<< "$SHA1 $archive"
@@ -40,8 +43,6 @@ rm -rf ${INSTALL_PREFIX}/${NAME}-${VERSION}
 mv ngsutils-ngsutils-${VERSION} ${NAME}-${VERSION}
 
 cd ${NAME}-${VERSION}
-
-export PYTHON=`which python3`
 
 sed -i.bak 's|pysam|pysam=-0.13|g' requirements.txt
 
