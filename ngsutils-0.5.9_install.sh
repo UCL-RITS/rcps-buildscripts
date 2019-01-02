@@ -41,4 +41,8 @@ mv ngsutils-ngsutils-${VERSION} ${NAME}-${VERSION}
 
 cd ${NAME}-${VERSION}
 
+export PYTHON=`which python3`
+
+sed -i.bak 's|pysam|pysam=-0.13|g' requests.txt
+
 make 
