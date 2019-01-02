@@ -43,6 +43,6 @@ cd ${NAME}-${VERSION}
 
 export PYTHON=`which python3`
 
-sed -i.bak 's|pysam|pysam=-0.13|g' requests.txt
+sed -i.bak 's|pysam|pysam=-0.13|g' requirements.txt
 
 make 
