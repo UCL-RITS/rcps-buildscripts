@@ -23,7 +23,7 @@ SHA1=${SHA1:-a91db2f3ead3e0a5e22bef10cb6943827be429bb}
 SHA256=${SHA256:-2d46725844336c9b3cd39fcba26741042410e9d20384d5218c9272c92cccfb08}
 SHA512=${SHA512:-bc24a4a50d079287c2c59a730a35d14f855761e55a2847fee5cf9f1cf35512dbf16854fdf5e40ce841b0767d64109cb431507c181cfb0100f839e3a3d16ca088}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v${VERSION}.tar.gz}
 
 
 mkdir -p /dev/shm/$(whoami)/${NAME}
