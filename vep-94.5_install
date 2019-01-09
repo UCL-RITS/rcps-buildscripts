@@ -11,7 +11,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-require perl/5.22.0
+#require perl/5.22.0
 
 NAME=${NAME:-vep}
 VERSION=${VERSION:-94.5}
