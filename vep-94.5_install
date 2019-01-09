@@ -11,7 +11,6 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-#require perl/5.22.0
 
 NAME=${NAME:-vep}
 VERSION=${VERSION:-94.5}
@@ -24,14 +23,15 @@ SHA512=${SHA512:-b64bac20a2ceba356b0c1d6dfdb422d8020246c407cce0b34f776f4a3234c94
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Ensembl/ensembl-vep/archive/release/${VERSION}.tar.gz}
 
 
-mkdir -p /dev/shm/$(whoami)/${NAME}
+mkdir -p $INSTALL_PREFIX
+rm -rf $INSTALL_PREFIX/*
 
-temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
-
-cd $temp_dir
-
-wget $SRC_ARCHIVE
+cd $INSTALL_PREFIX
 archive=$(basename "${SRC_ARCHIVE}")
+
+if [ ! -f ./${archive} ]; then
+   wget $SRC_ARCHIVE
+fi
 
 md5sum -c <<< "$MD5 $archive"
 sha1sum -c <<< "$SHA1 $archive"
@@ -42,7 +42,4 @@ tar -xvf $archive
 
 cd ensembl-vep-release-${VERSION}
 
-mkdir -p $INSTALL_PREFIX
-perl INSTALL.pl -d $INSTALL_PREFIX -n -a acfp -g all -c $INSTALL_PREFIX/caches
-
-rm -rf $temp_dir
+perl INSTALL.pl -n
