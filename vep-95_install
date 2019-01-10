@@ -14,12 +14,9 @@ require compilers/gnu/4.9.2
 require perl/5.22.0
 
 NAME=${NAME:-vep}
-VERSION=${VERSION:-94.5}
+VERSION=${VERSION:-95}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-ba15559d1b6213256bbf8c3b09594348}
-SHA1=${SHA1:-6ab90121e0d994dcf68441b013714c777e279e63}
-SHA256=${SHA256:-2ca9675b0775e21725ee0d0f1058a8f31fc2fdd9520e7bf11c70f3f19cb4ba94}
-SHA512=${SHA512:-b64bac20a2ceba356b0c1d6dfdb422d8020246c407cce0b34f776f4a3234c94307f83975f5327ca1d36cc6bba4d237cb05fed8fc56a23423f9d11da297cc7d02}
+SHA512=${SHA512:-50e8c54fc3894cf4081b2eb31c6dd175b47db9cf20d9d621859d9c03e6733a7ae25ffd1c2baa06e0c31ec2287b8e5cbe48fc279c09adfa2195c390cd470a6ca9}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Ensembl/ensembl-vep/archive/release/${VERSION}.tar.gz}
 
@@ -34,9 +31,6 @@ if [ ! -f ./${archive} ]; then
    wget $SRC_ARCHIVE
 fi
 
-md5sum -c <<< "$MD5 $archive"
-sha1sum -c <<< "$SHA1 $archive"
-sha256sum -c <<< "$SHA256 $archive"
 sha512sum -c <<< "$SHA512 $archive"
 
 tar -xvf $archive
