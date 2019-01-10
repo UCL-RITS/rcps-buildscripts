@@ -11,7 +11,7 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-requite compilers/gnu/4.9.2
+require compilers/gnu/4.9.2
 require perlbrew/0.73
 if [ -n "$1" ]; 
 then
