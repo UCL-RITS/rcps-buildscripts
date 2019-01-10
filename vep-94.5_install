@@ -42,4 +42,4 @@ tar -xvf $archive
 
 cd ensembl-vep-release-${VERSION}
 
-perl INSTALL.pl -n
+perl INSTALL.pl -a a -n
