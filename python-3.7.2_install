@@ -36,6 +36,7 @@ cd "Python-${package_version}"
             --enable-shared \
             --with-threads \
             --enable-ipv6 \
+            --enable-optimizations \
             --with-ensurepip
 
 make -l "$(nproc)" -j && make install
