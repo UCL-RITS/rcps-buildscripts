@@ -24,7 +24,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Ensembl/ensembl-vep/archive/releas
 
 
 mkdir -p $INSTALL_PREFIX
-rm -rf $INSTALL_PREFIX/*
+rm -rf $INSTALL_PREFIX/ensembl-vep-release-${VERSION}
 
 cd $INSTALL_PREFIX
 archive=$(basename "${SRC_ARCHIVE}")
