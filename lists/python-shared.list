@@ -2,6 +2,7 @@ pysam
 pysamstats
 requests
 nose
+pytest
 numpy
 scipy
 matplotlib
