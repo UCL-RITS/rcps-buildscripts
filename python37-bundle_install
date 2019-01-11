@@ -19,7 +19,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require python/3.7.0
+require python/3.7.2
 require openblas/0.2.14/gnu-4.9.2
 
 mkdir -p $INSTALL_PREFIX
