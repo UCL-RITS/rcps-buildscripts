@@ -41,10 +41,12 @@ then
    make
    export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
 
-   make check-s
-   make check-p RUNPARALLEL='mpirun ' HDF5_Make_Ignore="y"
+   make check-s &> serial-test.log
+   make check-p RUNPARALLEL='mpirun ' HDF5_Make_Ignore="y" &> parallel-test.log
 
    make install
+   cat serial-test.log
+   cat parallel-test.log
 
 else
    echo "***** Hash mismatch,"
