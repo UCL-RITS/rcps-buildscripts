@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing nighres
+#
+# by Owain Kenway, 2018
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require java/openjdk-11/11.0.1
+require python/3.6.3
+
+NAME=${NAME:-nighres}
+VERSION=${VERSION:-1.1.0b}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-b499f577498f765f78d432a586c61436a8095b1c2541410802e2e790ba255ae2}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/nighres/nighres/archive/${VERSION}.tar.gz}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# Set up virtualenv with jcc
+rm -rf ${INSTALL_PREFIX}
+virtualenv ${INSTALL_PREFIX}
+source ${INSTALL_PREFIX}/bin/activate
+export JCC_JDK=/shared/ucl/apps/openjdk/11.0.1/jdk-11.0.1
+pip3 install jcc
+
+# Build nighres
+./build.sh
+
+# Install it with pip
+pip3 install .
+
+rm -rf $temp_dir
+
+# Clean virtualenv
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
