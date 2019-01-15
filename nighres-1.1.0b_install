@@ -49,7 +49,7 @@ pip3 install jcc
 # Install it with pip
 pip3 install .
 
-rm -rf $temp_dir
+#rm -rf $temp_dir
 
 # Clean virtualenv
 rm -rf ${INSTALL_PREFIX}/bin/pip*
