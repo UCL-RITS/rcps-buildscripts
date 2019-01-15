@@ -41,6 +41,7 @@ rm -rf ${INSTALL_PREFIX}
 virtualenv ${INSTALL_PREFIX}
 source ${INSTALL_PREFIX}/bin/activate
 export JCC_JDK=/shared/ucl/apps/openjdk/11.0.1/jdk-11.0.1
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/shared/ucl/apps/openjdk/11.0.1/jdk-11.0.1/lib/server
 pip3 install jcc
 
 # Build nighres
