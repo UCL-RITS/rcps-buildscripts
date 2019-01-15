@@ -43,13 +43,19 @@ source ${INSTALL_PREFIX}/bin/activate
 export JCC_JDK=/shared/ucl/apps/openjdk/11.0.1/jdk-11.0.1
 pip3 install jcc
 
+# Install extra missing packages
+pip3 install six
+
 # Build nighres
 ./build.sh
 
 # Install it with pip
 pip3 install .
 
-#rm -rf $temp_dir
+# Manually copy over nighresjava
+cp -R nighresjava ${INSTALL_PREFIX}/lib/python3.6/site-packages/
+
+rm -rf $temp_dir
 
 # Clean virtualenv
 rm -rf ${INSTALL_PREFIX}/bin/pip*
