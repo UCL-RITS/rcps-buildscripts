@@ -29,3 +29,9 @@ archive=$(basename "${SRC_ARCHIVE}")
 sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
+
+# Make compatible with build for older java
+cd jdk-${VERSION}
+mkdir -p jre/lib
+cd jre/lib
+ln -s ../../lib amd64
