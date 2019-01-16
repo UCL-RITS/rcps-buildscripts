@@ -34,5 +34,5 @@ cd "${NAME}"-"${VERSION}"/Src
 # patch getmachine to tell it to build with MPI - not needed with 5.1
 # patch -p0 -i "$PATCH"
 
-./mkgulp -m 2>&1 | tee make.log
+./mkgulp -m -c intel 2>&1 | tee make.log
 
