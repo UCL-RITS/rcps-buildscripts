@@ -11,14 +11,22 @@ VERSION=${VERSION:-1.12.0}
 TYPE=${TYPE:-cpu}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
 PACKAGE_NAME=${NAME}
+
+set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.6.3
+
 if [ "$TYPE" == "gpu" ] 
 then
   PACKAGE_NAME=${NAME}-gpu
+  require cuda/9.0.176-patch4/gnu-4.9.2
+  require cudnn/7.1.4/cuda-9.0
 if [ "$TYPE" == "mkl" ] 
   PACKAGE_NAME=intel-tensorflow
 fi
 
-set -e
 
 pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
 
