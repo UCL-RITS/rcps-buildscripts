@@ -24,6 +24,7 @@ then
   require cuda/9.0.176-patch4/gnu-4.9.2
   require cudnn/7.1.4/cuda-9.0
 elif [ "$TYPE" == "mkl" ] 
+then
   PACKAGE_NAME=intel-tensorflow
 fi
 
