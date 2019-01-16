@@ -19,7 +19,7 @@ SHA256=${SHA256:-f0836d56a32f8c76e20d75d442e04ef5c29b023e69d284baaf0ff298b8b1700
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.clojure.org/install/clojure-tools-${VERSION}.tar.gz}
 
-JAR_ARCHIVE=${JAR_ARCHIVE:-https://repo1.maven.org/maven2/org/clojure/clojure/1.10.0/clojure-1.10.0-sources.jar}
+JAR_ARCHIVE=${JAR_ARCHIVE:-https://repo1.maven.org/maven2/org/clojure/clojure/1.10.0/clojure-1.10.0.jar}
 
 JAR_SHA=${JAR_SHA:-5014094a58c0576edf82cbd64de2536511b2f70e9c17ac78c1121524eabbae38}
 
