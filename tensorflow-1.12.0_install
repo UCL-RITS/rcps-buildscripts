@@ -23,7 +23,7 @@ then
   PACKAGE_NAME=${NAME}-gpu
   require cuda/9.0.176-patch4/gnu-4.9.2
   require cudnn/7.1.4/cuda-9.0
-if [ "$TYPE" == "mkl" ] 
+elif [ "$TYPE" == "mkl" ] 
   PACKAGE_NAME=intel-tensorflow
 fi
 
