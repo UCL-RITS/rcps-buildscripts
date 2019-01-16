@@ -35,7 +35,7 @@ archive=$(basename "${SRC_ARCHIVE}")
 jarchive=$(basename "${JAR_ARCHIVE}")
 
 sha256sum -c <<< "$SHA256 $archive"
-sha256sum -c <<< "$SHA256 $jarchive"
+sha256sum -c <<< "$JAR_SHA $jarchive"
 
 tar -xvf $archive
 
