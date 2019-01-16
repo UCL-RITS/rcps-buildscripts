@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2019
+#
+
+NAME=${NAME:-keras}
+VERSION=${VERSION:-1.12.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+PACKAGE_NAME=${NAME}
+
+set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.6.3
+require tensorflow/1.12.0/mkl
+
+pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
