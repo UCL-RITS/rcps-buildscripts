@@ -50,7 +50,7 @@ mkdir -p ${INSTALL_PREFIX}/share/man/man1
 
 sed -i.bak "s|org.clojure/clojure {:mvn/version \"1.10.0\"}|org.clojure/clojure {:local/root \"${INSTALL_PREFIX}/libexec/${jarchive}\"}|g" deps.edn
 cp deps.edn ${INSTALL_PREFIX}
-#cp example-deps.edn ${INSTALL_PREFIX}
+cp example-deps.edn ${INSTALL_PREFIX}
 
 cp ./*.jar ${INSTALL_PREFIX}/libexec
  
