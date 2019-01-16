@@ -14,7 +14,7 @@ require java/openjdk-11
 
 NAME=${NAME:-clojure}
 VERSION=${VERSION:-1.10.0.411}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 SHA256=${SHA256:-f0836d56a32f8c76e20d75d442e04ef5c29b023e69d284baaf0ff298b8b17001} # from homebrew
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.clojure.org/install/clojure-tools-${VERSION}.tar.gz}
