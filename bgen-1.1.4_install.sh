@@ -32,8 +32,7 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}
-
+cd gavinband-bgen-8404a6f8186c
 
 ./waf configure --prefix=$INSTALL_PREFIX
 ./waf 
