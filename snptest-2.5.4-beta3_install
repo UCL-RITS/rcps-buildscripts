@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing snptest
+#
+# by Owain Kenway, 2019
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+NAME=${NAME:-snptest}
+VERSION=${VERSION:-2.5.4-beta3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-c2c82d5d6610cf196ac3113a45e8f4f443e19148766e0fe9386eb8eee6f5a860}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.well.ox.ac.uk/~gav/resources/snptest_v${VERSION}_CentOS6.6_x86_64_static.tgz}
+
+rm -rf $INSTALL_PREFIX
+mkdir $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
