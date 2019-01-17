@@ -28,4 +28,6 @@ archive=$(basename "${SRC_ARCHIVE}")
 sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
+
+cd snptest_v${VERSION}_linux_x86_64_static
 ln -s snptest_${VERSION} snptest
