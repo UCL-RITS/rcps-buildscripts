@@ -35,7 +35,7 @@ cd "${NAME}"-"${VERSION}"/Src
 # patch -p0 -i "$PATCH"
 
 # modify mkgulp to build GULP with FoX
-sed -i.orig -e '/UDEFS=/s/-DNOFOX//' -e '/INC=/s/-I../-I.. -I.\/FoX-4.1.2\/objs\/finclude/' mkgulp
+sed -i.orig -e '/UDEFS=/s/-DNOFOX//' -e '/INC=/s/-I../-I.. -I..\/FoX-4.1.2\/objs\/finclude/' mkgulp
 
 ./mkgulp -m -c intel 2>&1 | tee make.log
 
