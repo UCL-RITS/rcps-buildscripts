@@ -44,6 +44,7 @@ make
 make test
 
 # Elk doesn't have a `make install` target >:(
+mkdir -p "$install_prefix"
 cp -r "$build_dir/$package_name-$package_version/"* "$install_prefix/"
 
 make_module \
