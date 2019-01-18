@@ -1,0 +1,36 @@
+#!/bin/bash -l
+
+# This script is intended to be run via e.g. ssh or ssh-via-Ansible, to run an installer script.
+# This is necessary because many of the installer scripts rely on starting execution with the
+#  repo directory as the current working directory (for patches or includes).
+
+BUILDSCRIPT_REPO_DIR="${BUILDSCRIPT_REPO_DIR:-/shared/ucl/apps/build_scripts}"
+BUILD_LOG_DIR="${BUILD_LOG_DIR:-$HOME/build_script_logs}"
+
+if ! date; then
+    echo "Error: no working date command"
+    exit 2
+fi
+
+if [[ ! -d "$BUILDSCRIPT_REPO_DIR"]]; then
+    echo "Error: build script repo dir does not exist: $BUILDSCRIPT_REPO_DIR" >&2
+    exit 2
+fi
+
+if [[ ! -d "$BUILD_LOG_DIR" ]]; then
+    echo "Info: build log dir did not exist, creating: $BUILD_LOG_DIR" >&2
+    mkdir -p "$BUILD_LOG_DIR"
+fi
+
+cd "$BUILDSCRIPT_REPO_DIR" || exit 3
+
+# Build scripts shouldn't take any arguments, so we can take a list of build scripts to run.
+
+while [[ -n "$1" ]]; do
+    echo "Info: starting $1..." >&2
+    build_time="$(date +%s)"
+    ./"$1" >"$BUILD_LOG_DIR/$1.log_${build_time}" 2>&1 || exit 4
+    shift
+done
+
+echo "Info: finished all builds." >&2
