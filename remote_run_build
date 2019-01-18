@@ -24,12 +24,18 @@ fi
 
 cd "$BUILDSCRIPT_REPO_DIR" || exit 3
 
+
+function build_fail_stop () {
+    echo "Error: build failed. Check the build logs." >&2
+    exit 4
+}
+
 # Build scripts shouldn't take any arguments, so we can take a list of build scripts to run.
 
 while [[ -n "$1" ]]; do
     echo "Info: starting $1..." >&2
     build_time="$(date +%s)"
-    ./"$1" >"$BUILD_LOG_DIR/$1.log_${build_time}" 2>&1 || exit 4
+    ./"$1" >"$BUILD_LOG_DIR/$1.log_${build_time}" 2>&1 || build_fail_stop
     shift
 done
 
