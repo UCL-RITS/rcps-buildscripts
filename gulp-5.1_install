@@ -34,5 +34,8 @@ cd "${NAME}"-"${VERSION}"/Src
 # patch getmachine to tell it to build with MPI - not needed with 5.1
 # patch -p0 -i "$PATCH"
 
+# modify mkgulp to build GULP with FoX
+sed -i.orig -e '/UDEFS=/s/-DNOFOX//' mkgulp
+
 ./mkgulp -m -c intel 2>&1 | tee make.log
 
