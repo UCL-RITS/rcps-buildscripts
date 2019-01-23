@@ -50,7 +50,7 @@ sha256sum -c <<<"$SHA256  $archive"
 # fp-model precise required to make the tests pass
 IFCORE="-lifcore"
 ISTRICT="-fp-model precise"
-IOPTS="-axSSE4.2,AVX,AVX2"
+IOPTS="-axSSE4.2,AVX"
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
