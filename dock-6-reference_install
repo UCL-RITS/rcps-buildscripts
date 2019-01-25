@@ -13,6 +13,7 @@ source includes/source_includes.sh
 module purge
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
 
 make_build_env ""
 
