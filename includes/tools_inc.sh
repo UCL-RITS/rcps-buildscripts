@@ -98,7 +98,8 @@ make_build_env () {
     local prod_apps_dir
 
     prod_apps_dir="/shared/ucl/apps"
-    service_user="ccspapp"
+    service_user_pattern="^ccspap.\$"
+    # NB: ccspapp and ccspap2 are both service users
 
     prefix="${package_name:-tmp.}"
     tmp_root_dir="${TMPDIR:-/tmp}"
@@ -144,7 +145,7 @@ make_build_env () {
 
     if [[ -n "${IS_TEST_RUN:-}" ]]; then
         reason_for_test_install="IS_TEST_RUN was set"
-    elif [[ "${LOGNAME:-}" != "$service_user" ]]; then
+    elif [[ ! "${LOGNAME:-}" =~ $service_user_pattern ]]; then
         reason_for_test_install="current user is not service user"
     fi
     
