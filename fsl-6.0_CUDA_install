@@ -27,7 +27,7 @@ require vtk/6.2.0/gnu-4.9.2
 
 # Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
 
-temp_dir=~ccspapp/Software/FSL
+temp_dir=~ccspapp/Software/FSL_CUDA
 mkdir -p $temp_dir
 
 cd $temp_dir
