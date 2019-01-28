@@ -35,6 +35,8 @@ cd $sourcedir
 CXX=mpicxx FC=mpif90 ./configure --enable-mpp --disable-boost --prefix=$INSTALL_PREFIX
 
 make
+# had to do this copy manually
+cp ~/.molpro/.token lib/
 make tuning
 make install
 
