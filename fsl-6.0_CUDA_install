@@ -42,6 +42,7 @@ then
   tar -xvf $archive
   export FSLDIR=$temp_dir/${NAME}
   export COMPILE_GPU=1
+  export NVCC=`which nvcc`
 
   cp $PATCHES/*.patch $FSLDIR
   cd $FSLDIR
