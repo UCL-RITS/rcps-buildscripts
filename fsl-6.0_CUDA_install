@@ -42,7 +42,6 @@ then
   tar -xvf $archive
   export FSLDIR=$temp_dir/${NAME}
   export COMPILE_GPU=1
-  export NVCC=`which nvcc`
 
   cp $PATCHES/*.patch $FSLDIR
   cd $FSLDIR
@@ -56,6 +55,7 @@ then
 
   sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
   sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/9.0.176/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
 
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/lib|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/lib|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
