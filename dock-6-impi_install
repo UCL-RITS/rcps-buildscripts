@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="dock"
+package_version="6.9"
+package_variant="impi"
+
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require bison/3.0.4/gnu-4.9.2
+require flex/2.5.39
+
+make_build_env ""
+
+owd="$(pwd)"
+cd "$build_dir"
+
+cp /shared/ucl/apps/pkg-store/dock.6.9_source.tar.gz ./
+tar -xf dock.6.9_source.tar.gz
+
+cd dock6
+cd install
+./configure intel 
+make
+cd test
+make parallel
+cd ..
+make install
+# ^-- NB: doesn't install anything to a prefix
+#         just copies the binaries to the ./bin directory
+
+# So we have to make the prefix
+mkdir -p "$install_prefix"
+cd "$build_dir"
+cp -r ./dock6/* "$install_prefix/"
+
+chgrp -R legdock "$install_prefix"
+
+make_module \
+	-w "The DOCK suite of programs is designed to find favorable orientations of a ligand in a receptor. This is the Intel MPI build, intended for high-performance parallel runs." \
+	-o "$module_dir/$package_label" \
+	-c "$package_name" \
+	-r "gcc-libs/4.9.2" \
+	-r "compilers/intel/2018/update3" \
+	-r "mpi/intel/2018/update3/intel" \
+	-p "$install_prefix"
+
+chmod -R a+rX "$module_dir"
+echo "Modules installed in: $module_dir"
