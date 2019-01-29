@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing FSL with CUDA enabled bedpostX
+# Installing FSL 6.0 with CUDA enabled bedpostX
 #
+# Note: This MUST be run on a GPU node for the build to complete
+# successfully.
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-6.0.0}
@@ -24,6 +26,19 @@ require python2/recommended
 require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
 require vtk/6.2.0/gnu-4.9.2
+
+# Check that we are on a GPU node and abort if not.
+
+x=`which nvidia-smi`
+if [ $? != 0 ]
+then
+    echo ''
+    echo '****** ERROR: Not on a GPU node - building CUDA version of FSL must'
+    echo '              be done on a GPU node - Aborting!'
+    echo ''
+    exit 1
+fi
+nvidia-smi
 
 # Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
 
