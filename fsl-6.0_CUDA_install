@@ -40,9 +40,9 @@ then
 fi
 nvidia-smi
 
-# Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
+# Build keeps filling up /dev/shm so using ~ccsaapp/Scratch/Software/FSL_CUDA instead!
 
-temp_dir=~ccspapp/Software/FSL_CUDA
+temp_dir=~ccspapp/Scratch/Software/FSL_CUDA/$JOB_ID
 mkdir -p $temp_dir
 
 cd $temp_dir
