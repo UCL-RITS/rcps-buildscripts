@@ -63,13 +63,16 @@ then
   patch -p0 -i fsl-${VERSION}_fslconf.patch
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
-  cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
+
+  # Need this as no GNU 4.9 config dir supplied.
+  cp -r $FSLDIR/config/linux_64-gcc4.8 $FSLDIR/config/$FSLMACHTYPE
 
   # patch systemvars after above copy
   #patch -p0 -i fsl-5.0.9_systemvars.patch
 
-  sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
   sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  sed -i.bak '/^OPTFLAGS/s|-O3|-O2|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
   sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/9.0.176/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
 
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
