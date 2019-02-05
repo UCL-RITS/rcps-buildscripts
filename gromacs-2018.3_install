@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+###############################################
+
+package_name="gromacs"
+package_version="2018.3"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require cmake
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+make_build_env ""
+
+set -e
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+manifest sha256:4423a49224972969c52af7b1f151579cea6ab52148d8d7cbae28c183520aa291 ${tarfile}
+
+tar -xf "$tarfile"
+
+cd "${package_name}-${package_version}"
+
+mkdir build
+cd build
+
+echo "Building and installing full, serial, single precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_FFT_LIBRARY=mkl \
+    $UCL_PLATFORM_OPTS \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+  
+echo "Building and installing full, serial, double precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_DOUBLE=on \
+    -DGMX_FFT_LIBRARY=mkl \
+    $UCL_PLATFORM_OPTS \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+  
+echo "Building and installing mdrun-only, MPI, single precision GROMACS"
+cmake .. \
+    -DGMX_DOUBLE=off \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=mkl \
+    $UCL_PLATFORM_OPTS \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+
+echo "Building and installing mdrun-only, MPI, double precision GROMACS"
+cmake .. \
+    -DGMX_DOUBLE=on \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=mkl \
+    $UCL_PLATFORM_OPTS \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+
+make_module \
+    -o "${module_dir}/${package_label}" \
+    -p "$install_prefix" \
+    -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+    -c "$package_name" \
+    -r gcc-libs \
+    -r compilers/intel/2017/update1 \
+    -r mpi/intel/2017/update1/intel
+
+chmod -R a+rX "${module_dir}"                                               
+echo "Modules in: ${module_dir}" 
+
