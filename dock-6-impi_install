@@ -27,7 +27,7 @@ tar -xf dock.6.9_source.tar.gz
 
 cd dock6
 cd install
-./configure intel 
+./configure intel intelmpi parallel
 make
 cd test
 make parallel

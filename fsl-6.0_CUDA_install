@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing FSL with CUDA enabled bedpostX
+# Installing FSL 6.0 with CUDA enabled bedpostX
 #
+# Note: This MUST be run on a GPU node for the build to complete
+# successfully. Also the CUDA enabled binaries were still not working
+# on the FEEDS test data (seg faulting immediatly after starting) so
+# precompiled binaries from:
+#
+#	https://users.fmrib.ox.ac.uk/~moisesf/Bedpostx_GPU/Installation.html
+#
+# are currently being used instead. Just testing with earlier CUDAs
+#
+# February 2019.
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-6.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}_CUDA/$COMPILER_TAG}
 MD5=${MD5:-d16fe962d3ce4df6dd6d0c001c3a1bb2}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-${VERSION}-sources.tar.gz}
+BIN_ARCHIVE=${BIN_ARCHIVE:-http://users.fmrib.ox.ac.uk/~moisesf/Bedpostx_GPU/FSL_6/CUDA_9.0/bedpostx_gpu.zip}
 PATCHES=${PATCHES:-/shared/ucl/apps/build_scripts/fsl-patches}
 
 set -e
@@ -18,28 +29,44 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
-require cuda/9.0.176-patch4/gnu-4.9.2
+# require cuda/9.0.176-patch4/gnu-4.9.2
+require cuda/7.5.18/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require python2/recommended
 require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
 require vtk/6.2.0/gnu-4.9.2
 
-# Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
+# Check that we are on a GPU node and abort if not.
 
-temp_dir=~ccspapp/Software/FSL_CUDA
+x=`which nvidia-smi`
+if [ $? != 0 ]
+then
+    echo ''
+    echo '****** ERROR: Not on a GPU node - building CUDA version of FSL must'
+    echo '              be done on a GPU node - Aborting!'
+    echo ''
+    exit 1
+fi
+nvidia-smi
+
+# Build keeps filling up /dev/shm so using ~ccsaapp/Scratch/Software/FSL_CUDA instead!
+
+temp_dir=~ccspapp/Scratch/Software/FSL_CUDA/$JOB_ID
 mkdir -p $temp_dir
 
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-archive=$(basename "${SRC_ARCHIVE}")
+wget $BIN_ARCHIVE
+archive_src=$(basename "${SRC_ARCHIVE}")
+archive_bin=$(basename "${BIN_ARCHIVE}")
 
-CHECKSUM=`md5sum $archive| awk '{print $1}'`
+CHECKSUM=`md5sum $archive_src | awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -xvf $archive
+  tar -xvf $archive_src
   export FSLDIR=$temp_dir/${NAME}
   export COMPILE_GPU=1
 
@@ -48,19 +75,24 @@ then
   patch -p0 -i fsl-${VERSION}_fslconf.patch
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
-  cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
+
+  # Need this as no GNU 4.9 config dir supplied.
+  cp -r $FSLDIR/config/linux_64-gcc4.8 $FSLDIR/config/$FSLMACHTYPE
 
   # patch systemvars after above copy
   #patch -p0 -i fsl-5.0.9_systemvars.patch
 
-  sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
   sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
-  sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/9.0.176/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak '/^OPTFLAGS/s|-O3| |' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/9.0.176/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/7.5.18/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
 
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/lib|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/lib|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|VTKSUFFIX = -7.0|VTKSUFFIX = -6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|-lz$|-lz -lgfortran|' $FSLDIR/src/libmeshutils/Makefile
+  sed -i.bak '/\${NVCC}/s|-O3|-O2|' $FSLDIR/src/fdt/Makefile
 
   ./build
 
