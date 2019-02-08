@@ -10,7 +10,7 @@
 #
 #	https://users.fmrib.ox.ac.uk/~moisesf/Bedpostx_GPU/Installation.html
 #
-# are currently being used instead. Just testing with earlier CUDAs
+# are currently being used instead.
 #
 # February 2019.
 
@@ -29,8 +29,8 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
-# require cuda/9.0.176-patch4/gnu-4.9.2
-require cuda/7.5.18/gnu-4.9.2
+require cuda/9.0.176-patch4/gnu-4.9.2
+# require cuda/7.5.18/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require python2/recommended
 require java/1.8.0_45
@@ -108,6 +108,12 @@ export FSLDIR=$INSTALL_PREFIX/$NAME
 cd  $FSLDIR
 rm -rf fslpython
 $FSLDIR/etc/fslconf/fslpython_install.sh
+
+# Replace CUDA enabled binaries with pre-compiled working versions.
+
+echo "Installing pre-built CUDA enabled binaries in $FLSDIR ..."
+cd $FSLDIR
+unzip -B -x $temp_dir/${archive_bin}
 
 else
   echo "Hash mismatch."
