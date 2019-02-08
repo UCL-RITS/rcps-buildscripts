@@ -31,7 +31,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/4.9.2
 require xorg-utils/X11R7.7
 require mathematica/11.3.0
-require git/2.10.2
+require git/2.19.1
 
 temp_dir=`mktemp -d -p /dev/shm`
 
