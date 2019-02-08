@@ -8,6 +8,7 @@
 #
 # Updated January 2018 for Mathematica 11.3.
 # Updated May 2018 for MAthematica 11.3
+# Updated February 2019 to copy tunnel support scripts to /shared/ucl/apps/Mathematica/UCL
 #
 # Will need modules: rcps-core/1.0.0, mathematica/11.3.0 ,git/2.10.2
 
@@ -53,3 +54,9 @@ cp tunnel.sh tunnel.sh_dist
 sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel.sh_dist > tunnel.sh
 cp tunnel_sub.sh tunnel_sub.sh_dist
 sed -e '/export LD_LIBRARY_PATH/s/SystemFiles/SystemFiles\\/' tunnel_sub.sh_dist > tunnel_sub.sh
+
+# Copy user tunnel support scripts from ccspapp to /shared/ucl/apps/Mathematica/UCL
+
+mkdir -p /shared/ucl/apps/Mathematica/UCL/Tunnel/FrontEnd
+cp tunnel.sh tunnel_sub.sh /shared/ucl/apps/Mathematica/UCL/Tunnel/FrontEnd/
+
