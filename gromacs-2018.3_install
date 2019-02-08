@@ -35,7 +35,6 @@ cd build
 echo "Building and installing full, serial, single precision GROMACS with gmx view"
 cmake .. \
     -DGMX_FFT_LIBRARY=mkl \
-    $UCL_PLATFORM_OPTS \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
@@ -46,7 +45,6 @@ echo "Building and installing full, serial, double precision GROMACS with gmx vi
 cmake .. \
     -DGMX_DOUBLE=on \
     -DGMX_FFT_LIBRARY=mkl \
-    $UCL_PLATFORM_OPTS \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
@@ -59,7 +57,6 @@ cmake .. \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
     -DGMX_FFT_LIBRARY=mkl \
-    $UCL_PLATFORM_OPTS \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
@@ -71,7 +68,6 @@ cmake .. \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
     -DGMX_FFT_LIBRARY=mkl \
-    $UCL_PLATFORM_OPTS \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
@@ -83,8 +79,8 @@ make_module \
     -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
     -c "$package_name" \
     -r gcc-libs \
-    -r compilers/intel/2017/update1 \
-    -r mpi/intel/2017/update1/intel
+    -r compilers/intel/2018/update3 \
+    -r mpi/intel/2018/update3/intel
 
 chmod -R a+rX "${module_dir}"                                               
 echo "Modules in: ${module_dir}" 
