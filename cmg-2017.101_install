@@ -2,6 +2,8 @@
 
 # This script installs CMG Reservoir Simulation Software
 # Brian Alston October 2018
+#
+# February 2019: added prompt to copy cmgsimrun from Windows installation!
 
 
 # You need to download the CMG installer archive from the Computer Modelling Group
@@ -67,3 +69,19 @@ y
 y
 n
 EOF
+
+echo ""
+echo "Main CMG installation completed."
+echo ""
+echo "To support remote job submission from Windows the following is"
+echo "required:"
+echo ""
+echo "copy the following folder after installing the Windows version:"
+echo ""
+echo "    C:\Program Files (x86)\CMG\Launcher\2017.10\Linux_x64"
+echo ""
+echo "to the cluster in:"
+echo ""
+echo "    /shared/ucl/apps/CMG/2017.101.GU/Launcher/2017.10/"
+echo ""
+
