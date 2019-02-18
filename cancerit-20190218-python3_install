@@ -20,7 +20,7 @@ _env_setup() {
     require curl
 
     # pass in install prefix
-    make_build_env "--prefix=${package_name}/${package_version}"
+    make_build_env "--prefix=${package_name}/${package_version} --tmp-root=${package_name}-${package_version}"
     module_dir="$module_dir"
 
 }
