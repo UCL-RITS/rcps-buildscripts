@@ -2,8 +2,9 @@
 
 set -e
 
-package_name="cancerit"
 package_version="20190218"
+# make_build_env uses $package_name as install prefix
+package_name="cancerit-${package_version}"
 package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
 
 source includes/source_includes.sh
