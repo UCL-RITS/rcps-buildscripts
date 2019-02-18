@@ -2,9 +2,8 @@
 
 set -e
 
+package_name="cancerit"
 package_version="20190218"
-# make_build_env uses $package_name as install prefix
-package_name="cancerit-${package_version}"
 package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
 
 source includes/source_includes.sh
@@ -20,8 +19,8 @@ _env_setup() {
     require htslib
     require curl
 
-
-    make_build_env ""
+    # pass in install prefix
+    make_build_env "--prefix=${package_name}/${package_version}"
     module_dir="$module_dir"
 
 }
