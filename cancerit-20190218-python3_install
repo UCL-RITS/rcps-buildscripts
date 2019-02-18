@@ -4,7 +4,9 @@ set -e
 
 package_name="cancerit"
 package_version="20190218"
+package_variant="python-3.7"
 package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
+# default install prefix should be ${prod_apps_dir}/${package_name}/${package_version}${package_variant}
 
 source includes/source_includes.sh
 
@@ -19,8 +21,7 @@ _env_setup() {
     require htslib
     require curl
 
-    # pass in install prefix
-    make_build_env "--prefix=${package_name}/${package_version} --tmp-root=${package_name}-${package_version}"
+    make_build_env
     module_dir="$module_dir"
 
 }
