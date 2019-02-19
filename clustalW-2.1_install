@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Clustal W
+#
+# by Brian Alston - Feb 2019
+#
+
+APPNAME=${APPNAME:-clustalw}
+VERSION=${VERSION:-2.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-f29784f68585544baa77cbeca6392e533d4cf433}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.clustal.org/download/current/${APPNAME}-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA1" == "$CHECKSUM" ]
+then
+  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA1"
+  echo "Got: $CHECKSUM"
+fi
