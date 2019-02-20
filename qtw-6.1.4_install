@@ -30,7 +30,7 @@ temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir
 
 archive=qwt-${VERSION}.tar.bz2
-wget $SRC_ARCHIVE -O $archeive
+wget $SRC_ARCHIVE -O $archive
 CHECKSUM=`md5sum $archive| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
