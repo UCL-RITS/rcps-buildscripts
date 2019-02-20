@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing Qtw - Qt Widgets for Technical Applications 
+# Installing Qwt - Qt Widgets for Technical Applications 
 #
 # by Brian Alston, February 2019
 #
@@ -37,7 +37,10 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -xvjf $archive
   cd qwt-$VERSION
-  export QWT_INSTALL_PREFIX=$INSTALL_PREFIX
+
+  # Stop make trying to install in /usr/local
+
+  sed -i.bak -e "s|/usr/local/|$INSTALL_PREFIX/|" qwtconfig.pri
   /shared/ucl/apps/qt/5.4.2/gnu-4.9.2/bin/qmake qwt.pro
   make | tee make.log
   make install
