@@ -41,6 +41,7 @@ then
   # Stop make trying to install in /usr/local
 
   sed -i.bak -e "s|/usr/local/|$INSTALL_PREFIX/|" qwtconfig.pri
+  
   /shared/ucl/apps/qt/5.4.2/gnu-4.9.2/bin/qmake qwt.pro
   make | tee make.log
   make install
