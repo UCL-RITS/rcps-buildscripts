@@ -12,7 +12,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-4fb1852f694420e3ab9c583526edecc5}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/qwt/files/qwt/${VERSION}/qwt-${VERSION}.tar.bz2/download}
 
-set -eexport PATH=$INSTALL_PREFIX/bin:$PATH
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
 
 dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
