@@ -166,3 +166,5 @@ Term::UI
 Term::ReadKey
 DBI
 DBD::mysql
+File::ShareDir::Install
+File::ShareDir
