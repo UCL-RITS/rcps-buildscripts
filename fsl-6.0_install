@@ -74,6 +74,12 @@ cd  $FSLDIR
 rm -rf fslpython
 $FSLDIR/etc/fslconf/fslpython_install.sh
 
+# Install a suitable version of eddy
+
+cd bin
+wget https://fsl.fmrib.ox.ac.uk/fsldownloads/patches/eddy-patch-fsl-5.0.11/centos6/eddy_openmp
+chmod a+x eddy_openmp
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
