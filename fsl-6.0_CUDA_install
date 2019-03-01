@@ -16,7 +16,7 @@
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-6.0.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}_CUDA_8.0/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}_CUDA_8.0/${COMPILER_TAG}}
 MD5=${MD5:-d16fe962d3ce4df6dd6d0c001c3a1bb2}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-${VERSION}-sources.tar.gz}
 BIN_ARCHIVE=${BIN_ARCHIVE:-http://users.fmrib.ox.ac.uk/~moisesf/Bedpostx_GPU/FSL_6/CUDA_8.0/bedpostx_gpu.zip}
