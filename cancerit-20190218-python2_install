@@ -4,7 +4,7 @@ set -e
 
 package_name="cancerit"
 package_version="20190218"
-package_variant="python-3.7"
+package_variant="python-2.7.12"
 package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
 # default install prefix should be ${prod_apps_dir}/${package_name}/${package_version}${package_variant}
 
@@ -14,7 +14,7 @@ _env_setup() {
     module purge
     require gcc-libs
     require compilers/gnu/4.9.2
-    require python/3.7.2 # a python is prereq for boost module
+    require python/2.7.12 # a python is prereq for boost module
     require boost/1_63_0/gnu-4.9.2
     require pstreams
     require perl
