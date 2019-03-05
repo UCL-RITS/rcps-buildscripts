@@ -119,8 +119,11 @@ _build() {
         (cd "$dir" && ./setup.sh "$install_prefix")
     done
 
-    # cgpBattenberg has an extra step for R
-    (cd cgpBattenberg-3.3.0/Rsupport && ./setupR.sh "${install_prefix}/R-libs")
+    # cgpBattenberg unsets PERL5LIB so needs to know where the above got installed
+    # and has an extra step for R
+    cd cgpBattenberg-3.3.0
+    ./setup.sh "$install_prefix" "$install_prefix/lib/perl5" 
+    cd Rsupport && ./setupR.sh "${install_prefix}/R-libs"
 
     cd "$owd"
 }
