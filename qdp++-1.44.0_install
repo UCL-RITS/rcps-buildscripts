@@ -28,7 +28,6 @@ cd xpath_reader
 
 aclocal
 autoconf
-automake --add-missing --copy
 ./configure --prefix=$INSTALL_PREFIX
 make 
 make install
