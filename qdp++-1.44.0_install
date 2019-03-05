@@ -21,6 +21,23 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/usqcd-software/qdpxx}
 mkdir -p /dev/shm/$(whoami)/${NAME}
 
 temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+cd $temp_dir
+
+git clone https://github.com/usqcd-software/xpath_reader
+cd xpath_reader
+
+aclocal
+autoconf
+automake --add-missing --copy
+./configure --prefix=$INSTALL_PREFIX
+make 
+make install
+
+export CPATH=${INSTALL_PREFIX}/include:$CPATH
+export INCLUDE_PATH=${INSTALL_PREFIX}/include:$INCLUDE_PATH
+export LD_LIBRARY_PATH=${INSTALL_PREFIX}/lib:${LD_LIBRARY_PATH}
+export LIBRARY_PATH=${INSTALL_PREFIX}/lib:${LIBRARY_PATH}
+
 
 cd $temp_dir
 
