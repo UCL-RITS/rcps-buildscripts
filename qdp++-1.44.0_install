@@ -14,7 +14,7 @@ require compilers/gnu/4.9.2
 
 NAME=${NAME:-qdp++}
 VERSION=${VERSION:-1-44-0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/scalar/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/usqcd-software/qdpxx}
 
 
