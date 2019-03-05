@@ -25,7 +25,11 @@ cd $temp_dir
 
 git clone https://github.com/usqcd-software/xpath_reader
 cd xpath_reader
-git checkout 6ce2172c171187c54c18e1e7a06f02d4e157379b
+aclocal
+autoconf
+autoheader
+automake --add-missing --copy
+
 ./configure --prefix=$INSTALL_PREFIX
 make 
 make install
