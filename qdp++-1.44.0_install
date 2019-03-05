@@ -30,8 +30,8 @@ git checkout $VERSION
 
 aclocal
 autoconf
-automake --add-missing --foreign
-./configure --prefix=$INSTALL_PREFIX
+automake --add-missing --copy
+./configure --prefix=$INSTALL_PREFIX --enable-parallel-arch=scalar
 make 
 make install
 
