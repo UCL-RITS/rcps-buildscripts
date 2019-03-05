@@ -26,7 +26,7 @@ cd $temp_dir
 
 git clone $SRC_ARCHIVE
 cd qdpxx
-git checkout $VERSION
+git checkout qdp${VERSION}
 
 aclocal
 autoconf
