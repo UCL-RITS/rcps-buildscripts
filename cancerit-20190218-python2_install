@@ -20,6 +20,8 @@ _env_setup() {
     require perl
     require htslib
     require curl
+    require bedtools/2.25.0
+    require exonerate/2.2.0
 
     # all the basic R requirements for 3.5.1
     require openblas/0.2.14/gnu-4.9.2
