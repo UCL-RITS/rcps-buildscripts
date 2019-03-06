@@ -113,7 +113,7 @@ _build() {
         cgpPindel-3.0.6 \
         cgpCaVEManPostProcessing-1.8.5 \
         VAGrENT-3.3.3 \
-        grass-2.1.1 \
+        grass-2.1.1 
     do
         echo "Running setup in ${dir}..."
         (cd "$dir" && ./setup.sh "$install_prefix")
