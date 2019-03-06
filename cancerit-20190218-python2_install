@@ -143,14 +143,19 @@ _post_build() {
     make_module \
         -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
-        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -w "Adds ${package_name} program versions as of ${package_version} to your environment. ${package_description}" \
         -c "${package_name}" \
         -r  gcc-libs \
         -r  compilers/gnu/4.9.2 \
-        -r  python/3.7.2 \
+        -r  python/2.7.12 \
         -r  boost/1_63_0/gnu-4.9.2 \
         -r  perl \
-        -r  htslib
+        -r  htslib \
+        -r  bedtools/2.25.0 \
+        -r  exonerate/2.2.0 \
+        -r  fasta/36.3.8d/gnu-4.9.2
+        -r  velvet/1.2.10
+        -r  r/recommended
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"
