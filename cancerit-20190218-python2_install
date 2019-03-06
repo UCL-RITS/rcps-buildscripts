@@ -101,6 +101,11 @@ _pre_build() {
 _build() {
     cd "$build_dir"
 
+    # some of the below unset PERL5LIB
+    perl_libs="$install_prefix/lib/perl5:$PERL5LIB"
+
+    export PATH="$install_prefix/bin:$PATH"
+
     # These are in an order that satisfies dependencies. Do not shuffle.
     # See: https://user-images.githubusercontent.com/479061/35330098-1b9d07e2-00fa-11e8-9c13-c516bde69646.png
     for dir in  \
@@ -126,7 +131,6 @@ _build() {
     # and has an extra step for R
     echo "Running setup in cgpBattenberg-3.3.0..."
     cd cgpBattenberg-3.3.0
-    perl_libs="$install_prefix/lib/perl5:$PERL5LIB"
     ./setup.sh "$install_prefix" "$perl_libs" 
     cd Rsupport && ./setupR.sh "${install_prefix}/R-libs"
 
