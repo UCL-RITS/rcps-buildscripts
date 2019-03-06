@@ -114,15 +114,18 @@ _build() {
         cgpCaVEManPostProcessing-1.8.5 \
         VAGrENT-3.3.3 \
         grass-2.1.1 \
-        BRASS-6.2.0 \
-        cgpBattenberg-3.3.0
     do
         echo "Running setup in ${dir}..."
         (cd "$dir" && ./setup.sh "$install_prefix")
     done
 
+    # BRASS needs to be told not to build exonerate itself
+    echo "Running setup in BRASS-6.2.0..."
+    (cd BRASS-6.2.0 && ./setup.sh "$install_prefix" 2)
+
     # cgpBattenberg unsets PERL5LIB so needs to know where the above got installed
     # and has an extra step for R
+    echo "Running setup in cgpBattenberg-3.3.0..."
     cd cgpBattenberg-3.3.0
     ./setup.sh "$install_prefix" "$install_prefix/lib/perl5" 
     cd Rsupport && ./setupR.sh "${install_prefix}/R-libs"
