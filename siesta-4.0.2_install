@@ -5,7 +5,6 @@
 
 NAME=${NAME:-siesta}
 VERSION=${VERSION:-4.0.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 SHA256=${SHA256:-bafbda19358f0c1dd39bb1253c92ee548791a1c0f648977051d2657216874f7e}
 # Get the major-minor version number
 shortversion=$(echo "$VERSION" | awk -F. 'BEGIN{OFS="."}{print $1,$2}')
@@ -21,6 +20,8 @@ module purge
 require gcc-libs
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
 cd $DOWNLOAD_DIR
 wget $SRC_ARCHIVE
