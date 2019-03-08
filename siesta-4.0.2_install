@@ -23,8 +23,8 @@ require mpi/intel/2018/update3/intel
 
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
-cd $DOWNLOAD_DIR
-wget $SRC_ARCHIVE
+cd "$DOWNLOAD_DIR"
+wget "$SRC_ARCHIVE"
 
 echo "Downloaded to: $DOWNLOAD_DIR"
 
@@ -33,20 +33,20 @@ archive=$(basename "$SRC_ARCHIVE")
 echo "Checking hashes:"
 sha256sum -c <<<"$SHA256 $archive"
 
-mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
-tar -xvf ${DOWNLOAD_DIR}/$archive
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+tar -xvf "${DOWNLOAD_DIR}/$archive"
 # This is provided as a build directory
-cd ${NAME}-${VERSION}/Obj
+cd "${NAME}-${VERSION}/Obj"
 
 ../Src/obj_setup.sh
-cp $ARCH_FILE arch.make
+cp "$ARCH_FILE" arch.make
 make
 echo "Main SIESTA build completed"
 
 # Alter 'maxa' parameter in Vibra util to allow 2000 atoms instead of 8.
 # https://github.com/UCL-RITS/rcps-buildscripts/issues/153
-sed -i.bak -e "s|parameter (maxa = 8)|parameter (maxa = 2000)|" $INSTALL_PREFIX/Util/Vibra/Src/vibra.h
+sed -i.bak -e "s|parameter (maxa = 8)|parameter (maxa = 2000)|" "$INSTALL_PREFIX/${NAME}-${VERSION}/Util/Vibra/Src/vibra.h"
 
 # Build as many utils as possible
 echo "Building utils"
