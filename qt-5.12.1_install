@@ -44,7 +44,7 @@ then
   cd $temp_dir
   tar -xvf $archive
   cd ${NAME}-everywhere-src-${VERSION}
-  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -qt-xcb -xkb-config-root $XKB_CONF -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
+  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -qt-xcb -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
   gmake -j 4 2>&1 | tee make.log
   gmake install
 
