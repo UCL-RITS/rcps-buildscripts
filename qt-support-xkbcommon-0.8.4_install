@@ -31,7 +31,7 @@ export CPATH=$SUPPORT_PREFIX/include:$CPATH
 
 # Download xkbcommon and check its checksum first
 wget $XKBCOMMON_SRC_ARCHIVE
-xkbcommon_archive=$(basename "$XKBCOMMON_SRC_ARCHIVE}")
+xkbcommon_archive=$(basename "$XKBCOMMON_SRC_ARCHIVE")
 XKBCOMMON_CHECKSUM=`md5sum $xkbcommon_archive| awk '{print $1}'`
 
 if [ "$XKBCOMMON_MD5" != "$XKBCOMMON_CHECKSUM" ] 
