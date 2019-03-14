@@ -14,7 +14,8 @@ MD5=${MD5:-6a37466c8c40e87d4a19c3f286ec2542}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.mirrorservice.org/sites/download.qt-project.org/official_releases/qt/5.12/${VERSION}/single/${NAME}-everywhere-src-${VERSION}.tar.xz}
 SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
 XKB_CONF=${XKB_CONF:-/etc/X11/xorg.conf.d}
-export QT_XKB_CONFIG_ROOT=/shared/ucl/apps/qt/5.12.1/gnu-4.9.2/support/
+
+export QT_XKB_CONFIG_ROOT=/shared/ucl/apps/qt/5.12.1/gnu-4.9.2/support
 
 set -e
 
