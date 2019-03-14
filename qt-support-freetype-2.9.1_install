@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing FreeType for Qt (https://xkbcommon.org)
+# Installing FreeType for Qt (https://www.freetype.org/)
 #
 # by Brian Alston, March 2019
 # Updated from qt-support-libxcb-1.13_install for Qt 5.12.1
@@ -31,7 +31,7 @@ export CPATH=$SUPPORT_PREFIX/include:$CPATH
 
 # Download FreeType and check its checksum first
 wget $FREETYPE_SRC_ARCHIVE
-freetype_archive=$(basename "$XKBCOMMON_SRC_ARCHIVE")
+freetype_archive=$(basename "$FREETYPE_SRC_ARCHIVE")
 FREETYPE_CHECKSUM=`md5sum $freetype_archive| awk '{print $1}'`
 
 if [ "$FREETYPE_MD5" != "$FREETYPE_CHECKSUM" ] 
