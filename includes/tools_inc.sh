@@ -173,6 +173,27 @@ make_build_env () {
 EOF
 }
 
+function post_build_report() {
+    local build_size="$(du -hs "$install_prefix" | cut -f 1 -d $'\t')"
+    local exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10)"
+    cat <<EOF
+    ==========================
+    =    Post Build Info     =
+    ==========================
+
+    Package label:            $package_label
+    Build took place in:      $build_dir
+    Modules were put in:      $module_dir
+    Package was installed to: $install_prefix
+    Package size:             ${build_size}B
+
+    -- First execs (max 10) --
+    $exec_list
+
+    ==========================
+EOF
+}
+
 function github_download() {
     while [[ "$1" != "" ]]; do
         url="$1";
