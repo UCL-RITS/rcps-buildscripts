@@ -4,5 +4,6 @@
 ## Intended to make sourcing them simpler.
 
 source includes/module_maker_inc.sh
+source includes/module_maker_v2_inc.sh
 source includes/require_inc.sh
 source includes/tools_inc.sh
