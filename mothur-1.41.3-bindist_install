@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="mothur"
+package_version="1.41.3"
+package_variant="bindist"
+package_description="Mothur is an expandable, multi-purpose bioinformatics tool aimed at microbial ecology."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://github.com/mothur/mothur/releases/download/v${package_version}/Mothur.linux_64.zip"
+manifest sha256:7188da363e2b4127d1434a3a19171a3672da9b15465a68c372dcdf51e727013a  Mothur.linux_64.zip
+
+unzip Mothur.linux_64.zip
+
+mkdir -p "$install_prefix"
+mv mothur/* "$install_prefix/"
+
+make_module_v2 -e 'PATH:$prefix' -e 'PATH:$prefix/blast/bin'
+post_build_report
+
