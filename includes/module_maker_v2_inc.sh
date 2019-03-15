@@ -24,7 +24,7 @@ function make_module_v2() {
 
     # Now try to work out our prereqs based on which modules are loaded.
     local module_prereqs=""
-    if [[ -n "$LOADEDMODULES" ]]; then
+    if [[ -n "${LOADEDMODULES:-}" ]]; then
         module_prereqs="prereq ${LOADEDMODULES//:/$'\n'prereq }"$'\n'
     fi
 
