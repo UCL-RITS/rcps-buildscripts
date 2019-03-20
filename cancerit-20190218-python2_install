@@ -153,8 +153,8 @@ _post_build() {
         -r  htslib \
         -r  bedtools/2.25.0 \
         -r  exonerate/2.2.0 \
-        -r  fasta/36.3.8d/gnu-4.9.2
-        -r  velvet/1.2.10
+        -r  fasta/36.3.8d/gnu-4.9.2 \
+        -r  velvet/1.2.10 \
         -r  r/recommended
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
