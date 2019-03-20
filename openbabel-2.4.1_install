@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="openbabel"
+package_version="2.4.1"
+package_description="OpenBabel is a library and command-line tool for manipulating and converting between various chemistry file formats."
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require libxml2/2.9.4/gnu-4.9.2
+require eigen/3.2.5/gnu-4.9.2
+require python/3.6.3
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://downloads.sourceforge.net/project/openbabel/openbabel/$package_version/openbabel-$package_version.tar.gz"
+manifest sha256:204136582cdfe51d792000b20202de8950218d617fd9c6e18cee36706a376dfc  openbabel-2.4.1.tar.gz
+
+tar -xf "openbabel-$package_version.tar.gz"
+cd "openbabel-$package_version"
+
+mkdir build
+cd build
+cmake ../ \
+  -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+  -DBUILD_DOCS=ON \
+  -DENABLE_OPENMP=ON \
+  -DOPTIMIZE_NATIVE=ON \
+  -DCMAKE_SKIP_INSTALL_RPATH=ON
+make -l 8 -j
+
+# Even in a successful build the tests will fail, because:
+# - something in the test process is wiping the environment, and it can't get a suitably up-to-date `libstdcxx.so`
+# - one of the tests has a mixed-spaces-and-tabs problem in the Python code, which I'm guessing isn't treated as an error in the version of Python the developers are using, but is in later versions.
+
+# You can work around the environment problems by wrapping the `test_runner` and `test_inchiwrite` binaries. 
+
+mv bin/test_runner bin/test_runner.x
+mv bin/test_inchiwrite bin/test_inchiwrite.x
+cat >bin/test_runner <<EOF
+#!/bin/bash
+
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+export PATH="$PATH"
+
+exec $(pwd)/bin/test_runner.x "\$@"
+EOF
+cat >bin/test_inchiwrite <<EOF
+#!/bin/bash
+
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+export PATH="$PATH"
+
+exec $(pwd)/bin/test_inchiwrite.x "\$@"
+EOF
+chmod +x bin/test_inchiwrite bin/test_runner
+
+# This fixes the tabs vs spaces problem by replacing all the tabs in the relevant file with 8 spaces.
+sed -i -e 's/\t/        /g' ../test/testpdbformat.py
+
+# The `pytest_sym` test takes *much* longer on more threads -- running the test on 36 cores will often time out. To mitigate that, run the tests with `taskset` limited to 4 cores.
+taskset -c 0,1,2,3 make test
+
+make install
+
+make_module \
+    -p "$install_prefix" \
+    -w "$package_description" \
+    -o "$module_dir/$package_label" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -r "libxml2/2.9.4/gnu-4.9.2"
+
+

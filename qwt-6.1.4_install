@@ -4,6 +4,7 @@
 # Installing Qwt - Qt Widgets for Technical Applications 
 #
 # by Brian Alston, February 2019
+# Updated to use Qt 5.12.1 March 2019
 #
 
 NAME=${NAME:-qwt}
@@ -24,7 +25,7 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require bison/3.0.4/gnu-4.9.2
 require gperf/3.0.4/gnu-4.9.2
-require qt/5.4.2/gnu-4.9.2
+require qt/5.12.1/gnu-4.9.2
 
 temp_dir=`mktemp -d -p /dev/shm`
 cd $temp_dir

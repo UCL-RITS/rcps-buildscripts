@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing xkbcommon for Qt (https://xkbcommon.org)
+#
+# by Brian Alston, March 2019
+# Updated from qt-support-libxcb-1.13_install for Qt 5.12.1
+
+NAME=${NAME:-qt}
+VERSION=${VERSION:-5.12.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+XKBCOMMON_NAME=${XKBCOMMON_NAME:-libxkbcommon-0.8.4}
+XKBCOMMON_SRC_ARCHIVE=${XKBCOMMON_SRC_ARCHIVE:-http://xkbcommon.org/download/${XKBCOMMON_NAME}.tar.xz}
+XKBCOMMON_MD5=${XKBCOMMON_MD5:-3c4409058dfd203f641a563358e0187d}
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+# libxcb must have been installed in $SUPPORT_PREFIX
+# libxcb environment variables
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$SUPPORT_PREFIX/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$SUPPORT_PREFIX/lib/python2.7/site-packages:$PYTHONPATH
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+export CPATH=$SUPPORT_PREFIX/include:$CPATH
+
+# Download xkbcommon and check its checksum first
+wget $XKBCOMMON_SRC_ARCHIVE
+xkbcommon_archive=$(basename "$XKBCOMMON_SRC_ARCHIVE")
+XKBCOMMON_CHECKSUM=`md5sum $xkbcommon_archive| awk '{print $1}'`
+
+if [ "$XKBCOMMON_MD5" != "$XKBCOMMON_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xkbcommon_archive."
+  echo "Expected: $XKBCOMMON_MD5"
+  echo "Got: $XKBCOMMON_CHECKSUM"
+  exit 1;
+fi
+
+tar -xvf $xkbcommon_archive
+cd libxkbcommon-0.8.4
+
+./configure --prefix=$INSTALL_PREFIX/support  --with-xkb-config-root=$SUPPORT_PREFIX 
+make 2>&1 | tee make.log
+make install
+
+echo ""
+echo "xkbcommon items installed in $INSTALL_PREFIX/support. Now run the main Qt buildscript."
