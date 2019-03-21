@@ -62,7 +62,10 @@ then
   ./build
 
   mkdir -p $INSTALL_PREFIX
-  mv -f $INSTALL_PREFIX/fsl $INSTALL_PREFIX/fsl-old
+  if [ -d $INSTALL_PREFIX/fsl ]
+  then
+      mv -f $INSTALL_PREFIX/fsl $INSTALL_PREFIX/fsl-old
+  fi
   cp -r $FSLDIR $INSTALL_PREFIX
 
   # Apply UCL patches - mainly for qsub.
