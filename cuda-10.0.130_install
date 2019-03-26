@@ -25,7 +25,7 @@ _env_setup() {
   owd=$(pwd)
   package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
-  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/${package_name}-build.XXXXXXXX)}
   module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
   cd $build_dir
 }
