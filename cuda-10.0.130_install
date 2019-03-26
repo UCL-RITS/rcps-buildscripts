@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="cuda"
+package_version="10.0.130"
+driver_version=410.48
+src_urls=https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_${package_version}_${driver_version}_linux-run
+
+
+
+# Optional: 
+# package_variant=""
+package_description="This is for compiling CUDA code to run on NVIDIA GPUs."
+
+actual_file_name=cuda_${package_version}_${driver_version}_linux-run
+actual_file_sha512=409ea4cc6aa0fe7063450e77c3b67b9b41aab1bbe556db673fb1a80610b20bd52e2020bf94034a92ab68c721d3d5739500bae4bd7a3558b2d8e73730a3b4ea25
+
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  sha512sum -c <<<"$actual_file_sha512  $actual_file_name"
+
+}
+
+_setup_files() {
+  :
+}
+
+_build() {
+  chmod +x $actual_file_name $actual_file_name2 $actual_file_name3 $actual_file_name4  
+  ./$actual_file_name \
+    --silent \
+    --verbose \
+    --tmpdir=$build_dir \
+    --toolkit \
+    --toolkitpath=$install_prefix \
+    --samples \
+    --samplespath=$install_prefix 
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/4.9.2 \
+              -r compilers/gnu/4.9.2 \
+              -e PATH:$install_prefix/libnsight \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
