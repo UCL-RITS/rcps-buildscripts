@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2019
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-1.13.1}
+TYPE=${TYPE:-cpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$TYPE}
+PACKAGE_NAME=${NAME}
+
+set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.6.3
+
+if [ "$TYPE" == "gpu" ] 
+then
+  PACKAGE_NAME=${NAME}-gpu
+  require cuda/10.0.130/gnu-4.9.2
+  require cudnn/7.4.2.24/cuda-10.0
+elif [ "$TYPE" == "mkl" ] 
+then
+  PACKAGE_NAME=intel-tensorflow
+fi
+
+
+pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
