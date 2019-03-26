@@ -52,6 +52,8 @@ _build() {
     --samples \
     --samplespath=$install_prefix 
   echo "Installed to: $install_prefix"
+  rm -rf $build_dir
+
 }
 
 _prepare_module() {
