@@ -36,6 +36,10 @@ sha512sum -c <<< "$SHA512 $archive"
 
 unzip $archive
 
+# Work around issue with old versions of bazel (<0.24 at least) breaking 
+# libstdc++
+cp /shared/ucl/apps/build_scripts/patches/bazel/PosixLocalEnvProvider.java ./src/main/java/com/google/devtools/build/lib/exec/local/PosixLocalEnvProvider.java
+
 ./compile.sh
 
 mkdir -p $INSTALL_PREFIX/bin
