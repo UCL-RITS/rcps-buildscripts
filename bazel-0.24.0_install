@@ -11,6 +11,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
+require python/3.7.2
 require java/openjdk-11/11.0.1
 
 NAME=${NAME:-bazel}
