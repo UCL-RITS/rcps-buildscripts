@@ -56,7 +56,7 @@ require hdf/5-1.8.15/gnu-4.9.2
 require udunits/2.2.26/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
-require root/5.34.36/gnu-4.9.2-fftw-3.3.6
+require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
 require glpk/4.60/gnu-4.9.2
 require mpi/openmpi/3.0.0/gnu-4.9.2
 require perl/5.22.0
