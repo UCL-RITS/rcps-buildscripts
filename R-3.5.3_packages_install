@@ -51,7 +51,7 @@ require fftw/3.3.6-pl2/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
 require texinfo/5.2/gnu-4.9.2
 require texlive/2015
-require gsl/1.16/gnu-4.9.2
+require gsl/2.4/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require udunits/2.2.26/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
