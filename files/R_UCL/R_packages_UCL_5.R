@@ -4,7 +4,7 @@
 # Install 5th batch of add on R packages for UCL R instllations.
 #
 # June 2016
-# Latest update October 2017
+# Latest update April 2019
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -157,6 +157,10 @@ install.packages ("png", lib=mainLib, repos=repros);
 
 # For Laura Zieger (l.zieger@ucl.ac.uk) Dec 2018
 install.packages ("TAM", lib=mainLib, repos=repros);
+
+# For Tom O'Grady (t.o'grady@ucl.ac.uk) April 2019
+install.packages ("devtools", lib=mainLib, repos=repros);
+devtools::install_github("jamesdunham/dgo");
 
 # End of R_packages_UCL_5
 
