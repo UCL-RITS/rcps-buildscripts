@@ -4,7 +4,7 @@
 # Brian Alston October 2018
 #
 # February 2019: added prompt to copy cmgsimrun from Windows installation!
-
+# April 2019: added prompt to make cmgsimrun execuatble!
 
 # You need to download the CMG installer archive from the Computer Modelling Group
 # download portal using a UCL site admin login. The CMG license is owned by Earth
@@ -84,4 +84,7 @@ echo "to the cluster in:"
 echo ""
 echo "    /shared/ucl/apps/CMG/2017.101.GU/Launcher/2017.10/"
 echo ""
+echo "The file cmgsimrun in this directory MUST be made executable!"
+echo ""
+
 

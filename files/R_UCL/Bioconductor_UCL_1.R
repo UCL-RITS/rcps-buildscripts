@@ -18,7 +18,7 @@ repros;
 # Download the Bioconductor installer and install the base packages
 
 if (!requireNamespace ("BiocManager"))
-    install.packages ("BiocManager")
+    install.packages ("BiocManager", repos=repros)
 BiocManager::install ()
 
 ## biocLite (pkgs="Biobase", type="source", lib=mainLib);
