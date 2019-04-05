@@ -21,7 +21,8 @@ if (!requireNamespace ("BiocManager"))
     install.packages ("BiocManager", repos=repros)
 BiocManager::install ()
 
-## biocLite (pkgs="Biobase", type="source", lib=mainLib);
+BiocManager::install ("Biobase", type="source", lib=mainLib);
+
 ## biocLite (pkgs="qvalue", type="source", lib=mainLib);
 ## biocLite (pkgs="IRanges", type="source", lib=mainLib);
 ## biocLite (pkgs="GenomeInfoDb", type="source", lib=mainLib);
