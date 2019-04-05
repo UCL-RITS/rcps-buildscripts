@@ -6,7 +6,7 @@
 # June 2016
 # Updated May 2017
 # Updated April 2019 for Bioconductor 3.8 which uses a new installation 
-# tool - BiocManager
+# tool - BiocManager also addeded IlluminaHumanMethylationEPICanno.ilm10b4.hg19
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
