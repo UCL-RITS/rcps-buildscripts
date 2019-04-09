@@ -6,15 +6,22 @@
 # 
 #
 
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.6.3
+
 NAME=${NAME:-boost}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-1_63_0}
 # get the version with dot separators
 VERSIONNUM=${VERSION//_/.}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/caffe/boost}
 SHA256=${SHA256:-beae2529f759f6b3bf3f4969a19c2e9d6f0c503edcb2de4a61d1428519fcb3b0}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/${NAME}/files/${NAME}/${VERSIONNUM}/${NAME}_${VERSION}.tar.bz2}
-MPI=${MPI:-yes}
+MPI=${MPI:-no}
 
 set -e
 
@@ -38,7 +45,7 @@ then
   fi
 
   cd ${NAME}_${VERSION}
-  ./bootstrap.sh --with-libraries=all --with-python=python --prefix=$INSTALL_PREFIX
+  ./bootstrap.sh --with-libraries=all --with-python=python3 --prefix=$INSTALL_PREFIX
 
   if [ "$MPI" == "yes" ]
   then
