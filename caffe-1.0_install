@@ -39,6 +39,7 @@ if [ "${TYPE}" == "cudnn" ]; then
   require cudnn/6.0/cuda-7.5
 fi
 
+rm -rf $INSTALL_PREFIX
 
 mkdir -p $INSTALL_PREFIX
 
