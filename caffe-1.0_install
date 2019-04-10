@@ -44,6 +44,7 @@ rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
 
 export LD_LIBRARY_PATH=/shared/ucl/apps/caffe/boost/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/shared/ucl/apps/caffe/boost/lib:$LIBRARY_PATH
 export CPATH=/shared/ucl/apps/caffe/boost/include:$CPATH
 export BOOST_ROOT=/shared/ucl/apps/caffe/boost
 export BOOSTROOT=/shared/ucl/apps/caffe/boost
