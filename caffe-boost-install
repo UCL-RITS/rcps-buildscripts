@@ -41,7 +41,14 @@ then
 
   cd ${NAME}_${VERSION}
   ./bootstrap.sh --with-libraries=all --with-python=python3 --prefix=$INSTALL_PREFIX
+    cat <<EOT >> project-config.jam
 
+# -----------------
+# MPI configuration.
+# -----------------
+
+using python : 3.6 : /shared/ucl/apps/python/3.6.3/gnu-4.9.2/bin/python3 :  /shared/ucl/apps/python/3.6.3/gnu-4.9.2/include/python3.6m :  /shared/ucl/apps/python/3.6.3/gnu-4.9.2/lib ;
+EOT
   ./b2 install $b2opts 2>&1 | tee build.log
 
 else
