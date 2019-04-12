@@ -18,7 +18,7 @@ DATUM_VERSION=${DATUM_VERSION:-1.8}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION}}
 MD5=${MD5:-08cd21c95e530cd01c5cf58e9f32483a}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
-DATUM_ARCHIVE=${DATUM_ARCHIVE:- http://download.osgeo.org/proj/proj-datumgrid-{DATUM_VERSION}.zip}
+DATUM_ARCHIVE=${DATUM_ARCHIVE:- http://download.osgeo.org/proj/proj-datumgrid-${DATUM_VERSION}.zip}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
