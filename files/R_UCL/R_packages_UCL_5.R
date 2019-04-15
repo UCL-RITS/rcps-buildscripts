@@ -162,6 +162,9 @@ install.packages ("TAM", lib=mainLib, repos=repros);
 install.packages ("devtools", lib=mainLib, repos=repros);
 devtools::install_github("jamesdunham/dgo");
 
+# For Kasia Kozdon (k.kozdon.11@ucl.ac.uk) April 2019
+install.packages ("kohonen", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
