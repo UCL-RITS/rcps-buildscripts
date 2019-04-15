@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="go"
+package_version="1.12.4"
+src_urls="https://storage.googleapis.com/golang/go${package_version}.linux-amd64.tar.gz"
+# Optional: 
+# package_variant=""
+package_description="Go is an open-source, compiled, statically-typed language with garbage collection, limited structural typing, memory safety features and CSP-style concurrent programming features added."
+
+actual_file_name=go${package_version}.linux-amd64.tar.gz
+actual_file_sha256=d7d1f1f88ddfe55840712dc1747f37a790cbcaa448f6c9cf51bbe10aa65442f5
+
+module purge
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  sha256sum -c <<<"$actual_file_sha256  $actual_file_name"
+}
+
+_setup_files() {
+  basename=$(tar -tf $actual_file_name | head -n 1 | sed -e 's_/__')
+  tar -xf $actual_file_name
+}
+
+_build() {
+  mkdir -p "${install_prefix%/*}"
+  mv go "${install_prefix}"
+  echo "Installed to: $install_prefix"
+}
+
+_prepare_module() {
+  make_module -p "$install_prefix" \
+              -c "${package_name}" \
+              -o "$module_dir/$package_label" \
+              -v GOROOT="$install_prefix" \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
