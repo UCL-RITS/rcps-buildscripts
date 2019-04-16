@@ -204,6 +204,9 @@ BiocManager::install ("missMethyl", type="source", lib=dbLib);
 
 BiocManager::install ("DEXSeq", type="source", lib=mainLib);
 
+# Additional CRAN packages
+install.packages ("PSCBS", lib=mainLib, repos=repros);
+
 # End of Bioconductor_UCL_1
 
 # BiocManager::install ("XXX", type="source", lib=mainLib);

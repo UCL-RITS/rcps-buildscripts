@@ -81,7 +81,7 @@ install.packages ("R.cache", lib=mainLib, repos=repros);
 install.packages ("R.filesets", lib=mainLib, repos=repros);
 install.packages ("R.devices", lib=mainLib, repos=repros);
 install.packages ("R.rsp", lib=mainLib, repos=repros);
-install.packages ("PSCBS", lib=mainLib, repos=repros);
+# install.packages ("PSCBS", lib=mainLib, repos=repros);
 install.packages ("aroma.core", lib=mainLib, repos=repros);
 install.packages ("R.huge", lib=mainLib, repos=repros);
 install.packages ("truncnorm", lib=mainLib, repos=repros);
