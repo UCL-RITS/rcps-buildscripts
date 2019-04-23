@@ -1,0 +1,113 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="llvm"
+package_version="8.0.0"
+package_description="The LLVM Project is a collection of modular and reusable compiler and toolchain technologies. This installation includes clang, a C compiler based on LLVM."
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require cmake/3.13.3
+# Required for tests
+require python/2.7.12
+# Required for build only
+require swig/3.0.7/gnu-4.9.2
+
+
+# LLVM is too big to build in /tmp or $XDG_RUNTIME_DIR,
+#  it takes at least 6GB of storage
+#make_build_env --tmp-root="$(mktemp -d -p $HOME -t llvm-build-dir.XXXXXXXX)"
+make_build_env --tmp-root=/dev/shm
+
+cd "$build_dir"
+
+wget http://releases.llvm.org/8.0.0/llvm-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/cfe-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/compiler-rt-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/libcxx-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/libcxxabi-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/libunwind-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/lld-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/lldb-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/openmp-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/polly-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/clang-tools-extra-8.0.0.src.tar.xz \
+     http://releases.llvm.org/8.0.0/test-suite-8.0.0.src.tar.xz
+
+manifest \
+    sha256:084c115aab0084e63b23eee8c233abb6739c399e29966eaeccfc6e088e0b736b  cfe-8.0.0.src.tar.xz \
+    sha256:4f00122be408a7482f2004bcf215720d2b88cf8dc78b824abb225da8ad359d4b  clang-tools-extra-8.0.0.src.tar.xz \
+    sha256:b435c7474f459e71b2831f1a4e3f1d21203cb9c0172e94e9d9b69f50354f21b1  compiler-rt-8.0.0.src.tar.xz \
+    sha256:c2902675e7c84324fb2c1e45489220f250ede016cc3117186785d9dc291f9de2  libcxx-8.0.0.src.tar.xz \
+    sha256:c2d6de9629f7c072ac20ada776374e9e3168142f20a46cdb9d6df973922b07cd  libcxxabi-8.0.0.src.tar.xz \
+    sha256:ff243a669c9cef2e2537e4f697d6fb47764ea91949016f2d643cb5d8286df660  libunwind-8.0.0.src.tar.xz \
+    sha256:9caec8ec922e32ffa130f0fb08e4c5a242d7e68ce757631e425e9eba2e1a6e37  lld-8.0.0.src.tar.xz \
+    sha256:49918b9f09816554a20ac44c5f85a32dc0a7a00759b3259e78064d674eac0373  lldb-8.0.0.src.tar.xz \
+    sha256:8872be1b12c61450cacc82b3d153eab02be2546ef34fa3580ed14137bb26224c  llvm-8.0.0.src.tar.xz \
+    sha256:f7b1705d2f16c4fc23d6531f67d2dd6fb78a077dd346b02fed64f4b8df65c9d5  openmp-8.0.0.src.tar.xz \
+    sha256:e3f5a3d6794ef8233af302c45ceb464b74cdc369c1ac735b6b381b21e4d89df4  polly-8.0.0.src.tar.xz \
+    sha256:b567d761189e172650ec733fb9bcc4eeabf3f58ae97d85dec9e66392bb37b7ea  test-suite-8.0.0.src.tar.xz
+
+for i in *.tar.xz; do
+    tar -xf "$i"
+    mv "${i%\.tar\.xz}" "${i%-8\.0\.0\.src\.tar\.xz}"
+done
+
+ln -s cfe clang
+
+cd llvm
+
+mkdir build
+cd build
+
+cmake \
+    -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_BUILD_LLVM_DYLIB=True \
+    -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lldb;compiler-rt;lld;polly;openmp" \
+    -DLLVM_TOOL_OPENMP_BUILD=True \
+    -DLLVM_INSTALL_BINUTILS_SYMLINKS=True \
+    -DLLVM_INSTALL_UTILS=True \
+    -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=True \
+    ../
+
+# Normally I use -l to keep build load manageable, but
+#  LLVM's builds *seem* to have problems somewhere
+#  that made load spike to >100 using that
+make -j 8
+
+make check
+
+make install
+
+# Setting up automatic prereqs for make_module_v2
+module purge
+module load gcc-libs/4.9.2
+
+# This is the module for LLVM and relevant tooling
+make_module_v2
+
+
+# And now the module for clang as the C/C++ compiler
+# Should conflict only with other C/C++/Obj-C/Obj-C++ compilers
+make_module_v2 \
+    -d \
+    -v CC=clang \
+    -v CXX=clang \
+    -r llvm/8.0.0 \
+    -r gcc-libs/4.9.2 \
+    -o ${module_dir}/compilers/clang/8.0.0 \
+    -C \
+    -c compilers/gnu \
+    -c compilers/intel \
+    -c compilers/pgi \
+    -c compilers/clang \
+    -w "The Clang project provides a language front-end and tooling infrastructure for languages in the C language family (C, C++, Objective C/C++, OpenCL, CUDA, and RenderScript) for the LLVM project. This module sets variables to make the clang compiler binary the default C and C++ compiler in your environment."
+
+post_build_report
+
