@@ -101,7 +101,7 @@ make_module_v2 \
     -v CXX=clang \
     -r llvm/8.0.0 \
     -r gcc-libs/4.9.2 \
-    -o ${module_dir}/compilers/clang/8.0.0 \
+    -o "${module_dir}/compilers/clang/8.0.0" \
     -C \
     -c compilers/gnu \
     -c compilers/intel \
