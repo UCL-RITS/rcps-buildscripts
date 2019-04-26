@@ -40,6 +40,8 @@ if [[ "${check_tests:-0}" -eq 1 ]]; then
     echo ""
 fi
 
+chmod -R +rX "$module_dir"
+
 post_build_report
 
 
