@@ -68,7 +68,7 @@ _post_build() {
         -v "MPI_RUN=${install_prefix}/bin/mpirun" \
         -v "GERUN_LAUNCHER=openmpi-sge" \
         -e "PATH:${install_prefix}/bin" \
-        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper/bin" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp3+/bin" \
         -e "LD_RUN_PATH:${install_prefix}/lib" \
         -e "LD_LIBRARY_PATH:${install_prefix}/lib" \
         -e "CPATH:${install_prefix}/include" \
