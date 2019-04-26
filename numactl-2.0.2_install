@@ -1,0 +1,45 @@
+#!/bin/bash
+
+package_name=numactl
+package_version=2.0.12
+package_description="numactl provides NUMA policy support, as well as tools and a library to display NUMA allocation statistics and debugging information."
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env
+
+cd "$build_dir"
+
+wget https://github.com/numactl/numactl/releases/download/v2.0.12/numactl-2.0.12.tar.gz
+manifest sha256:55bbda363f5b32abd057b6fbb4551dd71323f5dbb66335ba758ba93de2ada729  numactl-2.0.12.tar.gz
+
+tar -xf "numactl-${package_version}.tar.gz"
+cd "numactl-${package_version}"
+
+./configure \
+    --prefix="$install_prefix" \
+    --enable-shared \
+    --enable-static
+
+make
+make check || check_tests=1
+make install
+
+make_module_v2
+
+if [[ "${check_tests:-0}" -eq 1 ]]; then
+    echo ""
+    echo "NB: if 1 test has failed above it is probably the interleave test, " 
+    echo "    which is expected to fail on busy systems." 
+    echo "    This type of failure does not signify a problem."
+    echo ""
+fi
+
+post_build_report
+
+
