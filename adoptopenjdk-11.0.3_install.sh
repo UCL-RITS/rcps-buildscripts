@@ -21,7 +21,7 @@ OPENJ9_VERSION=${OPENJ9_VERSION:-0.14.0}
 if [ "${VM}" == "openj9" ]
 then
   SHA256=${SHA256:-7012edd56fc958070bc4747073de14ea08eb43081eb6ea19bdbf4763186e2d17}
-  SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${VERSION}%2B${UPDATE}_openj9-${OPENJ9_VERTSION}/OpenJDK11U-jdk_x64_linux_openj9_${VERSION}_${UPDATE}_openj9-${OPENJ9_VERSION}.tar.gz}
+  SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${VERSION}%2B${UPDATE}_openj9-${OPENJ9_VERSION}/OpenJDK11U-jdk_x64_linux_openj9_${VERSION}_${UPDATE}_openj9-${OPENJ9_VERSION}.tar.gz}
 elif [ "${VM}" == "hotspot" ]
 then
   SHA256=${SHA256:-23cded2b43261016f0f246c85c8948d4a9b7f2d44988f75dad69723a7a526094}
