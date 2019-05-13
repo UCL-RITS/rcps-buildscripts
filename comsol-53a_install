@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing COMSOL
+#
+#
+
+NAME=${NAME:-Comsol}
+VERSION=${VERSION:-53a}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/comsol${VERSION}/multiphysics}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Comsol/Installers/COMSOL${VERSION}_lnx.tar.gz}
+LICSERV=${LICSERV:-27000@comsol-lm.ee.ucl.ac.uk}
+LICNAME=${LICNAME:-EEE}
+LICCO=${LICCO:-UCL}
+LICTYPE=${LICTYPE:-mph}
+COMSOLGROUP=${COMSOLGROUP:-lgcomsol}
+
+set -e
+
+if [ "$USER" != "ccspap2"]
+then
+    echo "Must use ccspap2 to install this for the lgcomsol group"
+    exit 1
+fi
+
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+tar -xvf $SRC_ARCHIVE
+
+# back up and set values in setupconfig
+sed -i.bak -e "s|installdir =|installdir = $INSTALL_PREFIX|" setupconfig.ini
+sed -i -e "s|showgui = 1|showgui = 0|" setupconfig.ini
+sed -i -e "s|agree = 0|agree = 1|" setupconfig.ini
+sed -i -e "s|license =|license = $LICSERV|" setupconfig.ini
+sed -i -e "s|name =|name = $LICNAME|" setupconfig.ini
+sed -i -e "s|company =|company = $LICCO|" setupconfig.ini
+sed -i -e "s|lictype =|lictype = $LICTYPE|" setupconfig.ini
+
+sed -i -e "s|startmenushortcuts = 1|startmenushortcuts = 0|" setupconfig.ini
+sed -i -e "s|desktopshortcuts = 1|desktopshortcuts = 0|" setupconfig.ini
+sed -i -e "s|linuxlauncher = 1|linuxlauncher = 0|" setupconfig.ini
+sed -i -e "s|symlinks = 1|symlinks = 0|" setupconfig.ini
+sed -i -e "s|fileassoc = 1|fileassoc = 0|" setupconfig.ini
+sed -i -e "s|firewall = 1|firewall = 0|" setupconfig.ini
+
+# tell it to put the install config in $temp_dir or it will try to write to ~/.comsol
+./setup -s setupconfig.ini -configuration $temp_dir/comsolconf
+
+# set permissions to restricted group only
+chgrp -Rv $COMSOLGROUP $INSTALL_PREFIX
+chmod o-rx $INSTALL_PREFIX
+
