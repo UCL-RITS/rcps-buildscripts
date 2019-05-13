@@ -18,7 +18,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
 SHA256=${SHA256:-bd3a964d475cf5ae0443ee600a1e83559b0151c4117975068ac29d865f61a6ad}
 ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
-EXTDIR=${EXTDIR:-julia}
+EXTDIR=${EXTDIR:-julia-1.1.0}
 
 # Target architecture
 # Need to set this so that when built on Legion it builds for nehalem.
