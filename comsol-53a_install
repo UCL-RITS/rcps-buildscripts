@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing COMSOL
-#
+# Installing COMSOL 53a for ChemEng
+# Set LICSERV= when running the installer. 
 #
 
 NAME=${NAME:-Comsol}
 VERSION=${VERSION:-53a}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/comsol${VERSION}/multiphysics}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Comsol/Installers/COMSOL${VERSION}_lnx.tar.gz}
-LICSERV=${LICSERV:-27000@comsol-lm.ee.ucl.ac.uk}
-LICNAME=${LICNAME:-EEE}
-LICCO=${LICCO:-UCL}
+LICSERV=${LICSERV:-""}
+LICNAME=${LICNAME:-ChemEng}
+LICCO=${LICCO:-University College London}
 LICTYPE=${LICTYPE:-mph}
 COMSOLGROUP=${COMSOLGROUP:-lgcomsol}
 
@@ -23,6 +23,13 @@ then
     exit 1
 fi
 
+# Check if LICSERV is empty
+if [ -z "$LICSERV" ]
+then
+    echo "No license server set."
+    echo "Please specify LICSERV= when running this buildscript."
+    exit 1
+fi
 
 mkdir -p /dev/shm/$NAME
 temp_dir=`mktemp -d -p /dev/shm/$NAME`
