@@ -17,7 +17,7 @@ COMSOLGROUP=${COMSOLGROUP:-lgcomsol}
 
 set -e
 
-if [ "$USER" != "ccspap2"]
+if [ "$USER" != "ccspap2" ]
 then
     echo "Must use ccspap2 to install this for the lgcomsol group"
     exit 1
@@ -31,12 +31,12 @@ then
     exit 1
 fi
 
-mkdir -p /dev/shm/$NAME
-temp_dir=`mktemp -d -p /dev/shm/$NAME`
+mkdir -p "/dev/shm/$NAME"
+temp_dir=$(mktemp -d -p "/dev/shm/$NAME")
 
-cd $temp_dir
+cd "$temp_dir"
 
-tar -xvf $SRC_ARCHIVE
+tar -xvf "$SRC_ARCHIVE"
 
 # back up and set values in setupconfig
 sed -i.bak -e "s|installdir =|installdir = $INSTALL_PREFIX|" setupconfig.ini
@@ -55,9 +55,9 @@ sed -i -e "s|fileassoc = 1|fileassoc = 0|" setupconfig.ini
 sed -i -e "s|firewall = 1|firewall = 0|" setupconfig.ini
 
 # tell it to put the install config in $temp_dir or it will try to write to ~/.comsol
-./setup -s setupconfig.ini -configuration $temp_dir/comsolconf
+./setup -s setupconfig.ini -configuration "$temp_dir/comsolconf"
 
 # set permissions to restricted group only
-chgrp -Rv $COMSOLGROUP $INSTALL_PREFIX
-chmod o-rx $INSTALL_PREFIX
+chgrp -Rv "$COMSOLGROUP" "$INSTALL_PREFIX"
+chmod o-rx "$INSTALL_PREFIX"
 
