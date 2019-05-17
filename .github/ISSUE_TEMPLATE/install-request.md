@@ -15,7 +15,9 @@ It helps to give us as much information about the application as you know.
 -->
 
 <!-- 
-The name and version of the application you need should go here. If you don't need a specific version, we'll usually go for the latest release marked "stable".
+The name and version of the application you need should go here. If you don't need a specific version, we'll usually go for the latest release marked "stable". 
+
+Please also put this in the subject of the issue!
 -->
 Application: MyApp version 19.05
 
