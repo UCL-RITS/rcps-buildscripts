@@ -17,7 +17,7 @@ MD5=${MD5:-af6bb642f0e110d87b83c10852cbe6a1}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/install-tl-unx.tar.gz}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/tlnet-final/install-tl-unx.tar.gz}
-SRC_ARCHIVE=${SRC_ARCHIVE:http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
 INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-patches/texlive-${VERSION}_UCL.profile
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
