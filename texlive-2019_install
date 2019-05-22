@@ -13,7 +13,7 @@
 
 VERSION=${VERSION:-2019}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
-MD5=${MD5:-af6bb642f0e110d87b83c10852cbe6a1}
+MD5=${MD5:-ec46d52a6eb0fd4794f5275a1e7fa6aa}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/install-tl-unx.tar.gz}
 #SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/tlnet-final/install-tl-unx.tar.gz}
