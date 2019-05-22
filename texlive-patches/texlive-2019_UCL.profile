@@ -1,8 +1,9 @@
 # TeX Live Profile on UCL clusters for TeX Live 2019
-# texlive.profile written on Fri May  1 15:37:30 2015 UTC
+#
+# texlive.profile written on Wed May 22 09:53:23 2019 UTC
 # It will NOT be updated and reflects only the
 # installation profile at installation time.
-selected_scheme scheme-full
+selected_scheme scheme-custom
 TEXDIR /shared/ucl/apps/TeXLive/2019
 TEXMFCONFIG ~/.texlive2019/texmf-config
 TEXMFHOME ~/texmf
@@ -20,11 +21,7 @@ collection-fontsrecommended 1
 collection-fontutils 1
 collection-formatsextra 1
 collection-games 1
-collection-genericextra 1
-collection-genericrecommended 1
-collection-htmlxml 1
 collection-humanities 1
-# collection-langafrican 1
 collection-langarabic 1
 collection-langchinese 1
 collection-langcjk 1
@@ -35,7 +32,6 @@ collection-langeuropean 1
 collection-langfrench 1
 collection-langgerman 1
 collection-langgreek 1
-collection-langindic 1
 collection-langitalian 1
 collection-langjapanese 1
 collection-langkorean 1
@@ -47,33 +43,30 @@ collection-latex 1
 collection-latexextra 1
 collection-latexrecommended 1
 collection-luatex 1
-collection-mathextra 1
+collection-mathscience 1
 collection-metapost 1
 collection-music 1
-collection-omega 1
 collection-pictures 1
-collection-plainextra 1
+collection-plaingeneric 1
 collection-pstricks 1
 collection-publishers 1
-collection-science 1
 collection-texworks 1
 collection-xetex 1
-# in_place 0
-option_adjustrepo 1
-option_autobackup 1
-option_backupdir tlpkg/backups
-option_desktop_integration 1
-option_doc 1
-option_file_assocs 1
-option_fmt 1
-option_letter 0
-# option_menu_integration 1
-option_path 0
-option_post_code 1
-option_src 1
-option_sys_bin /usr/local/bin
-option_sys_info /usr/local/share/info
-option_sys_man /usr/local/share/man
-option_w32_multi_user 1
-option_write18_restricted 1
-portable 0
+instopt_adjustpath 0
+instopt_adjustrepo 1
+instopt_letter 0
+instopt_portable 0
+instopt_write18_restricted 1
+tlpdbopt_autobackup 1
+tlpdbopt_backupdir tlpkg/backups
+tlpdbopt_create_formats 1
+tlpdbopt_desktop_integration 1
+tlpdbopt_file_assocs 1
+tlpdbopt_generate_updmap 0
+tlpdbopt_install_docfiles 1
+tlpdbopt_install_srcfiles 1
+tlpdbopt_post_code 1
+tlpdbopt_sys_bin /usr/local/bin
+tlpdbopt_sys_info /usr/local/share/info
+tlpdbopt_sys_man /usr/local/share/man
+tlpdbopt_w32_multi_user 1
