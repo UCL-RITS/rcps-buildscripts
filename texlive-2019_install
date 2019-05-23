@@ -34,7 +34,7 @@ CHECKSUM=`md5sum $archive | awk '{print $1}'`
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
     tar xvzf `basename $SRC_ARCHIVE`
-    cd install-tl-20190522
+    cd install-tl-2019*
     # May need to add -repository location after 2020
     ./install-tl -profile $INSTALL_PROFILE
 
