@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python2/recommended
+require htslib/1.7
+
+NAME=${NAME:-platypus}
+VERSION=${VERSION:-3e72641}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/andyrimmer/Platypus}
+
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+git clone $SRC_ARCHIVE
+cd Platypus
+git checkout $VERSION
+
+make
+
