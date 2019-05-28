@@ -22,4 +22,4 @@ cd Platypus
 git checkout $VERSION
 
 make
-
+chmod +x bin/Platypus.py
