@@ -15,10 +15,10 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 module purge
+require gcc-libs/7.3.0
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
 require gerun
-require gcc-libs/7.3.0
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
 INSTALL_PREFIX="$(mktemp -d)"
