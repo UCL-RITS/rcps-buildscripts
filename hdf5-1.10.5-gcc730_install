@@ -15,9 +15,9 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 module purge
-require gcc-libs/7.3.0
-require compilers/intel/2018/update3
-require mpi/intel/2018/update3/intel
+require beta-modules 
+require compilers/gcc/7.3.0
+require openmpi/3.1.4
 require gerun
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
