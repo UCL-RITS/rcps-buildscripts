@@ -16,7 +16,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 module purge
 require beta-modules 
-require compilers/gcc/7.3.0
+require gcc-libs/7.3.0
 require openmpi/3.1.4
 require gerun
 
