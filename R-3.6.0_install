@@ -43,7 +43,7 @@ require openblas/0.2.14/gnu-4.9.2
 require java/1.8.0_92
 require fftw/3.3.6-pl2/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
-require texinfo/5.2/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
 require texlive/2019
 require gsl/2.4/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
