@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing base R plus recommended packages using GCC + OpenBLAS
+#
+# R 3.6.0
+#
+# by Brian Alston, June 2019
+#
+# May 2017 updated for R 3.4.0
+# October 2017 updated for R 3.4.2
+# May 2018 updated for R 3.5.0 and using fftw 3.3.6 and ROOT built
+#          using fftw 3.3.6
+# Sept 2018 updated for R 3.5.1 and udunits 2.2.26
+# April 2019 updated for R 3.5.3
+# June 2019 updated for R 3.6.0
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+# May need to update required modules for the latest R. Modules
+# updated:
+#
+# 
+
+VERSION=${VERSION:-3.6.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+MD5=${MD5:-65601eac6d353f7efb5b48c29097c2fb}
+SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-3/R-${VERSION}.tar.gz}
+# LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
+# SRC_ARCHIVE=${SRC_ARCHIVE:- /home/ccaabaa/Software/R//R-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require openblas/0.2.14/gnu-4.9.2
+require java/1.8.0_92
+require fftw/3.3.6-pl2/gnu-4.9.2
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/5.2/gnu-4.9.2
+require texlive/2015
+require gsl/2.4/gnu-4.9.2
+require hdf/5-1.8.15/gnu-4.9.2
+require udunits/2.2.26/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
+require jags/4.2.0/gnu.4.9.2-openblas
+require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+#
+# And for doing the MPI support:
+# 
+# require mpi/openmpi/3.0.0/gnu-4.9.2
+
+# temp_dir=`mktemp -d -p /dev/shm`
+temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+if [[ $LOCAL_ARCHIVE ]]
+then
+    cp $SRC_ARCHIVE .
+else
+    wget $SRC_ARCHIVE
+fi
+
+CHECKSUM=`md5sum R-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf R-${VERSION}.tar.gz
+   cd R-${VERSION}
+   ./configure -C --prefix=${INSTALL_PREFIX} --with-recommended-packages --with-x \
+      --with-readline=yes --enable-R-shlib \
+      --with-blas="-L/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib -lopenblas" \
+      --enable-BLAS-shlib 2>&1 | 
+   tee configure-command-OpenBLAS_log
+
+   make 2>&1 | tee make-OpenBLAS_log
+   make check 2>&1 | tee make-check-OpenBLAS_log
+   make pdf  2>&1 | tee make-pdf_log
+   make install 2>&1 | tee make-install_log
+   make install-pdf 2>&1 | tee make-install-pdf_log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
