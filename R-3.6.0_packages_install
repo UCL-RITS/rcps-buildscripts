@@ -132,8 +132,9 @@ R_input=${LOCALDIR}/R_packages_UCL_3.R
 R --no-save < $R_input
 
 # No longer on CRAN - Aug 2014
+# Removed from packages to be built June 2019 as it fails to build with R 3.6.0
 
-R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/NetworkAnalysis_0.3-1.tar.gz
+# R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/NetworkAnalysis_0.3-1.tar.gz
 
 R_input=${LOCALDIR}/R_packages_UCL_4.R
 R --no-save < $R_input
