@@ -21,7 +21,7 @@ require openmpi/3.1.4
 require gerun
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
-INSTALL_PREFIX="$(mktemp -d)"
+INSTALL_PREFIX="$(/home/cceahbu/tmp)"
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -38,7 +38,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvf hdf${VERSION}.tar.bz2
    cd hdf${VERSION}
-   CC=mpicc FC=mpiifort ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
+   CC=mpicc FC=mpi730 ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
    make
    export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
 
