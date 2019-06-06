@@ -7,7 +7,7 @@ Installing HDF5 1.10.5 Serial Version with currently loaded compiler
 VERSION=${VERSION:-5-1.10.5}
 COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/impi/${COMPILER_TAG}}
-MD5=${MD5:-e115eeb66e944fa7814482415dd21cc4}
+MD5=${MD5:-7c19d6b81ee2a3ba7d36f6922b2f90d3}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
 PARALLEL_SCRATCH_DIR=$HOME/Scratch
 set -e
@@ -19,7 +19,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 module purge
 require beta-modules 
 require gcc-libs/7.3.0
-require openmpi/3.1.4
+require compilers/gnu/7.3.0
+require mpi/openmpi/3.1.4/gnu-7.3.0
 require gerun
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -37,7 +38,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvf hdf${VERSION}.tar.bz2
    cd hdf${VERSION}
-   CC=mpicc FC=mpi730 ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
+   CC=mpicc FC=mpif90 ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
    make
    export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
 
