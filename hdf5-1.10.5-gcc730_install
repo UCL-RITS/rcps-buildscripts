@@ -5,6 +5,8 @@ Installing HDF5 1.10.5 Serial Version with currently loaded compiler
 #
 #
 VERSION=${VERSION:-5-1.10.5}
+COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/impi/${COMPILER_TAG}}
 MD5=${MD5:-e115eeb66e944fa7814482415dd21cc4}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
 PARALLEL_SCRATCH_DIR=$HOME/Scratch
@@ -19,9 +21,6 @@ require beta-modules
 require gcc-libs/7.3.0
 require openmpi/3.1.4
 require gerun
-
-COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
-INSTALL_PREFIX="$(/home/cceahbu/tmp)"
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
