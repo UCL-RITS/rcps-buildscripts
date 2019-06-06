@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-Installing HDF5 1.10.5 Parallel Version with currently loaded compiler
+#Installing HDF5 1.10.5 Parallel Version with currently loaded compiler
 #
 #
 VERSION=${VERSION:-5-1.10.5}
