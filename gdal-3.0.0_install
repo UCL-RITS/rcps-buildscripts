@@ -5,7 +5,7 @@
 #
 # by Owain Kenway, 2015
 # Updated June 2019 for GDAL 3.0.0
-#
+# Note: defaults to building without HDF5 support as this is breaking on Myriad
 
 APPNAME=${APPNAME:-gdal}
 VERSION=${VERSION:-3.0.0}
@@ -17,6 +17,7 @@ HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
 # Need yes for 3.0.0 (see release notes)
 LINK_PROJ=${LINK_PROJ:-yes}
+WITH_HDF5=${WITH_HDF5:-no}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.0.0/lib}
 
 set -e
@@ -54,11 +55,11 @@ then
   tar -zxvf ${APPNAME}-${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
-  if [ "$LINK_PROJ" == "yes" ]
+  if [ "$WITH_HDF5" == "yes" ]
   then
     ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
   else
-    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+    ./configure --prefix=$INSTALL_PREFIX
   fi
   make && make install
 else
