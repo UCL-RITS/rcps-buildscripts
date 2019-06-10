@@ -56,7 +56,7 @@ then
   cd ${APPNAME}-${VERSION}
   if [ "$LINK_PROJ" == "yes" ]
   then
-    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
+    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
   else
     ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
   fi
