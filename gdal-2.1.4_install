@@ -4,22 +4,20 @@
 # Installing gdal
 #
 # by Owain Kenway, 2015
-# Updated June 2019 for GDAL 3.0.0
-# Note: defaults to building without HDF5 support as this is breaking on Myriad
+# Updated June 2019 for GDAL 2.1.4
 
-### This hasn't worked! Need to check configure options. Maybe need more uptodate libtool?
 
 APPNAME=${APPNAME:-gdal}
-VERSION=${VERSION:-3.0.0}
+VERSION=${VERSION:-2.1.4}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-797a4400e673aa2ba647603c57b9b2b6}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/releases/download/v${VERSION}/gdal-${VERSION}.tar.gz}
+MD5=${MD5:-c488c6c6b4b22f8dbe96d6aab5eb326e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/archive/v${VERSION}.tar.gz}
 HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
 # Need yes for 3.0.0 (see release notes)
 LINK_PROJ=${LINK_PROJ:-yes}
-WITH_HDF5=${WITH_HDF5:-no}
+WITH_HDF5=${WITH_HDF5:-yes}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.0.0/lib}
 
 set -e
@@ -34,6 +32,7 @@ require perl/5.22.0
 require python/2.7.12
 require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
+require libtool/2.4.6
 
 if [ "$LINK_PROJ" == "yes" ]
 then
@@ -54,7 +53,7 @@ CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -zxvf ${APPNAME}-${VERSION}.tar.gz
+  tar -zxvf v${VERSION}.tar.gz
 
   cd ${APPNAME}-${VERSION}
   if [ "$WITH_HDF5" == "yes" ]
