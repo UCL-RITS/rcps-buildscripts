@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gmt
+#
+# by Owain Kenway, 2015 
+#
+# Updated for gmt 5.3.1 - Nov 2016
+# Updated for gmt 5.4.5 - June 2019
+
+
+# Need the following loaded to work:
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require rcps-core/1.0.0
+require compilers/gnu/4.9.2
+require perl/5.22.0
+require python/2.7.12
+require hdf/5-1.8.15/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
+require gdal/2.4.1
+require libtool/2.4.6
+require graphicsmagick/1.3.21
+require ghostscript/9.19/gnu-4.9.2
+require fftw/3.3.6-pl2/gnu-4.9.2
+require openblas/0.2.14/gnu-4.9.2
+
+
+APPNAME=${APPNAME:-gmt}
+VERSION=${VERSION:-5.4.5}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-a2e097410f37155d59b030275361ce60}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/gmt-${VERSION}-src.tar.gz}
+
+DATA_PREFIX=${DATA_PREFIX:-/shared/ucl/apps/$APPNAME/data}
+
+# We can't get 1.1.2 any more
+DCW_VERSION=${DCW_VERSION:-1.1.4}
+DCW_MD5=${DCW_MD5:-4f30857a8b12af0f910222fceb591538}
+DCW_ARCHIVE=${DCW_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/dcw-gmt-${DCW_VERSION}.tar.gz}
+
+GSHHG_VERSION=${GSHHG_VERSION:-2.3.7}
+GSHHG_MD5=${GSHHG_MD5:-8ee2653f9daf84d49fefbf990bbfa1e7}
+GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-ftp://ftp.soest.hawaii.edu/gmt/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE 
+wget $DCW_ARCHIVE
+wget $GSHHG_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}-src.tar.gz | awk '{print $1}'`
+DCWCHECK=`md5sum dcw-gmt-${DCW_VERSION}.tar.gz | awk '{print $1}'`
+GSHHGCHECK=`md5sum gshhg-gmt-${GSHHG_VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM"  && "$DCW_MD5" == "$DCWCHECK" && "$GSHHG_MD5" == "$GSHHGCHECK" ]]
+then
+
+# Datasets
+  mkdir -p $DATA_PREFIX
+  cd $DATA_PREFIX
+  tar -zxvf $temp_dir/dcw-gmt-${DCW_VERSION}.tar.gz
+  tar -zxvf $temp_dir/gshhg-gmt-${GSHHG_VERSION}.tar.gz
+
+  cd $temp_dir
+
+  tar -zxvf ${APPNAME}-${VERSION}-src.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+
+  mkdir build
+  cd cmake
+  cp ConfigUserTemplate.cmake ConfigUser.cmake
+  cd ../build
+  #  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3F_LIBRARY=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3f.so -DFFTW3_INCLUDE_DIR=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/include -DDCW_PATH=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_PATH=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} ../
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.6-pl2/gnu-4.9.2 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} ..
+
+  make 
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $DCW_MD5 $GSHHG_MD5"
+  echo "Got: $CHECKSUM $DCWCHECK $GSHHGCHECK"
+fi
