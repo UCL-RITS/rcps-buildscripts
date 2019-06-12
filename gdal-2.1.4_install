@@ -49,7 +49,7 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+CHECKSUM=`md5sum v${VERSION}.tar.gz| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
