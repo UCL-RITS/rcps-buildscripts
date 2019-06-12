@@ -55,7 +55,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -zxvf v${VERSION}.tar.gz
 
-  cd ${APPNAME}-${VERSION}
+  cd ${APPNAME}-${VERSION}/gdal
   if [ "$WITH_HDF5" == "yes" ]
   then
     ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
