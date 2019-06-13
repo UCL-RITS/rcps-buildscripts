@@ -81,7 +81,7 @@ then
   cp ConfigUserTemplate.cmake ConfigUser.cmake
   cd ../build
   #  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3F_LIBRARY=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/lib/libfftw3f.so -DFFTW3_INCLUDE_DIR=/shared/ucl/apps/fftw/3.3.4/gnu-4.9.2/include -DDCW_PATH=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_PATH=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} ../
-  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.6-pl2/gnu-4.9.2 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} ..
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.6-pl2/gnu-4.9.2 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP ..
 
   make 
   make install
