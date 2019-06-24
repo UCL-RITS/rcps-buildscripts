@@ -58,9 +58,19 @@ then
   cd ${APPNAME}-${VERSION}/gdal
   if [ "$WITH_HDF5" == "yes" ]
   then
-    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+      if [ "$LINK_PROJ" == "yes" ]
+      then
+	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
+      else
+	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+      fi
   else
-    ./configure --prefix=$INSTALL_PREFIX
+    if [ "$LINK_PROJ" == "yes" ]
+    then
+	./configure --prefix=$INSTALL_PREFIX --with-static-proj4=$PROJ
+    else 
+	./configure --prefix=$INSTALL_PREFIX
+    fi
   fi
   make && make install
 else
