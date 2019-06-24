@@ -60,6 +60,7 @@ then
   then
       if [ "$LINK_PROJ" == "yes" ]
       then
+	  export CPPFLAGS="$CPPFLAGS -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
 	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
       else
 	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
@@ -67,6 +68,7 @@ then
   else
     if [ "$LINK_PROJ" == "yes" ]
     then
+	export CPPFLAGS="$CPPFLAGS -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
 	./configure --prefix=$INSTALL_PREFIX --with-static-proj4=$PROJ
     else 
 	./configure --prefix=$INSTALL_PREFIX
