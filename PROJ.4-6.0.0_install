@@ -30,7 +30,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require rcps-core/1.0.0
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-require gmt/recommended
+# require gmt/recommended
 
 temp_dir=`mktemp -d -p /dev/shm`
 

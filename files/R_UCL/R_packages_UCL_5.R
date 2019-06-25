@@ -165,6 +165,10 @@ devtools::install_github("jamesdunham/dgo");
 # For Kasia Kozdon (k.kozdon.11@ucl.ac.uk) April 2019
 install.packages ("kohonen", lib=mainLib, repos=repros);
 
+# From RITS drop in session 25th June 2019
+install.packages ("GJRM", lib=mainLib, repos=repros);
+install.packages ("rlist", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
