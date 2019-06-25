@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TeX Live 2019
+#
+# by Brian Alston, 2015 
+#
+# Will need modules: rcps-core/1.0.0
+#
+# Updated: May 2016 for TeX Live 2015 and removing root depenancy (no longer 
+# using ISO image).
+# Updated: May 2019 for TeX Live 2019
+
+VERSION=${VERSION:-2019}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/TeXLive/$VERSION}
+MD5=${MD5:-4d6ad9676910834514c905f8b8f09e9e}
+#SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
+#SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/install-tl-unx.tar.gz}
+#SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://tug.org/historic/systems/texlive/${VERSION}/tlnet-final/install-tl-unx.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz}
+INSTALL_PROFILE=/shared/ucl/apps/build_scripts/texlive-patches/texlive-${VERSION}_UCL.profile
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=`basename $SRC_ARCHIVE` 
+
+CHECKSUM=`md5sum $archive | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    tar xvzf `basename $SRC_ARCHIVE`
+    cd install-tl-2019*
+    # May need to add -repository location after 2020
+    ./install-tl -profile $INSTALL_PROFILE
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gdal
+#
+# by Owain Kenway, 2015
+# Updated June 2019 for GDAL 2.1.4
+
+
+APPNAME=${APPNAME:-gdal}
+VERSION=${VERSION:-2.1.4}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-c488c6c6b4b22f8dbe96d6aab5eb326e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/archive/v${VERSION}.tar.gz}
+HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
+# choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
+# Need yes for 3.0.0 (see release notes)
+LINK_PROJ=${LINK_PROJ:-yes}
+WITH_HDF5=${WITH_HDF5:-yes}
+PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.0.0/lib}
+
+set -e
+
+# load modules for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/gnu
+require perl/5.22.0
+require python/2.7.12
+require hdf/5-1.8.15/gnu-4.9.2
+require netcdf/4.3.3.1/gnu-4.9.2
+require libtool/2.4.6
+
+if [ "$LINK_PROJ" == "yes" ]
+then
+  require gmt/recommended
+  require proj.4/6.0.0
+fi
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum v${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf v${VERSION}.tar.gz
+
+  cd ${APPNAME}-${VERSION}/gdal
+  if [ "$WITH_HDF5" == "yes" ]
+  then
+      if [ "$LINK_PROJ" == "yes" ]
+      then
+	  export CPPFLAGS="$CPPFLAGS -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-static-proj4=$PROJ
+      else
+	  ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+      fi
+  else
+    if [ "$LINK_PROJ" == "yes" ]
+    then
+	export CPPFLAGS="$CPPFLAGS -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+	./configure --prefix=$INSTALL_PREFIX --with-static-proj4=$PROJ
+    else 
+	./configure --prefix=$INSTALL_PREFIX
+    fi
+  fi
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

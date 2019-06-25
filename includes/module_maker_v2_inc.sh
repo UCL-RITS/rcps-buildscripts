@@ -26,6 +26,8 @@ function make_module_v2() {
     local module_prereqs=""
     if [[ -n "${LOADEDMODULES:-}" ]]; then
         module_prereqs="prereq ${LOADEDMODULES//:/$'\n'prereq }"$'\n'
+        # Generally we want gcc-libs to be version-non-specific
+        module_prereqs="${module_prereqs//gcc-libs\/[0-9].[0-9].[0-9]/gcc-libs}"
     fi
 
 

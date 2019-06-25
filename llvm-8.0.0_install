@@ -65,15 +65,20 @@ cd llvm
 mkdir build
 cd build
 
+# Removing the line below that enables building a dynamic libLLVM.so might sound
+#    like it would remove the GCC dependency but it doesn't. :(
+
 cmake \
     -DCMAKE_INSTALL_PREFIX="$install_prefix" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_BUILD_LLVM_DYLIB=True \
     -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lldb;compiler-rt;lld;polly;openmp" \
     -DLLVM_TOOL_OPENMP_BUILD=True \
     -DLLVM_INSTALL_BINUTILS_SYMLINKS=True \
     -DLLVM_INSTALL_UTILS=True \
     -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=True \
+    -DCLANG_ENABLE_BOOTSTRAP=On \
+    -DLLVM_BUILD_LLVM_DYLIB=True \
+    -DCLANG_BOOTSTRAP_PASSTHROUGH="CMAKE_INSTALL_PREFIX;CMAKE_BUILD_TYPE;LLVM_BUILD_LLVM_DYLIB;LLVM_ENABLE_PROJECTS;LLVM_TOOL_OPENMP_BUILD;LLVM_INSTALL_BINUTILS_SYMLINKS;LLVM_INSTALL_UTILS;LLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN" \
     ../
 
 # Normally I use -l to keep build load manageable, but
