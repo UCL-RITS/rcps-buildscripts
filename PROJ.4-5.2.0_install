@@ -45,7 +45,9 @@ CHECKSUM=`md5sum proj-${VERSION}.tar.gz| awk '{print $1}'`
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf proj-${VERSION}.tar.gz
-   cd proj-${VERSION}/data
+   cd proj-${VERSION}
+   mkdir -p data
+   cd data
    unzip -x ../../proj-datumgrid-${DATUM_VERSION}.zip
    cd ..
    ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
