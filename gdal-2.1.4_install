@@ -5,6 +5,7 @@
 #
 # by Owain Kenway, 2015
 # Updated June 2019 for GDAL 2.1.4
+# Also updated to use PROJ.4 5.2.0 instead of 6.0.0 which doesn't work with R 3.6.0.
 
 
 APPNAME=${APPNAME:-gdal}
@@ -18,7 +19,7 @@ HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
 # Need yes for 3.0.0 (see release notes)
 LINK_PROJ=${LINK_PROJ:-yes}
 WITH_HDF5=${WITH_HDF5:-yes}
-PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.0.0/lib}
+PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/5.2.0/lib}
 
 set -e
 
@@ -36,8 +37,8 @@ require libtool/2.4.6
 
 if [ "$LINK_PROJ" == "yes" ]
 then
-  require gmt/recommended
-  require proj.4/6.0.0
+#  require gmt/recommended
+  require proj.4/5.2.0
 fi
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
