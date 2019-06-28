@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing VASP 
+#  using Intel compilers, MKL, FFTW->MKL wrapper, and Intel MPI.
+#  and libbeef for BEEF-vdW functionals
+
+set -e
+
+package_name="vasp"
+package_version="5.4.4-18apr2017"
+package_variant="libbeef"
+
+for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
+
+_env_setup() {
+    module purge
+    require  gcc-libs
+    require  compilers/intel/2017/update1
+    require  mpi/intel/2017/update1/intel
+    require  libbeef/0.1.3/intel-2018
+
+    make_build_env
+
+    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store}"
+    package_file="vasp-${package_version}.tgz"
+    unpack_dir="vasp.${package_version%-*}"
+
+    vasp_access_group=legvasp
+}
+
+
+_file_setup() {
+  cd "$build_dir"
+
+  cp "$package_store/$package_file" "./$package_file"
+
+  tar -xf $package_file
+}
+
+_pre_build() {
+  cd "$unpack_dir"
+  cp arch/makefile.include.linux_intel ./makefile.include
+  cd ..
+}
+
+_build() {
+  cd "$unpack_dir"
+  make
+  cd ..
+}
+
+_post_build() {
+  mkdir -p "$install_prefix"
+  chgrp -R "$vasp_access_group" "$install_prefix"
+  mkdir -p "$install_prefix/bin"
+  'cp' -v "$unpack_dir"/bin/vasp* "$install_prefix/bin"
+
+  # These are fiddlier to deal with now -- will separate from VASP exe installs
+  #mkdir -p "$install_prefix/potentials"
+  #'cp' -v potentials/* "$install_prefix/potentials/"
+}
+
+_clean_up() {
+  #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+  :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
