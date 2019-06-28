@@ -42,7 +42,8 @@ _pre_build() {
   cd "$unpack_dir"
   cp arch/makefile.include.linux_intel ./makefile.include
   # patch to use libbeef
-  patch -p0 -i "$includes_dir/../patches/VASP-5.4.4_makefile.include_libbeef.patch"
+  patch_dir=$(dirname $0 2>/dev/null)/patches
+  patch -p0 -i "$patch_dir/VASP-5.4.4_makefile.include_libbeef.patch"
   cd ..
 }
 
