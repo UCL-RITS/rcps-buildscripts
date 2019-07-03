@@ -123,10 +123,18 @@ install.packages ("psych", lib=mainLib, repos=repros);
 
 install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
+install.packages ("devtools", lib=mainLib, repos=repros);
+
 # More requsts from Political Science
+
+# Install sf from GitHub repository
+
+sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/6.1.0/lib --with-proj-share=/shared/ucl/apps/PROJ.4/6.1.0/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
+devtools::install_github("r-spatial/sf", configure.args=sfconf);
 
 install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
+
 install.packages ("erer", lib=mainLib, repos=repros);
 install.packages ("panelAR", lib=mainLib, repos=repros);
 install.packages ("arm", lib=mainLib, repos=repros);
@@ -159,7 +167,6 @@ install.packages ("png", lib=mainLib, repos=repros);
 install.packages ("TAM", lib=mainLib, repos=repros);
 
 # For Tom O'Grady (t.o'grady@ucl.ac.uk) April 2019
-install.packages ("devtools", lib=mainLib, repos=repros);
 devtools::install_github("jamesdunham/dgo");
 
 # For Kasia Kozdon (k.kozdon.11@ucl.ac.uk) April 2019
