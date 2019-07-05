@@ -10,7 +10,6 @@
 # Set up environment for UCL build scripts to work.
 
 set -e
-export PATH=$INSTALL_PREFIX/bin:$PATH
 
 # dirname=$(dirname $0 2>/dev/null || pwd)
 dirname=/shared/ucl/apps/build_scripts
