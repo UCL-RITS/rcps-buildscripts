@@ -53,6 +53,8 @@ then
     cd ${APPNAME}-${VERSION}
     mkdir build
     cd build
+    which cmake
+    cmake --version
     cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
     sed -i.orig -e 's/ENABLE_SSH:BOOL=ON/ENABLE_SSH:BOOL=OFF/' CMakeCache.txt
     make 
