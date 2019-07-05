@@ -22,6 +22,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 # loaded.
 
 require rcps-core/1.0.0
+require cmake
 require compilers/gnu/4.9.2
 require bison/3.0.4/gnu-4.9.2
 require gperf/3.0.4/gnu-4.9.2
