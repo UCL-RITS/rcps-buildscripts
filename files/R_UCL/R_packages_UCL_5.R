@@ -149,7 +149,7 @@ v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/a
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/include --with-udunits2-lib=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
-lwgeomconf <- 'CFLAGS="${CFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
+lwgeomconf <- 'CFLAGS="${CFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
 install.packages ("lwgeom", lib=mainLib, repos=repros, configure.vars=lwgeomconf);
 install.packages ("tmap", lib=mainLib, repos=repros);
 
