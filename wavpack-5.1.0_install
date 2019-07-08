@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="wavpack"
+package_version="5.1.0"
+package_description="WavPack is a completely open audio compression format providing lossless, high-quality lossy, and a unique hybrid compression mode."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "http://www.wavpack.com/wavpack-${package_version}.tar.bz2"
+manifest \
+    sha256:1939627d5358d1da62bc6158d63f7ed12905552f3a799c799ee90296a7612944 wavpack-5.1.0.tar.bz2
+
+tar -xf "wavpack-${package_version}.tar.bz2"
+cd "wavpack-${package_version}"
+
+./configure --prefix="$install_prefix"
+
+make
+make check
+make install
+
+module unload compilers
+make_module_v2
+chmod +rX "$module_dir"
+
+post_build_report
