@@ -123,6 +123,7 @@ install.packages ("psych", lib=mainLib, repos=repros);
 
 install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
+install.packages ("roxygen2", lib=mainLib, repos=repros);
 install.packages ("devtools", lib=mainLib, repos=repros);
 
 # More requsts from Political Science
