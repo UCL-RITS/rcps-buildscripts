@@ -50,6 +50,13 @@ install.packages ("stringr", lib=mainLib, repos=repros);
 install.packages ("reshape2", lib=mainLib, repos=repros);
 install.packages ("proto", lib=mainLib, repos=repros);
 install.packages ("ggplot2", lib=mainLib, repos=repros);
+install.packages ("devtools", lib=mainLib, repos=repros);
+
+# Install sf from GitHub repository
+
+sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/6.1.0/lib --with-proj-share=/shared/ucl/apps/PROJ.4/6.1.0/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
+devtools::install_github("r-spatial/sf", configure.args=sfconf);
+
 install.packages ("adegenet", lib=mainLib, repos=repros);
 install.packages ("pegas", lib=mainLib, repos=repros);
 install.packages ("stringdist", lib=mainLib, repos=repros);
@@ -124,14 +131,8 @@ install.packages ("psych", lib=mainLib, repos=repros);
 install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
 install.packages ("roxygen2", lib=mainLib, repos=repros);
-install.packages ("devtools", lib=mainLib, repos=repros);
 
 # More requsts from Political Science
-
-# Install sf from GitHub repository
-
-sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/6.1.0/lib --with-proj-share=/shared/ucl/apps/PROJ.4/6.1.0/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
-devtools::install_github("r-spatial/sf", configure.args=sfconf);
 
 install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
