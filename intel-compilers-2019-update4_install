@@ -51,7 +51,8 @@ tar -xf "$src_file"
 cd "$build_dir"
 cat > silent_config_file.cfg <<EOF
 ACCEPT_EULA=accept
-ACTIVATION_TYPE=trial_lic
+ACTIVATION_TYPE=license_server
+ACTIVATION_LICENSE_FILE=$intel_license
 ARCH_SELECTED=ALL
 CLUSTER_INSTALL_TEMP=$(mktemp -p /dev/shm/ -d intel-compiler-installtempdir.XXXXXXXXXX)
 COMPONENTS=ALL
