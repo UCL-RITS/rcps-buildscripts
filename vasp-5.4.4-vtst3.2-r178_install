@@ -9,6 +9,7 @@ set -e
 
 package_name="vasp"
 package_version="5.4.4-18apr2017"
+package_variant="vtst-r178"
 
 for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
 
@@ -51,7 +52,7 @@ _pre_build() {
   cd ..
 
   cd vtstcode-*
-  cp * "../$unpack_dir/src"
+  cp ./* "../$unpack_dir/src"
   cd ..
 
   # Modify main.F and .objects as stated at http://theory.cm.utexas.edu/vtsttools/installation.html
@@ -102,7 +103,7 @@ EOF
   # It doesn't say anywhere in what circumstances you do want that patch.
 
   cd ../../
-  echo "Ending pre-build in: `pwd`"
+  echo "Ending pre-build in: $(pwd)"
 
 }
 
