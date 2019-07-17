@@ -56,7 +56,6 @@ _build() {
 
 _prepare_module() {
   make_module -p "$INSTALL_PREFIX" \
-              -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs" \
               -r "libbdwgc/7.4.2/gnu-4.9.2" \
