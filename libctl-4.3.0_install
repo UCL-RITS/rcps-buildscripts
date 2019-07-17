@@ -34,7 +34,7 @@ _env_setup() {
 _fetch_files() {
   cd "$BUILD_DIR"
   wget "$SRC_URLS"
-  sha256sum -c <<<"$SHA256SUM  $BASENAME"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
   cd "$OWD"
 }
 
