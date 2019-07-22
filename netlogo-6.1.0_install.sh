@@ -31,8 +31,9 @@ md5sum -c <<< "$MD5 $archive"
 
 tar -xvf $archive
 
-mv "${NAME} ${VERSION}/*" .
-rm -rf "${NAME} ${VERSION}"
+mv "${NAME} ${VERSION}" tmp # Spaces in filenames :(
+mv tmp/* .
+rm -rf tmp
 
 # We need to remove all binaries.
 rm Behaviorsearch HubNetClient libpackager.so NetLogo NetLogo3D NetLogoLogging
