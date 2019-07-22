@@ -31,9 +31,8 @@ md5sum -c <<< "$MD5 $archive"
 
 tar -xvf $archive
 
-mv "${NAME} ${VERSION}" ${VERSION}
-
-cd ${VERSION}
+mv "${NAME} ${VERSION}/*" .
+rm -rf "${NAME} ${VERSION}"
 
 # We need to remove all binaries.
 rm Behaviorsearch HubNetClient libpackager.so NetLogo NetLogo3D NetLogoLogging
