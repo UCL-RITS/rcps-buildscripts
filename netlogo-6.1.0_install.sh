@@ -42,7 +42,7 @@ rm -rf runtime
 # Create scripts to launch netlogo from the headless one as a model.
 cp netlogo-headless.sh netlogo.sh
 ln -s netlogo.sh Netlogo
-sed -i.bak 's|org.nlogo.headless.Main|-jar app/netlogo-6.1.0.jar|g' netlogo.sh
+sed -i.bak 's|org.nlogo.headless.Main|-jar ${BASE_DIR}/app/netlogo-6.1.0.jar|g' netlogo.sh
 rm *.bak
 
 # Set up model library
