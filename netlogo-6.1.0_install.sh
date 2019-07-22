@@ -22,7 +22,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://ccl.northwestern.edu/netlogo/${VERSION}/NetLo
 rm -rf ${INSTALL_PREFIX} # Clear old installs
 mkdir -p ${INSTALL_PREFIX}
 
-cs ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
 
 wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
