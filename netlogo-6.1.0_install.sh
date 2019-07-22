@@ -41,7 +41,7 @@ rm -rf runtime
 
 # Create scripts to launch netlogo from the headless one as a model.
 cp netlogo-headless.sh netlogo.sh
-ln -s netlogo.sh Netlogo
+ln -s netlogo.sh NetLogo
 sed -i.bak 's|org.nlogo.headless.Main|-jar ${BASE_DIR}/app/netlogo-6.1.0.jar|g' netlogo.sh
 sed -i.bak 's|-Dfile.encoding=UTF-8|-Dfile.encoding=UTF-8 -Dnetlogo.models.dir=${BASE_DIR}/app/models|g' netlogo-headless.sh
 sed -i.bak 's|-Dfile.encoding=UTF-8|-Dfile.encoding=UTF-8 -Dnetlogo.models.dir=${BASE_DIR}/app/models|g' netlogo.sh
