@@ -36,7 +36,7 @@ mv tmp/* .
 rm -rf tmp
 
 # We need to remove all binaries.
-rm Behaviorsearch HubNetClient libpackager.so NetLogo NetLogo3D NetLogoLogging
+rm -f Behaviorsearch HubNetClient libpackager.so NetLogo NetLogo3D NetLogoLogging
 rm -rf runtime
 
 # Create scripts to launch netlogo from the headless one as a model.
