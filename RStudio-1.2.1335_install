@@ -33,6 +33,7 @@ require gperf/3.0.4/gnu-4.9.2
 require intltool/0.51.0
 require xorg-utils/X11R7.7
 require qt/5.12.1/gnu-4.9.2
+require cmake/3.13.3
 
 # temp_dir=`mktemp -d -p /dev/shm`
 temp_dir='/home/ccspapp/Software/R'
