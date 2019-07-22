@@ -31,7 +31,7 @@ md5sum -c <<< "$MD5 $archive"
 
 tar -xvf $archive
 
-mv "${Name}\ ${VERSION}" ${VERSION}
+mv "${NAME}\ ${VERSION}" ${VERSION}
 
 cd ${VERSION}
 
