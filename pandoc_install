@@ -21,7 +21,8 @@ temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 
-cabal install cabal-install
 cabal update
+cabal install cabal-install
+
 mkdir -p /shared/ucl/apps/pandoc/
 cabal install pandoc --prefix=/shared/ucl/apps/pandoc/ --enable-tests
