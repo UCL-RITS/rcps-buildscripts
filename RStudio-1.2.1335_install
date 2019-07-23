@@ -67,7 +67,7 @@ then
     cd build
     export CCFLAGS=-pthread
     export LDFLAGS=-lbsd
-    cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+    cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -DQT_QMAKE_EXECUTABLE=/shared/ucl/apps/qt/5.12.1/gnu-4.9.2/bin/qmake -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
     make
     make install
     echo ""
