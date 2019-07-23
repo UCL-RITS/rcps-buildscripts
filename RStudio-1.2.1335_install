@@ -65,6 +65,7 @@ then
     # Configure and build RStudio Server
     mkdir build
     cd build
+    export CCFLAGS=-pthread
     cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
     make
     make install
