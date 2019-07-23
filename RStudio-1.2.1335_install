@@ -66,6 +66,7 @@ then
     mkdir build
     cd build
     export CCFLAGS=-pthread
+    export LDFLAGS=-lbsd
     cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
     make
     make install
