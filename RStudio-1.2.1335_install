@@ -53,6 +53,16 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
     tar -xvf $LOCAL_ARCHIVE
     cd rstudio-rstudio-$PARTCODE
+
+    # Download/build supplied dependencies
+    cd dependencies/common
+    ./install-pandoc
+    ./install-dictionaries
+    ./install-mathjax
+    ./install-gwt
+    cd ../..
+
+    # Configure and build RStudio Server
     mkdir build
     cd build
     cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
