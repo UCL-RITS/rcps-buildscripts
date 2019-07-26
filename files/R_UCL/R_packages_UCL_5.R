@@ -50,6 +50,13 @@ install.packages ("stringr", lib=mainLib, repos=repros);
 install.packages ("reshape2", lib=mainLib, repos=repros);
 install.packages ("proto", lib=mainLib, repos=repros);
 install.packages ("ggplot2", lib=mainLib, repos=repros);
+install.packages ("devtools", lib=mainLib, repos=repros);
+
+# Install sf from GitHub repository
+
+sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/6.1.0/lib --with-proj-share=/shared/ucl/apps/PROJ.4/6.1.0/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
+devtools::install_github("r-spatial/sf", configure.args=sfconf);
+
 install.packages ("adegenet", lib=mainLib, repos=repros);
 install.packages ("pegas", lib=mainLib, repos=repros);
 install.packages ("stringdist", lib=mainLib, repos=repros);
@@ -123,10 +130,13 @@ install.packages ("psych", lib=mainLib, repos=repros);
 
 install.packages ("rlecuyer", lib=mainLib, repos=repros);
 
+install.packages ("roxygen2", lib=mainLib, repos=repros);
+
 # More requsts from Political Science
 
 install.packages ("rgdal", lib=mainLib, repos=repros);
 install.packages ("rgeos", lib=mainLib, repos=repros);
+
 install.packages ("erer", lib=mainLib, repos=repros);
 install.packages ("panelAR", lib=mainLib, repos=repros);
 install.packages ("arm", lib=mainLib, repos=repros);
@@ -141,6 +151,8 @@ v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/a
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/include --with-udunits2-lib=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
+lwgeomconf <- 'CFLAGS="${CFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
+install.packages ("lwgeom", lib=mainLib, repos=repros, configure.vars=lwgeomconf);
 install.packages ("tmap", lib=mainLib, repos=repros);
 
 # For Lucia Conde (l.conde@ucl.ac.uk) May 2017
@@ -159,7 +171,6 @@ install.packages ("png", lib=mainLib, repos=repros);
 install.packages ("TAM", lib=mainLib, repos=repros);
 
 # For Tom O'Grady (t.o'grady@ucl.ac.uk) April 2019
-install.packages ("devtools", lib=mainLib, repos=repros);
 devtools::install_github("jamesdunham/dgo");
 
 # For Kasia Kozdon (k.kozdon.11@ucl.ac.uk) April 2019

@@ -12,6 +12,7 @@
 # Will need modules: rcps-core/1.0.0 and compilers/gnu/4.9.2
 
 # Modified by Owain to get the same vesion every time.
+# Modified July 2019 to have module depenencies consistant with R 3.6.0
 
 VERSION=${VERSION:-12-2017}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/protobuf/$VERSION/gnu-4.9.2}
@@ -30,16 +31,16 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require openblas/0.2.14/gnu-4.9.2
 require java/1.8.0_92
-require fftw/3.3.4/gnu-4.9.2
+require fftw/3.3.6-pl2/gnu-4.9.2
 require ghostscript/9.19/gnu-4.9.2
-require texinfo/5.2/gnu-4.9.2
-require texlive/2015
-require gsl/1.16/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.4/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
-require udunits/2.2.20/gnu-4.9.2
+require udunits/2.2.26/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
 require jags/4.2.0/gnu.4.9.2-openblas
-require root/5.34.30/gnu-4.9.2
+require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
 
 temp_dir=`mktemp -d -p /dev/shm`
 

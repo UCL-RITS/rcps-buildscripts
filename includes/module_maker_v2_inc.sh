@@ -112,9 +112,9 @@ function make_module_v2() {
 
     local prefix_type_dirs=0
     local prefix_block=""
-    printf -v prefix_block "prepend-path CMAKE_PREFIX_PATH %s\n" '$prefix'
 
     if [[ -z "${omit_prefix_block:-}" ]] && [[ -n "${module_prefix:-}" ]] && [[ -d "$module_prefix" ]]; then
+        printf -v prefix_block "prepend-path CMAKE_PREFIX_PATH %s\n" '$prefix'
         if [[ -d "$module_prefix/bin" ]]; then
             let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path PATH %s\n" "$prefix_block" '$prefix/bin'

@@ -8,6 +8,7 @@
 # Updated for gmt 5.3.1 - Nov 2016
 # Updated for gmt 5.4.5 - June 2019
 # Modified again to use PROJ.4 5.2.0 instaead of 6.0.0
+# Modified again to use PROJ.4 6.2.1 - July 2019
 
 
 # Need the following loaded to work:
@@ -22,7 +23,7 @@ require perl/5.22.0
 require python/2.7.12
 require hdf/5-1.8.15/gnu-4.9.2
 require netcdf/4.3.3.1/gnu-4.9.2
-require proj.4/5.2.0
+require proj.4/6.1.0
 require gdal/2.1.4
 require libtool/2.4.6
 require graphicsmagick/1.3.21

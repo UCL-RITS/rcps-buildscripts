@@ -9,6 +9,7 @@
 # to .../PROJ.4/4.9.1/share/proj/
 # Updated April 2019 for version 6.0.0
 # Updated June 2019 for version 6.1.0
+# Updated July 2019 to add epasg datum file required by R package sf
 #
 # Using Ian's require function to load modules
 #
@@ -20,6 +21,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/PROJ.4/${VERSION}}
 MD5=${MD5:-4ec5d9240b0e290670886519f250946c}
 SRC_ARCHIVE=${SRC_ARCHIVE:- http://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
 DATUM_ARCHIVE=${DATUM_ARCHIVE:- http://download.osgeo.org/proj/proj-datumgrid-${DATUM_VERSION}.zip}
+EPSG_ARCHIVE=${EPSG_ARCHIVE:- https://rpmfind.net/linux/fedora/linux/releases/30/Everything/aarch64/os/Packages/p/proj-epsg-5.2.0-1.fc30.aarch64.rpm}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -39,6 +41,7 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 wget $DATUM_ARCHIVE
+wget $EPSG_ARCHIVE
 
 CHECKSUM=`md5sum proj-${VERSION}.tar.gz| awk '{print $1}'`
 
@@ -53,8 +56,12 @@ then
    make 2>&1 | tee make-log
    make check 2>&1 | tee make-check-log
    make install 2>&1 | tee make-install-log
-   # cd ${INSTALL_PREFIX}/share/proj
-   # already got as part of the Datum Arechive? wget https://raw.githubusercontent.com/OSGeo/proj.4/master/data/proj_def.dat
+   cd $temp_dir
+
+   # epsg is required by R package sf
+   rpm2cpio proj-epsg-5.2.0-1.fc30.aarch64.rpm | cpio -idmv 
+   cp ./usr/share/proj/epsg ${INSTALL_PREFIX}/share/proj/
+
 else
    echo "***** Hash mismatch,"
    echo "	Expected: $MD5"

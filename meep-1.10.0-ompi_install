@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+# Meep w/ OpenMPI
+
+set -e
+
+PACKAGE_NAME="meep"
+PACKAGE_VERSION="1.10.0"
+PACKAGE_VARIANT="ompi"
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require libtool
+require compilers/gnu/4.9.2
+require mpi/openmpi/1.8.4/gnu-4.9.2
+require hdf/5-1.8.15-p1-ompi/gnu-4.9.2
+require fftw/3.3.4-ompi/gnu-4.9.2
+require gsl/1.16/gnu-4.9.2 # GSL dependency not listed in the docs, but is in the configure script
+require openblas/0.2.14/gnu-4.9.2
+require harminv
+require libctl/4.3.0/gnu-4.9.2
+require mpb/1.5-ompi/gnu-4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="https://github.com/NanoComp/meep/releases/download/v${PACKAGE_VERSION}/meep-${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-4d47bf3ab23ca6f1258aae3f2095b6239029af9e6382a10ef7decc16034833b3}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+
+  CONFIGURE_ADD_OPTS=--with-mpi
+  export BLAS_LIBS=-lopenblas
+# the tests fail to find openblas automatically. *shrug*
+
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz" 
+  cd "$OWD"
+}
+
+_setup_files() {
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.gz"
+  cd "$OWD"
+}
+
+_build() {
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  ./configure --prefix="$INSTALL_PREFIX" "$CONFIGURE_ADD_OPTS"
+  make
+  make check
+  make install
+  make distclean
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
+              -r "hdf/5-1.8.15-p1-ompi/gnu-4.9.2"  \
+              -r "fftw/3.3.4-ompi/gnu-4.9.2"  \
+              -r "gsl"  \
+              -r "harminv"  \
+              -r "mpb/1.3-ompi"  \
+              -r "libctl"  \
+              -r "openblas/0.2.14/gnu-4.9.2"  \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+
