@@ -29,6 +29,11 @@ mkdir $TIME_STAMP-$PYTHON_VERSION
 cd $TIME_STAMP-$PYTHON_VERSION
 
 
+# Update pip, setuptools and virtualenv as old versions can cause
+# issues with packages due to --system-site-packages.
+
+pip3 install --upgrade setuptools virtualenv pip
+
 virtualenv --system-site-packages venv
 
 source venv/bin/activate
