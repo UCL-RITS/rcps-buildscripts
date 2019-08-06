@@ -26,8 +26,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
-require bazel/0.24.1
 require python/3.6.3
+require bazel/0.24.1
 
 # Delete the old install, clear the bazel cache and any old builds in /dev/shm
 echo "Cleaning old install"
