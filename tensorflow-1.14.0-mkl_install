@@ -12,7 +12,7 @@ TYPE=${TYPE:-mkl}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/$VERSION/$TYPE}
 
 MARCH=${MARCH:-native}
-CONFIG_OPTS="--config=mkl --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-O3"
+CONFIG_OPTS="--config=mkl --copt=-march=${MARCH} --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-O3"
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tensorflow/tensorflow}
 
