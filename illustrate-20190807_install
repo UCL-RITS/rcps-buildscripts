@@ -10,7 +10,7 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-require git
+require git/2.19.1
 
 NAME=${NAME:-illustrate}
 VERSION=${VERSION:-896e8d73be0330b8d17f6d899f2d0e546b03da49}
@@ -26,7 +26,7 @@ cd $INSTALL_PREFIX
 
 git clone $SRC_ARCHIVE
 
-cd $NAME
+cd Illustrate
 
 git checkout $VERSION
 
