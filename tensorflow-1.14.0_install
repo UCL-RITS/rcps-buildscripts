@@ -28,5 +28,4 @@ then
   PACKAGE_NAME=intel-tensorflow
 fi
 
-pip3 install --target=${INSTALL_PREFIX} numpy==1.16.4
-pip3 install --target=${INSTALL_PREFIX} ${PACKAGE_NAME}==${VERSION}
+pip3 install --target=${INSTALL_PREFIX} numpy==1.16.4 ${PACKAGE_NAME}==${VERSION}
