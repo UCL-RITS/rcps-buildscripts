@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-set -e
+set -o errexit \
+    -o nounset
 
 package_name="gcc"
 package_version="9.2.0"
@@ -103,13 +104,14 @@ _post_build() {
         -c "compilers" \
         -c "$package_name" \
         -w "$package_description"
-    echo "Module files put in: $module_dir" >&2
+    post_build_report
     chmod a+rx "$module_dir"
+    cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
     cd ..
 }
 
 _clean_up() {
-    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    rm -Rf "${build_dir}" "${module_dir}"
     :
 }
 
