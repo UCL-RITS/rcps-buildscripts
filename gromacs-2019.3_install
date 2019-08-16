@@ -7,7 +7,7 @@ package_version="2019.3"
 package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
 
-TYPE=cpu
+TYPE=${TYPE:-cpu}
 
 source includes/source_includes.sh
 module purge
