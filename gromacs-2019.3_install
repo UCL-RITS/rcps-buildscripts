@@ -114,6 +114,8 @@ make
 make install
 rm -rf *
 
+require mpi/openmpi/3.1.4/gnu-4.9.2
+
 echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
 cmake .. \
     -DGMX_GPU=ON \
