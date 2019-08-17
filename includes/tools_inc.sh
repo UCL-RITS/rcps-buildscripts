@@ -153,8 +153,7 @@ make_build_env () {
     if [[ -n "${reason_for_test_install:-}" ]]; then
         echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
         echo "         otherwise install prefix would have been $default_install_prefix"
-        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
-        install_prefix="$install_prefix/$package_label"
+        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")/$package_label"}"
         mkdir -p "$install_prefix"
     else
         install_prefix="$default_install_prefix"
