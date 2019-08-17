@@ -97,7 +97,7 @@ make_build_env () {
     local tmp_root_dir
     local prod_apps_dir
 
-    prod_apps_dir="/shared/ucl/apps"
+    prod_apps_dir="${APPS_DIR:-/shared/ucl/apps}"
     service_user_pattern="^ccspap.\$"
     # NB: ccspapp and ccspap2 are both service users
 
@@ -154,6 +154,8 @@ make_build_env () {
         echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
         echo "         otherwise install prefix would have been $default_install_prefix"
         install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
+        install_prefix="$install_prefix/$package_label"
+        mkdir -p "$install_prefix"
     else
         install_prefix="$default_install_prefix"
     fi
@@ -174,8 +176,10 @@ EOF
 }
 
 function post_build_report() {
-    local build_size="$(du -hs "$install_prefix" | cut -f 1 -d $'\t')"
-    local exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10)"
+    local build_size
+    local exec_list
+    build_size="$(du -hs "$install_prefix" | cut -f 1 -d $'\t')"
+    exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10)"
     cat <<EOF
     ==========================
     =    Post Build Info     =
