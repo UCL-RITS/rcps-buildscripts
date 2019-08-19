@@ -47,6 +47,7 @@ unzip -x $SRC_ARCHIVE
 
 cd $VERSION
 cwd=`pwd`
+cd Unix
 chmod +x $CMG_INSTALLER
 mkdir -p $INSTALL_PREFIX
 ./$CMG_INSTALLER << EOF
