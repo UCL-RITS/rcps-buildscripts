@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="energyplus"
+package_version="9.1.0"
+package_variant="bindist"
+package_description="EnergyPlus™ is a whole building energy simulation program that engineers, architects, and researchers use to model both energy consumption—for heating, cooling, ventilation, lighting and plug and process loads—and water use in buildings."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://github.com/NREL/EnergyPlus/releases/download/v9.1.0/EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64.tar.gz
+
+manifest \
+    sha256:742b4897781ca8f4b0065c9cd97bf9c5e378968dbb059a21eb91856ba1ec404d  EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64.tar.gz
+
+tar -xf EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64.tar.gz
+
+mv EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64/* "$install_prefix"
+
+# this binary distribution requires a new-ish libstdc++.so
+# otherwise you get an error like this:
+# ./libenergyplusapi.so: /shared/ucl/apps/gcc/4.9.2/lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by ./libenergyplusapi.so)
+# it has the same requirements for building from source, so I'd guess it's a modern C++ feature requirement or something
+make_module_v2 \
+    -d \
+    -r "gcc-libs/8.3.0 gcc-libs/9.2.0" \
+    -v ENERGYPLUS_DIR="$install_prefix" \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix"
+
+chmod -R a+rX "$module_dir"
+cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+post_build_report
+
