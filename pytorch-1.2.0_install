@@ -28,7 +28,7 @@ then
   require cuda/10.0.130/gnu-4.9.2
   require cudnn/7.5.0.56/cuda-10.0
   SRC_ARCHIVE=""
-  buildext="+cu100"
+  buildext=""
 fi
 
 rm -rf ${INSTALL_PREFIX}
