@@ -42,7 +42,7 @@ echo
 echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} $SRC_ARCHIVE"
 echo
 
-pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} -f $SRC_ARCHIVE
+pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} $SRC_ARCHIVE
 
 # De-venv it.
 rm -rf ${INSTALL_PREFIX}/bin/pip*
