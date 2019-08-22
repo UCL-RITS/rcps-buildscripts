@@ -33,7 +33,7 @@ fi
 rm -rf ${INSTALL_PREFIX}
 
 virtualenv ${INSTALL_PREFIX}
-source ${INSTALL_PREFIX}/bin
+source ${INSTALL_PREFIX}/bin/activate
 
 pip3 install future numpy pyyaml setuptools six typing
 
