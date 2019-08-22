@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2019
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.7.4
+
+
+NAME=${NAME:-pytorch}
+VERSION=${VERSION:-1.2.0}
+TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.4.0}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.pytorch.org/whl/torch_stable.html}
+TYPE=${TYPE:cpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/python3.7.4/$TYPE}
+
+buildext="+cpu"
+
+if [ "$TYPE" == "cuda" ]
+then
+  require cuda/10.0.130/gnu-4.9.2
+  require cudnn/7.5.0.56/cuda-10.0
+  buildext="+cu100"
+fi
+
+rm -rf ${INSTALL_PREFIX}
+
+virtualenv ${INSTALL_PREFIX}
+source ${INSTALL_PREFIX}/bin
+
+pip3 install future numpy pyyaml setuptools six typing
+
+echo
+echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} -f $SRC_ARCHIVE"
+echo
+
+pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} -f $SRC_ARCHIVE
+
+# De-venv it.
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
+
+
