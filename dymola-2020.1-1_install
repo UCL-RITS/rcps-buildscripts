@@ -21,6 +21,7 @@ printf " done.\n"
 
 rpm_dir="$build_dir/AM_CAT_Dymola.Linux64/1/linux_x86_64"
 
+mkdir -p "$install_prefix"
 cd "$install_prefix"
 
 for an_rpm in "$rpm_dir"/*.rpm; do
