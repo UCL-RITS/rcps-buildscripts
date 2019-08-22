@@ -23,6 +23,8 @@ manifest \
 
 tar -xf EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64.tar.gz
 
+mkdir -p "$install_prefix"
+
 mv EnergyPlus-9.1.0-08d2e308bb-Linux-x86_64/* "$install_prefix"
 
 # this binary distribution requires a new-ish libstdc++.so

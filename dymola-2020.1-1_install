@@ -21,6 +21,7 @@ printf " done.\n"
 
 rpm_dir="$build_dir/AM_CAT_Dymola.Linux64/1/linux_x86_64"
 
+mkdir -p "$install_prefix"
 cd "$install_prefix"
 
 for an_rpm in "$rpm_dir"/*.rpm; do
@@ -57,7 +58,7 @@ make_module_v2 \
     -r gcc-libs \
     -r xorg-utils \
     -r mesa \
-    -v DYMOLA="$install_prefix/opt/dymola-2020-x86_64"
+    -v DYMOLA="$install_prefix/opt/dymola-2020-x86_64" \
     -e PATH:"$install_prefix"/bin \
     -e PATH:"$install_prefix"/opt/dymola-2020-x86_64/insert \
     -e LD_LIBRARY_PATH:"$install_prefix"/opt/dymola-2020-x86_64/lib
