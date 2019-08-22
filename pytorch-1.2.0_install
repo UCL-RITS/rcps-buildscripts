@@ -17,7 +17,7 @@ NAME=${NAME:-pytorch}
 VERSION=${VERSION:-1.2.0}
 TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.4.0}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.pytorch.org/whl/torch_stable.html}
+SRC_ARCHIVE=${SRC_ARCHIVE:--f https://download.pytorch.org/whl/torch_stable.html}
 TYPE=${TYPE:-cpu}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/python3.7.4/$TYPE}
 
@@ -27,6 +27,7 @@ if [ "$TYPE" == "cuda" ]
 then
   require cuda/10.0.130/gnu-4.9.2
   require cudnn/7.5.0.56/cuda-10.0
+  SRC_ARCHIVE=""
   buildext="+cu100"
 fi
 
@@ -38,7 +39,7 @@ source ${INSTALL_PREFIX}/bin/activate
 pip3 install future numpy pyyaml setuptools six typing
 
 echo
-echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} -f $SRC_ARCHIVE"
+echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} $SRC_ARCHIVE"
 echo
 
 pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} -f $SRC_ARCHIVE
