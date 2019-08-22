@@ -18,7 +18,7 @@ VERSION=${VERSION:-1.2.0}
 TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.4.0}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.pytorch.org/whl/torch_stable.html}
-TYPE=${TYPE:cpu}
+TYPE=${TYPE:-cpu}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/python3.7.4/$TYPE}
 
 buildext="+cpu"
