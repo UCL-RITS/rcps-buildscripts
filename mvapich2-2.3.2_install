@@ -1,0 +1,122 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="mvapich2"
+package_version="2.3.2"
+package_description="MVAPICH2 is an implementation of the MPI 3.1 standard that can use Infiniband, OmniPath, shared memory, and various ethernet options for communication."
+
+source includes/source_includes.sh
+
+function one_build_config() {
+    make_build_env ""
+    cd "$build_dir"
+    wget http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich2-2.3.2.tar.gz
+    manifest \
+        sha256:30cc0d7bcaa075d204692f76bca4d65a539e0f661c7460ffa9f835d6249e1ebf  mvapich2-2.3.2.tar.gz
+    tar -xf "mvapich2-${package_version}.tar.gz"
+    cd "mvapich2-${package_version}"
+    ./configure \
+        --prefix="$install_prefix" \
+        "${AUTOCONF_OPTS[@]}"
+    make -j 4
+    make check
+    make install
+    make_module_v2 \
+        -o "$module_dir/mpi/$package_label" \
+        -v GERUN_LAUNCHER=mvapich-sge \
+        -v MPI_HOME="$install_prefix"
+    chmod -R a+rX "$module_dir"
+    cp -rv "$module_dir"/* "$install_prefix/.tcl_env_modules.generated"
+}
+
+# For more info on the settings here, see the user guide, here: 
+#  http://mvapich.cse.ohio-state.edu/static/media/mvapich/mvapich2-2.3.2-userguide.html#x1-200004.9
+function setup0() {
+    unset package_variant
+    unset AUTOCONF_OPTS
+}
+function setup_base() {
+    # Default build: RDMA, autoconfig devices, and shared memory
+    package_variant="basic"
+    AUTOCONF_OPTS=( \
+        "--enable-mpit-pvars" \
+        "--enable-romio" \
+        "--with-file-system=lustre" \
+        )
+}
+function setup_shmem() {
+    # If you let the configure script determine the device automatically on Myriad, it picks up Infiniband stuff but not
+    #  all of it, and breaks, complaining that it can't find a header and you need to disable multicast.
+    # Disabling multicast lets the configure complete, but I'm not confident that will build a library that does the right
+    #  thing. (That's --disable-mcast )
+    # I think the PSM stuff lying around for the general image confuse the config. And there doesn't seem to be a
+    #  shared-memory-only option for the default shared-memory transport? So we use the secondary, shared-memory with the
+    #  nemesis channel? Honestly this isn't well-explained in the docs.
+    # Anyway, this should stop it trying to autodetect and thus do the right thing.
+    package_variant="only-shmem"
+    AUTOCONF_OPTS=( \
+        "--with-device=ch3:nemesis" \
+        "--enable-mpit-pvars" \
+        "--enable-romio" \
+        "--with-file-system=lustre" \
+        )
+}
+
+function setup_shmem() {
+    # As above, but with debug flags
+    package_variant="only-shmem"
+    AUTOCONF_OPTS=( \
+        "--with-device=ch3:nemesis" \
+        "--enable-mpit-pvars" \
+        "--enable-g=dbg" \
+        "--enable-debuginfo" \
+        "--enable-mpit-pvars" \
+        "--enable-romio" \
+        "--with-file-system=lustre" \
+        )
+}
+
+function setup_psm() {
+    # PSM 1 or 2 (TrueScale or OmniPath) and shared memory
+    unset package_variant
+    AUTOCONF_OPTS=( \
+        "--with-device=ch3:psm" \
+        "--enable-mpit-pvars" \
+        "--enable-romio" \
+        "--with-file-system=lustre" \
+        ) 
+}
+function setup_psm_debug() {
+    # As above, plus debugging info
+    package_variant="debug"
+    AUTOCONF_OPTS=( \
+        "--with-device=ch3:psm" \
+        "--enable-g=dbg" \
+        "--enable-debuginfo" \
+        "--enable-mpit-pvars" \
+        "--enable-romio" \
+        "--with-file-system=lustre" \
+        )
+}
+
+function setup_modules_old() {
+    module load gcc-libs/4.9.2
+}
+function setup_modules_new() {
+    module load beta-modules
+    module load gcc-libs/9.2.0
+    module load bison
+    module load numactl
+}
+
+module purge
+setup_modules_new
+setup_psm
+one_build_config
+
+module purge
+setup_modules_new
+setup_psm_debug
+one_build_config
