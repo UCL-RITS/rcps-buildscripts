@@ -16,7 +16,7 @@ VERSION=${VERSION:-6.0.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 MD5=${MD5:-6642289df823ebc27de52af57e9b3989}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/freesurfer-Linux-centos6_x86_64-stable-pub-v${VERSION}.tar.gz}
-LICENSE_FILE=${LICENSE_FILE:-/home/ccspapp/Software/freesurfer/license-file}
+LICENSE_FILE=${LICENSE_FILE:-/home/ccspapp/Software/freesurfer/license-6.0.txt}
 
 set -e
 
