@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Freesurfer
+# 
+# by Heather Kelly, 2015
+#
+# Updated August 2019 for version 6.0.0
+
+# Install archive downloaded from:
+# https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
+# and copied to /shared/ucl/apps/pkg-store
+
+NAME=${NAME:-freesurfer}
+VERSION=${VERSION:-6.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-6642289df823ebc27de52af57e9b3989}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/freesurfer-Linux-centos6_x86_64-stable-pub-v${VERSION}.tar.gz}
+LICENSE_FILE=${LICENSE_FILE:-/home/ccspapp/Software/freesurfer/license-file}
+
+set -e
+
+# Note: 4.4G compressed so download somewhere there's enough space
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+if [ ! -f $SRC_ARCHIVE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find FreeSurfer installer archive"
+    echo ""
+    echo "You need to download the FreeSurfer installer archive from:"
+    echo "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer -"
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE" 
+    echo "variable appropriately."
+    echo ""
+    exit 1
+fi
+   
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+tar -xvf $SRC_ARCHIVE
+
+cd ${NAME}
+cp $LICENSE_FILE .license
+
+# The release notes for 6.0.0 do not mention needing the Matlab patch so commented out.
+
+# cp /shared/ucl/apps/build_scripts/freesurfer-patches/freesurfer-5.3.0_matlab.patch .
+# # the .m files are dos-formatted, so convert before patching
+# dos2unix matlab/SearchProjectionOnPial.m
+# patch -p0 -i freesurfer-5.3.0_matlab.patch
+# unix2dos matlab/SearchProjectionOnPial.m
+
