@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+package_name="datamash"
+package_version="1.4"
+package_description=""
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget https://ftp.gnu.org/gnu/datamash/datamash-${package_version}.tar.gz
+manifest sha256:fa44dd2d5456bcb94ef49dfc6cfe62c83fd53ac435119a85d34e6812f6e6472a  datamash-1.4.tar.gz
+
+tar -xf "datamash-${package_version}".tar.gz
+cd "datamash-${package_version}"
+
+./configure --prefix="$install_prefix"
+make -j 4
+make check
+make install
+
+make_module_v2
+chmod -R +rX "$module_dir"
+cp -r "$module_dir"/* "$install_prefix/.tcl_env_modules.generated"
+
+post_build_report
+
