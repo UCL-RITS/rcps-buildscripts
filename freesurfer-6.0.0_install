@@ -44,6 +44,7 @@ tar -xvf $SRC_ARCHIVE
 
 cd ${NAME}
 cp $LICENSE_FILE .license
+chmod a+r .license
 
 # The release notes for 6.0.0 do not mention needing the Matlab patch so commented out.
 
