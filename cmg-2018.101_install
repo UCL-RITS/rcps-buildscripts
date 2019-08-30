@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# This script installs CMG Reservoir Simulation Software
+# Brian Alston October 2018
+#
+# February 2019: added prompt to copy cmgsimrun from Windows installation!
+# April 2019: added prompt to make cmgsimrun execuatble!
+# August 2019: updated for CMG 2018
+
+# You need to download the CMG installer archive from the Computer Modelling Group
+# download portal using a UCL site admin login. The CMG license is owned by Earth
+# Sciences.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE & CMG_INSTALLER 
+# variables appropriately.
+
+VERSION=${VERSION:-2018.101.GU}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/CMG}
+# INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccaabaa/apps/CMG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/CMG/installers/${VERSION}.zip}
+# SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccaabaa/Software/CMG/installers/${VERSION}.zip}
+CMG_INSTALLER=${CMG_INSTALLER:-unixinst.sh}
+
+set -e
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find CMG installer archive"
+    echo ""
+    echo "You need to download the CMG installer archive from the Computer Modelling"
+    echo "Group Download Portal: (https://www.cmgl.ca/downloadsoft) using the UCL"
+    echo "license holder login (Earth Sciences own the UCL license)."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & CMG_INSTALLER" 
+    echo "variables appropriately."
+    echo ""
+    exit 1
+fi
+
+# Unpack the install archive into a temporary location.
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+unzip -x $SRC_ARCHIVE
+
+# Run the installer. Installer is only interactive so trying a here document.
+
+cd $VERSION
+cwd=`pwd`
+cd Unix
+chmod +x $CMG_INSTALLER
+mkdir -p $INSTALL_PREFIX
+./$CMG_INSTALLER << EOF
+$INSTALL_PREFIX/$VERSION
+y
+$cwd
+n
+y
+n
+2
+
+y
+1
+y
+1
+y
+1
+y
+1
+y
+1
+y
+y
+n
+EOF
+
+echo ""
+echo "Main CMG installation completed."
+echo ""
+echo "To support remote job submission from Windows the following is"
+echo "required:"
+echo ""
+echo "copy the following folder after installing the Windows version:"
+echo ""
+echo "    C:\Program Files (x86)\CMG\Launcher\2018.10\Linux_x64"
+echo ""
+echo "to the cluster in:"
+echo ""
+echo "    /shared/ucl/apps/CMG/2018.101.GU/Launcher/2018.10/"
+echo ""
+echo "The file cmgsimrun in this directory MUST be made executable!"
+echo ""
+
+
