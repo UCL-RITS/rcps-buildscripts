@@ -8,11 +8,11 @@
 
 NAME=${NAME:-lammps}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-7Aug19}
+VERSION=${VERSION:-7Aug2019}
 TYPE=${TYPE:-USERINTEL}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
-MD5=${MD5:-d763a61f21963c6addad193b352bfe7d}} 
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps}
+
 
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
@@ -25,19 +25,11 @@ temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
-archive=$(basename "${SRC_ARCHIVE}")
-
-CHECKSUM=$(md5sum $archive| awk '{print $1}')
-
-if [ "$MD5" == "$CHECKSUM" ]
-then
-  tar -zxvf $archive
-
-  cd lammps-${VERSION}/src
-
-  cluster=$WHEREAMI
-
+git clone $SRC_ARCHIVE
+cd lammps
+git checkout stable_${VERSION}
+cluster=$WHEREAMI
+cd src
   mkdir -p MAKE/MINE
 
   # Copy in appropriate Makefile with correct architecture flags
@@ -48,14 +40,13 @@ then
   fi
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
-  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd user-reaxc
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd user-reaxc user-meamc
   do
     make yes-${a}
   done
 
 # These packages need external libs but provide the source with LAMMPS
-#  for a in meam poems reax
-  for a in meam poems reax
+  for a in poems
   do
     # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
     sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
@@ -63,6 +54,7 @@ then
     make yes-${a}
   done
   
+  cp  ../lib/poems/Makefile.lammps.empty ../lib/poems/Makefile.lammps
 
 # Voro++
   cd ../lib/voronoi
@@ -104,8 +96,3 @@ then
 
   rm -Rf $temp_dir
 
-else
-  echo "Hash mismatch."
-  echo "Expected: $MD5"
-  echo "Got: $CHECKSUM"
-fi
