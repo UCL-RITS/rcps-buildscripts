@@ -88,10 +88,10 @@ cd src
   cd ../..
   rm -rf $INSTALL_PREFIX
   mkdir -p $INSTALL_PREFIX
-  mv lammps-${VERSION} $INSTALL_PREFIX
+  mv lammps $INSTALL_PREFIX
 
 # Make default binary symlink
-  cd $INSTALL_PREFIX/lammps-${VERSION}/bin
+  cd $INSTALL_PREFIX/lammps/bin
   ln -s lmp_${cluster} lmp_default
 
   rm -Rf $temp_dir
