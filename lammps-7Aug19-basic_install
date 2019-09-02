@@ -57,8 +57,11 @@ mkdir -p MAKE/MINE
     sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
     make lib-${a} args="-m mpi"  
     make yes-${a}
+
   done
-  
+
+  cp  ../lib/poems/Makefile.lammps.empty ../lib/poems/Makefile.lammps
+ 
 
 # Voro++
   cd ../lib/voronoi
