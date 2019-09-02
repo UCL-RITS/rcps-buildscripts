@@ -38,6 +38,8 @@ then
 
   cluster=$WHEREAMI
 
+  mkdir -p MAKE/MINE
+
   # Copy in appropriate Makefile with correct architecture flags
 
   if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-intel-${TYPE} ]

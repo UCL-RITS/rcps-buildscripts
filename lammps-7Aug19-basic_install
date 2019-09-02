@@ -38,6 +38,8 @@ then
 
   cluster=$WHEREAMI
 
+  mkdir -p MAKE/MINE
+
   # Copy in appropriate Makefile with correct architecture flags
   # For compiler type use the fully-specified compiler version if a makefile exists for it
   # otherwise use the one for intel, gnu etc.
