@@ -28,7 +28,7 @@ git clone $SRC_ARCHIVE
 cd lammps
 git checkout stable_${VERSION}
 cluster=$WHEREAMI
-
+cd src
 mkdir -p MAKE/MINE
 
   # Copy in appropriate Makefile with correct architecture flags
