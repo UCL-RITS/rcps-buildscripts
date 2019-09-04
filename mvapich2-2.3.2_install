@@ -23,12 +23,13 @@ function one_build_config() {
     make -j 4
     make check
     make install
+    module unload bison
     make_module_v2 \
         -o "$module_dir/mpi/$package_label" \
         -v GERUN_LAUNCHER=mvapich-sge \
         -v MPI_HOME="$install_prefix"
     chmod -R a+rX "$module_dir"
-    cp -rv "$module_dir"/* "$install_prefix/.tcl_env_modules.generated"
+    cp -rv "$module_dir" "$install_prefix/.tcl_env_modules.generated"
 }
 
 # For more info on the settings here, see the user guide, here: 
@@ -103,12 +104,17 @@ function setup_psm_debug() {
 
 function setup_modules_old() {
     module load gcc-libs/4.9.2
+    module load compilers/gnu/4.9.2
 }
 function setup_modules_new() {
     module load beta-modules
     module load gcc-libs/9.2.0
+    module load compilers/gnu/9.2.0
     module load bison
     module load numactl
+    unset F90
+    # The mvapich2 configure script bombs out if F90 or F90FLAGS is set
+    # It wants only FC and optionally FCFLAGS to be set
 }
 
 module purge
@@ -116,7 +122,8 @@ setup_modules_new
 setup_psm
 one_build_config
 
-module purge
-setup_modules_new
-setup_psm_debug
-one_build_config
+# You'll want this for an actual deployment
+#module purge
+#setup_modules_new
+#setup_psm_debug
+#one_build_config
