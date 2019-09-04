@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+package_name="blis"
+package_version="0.6.0"
+package_description="BLIS is a portable software framework for instantiating high-performance BLAS-like dense linear algebra libraries. It exports a BLAS-like interface with improved semantics and a BLAS-compatibility layer, as well as an object-oriented interface."
+
+source includes/source_includes.sh
+
+module purge
+module load beta-modules
+module load gcc-libs/9.2.0
+module load compilers/gnu/9.2.0
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://github.com/flame/blis/archive/${package_version}.tar.gz"
+manifest \
+    sha256:ad5765cc3f492d0c663f494850dafc4d72f901c332eb442f404814ff2995e5a9  0.6.0.tar.gz
+
+tar -xf "${package_version}.tar.gz"
+cd "blis-${package_version}"
+
+./configure \
+    --prefix="$install_prefix" \
+    --enable-blas \
+    --enable-cblas \
+    auto
+
+make -j 8
+make check
+make install
+
+make_module_v2 \
+    -c openblas \
+    -c atlas \
+    -v BLAS_TAG=blis
+chmod -R a+rX "$module_dir"
+cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+
+post_build_report
