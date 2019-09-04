@@ -98,7 +98,7 @@ make_build_env () {
     local prod_apps_dir
 
     prod_apps_dir="${APPS_DIR:-/shared/ucl/apps}"
-    service_user_pattern="^ccspap.\$"
+    service_user_pattern="^uccaiki\$"
     # NB: ccspapp and ccspap2 are both service users
 
     prefix="${package_name:-tmp.}"
