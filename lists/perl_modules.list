@@ -168,3 +168,5 @@ DBI
 DBD::mysql
 File::ShareDir::Install
 File::ShareDir
+MIME::Lite
+Set::IntervalTree
