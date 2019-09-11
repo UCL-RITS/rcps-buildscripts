@@ -22,7 +22,7 @@ require harminv
 require libbdwgc/7.4.2/gnu-4.9.2
 require guile/2.0.11/gnu-4.9.2
 require libctl/4.3.0/gnu-4.9.2
-require mpb/1.5-ompi/gnu-4.9.2
+require mpb/1.9.0-hdf5-ompi/gnu-4.9.2
 require libgdsii
 require python3/3.7
 
@@ -35,7 +35,7 @@ _env_setup() {
   SHA256SUM=${SHA256SUM:-623837dadc2b780c6243911051619134202d5b51f560c646584ba42dde5cf008}
   BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
 
-  CONFIGURE_ADD_OPTS=--with-mpi
+  CONFIGURE_ADD_OPTS="--enable-shared --with-mpi --with-openmp"
   export BLAS_LIBS=-lopenblas
 # the tests fail to find openblas automatically. *shrug*
 
@@ -78,7 +78,7 @@ _prepare_module() {
               -r "libbdwgc" \
               -r "guile" \
               -r "libctl/4.3.0/gnu-4.9.2"  \
-              -r "mpb/1.5-ompi/gnu-4.9.2"  \
+              -r "mpb/1.9.0-hdf5-ompi/gnu-4.9.2"  \
               -r "libgdsii" \
               -r "python3/3.7" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
