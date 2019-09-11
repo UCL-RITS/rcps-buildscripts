@@ -53,7 +53,6 @@ _install() {
   cd $OWD
 
   make_module -p $INSTALL_PREFIX \
-              -n "${PACKAGE_NAME}" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -r "openblas/0.2.14/gnu-4.9.2" \
