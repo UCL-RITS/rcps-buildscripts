@@ -80,6 +80,8 @@ _prepare_module() {
               -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
               -r "hdf/5-1.8.15-p1-ompi/gnu-4.9.2" \
               -r "fftw/3.3.4-ompi/gnu-4.9.2" \
+              -r "libbdwgc" \
+              -r "guile" \
               -r "libctl" \
               -r "openblas/0.2.14/gnu-4.9.2" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
