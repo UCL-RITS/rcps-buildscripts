@@ -25,7 +25,7 @@ _env_setup() {
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS="https://support.hdfgroup.org/ftp/HDF5/releases/hdf${PACKAGE_VERSION:0:6}/hdf${PACKAGE_VERSION}/src/hdf${PACKAGE_VERSION}.tar.bz2"
   SHA256SUM=${SHA256SUM:-68d6ea8843d2a106ec6a7828564c1689c7a85714a35d8efafa2fee20ca366f44}
-  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+  BASENAME=$(basename -s .tar.bz2 $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
 
   PARALLEL_SCRATCH_DIR=$HOME/Scratch
   CONFIGURE_ADD_OPTS="--enable-fortran --enable-parallel"
@@ -35,7 +35,7 @@ _env_setup() {
 _fetch_files() {
   cd "$BUILD_DIR"
   wget "$SRC_URLS"
-  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.bz2"
   cd "$OWD"
 }
 
