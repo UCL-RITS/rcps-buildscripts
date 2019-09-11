@@ -98,6 +98,15 @@ _env_setup
 _fetch_files
 _setup_files
 
+echo "###########################################################" >&2
+echo "#                INITIAL SERIAL BUILD" >&2
+echo "###########################################################" >&2
+_build
+
+echo "###########################################################" >&2
+echo "#                INV SYMMETRY BUILD" >&2
+echo "###########################################################" >&2
+CONFIGURE_ADD_OPTS="--enable-shared CC=mpicc --with-inv-symmetry"
 _build
 
 _prepare_module
