@@ -36,7 +36,7 @@ _env_setup() {
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
   SRC_URLS="https://github.com/NanoComp/mpb/releases/download/v${PACKAGE_VERSION}/mpb-${PACKAGE_VERSION}.tar.gz"
   SHA256SUM=${SHA256SUM:-c7b91d82bd8e63ea029d58cbf6d73904a99bc20436badf6aac30fc4a90850883}
-  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$SRC_URLS))
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
 
 # When attempting to build with icc
 #  export BLAS_LIBS=-mkl
@@ -44,37 +44,38 @@ _env_setup() {
 # as of 1.5 and 2015-update2, linking against MKL causes segfaults in the MPI version's test suite.
 # see: https://github.com/stevengj/mpb/issues/8
 
+  CONFIGURE_ADD_OPTS="--enable-shared CC=mpicc --with-hermitian-eps"
   export BLAS_LIBS=-lopenblas
 # the tests also fail to find openblas automatically. *shrug*
 
 }
 
 _fetch_files() {
-  cd $BUILD_DIR
-  wget $SRC_URLS
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
   sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
-  cd $OWD
+  cd "$OWD"
 }
 
 _setup_files() {
-  cd $BUILD_DIR
-  tar -xf ${BASENAME}.tar.gz
-  cd $OWD
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.gz"
+  cd "$OWD"
 }
 
 _build() {
-  cd $BUILD_DIR
-  cd ${BASENAME}
-  ./configure --prefix=$INSTALL_PREFIX $CONFIGURE_ADD_OPTS
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  ./configure --prefix="$INSTALL_PREFIX" "$CONFIGURE_ADD_OPTS"
   make
   make check
   make install
   make distclean
-  cd $OWD
+  cd "$OWD"
 }
 
 _prepare_module() {
-  make_module -p $INSTALL_PREFIX \
+  make_module -p "$INSTALL_PREFIX" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
@@ -82,14 +83,14 @@ _prepare_module() {
               -r "fftw/3.3.4-ompi/gnu-4.9.2" \
               -r "libctl" \
               -r "openblas/0.2.14/gnu-4.9.2" \
-              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG} \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
 }
 
 _clean_up() {
   if [ -n "$BUILD_DIR" ]; then
-    rm -Rf ${BUILD_DIR}
+    rm -Rf "${BUILD_DIR}"
   fi
 }
 
@@ -97,16 +98,6 @@ _env_setup
 _fetch_files
 _setup_files
 
-echo "###########################################################" >&2
-echo "#                MPI BUILD" >&2
-echo "###########################################################" >&2
-CONFIGURE_ADD_OPTS="--with-mpi"
-_build
-
-echo "###########################################################" >&2
-echo "#                MPI + INV SYMMETRY BUILD" >&2
-echo "###########################################################" >&2
-CONFIGURE_ADD_OPTS="--with-mpi --with-inv-symmetry"
 _build
 
 _prepare_module
