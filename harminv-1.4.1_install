@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# harminv required for Meep
+
+set -e
+
+PACKAGE_NAME="harminv"
+PACKAGE_VERSION="1.4.1"
+
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require compilers/gnu/4.9.2
+require openblas/0.2.14/gnu-4.9.2
+require libtool
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="https://github.com/NanoComp/harminv/releases/download/v${PACKAGE_VERSION}/harminv-${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-e1b923c508a565f230aac04e3feea23b888b47d8e19b08816a97ee4444233670}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$SRC_URLS))
+}
+
+_fetch_files() {
+  cd $BUILD_DIR
+  wget $SRC_URLS
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
+  cd $OWD
+}
+
+_setup_files() {
+  cd $BUILD_DIR
+  tar -xf ${BASENAME}.tar.gz
+  cd $OWD
+}
+
+_build() {
+  cd $BUILD_DIR
+  cd ${BASENAME}
+  ./configure --prefix=$INSTALL_PREFIX --enable-shared
+  make
+  make check
+  cd $OWD
+}
+
+_install() {
+  cd $BUILD_DIR
+  cd $BASENAME
+  make install
+  cd $OWD
+
+  make_module -p $INSTALL_PREFIX \
+              -n "${PACKAGE_NAME}" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "openblas/0.2.14/gnu-4.9.2" \
+              -o $MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG} \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION} to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf ${BUILD_DIR}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_install
+_clean_up
+
