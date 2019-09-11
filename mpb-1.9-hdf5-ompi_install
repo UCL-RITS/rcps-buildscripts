@@ -44,7 +44,6 @@ _env_setup() {
 # as of 1.5 and 2015-update2, linking against MKL causes segfaults in the MPI version's test suite.
 # see: https://github.com/stevengj/mpb/issues/8
 
-  CONFIGURE_ADD_OPTS="--enable-shared CC=mpicc --with-hermitian-eps"
   export BLAS_LIBS=-lopenblas
 # the tests also fail to find openblas automatically. *shrug*
 
@@ -66,7 +65,7 @@ _setup_files() {
 _build() {
   cd "$BUILD_DIR"
   cd "${BASENAME}"
-  ./configure --prefix="$INSTALL_PREFIX" "$CONFIGURE_ADD_OPTS"
+  ./configure --prefix="$INSTALL_PREFIX" $CONFIGURE_ADD_OPTS
   make
   make check
   make install
@@ -101,6 +100,7 @@ _setup_files
 echo "###########################################################" >&2
 echo "#                INITIAL SERIAL BUILD" >&2
 echo "###########################################################" >&2
+CONFIGURE_ADD_OPTS="--enable-shared CC=mpicc --with-hermitian-eps"
 _build
 
 echo "###########################################################" >&2
