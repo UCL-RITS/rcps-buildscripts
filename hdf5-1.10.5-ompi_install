@@ -23,7 +23,7 @@ _env_setup() {
   INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
   BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
   MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
-  SRC_URLS="https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2"
+  SRC_URLS="https://support.hdfgroup.org/ftp/HDF5/releases/hdf${PACKAGE_VERSION:0:6}/hdf${PACKAGE_VERSION}/src/hdf${PACKAGE_VERSION}.tar.bz2"
   SHA256SUM=${SHA256SUM:-68d6ea8843d2a106ec6a7828564c1689c7a85714a35d8efafa2fee20ca366f44}
   BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
 
