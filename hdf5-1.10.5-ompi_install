@@ -8,7 +8,7 @@
 set -e
 
 PACKAGE_NAME="hdf"
-PACKAGE_VERSION="5-1.10.5}"
+PACKAGE_VERSION="5-1.10.5"
 PACKAGE_VARIANT="ompi"
 
 source includes/source_includes.sh
