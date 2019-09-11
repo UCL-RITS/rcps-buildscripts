@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+#
+# by Owain Kenway, 2018
+#
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-gpumixed}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-7Aug2019}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$(whoami)/$NAME
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd lammps
+git checkout stable_${VERSION}
+cluster=$WHEREAMI
+cd src
+
+  cluster=$WHEREAMI
+
+  mkdir -p MAKE/MINE
+
+
+  # Copy in appropriate Makefile with correct architecture flags
+  # For compiler type use the fully-specified compiler version if a makefile exists for it
+  # otherwise use the one for intel, gnu etc.
+  if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} ]
+  then
+    cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
+  else
+    compiler_type=$(echo $COMPILER_TAG | cut -d- -f1)
+    cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-$compiler_type MAKE/MINE/Makefile.$cluster
+  fi
+
+  pwd
+  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.${cluster}-gpu ../lib/gpu/Makefile.uclgpu
+  cd ../lib/gpu
+  make -f Makefile.uclgpu
+  cd ../../src
+
+# Add some necessary packages that aren't included by default for some reason
+# All the packages which don't need external libs.
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd user-reaxc user-meamc
+  do
+    make yes-${a}
+  done
+
+# These packages need external libs but provide the source with LAMMPS
+#  for a in meam poems reax
+  for a in poems
+  do
+    # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
+    sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
+    make lib-${a} args="-m mpi"  
+    make yes-${a}
+  done
+  
+    cp  ../lib/poems/Makefile.lammps.empty ../lib/poems/Makefile.lammps
+
+
+# Voro++
+  cd ../lib/voronoi
+  wget http://math.lbl.gov/voro++/download/dir/voro++-0.4.6.tar.gz
+  md5sum -c <<<"2338b824c3b7b25590e18e8df5d68af9  voro++-0.4.6.tar.gz"
+  tar zxvf voro++-0.4.6.tar.gz
+  cd voro++-0.4.6
+  sed -i.bak "s|CXX=g++|CXX=icpc|g" config.mk
+  make
+  cd ..
+  ln -s voro++-0.4.6/src includelink
+  ln -s voro++-0.4.6/src liblink
+  
+  cd ../../src
+  make yes-voronoi
+
+# GPU optimisations
+  make yes-gpu
+
+# Make binaries, libraries
+  make $cluster
+
+# Put them outside the source tree
+  mkdir ../bin
+  mv lmp_${cluster} ../bin
+
+# Wipe out our old object files.
+  make clean-all
+  
+# Move install into /shared
+  cd ../..
+  rm -rf $INSTALL_PREFIX
+  mkdir -p $INSTALL_PREFIX
+  mv lammps $INSTALL_PREFIX
+
+# Make default binary symlink
+  cd $INSTALL_PREFIX/lammps/bin
+  ln -s lmp_${cluster} lmp_default
+
+  rm -Rf $temp_dir

@@ -36,7 +36,7 @@ rm -rf ${INSTALL_PREFIX}
 virtualenv ${INSTALL_PREFIX}
 source ${INSTALL_PREFIX}/bin/activate
 
-pip3 install future numpy pyyaml setuptools six typing
+pip3 install future numpy pyyaml setuptools six 
 
 echo
 echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} $SRC_ARCHIVE"

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+package_name="vesta"
+package_version="3.4.6"
+package_variant="bindist"
+package_description="VESTA is a 3D visualization program for structural models, volumetric data such as electron/nuclear densities, and crystal morphologies."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget http://jp-minerals.org/vesta/archives/"${package_version}"/VESTA-x86_64.tar.bz2
+
+manifest \
+    sha256:fb00ac9a7bf46a3d9a1d745859c5e8757ba30f017a46470eb2c123b9afcf66ee  VESTA-x86_64.tar.bz2
+
+tar -xf "VESTA-x86_64.tar.bz2"
+
+mkdir -p "$install_prefix"
+mv "$build_dir/VESTA-x86_64/"* "$install_prefix/"
+
+module load gcc-libs
+module load mesa/10.6.3
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix"
+
+chmod -R a+rX "$module_dir"
+cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated" 
+
+rm -rf -- "$build_dir"
+
+post_build_report
+
