@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HDF5 1.10.5 parallel with GNU toolchain
+#
+#
+
+set -e
+
+PACKAGE_NAME="hdf"
+PACKAGE_VERSION="5-1.10.5}"
+PACKAGE_VARIANT="ompi"
+
+source includes/source_includes.sh
+module purge        
+require gcc-libs
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require gerun
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2"
+  SHA256SUM=${SHA256SUM:-68d6ea8843d2a106ec6a7828564c1689c7a85714a35d8efafa2fee20ca366f44}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+
+  PARALLEL_SCRATCH_DIR=$HOME/Scratch
+  CONFIGURE_ADD_OPTS="--enable-fortran --enable-parallel"
+  export PATH=$INSTALL_PREFIX/bin:$PATH
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
+  cd "$OWD"
+}
+
+_setup_files() {
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.bz2"
+  cd "$OWD"
+}
+
+_build() {
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  CC=mpicc FC=mpif90 ./configure --prefix="$INSTALL_PREFIX" $CONFIGURE_ADD_OPTS
+  make
+  export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
+  make check-s &> serial-test.log
+  make check-p RUNPARALLEL='mpirun ' HDF5_Make_Ignore="y" &> parallel-test.log
+  make install
+  cat serial-test.log
+  cat parallel-test.log
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Built with OpenMPI and GNU."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+
