@@ -57,7 +57,7 @@ _setup_files() {
 _build() {
   cd "$BUILD_DIR"
   cd "${BASENAME}"
-  ./configure --prefix="$INSTALL_PREFIX" "$CONFIGURE_ADD_OPTS"
+  ./configure --prefix="$INSTALL_PREFIX" $CONFIGURE_ADD_OPTS
   make
   make check
   make install
