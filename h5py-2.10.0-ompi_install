@@ -50,6 +50,7 @@ _setup_files() {
 _build() {
   cd "$BUILD_DIR"
   cd "${BASENAME}"
+  mkdir -p "$INSTALL_PREFIX"
   python3 setup.py configure --mpi
   python3 setup.py build
   python3 setup.py install --prefix=$INSTALL_PREFIX
