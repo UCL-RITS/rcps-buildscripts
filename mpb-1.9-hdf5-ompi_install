@@ -20,9 +20,9 @@ source includes/source_includes.sh
 module purge
 require gcc-libs
 require compilers/gnu/4.9.2
-require mpi/openmpi/1.8.4/gnu-4.9.2
-require hdf/5-1.8.15-p1-ompi/gnu-4.9.2
-require fftw/3.3.4-ompi/gnu-4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require hdf/5-1.10.5-ompi/gnu-4.9.2
+require fftw/3.3.8-ompi/gnu-4.9.2
 require libtool
 require libbdwgc
 require guile
@@ -77,9 +77,9 @@ _prepare_module() {
   make_module -p "$INSTALL_PREFIX" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
-              -r "hdf/5-1.8.15-p1-ompi/gnu-4.9.2" \
-              -r "fftw/3.3.4-ompi/gnu-4.9.2" \
+              -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
+              -r "hdf/5-1.10.5-ompi/gnu-4.9.2" \
+              -r "fftw/3.3.8-ompi/gnu-4.9.2" \
               -r "libbdwgc" \
               -r "guile" \
               -r "libctl" \

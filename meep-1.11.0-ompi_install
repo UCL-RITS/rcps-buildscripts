@@ -13,9 +13,9 @@ module purge
 require gcc-libs
 require libtool
 require compilers/gnu/4.9.2
-require mpi/openmpi/1.8.4/gnu-4.9.2
-require hdf/5-1.8.15-p1-ompi/gnu-4.9.2
-require fftw/3.3.4-ompi/gnu-4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require hdf/5-1.10.5-ompi/gnu-4.9.2
+require fftw/3.3.8-ompi/gnu-4.9.2
 require gsl/2.4/gnu-4.9.2 # GSL dependency not listed in the docs, but is in the configure script
 require openblas/0.2.14/gnu-4.9.2
 require harminv
@@ -25,6 +25,7 @@ require libctl/4.3.0/gnu-4.9.2
 require mpb/1.9.0-hdf5-ompi/gnu-4.9.2
 require libgdsii
 require python3/3.7
+require mpi4py/3.0.2/gnu-4.9.2
 
 _env_setup() {
   OWD=$(pwd)
@@ -69,9 +70,9 @@ _prepare_module() {
   make_module -p "$INSTALL_PREFIX" \
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
-              -r "mpi/openmpi/1.8.4/gnu-4.9.2" \
-              -r "hdf/5-1.8.15-p1-ompi/gnu-4.9.2"  \
-              -r "fftw/3.3.4-ompi/gnu-4.9.2"  \
+              -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
+              -r "hdf/5-1.10.5-ompi/gnu-4.9.2"  \
+              -r "fftw/3.3.8-ompi/gnu-4.9.2"  \
               -r "gsl"  \
               -r "openblas/0.2.14/gnu-4.9.2"  \
               -r "harminv"  \
@@ -81,6 +82,7 @@ _prepare_module() {
               -r "mpb/1.9.0-hdf5-ompi/gnu-4.9.2"  \
               -r "libgdsii" \
               -r "python3/3.7" \
+              -r "mpi4py/3.0.2/gnu-4.9.2" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
