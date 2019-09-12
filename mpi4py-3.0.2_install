@@ -73,6 +73,7 @@ _prepare_module() {
               -r "compilers/gnu/4.9.2" \
               -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
               -r "python3/3.7" \
+              -e PYTHONPATH="$INSTALL_PREFIX/lib/python${PYTHON_VERSION_TAG}/site-packages" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} for Python ${PYTHON_VERSION_TAG} to your environment."
   echo "Module files put in: $MODULE_DIR" >&2
