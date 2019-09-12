@@ -30,6 +30,8 @@ _env_setup() {
   SHA256SUM=${SHA256SUM:-b8fad55638f473e8011dcbce1c23e794e15e753b016fc5260fe01c3ff230c2c4}
   BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
 
+  # install location must be in PYTHONPATH
+  PYTHONPATH=${INSTALL_PREFIX}:$PYTHONPATH
 }
 
 _fetch_files() {
