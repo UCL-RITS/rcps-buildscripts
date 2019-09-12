@@ -54,7 +54,7 @@ _build() {
   #python3 setup.py configure --mpi
   #python3 setup.py build
   #python3 setup.py install --prefix=$INSTALL_PREFIX --always-unzip
-  CC="mpicc" HDF5_MPI="ON" pip3 install --prefix=$INSTALL_PREFIX --no-binary=h5py .
+  CC="mpicc" HDF5_MPI="ON" pip3 install --prefix=$INSTALL_PREFIX --no-cache-dir --no-binary=h5py .
   cd "$OWD"
 }
 
