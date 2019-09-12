@@ -75,7 +75,7 @@ make_module -p "$install_prefix" \
           -v FFTWINCLUDE="$install_prefix/include" \
           -v FFTWLIB=fftw \
           -o "$module_dir/$package_label" \
-          -w "Adds ${package_name} ${package_name} (built with OpenMPI) to your environment."
+          -w "Adds ${package_name} ${package_version} (built with OpenMPI) to your environment."
 
 echo
 chmod a+rx "$module_dir"
