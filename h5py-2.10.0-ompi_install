@@ -50,7 +50,7 @@ _setup_files() {
 _build() {
   cd "$BUILD_DIR"
   cd "${BASENAME}"
-  mkdir -p "$INSTALL_PREFIX"
+  mkdir -p "$INSTALL_PREFIX/lib/python${PYTHON_VERSION_TAG}/site-packages"
   python3 setup.py configure --mpi
   python3 setup.py build
   python3 setup.py install --prefix=$INSTALL_PREFIX
