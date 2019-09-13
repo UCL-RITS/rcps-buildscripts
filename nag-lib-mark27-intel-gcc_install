@@ -45,6 +45,7 @@ fi
 
 tar -xvf $PRODUCT.tgz
 cd $PRODUCT
+mv ../$DOC.tgz .
 
 ./install.sh -accept -installdir=$INSTALL_PREFIX \
    -docinstalldir=$INSTALL_PREFIX/doc
