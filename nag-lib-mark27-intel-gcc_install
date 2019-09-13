@@ -43,8 +43,8 @@ then
     exit 1
 fi
 
-tar xvzf $PRODUCT.tgz
-gunzip $DOC.tgz
+tar -xvf $PRODUCT.tgz
+cd $PRODUCT
 
 ./install.sh -accept -installdir=$INSTALL_PREFIX \
    -docinstalldir=$INSTALL_PREFIX/doc
