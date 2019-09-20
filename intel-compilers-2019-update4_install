@@ -161,16 +161,20 @@ make_module -d \
             -e LIBRARY_PATH:"${mprefix}/intel64/lib" \
             -e CPATH:"${mprefix}/include" \
             -v GERUN_LAUNCHER=intel \
-            -e PATH:"/shared/ucl/apps/intel-mpi/ucl-wrapper/bin" \
+            #-e PATH:"/shared/ucl/apps/intel-mpi/ucl-wrapper/bin" \
             -v MPI_HOME="$mprefix" \
             -v I_MPI_ROOT="$mprefix" \
-            -v I_MPI_DEVICE="rdssm" \
+            #-v I_MPI_DEVICE="rdssm" \
             -v I_MPI_CC="icc" \
             -v I_MPI_CXX="icpc" \
             -v I_MPI_F90="ifort" \
             -v I_MPI_F77="ifort" \
-            -v TMI_CONFIG="${mprefix}/intel64/etc/tmi.conf" \
+            #-v TMI_CONFIG="${mprefix}/intel64/etc/tmi.conf" \
             -e CMAKE_PREFIX_PATH:"$mprefix" \
+            -e PATH:"${mprefix}/intel64/libfabric/bin" \
+            -e LD_LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
+            -e LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
+            -v FI_PROVIDER_PATH:"${mprefix}/intel64/libfabric/lib/prov" \
             -w "[Intel MPI/${mpi_package_version}] This is Intel's MPI implementation, version ${mpi_package_version}, which is bundled with compiler package version ${package_version}."
 
 cat >>"${module_dir}/${mpi_package_label}" <<'EOF'
@@ -180,12 +184,12 @@ cat >>"${module_dir}/${mpi_package_label}" <<'EOF'
 if { [info exists ::env(NHOSTS) ] } {
 
         # Scheduled.
-        # Check to see whether we have more than one host and if so set tmi and shared
+        # Check to see whether we have more than one host and if so set ofi and shared
         # memory, otherwise, set shared memory.
         if { $::env(NHOSTS) > 1} {
 
                 # Multi-node, scheduled.
-                setenv I_MPI_FABRICS shm:tmi
+                setenv I_MPI_FABRICS shm:ofi
         } else {
 
                 # Single node, scheduled.
