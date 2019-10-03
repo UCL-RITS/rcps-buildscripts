@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+
+# This needs to installed on a LOGIN node on Legion because as part of the
+# license check it writes to ~/intel.
+# Insert suitable face here.
+
+set \
+    -o errexit 
+
+source includes/source_includes.sh
+
+package_name="intel"
+package_version="2019.Update4"
+numeric_version="2019.4.243"
+mpi_package_version="2019.4.243"
+package_description="This is the package for the Intel C, C++, and Fortran compilers."
+
+intel_license="28518@lic-intel.ucl.ac.uk"
+
+src_file=parallel_studio_xe_2019_update4_cluster_edition.tgz
+
+module purge
+require gcc-libs
+require compilers/gnu
+# Needs a GCC installation to use its C++ headers ¯\_(o_o)_/¯
+
+if [ -d ~/intel ]; then
+  echo "WARNING: this installer may not behave as expected because this installer likes to read settings in from ~/intel . Delete this directory to get expected results." >&2
+  sleep 3
+fi
+
+# At peak, this uses more than 12 GB of storage during the install
+#  which is too big for /dev/shm and too big for /tmp
+# (I don't know how *much* more yet)
+mkdir -p "${HOME}/temporary-intel-dirs"
+unset COMPILER_TAG
+make_build_env "$package_name" "${HOME}/temporary-intel-dirs"
+
+# Package label is set by make_build_env but we need to override it
+#  (to include the compilers top-level)
+package_label="compilers/intel/$package_version"
+mpi_package_label="mpi/intel/2019/update4/intel"
+
+cd "$build_dir"
+
+cp "/shared/ucl/apps/intel/installers/$src_file" ./
+manifest sha1:a38d8c09347abd3ca354dfc57dc77205c7f04300 $src_file
+
+tar -xf "$src_file"
+
+cd "$build_dir"
+cat > silent_config_file.cfg <<EOF
+ACCEPT_EULA=accept
+ACTIVATION_TYPE=license_server
+ACTIVATION_LICENSE_FILE=$intel_license
+ARCH_SELECTED=ALL
+CLUSTER_INSTALL_TEMP=$(mktemp -p /dev/shm/ -d intel-compiler-installtempdir.XXXXXXXXXX)
+COMPONENTS=ALL
+CONTINUE_WITH_INSTALLDIR_OVERWRITE=yes
+CONTINUE_WITH_OPTIONAL_ERROR=yes
+#NONRPM_DB_DIR=$(mktemp -p /dev/shm/ -d intel-compiler-nonrpm-db-dir.XXXXXXXXXX)
+INTEL_SW_IMPROVEMENT_PROGRAM_CONSENT=no
+PSET_INSTALL_DIR=$install_prefix
+PSET_MODE=install
+EOF
+
+for i in */install.sh; do
+    $i --cli-mode --silent ./silent_config_file.cfg
+done
+
+echo "Installed to: $install_prefix"
+
+echo "Now load the module for this install and the relevant Intel MPI"
+echo "and run intel-compilers-interfaces_install to install the interfaces."
+
+
+# Compiler module
+package_label="${package_label//Update/update}"
+package_label="${package_label//\.//}"
+export cprefix=$install_prefix
+export nprefix="$cprefix/compilers_and_libraries_$numeric_version"
+make_module -p "$install_prefix" \
+            -c "$package_name" \
+            -o "$module_dir/$package_label" \
+            -v INTEL_LICENSE_FILE="$intel_license" \
+            -v CC=icc \
+            -v CXX=icpc \
+            -v CXXCPP="\"icpc -E\"" \
+            -v F77=ifort \
+            -v F90=ifort \
+            -v FC=ifort \
+            -v COMPILER_TAG=intel-2019 \
+            -v BLAS_TAG=mkl \
+            -v MKLROOT="$nprefix/linux/mkl" \
+            -v IPPROOT="$nprefix/linux/ipp" \
+            -v TBBROOT="$nprefix/linux/tbb" \
+            -v DAALROOT="$nprefix/linux/daal" \
+            -e LIBRARY_PATH:"$nprefix/linux/ipp/../compiler/lib/intel64" \
+            -e LIBRARY_PATH:"$nprefix/linux/ipp/lib/intel64" \
+            -e LIBRARY_PATH:"$nprefix/linux/compiler/lib/intel64" \
+            -e LIBRARY_PATH:"$nprefix/linux/mkl/lib/intel64" \
+            -e LIBRARY_PATH:"$nprefix/linux/tbb/lib/intel64/gcc4.4" \
+            -e LIBRARY_PATH:"$nprefix/linux/daal/lib/intel64_lin" \
+            -e LIBRARY_PATH:"$nprefix/linux/daal/../tbb/lib/intel64_lin/gcc4.4" \
+            -e LIBRARY_PATH:"$nprefix/linux/daal/../compiler/lib/intel64_lin" \
+            -e MIC_LD_LIBRARY_PATH:"$nprefix/linux/compiler/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$nprefix/linux/mpi/mic/lib" \
+            -e MIC_LD_LIBRARY_PATH:"$nprefix/linux/compiler/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$nprefix/linux/mkl/lib/mic" \
+            -e MIC_LD_LIBRARY_PATH:"$nprefix/linux/tbb/lib/mic" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/mpi/intel64/lib" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/ipp/../compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/ipp/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/compiler/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/mkl/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/tbb/lib/intel64/gcc4.4" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/daal/lib/intel64_lin" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/daal/../tbb/lib/intel64_lin/gcc4.4" \
+            -e LD_LIBRARY_PATH:"$nprefix/linux/daal/../compiler/lib/intel64_lin" \
+            -e MIC_LIBRARY_PATH:"$nprefix/linux/compiler/lib/mic" \
+            -e MIC_LIBRARY_PATH:"$nprefix/linux/mpi/mic/lib" \
+            -e MIC_LIBRARY_PATH:"$nprefix/linux/tbb/lib/mic" \
+            -e CPATH:"$nprefix/linux/ipp/include" \
+            -e CPATH:"$nprefix/linux/mkl/include" \
+            -e CPATH:"$nprefix/linux/tbb/include" \
+            -e CPATH:"$nprefix/linux/daal/include" \
+            -e NLSPATH:"$nprefix/linux/compiler/lib/intel64/locale/%l_%t/%N" \
+            -e NLSPATH:"$nprefix/linux/mkl/lib/intel64/locale/%l_%t/%N" \
+            -e PATH:"$nprefix/linux/bin/intel64" \
+            -e PATH:"$nprefix/linux/mpi/intel64/bin" \
+            -e CLASSPATH:"$nprefix/linux/daal/lib/daal.jar" \
+            -e MANPATH:"$cprefix/man/common" \
+            -e MANPATH:"$nprefix/linux/man/en_US" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-ia/man/" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-mic/man/" \
+            -e MANPATH:"$cprefix/documentation_2018/en/debugger/gdb-igfx/man/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-ia/info/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-mic/info/" \
+            -e INFOPATH:"$cprefix/documentation_2018/en/debugger/gdb-igfx/info/" \
+            -v GDBSERVER_MIC="$cprefix/debugger_2018/gdb/targets/mic/bin/gdbserver" \
+            -v GDB_CROSS="$cprefix/debugger_2018/gdb/intel64_mic/bin/gdb-mic" \
+            -v MPM_LAUNCHER="$cprefix/debugger_2018/mpm/mic/bin/start_mpm.sh" \
+            -v INTEL_PYTHONHOME="$cprefix/debugger_2018/python/intel64/" \
+            -e PATH:"$cprefix/debugger_2018/gdb/intel64_mic/bin" \
+            -e LD_LIBRARY_PATH:"$cprefix/debugger_2018/libipt/intel64/lib" \
+            -e NLSPATH:"$cprefix/debugger_2018/gdb/intel64_mic/share/locale/%l_%t/%N" \
+            -e NLSPATH:"$cprefix/debugger_2018/gdb/intel64/share/locale/%l_%t/%N" \
+            -r gcc-libs/4.9.2 \
+            -d \
+            -w "[$package_name/$package_version] $package_description"
+
+# MPI module
+mprefix="$cprefix/impi/$mpi_package_version"
+make_module -d \
+            -c "$package_name" \
+            -o "${module_dir}/${mpi_package_label}" \
+            -e PATH:"${mprefix}/intel64/bin" \
+            -e MANPATH:"${mprefix}/man" \
+            -e LD_LIBRARY_PATH:"${mprefix}/intel64/lib" \
+            -e LIBRARY_PATH:"${mprefix}/intel64/lib" \
+            -e CPATH:"${mprefix}/include" \
+            -v GERUN_LAUNCHER=intel \
+            #-e PATH:"/shared/ucl/apps/intel-mpi/ucl-wrapper/bin" \
+            -v MPI_HOME="$mprefix" \
+            -v I_MPI_ROOT="$mprefix" \
+            #-v I_MPI_DEVICE="rdssm" \
+            -v I_MPI_CC="icc" \
+            -v I_MPI_CXX="icpc" \
+            -v I_MPI_F90="ifort" \
+            -v I_MPI_F77="ifort" \
+            #-v TMI_CONFIG="${mprefix}/intel64/etc/tmi.conf" \
+            -e CMAKE_PREFIX_PATH:"$mprefix" \
+            -e PATH:"${mprefix}/intel64/libfabric/bin" \
+            -e LD_LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
+            -e LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
+            -v FI_PROVIDER_PATH:"${mprefix}/intel64/libfabric/lib/prov" \
+            -w "[Intel MPI/${mpi_package_version}] This is Intel's MPI implementation, version ${mpi_package_version}, which is bundled with compiler package version ${package_version}."
+
+cat >>"${module_dir}/${mpi_package_label}" <<'EOF'
+
+# Check to see whether this is running in a scheduled environment (NHOSTS>1) and
+# if not, set shared memory only.
+if { [info exists ::env(NHOSTS) ] } {
+
+        # Scheduled.
+        # Check to see whether we have more than one host and if so set ofi and shared
+        # memory, otherwise, set shared memory.
+        if { $::env(NHOSTS) > 1} {
+
+                # Multi-node, scheduled.
+                setenv I_MPI_FABRICS shm:ofi
+        } else {
+
+                # Single node, scheduled.
+                setenv I_MPI_FABRICS shm
+        }
+} else {
+
+        # Not scheduled.
+        setenv I_MPI_FABRICS shm
+}
+
+EOF
+
+echo "Module files put in: $module_dir" >&2
+chmod a+rx "$module_dir"
+
+cd "$owd"
+if [ -n "$build_dir" ]; then
+    rm -Rf "$build_dir"
+fi
+
+

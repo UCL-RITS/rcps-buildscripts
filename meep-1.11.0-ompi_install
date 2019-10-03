@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+# Meep w/ OpenMPI
+
+set -e
+
+PACKAGE_NAME="meep"
+PACKAGE_VERSION="1.11.0"
+PACKAGE_VARIANT="ompi"
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require libtool
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require hdf/5-1.10.5-ompi/gnu-4.9.2
+require fftw/3.3.8-ompi/gnu-4.9.2
+require gsl/2.4/gnu-4.9.2 # GSL dependency not listed in the docs, but is in the configure script
+require openblas/0.2.14/gnu-4.9.2
+require harminv
+require libbdwgc/7.4.2/gnu-4.9.2
+require guile/2.0.11/gnu-4.9.2
+require libctl/4.3.0/gnu-4.9.2
+require mpb/1.9.0-hdf5-ompi/gnu-4.9.2
+require libgdsii
+require python3/3.7
+require mpi4py/3.0.2/gnu-4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="https://github.com/NanoComp/meep/releases/download/v${PACKAGE_VERSION}/meep-${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-623837dadc2b780c6243911051619134202d5b51f560c646584ba42dde5cf008}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+
+  CONFIGURE_ADD_OPTS="--enable-shared --with-mpi --with-openmp"
+  export BLAS_LIBS=-lopenblas
+# the tests fail to find openblas automatically. *shrug*
+
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz" 
+  cd "$OWD"
+}
+
+_setup_files() {
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.gz"
+  cd "$OWD"
+}
+
+_build() {
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  ./configure --prefix="$INSTALL_PREFIX" $CONFIGURE_ADD_OPTS
+  make
+  make check
+  make install
+  make distclean
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
+              -r "hdf/5-1.10.5-ompi/gnu-4.9.2"  \
+              -r "fftw/3.3.8-ompi/gnu-4.9.2"  \
+              -r "gsl"  \
+              -r "openblas/0.2.14/gnu-4.9.2"  \
+              -r "harminv"  \
+              -r "libbdwgc" \
+              -r "guile" \
+              -r "libctl/4.3.0/gnu-4.9.2"  \
+              -r "mpb/1.9.0-hdf5-ompi/gnu-4.9.2"  \
+              -r "libgdsii" \
+              -r "python3/3.7" \
+              -r "mpi4py/3.0.2/gnu-4.9.2" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+

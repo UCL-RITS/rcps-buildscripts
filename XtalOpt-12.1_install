@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing XtalOpt
+#
+# by Brian Alston, July 2019
+#
+
+
+# Set up environment for UCL build scripts to work.
+
+set -e
+
+# dirname=$(dirname $0 2>/dev/null || pwd)
+dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# Use the require function to load necessary modules if not already
+# loaded.
+
+require rcps-core/1.0.0
+require cmake
+require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+require xorg-utils/X11R7.7
+require qt/5.12.1/gnu-4.9.2
+require eigen/3.2.5/gnu-4.9.2
+require qwt/6.1.4/gnu-4.9.2
+
+APPNAME=${APPNAME:-XtalOpt}
+VERSION=${VERSION:-r12.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-55e03bd8fca9b98821667406ada392ff}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/xtalopt/${APPNAME}/archive/${VERSION}.tar.gz}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE 
+
+CHECKSUM=`md5sum ${VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM"  ]]
+then
+    tar -xvf ${VERSION}.tar.gz
+    cd ${APPNAME}-${VERSION}
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DENABLE_SSH:BOOL=OFF
+    make 
+    make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

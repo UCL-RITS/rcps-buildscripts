@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+###############################################
+# Install RStudio Server for use with R 3.6.0
+#
+# RStudio 1.2.1335
+#
+# by Brian Alston, July 2019
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+#
+# 
+
+VERSION=${VERSION:-v1.2.1335}
+PARTCODE=${PARTCODE:-f1ac345}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/RStudio-${VERSION}/rstudio-server}
+MD5=${MD5:-2b90bff06974dace83ccf0a62b36ffd5}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://github.com/rstudio/rstudio/tarball/${VERSION}}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- rstudio-rstudio-${VERSION}-0-g${PARTCODE}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require r/r-3.6.0_bc-3.9
+require boost/1_63_0/gnu-4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+require intltool/0.51.0
+require xorg-utils/X11R7.7
+require qt/5.12.1/gnu-4.9.2
+require cmake/3.13.3
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+wget -O $LOCAL_ARCHIVE $SRC_ARCHIVE
+
+CHECKSUM=`md5sum $LOCAL_ARCHIVE | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    tar -xvf $LOCAL_ARCHIVE
+    cd rstudio-rstudio-$PARTCODE
+
+    # Download/build supplied dependencies
+    cd dependencies/common
+    ./install-pandoc
+    ./install-dictionaries
+    ./install-mathjax
+    ./install-gwt
+    cd ../..
+
+    # Configure and build RStudio Server
+    mkdir build
+    cd build
+    export CCFLAGS="-pthread -lbsd"
+    export LDFLAGS=-lbsd
+    cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release -DQT_QMAKE_EXECUTABLE=/shared/ucl/apps/qt/5.12.1/gnu-4.9.2/bin/qmake -CMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+    make
+    make install
+    echo ""
+    echo "RStudio Server has been built and installed in $INSTALL_PREFIX"
+    echo "Post-installation configureation as root needed for new installations. See:"
+    echo ""
+    echo "https://github.com/UCL-RITS/research-computing/issues/1614"
+    echo ""
+    echo "for details."
+    echo ""
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="gcc"
+package_version="8.3.0"
+package_description="The GNU Compiler Collection includes front ends for C, C++, Objective-C, Fortran, Ada, and Go, as well as libraries for these languages (libstdc++,...)."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+
+    # Autogen is required for tests, guile and libbdwgc are deps for autogen
+    require libbdwgc/7.4.2/gnu-4.9.2 
+    require guile/2.0.11/gnu-4.9.2
+    require autogen/5.18.12/gnu-4.9.2
+
+    unset COMPILER_TAG
+    # Otherwise it'll end up in the module def
+
+    make_build_env --tmp-root="/dev/shm"
+    package_url="ftp://ftp.irisa.fr/pub/mirrors/gcc.gnu.org/gcc/releases/gcc-${package_version}/gcc-${package_version}.tar.xz"
+    package_file="gcc-${package_version}.tar.xz"
+    unpack_dir="gcc-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha256:64baadfe6cc0f4947a84cb12d7f0dfaf45bb58b7e92461639596c21e02d97d2c  gcc-8.3.0.tar.xz
+
+    tar -xf "$package_file"
+
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    contrib/download_prerequisites
+
+    # There's currently a bug where the MPFR tests fail because they look for the system GMP header,
+    #  and compare that to the just-compiled in-tree library version.
+    # The system version is currently 6.0.0, and the in-tree auto-download one is 6.1.0, and using
+    #  the system one seems to pass all tests, so the line below deletes the auto-downloaded copy
+    #  before it's built.
+    # For reference, the test failure looks like this: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84554
+    rm -Rf gmp gmp-*
+
+    ./configure \
+        --prefix="${install_prefix}" \
+        --enable-libssp \
+        --with-quad \
+        --disable-multilib \
+        --enable-lto \
+        --enable-languages=c,c++,fortran,lto,brig,objc,obj-c++ \
+        --enable-bootstrap \
+        --enable-stage1-checking
+        #--with-system-zlib \
+
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+    make -j 4
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+
+    export CPATH="$(pwd)/host-x86_64-pc-linux-gnu/gmp/gmp.h:$CPATH"
+    export INCLUDE_PATH="$(pwd)/host-x86_64-pc-linux-gnu/gmp/gmp.h:$INCLUDE_PATH"
+    make check
+
+    make install
+
+    make_module \
+        -o "${module_dir}/gcc-libs/${package_version}" \
+        -d \
+        -e LIBRARY_PATH:"$install_prefix/lib" \
+        -e LIBRARY_PATH:"$install_prefix/lib64" \
+        -e LD_LIBRARY_PATH:"$install_prefix/lib" \
+        -e LD_LIBRARY_PATH:"$install_prefix/lib64" \
+        -e PATH:"$install_prefix/bin" \
+        -e MANPATH:"$install_prefix/man" \
+        -p "$install_prefix" \
+        -c "gcc-libs" \
+        -w "Base module for $package_name ${package_version} -- does not set the standard compiler environment variables. $package_description"
+    make_module \
+        -o "${module_dir}/compilers/gnu/${package_version}" \
+        -v CC=gcc \
+        -v CXX=g++ \
+        -v FC=gfortran \
+        -v F90=gfortran \
+        -v F77=gfortran \
+        -v COMPILER_TAG=gnu-${package_version} \
+        -r gcc-libs/${package_version} \
+        -d \
+        -p "$install_prefix" \
+        -c "compilers" \
+        -c "$package_name" \
+        -w "$package_description"
+    echo "Module files put in: $module_dir" >&2
+    chmod a+rx "$module_dir"
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up

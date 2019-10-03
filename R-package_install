@@ -8,6 +8,7 @@
 # Updated May 2017 to default to R 3.4.0
 # Updated March 2018 to default to R 3.4.2
 # Updated October 2018 to default to R 3.5.1
+# Updated June 2019 to defULT TO R 3.6.0
 #
 # usage: R-package_install <R package name>
 #
@@ -15,7 +16,7 @@
 
 set -e
 
-VERSION=${VERSION:-3.5.1}
+VERSION=${VERSION:-3.6.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
@@ -30,7 +31,8 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 # require r/recommended
-require r/new
+# require r/new
+require r/r-3.6.0_bc-3.9
 
 if [ $# -ne 1 ]; then
 	echo "usage: R-package_install <R package name>"

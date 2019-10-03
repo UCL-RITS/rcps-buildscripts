@@ -7,7 +7,7 @@
 BUILDSCRIPT_REPO_DIR="${BUILDSCRIPT_REPO_DIR:-/shared/ucl/apps/build_scripts}"
 BUILD_LOG_DIR="${BUILD_LOG_DIR:-$HOME/build_script_logs}"
 
-if ! date; then
+if ! command -v date >/dev/null; then
     echo "Error: no working date command"
     exit 2
 fi

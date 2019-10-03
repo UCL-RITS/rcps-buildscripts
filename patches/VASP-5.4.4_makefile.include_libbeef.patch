@@ -1,0 +1,27 @@
+--- makefile.include.orig       2019-06-28 12:21:03.757810154 +0100
++++ makefile.include    2019-06-28 12:29:43.212176179 +0100
+@@ -7,7 +7,8 @@
+              -Davoidalloc \
+              -Duse_bse_te \
+              -Dtbdyn \
+-             -Duse_shmem
++             -Duse_shmem \
++             -Dlibbeef
+ 
+ CPP        = fpp -f_com=no -free -w0  $*$(FUFFIX) $*$(SUFFIX) $(CPP_OPTIONS)
+ 
+@@ -26,12 +27,13 @@
+ LAPACK     =
+ BLACS      = -lmkl_blacs_intelmpi_lp64
+ SCALAPACK  = $(MKL_PATH)/libmkl_scalapack_lp64.a $(BLACS)
++LIBBEEF    = -L$(LIBBEEF_PATH) -lbeef
+ 
+ OBJECTS    = fftmpiw.o fftmpi_map.o fft3dlib.o fftw3d.o
+ 
+ INCS       =-I$(MKLROOT)/include/fftw
+ 
+-LLIBS      = $(SCALAPACK) $(LAPACK) $(BLAS)
++LLIBS      = $(SCALAPACK) $(LAPACK) $(BLAS) $(LIBBEEF)
+ 
+ 
+ OBJECTS_O1 += fftw3d.o fftmpi.o fftmpiw.o
