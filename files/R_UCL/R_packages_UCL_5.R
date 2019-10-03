@@ -180,6 +180,14 @@ install.packages ("kohonen", lib=mainLib, repos=repros);
 install.packages ("GJRM", lib=mainLib, repos=repros);
 install.packages ("rlist", lib=mainLib, repos=repros);
 
+# For Benjamin Lauderdale (b.lauderdale@ucl.ac.uk) 24th September 2019
+
+install.packages ("ltm", lib=mainLib, repos=repros);
+install.packages ("poLCA", lib=mainLib, repos=repros);
+install.packages ("quanteda", lib=mainLib, repos=repros);
+install.packages ("topicmodels", lib=mainLib, repos=repros);
+devtools::install_github ("quanteda/quanteda.corpora");
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
