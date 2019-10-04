@@ -75,7 +75,7 @@ make
 cd ${temp_dir}/${NANAME}/Linux-x86_64-icc
 rm ${INSTALL_PREFIX}/${NANAME}
 mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
-for a in flipbinpdb flipdcd namd2 psfgen
+for a in flipbinpdb flipdcd namd2 psfgen sortreplicas
 do
   echo "Installing $a"
   cp $a ${INSTALL_PREFIX}/${NANAME}/bin
