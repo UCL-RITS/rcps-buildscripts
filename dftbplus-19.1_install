@@ -28,6 +28,7 @@ utils/get_opt_externals ALL <<<"y"
 
 cp sys/make.x86_64-linux-intel make.arch
 
+sed -i.bak 's|mpifort|mpiifort|g' make.arch
 make \
     INSTALLDIR="$install_prefix" \
     WITH_MPI=1 \
