@@ -60,9 +60,9 @@ git checkout v$VERSION
 
 echo ">>> Answer yes to all defaults <<<"
 
-cp $initdir/configure.py.patch-1.14.0 .
+cp $initdir/tensorflow-configure.py.patch-1.14.0 .
 
-patch < configure.py.patch-1.14.0
+patch < tensorflow-configure.py.patch-1.14.0
 export TF_ENABLE_XLA=1
 export TF_NEED_GDR=0
 export TF_NEED_VERBS=0
