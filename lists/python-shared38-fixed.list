@@ -12,7 +12,6 @@ pandas
 ephem
 networkx
 obspy
-cvxopt
 cutadapt
 lxml
 astropy
