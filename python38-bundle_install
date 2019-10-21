@@ -47,7 +47,9 @@ do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
+       set +e
        NP_OPENBLAS=`ls /shared/ucl/apps/python/bundles/${TIME_STAMP}-${PYTHON_VERSION}/venv/lib/python3.8/site-packages/numpy/.libs/libopenblas*.so`
+       set -e
        LAPACK=${NP_OPENBLAS}
        BLAS=${NP_OPENBLAS}
 
