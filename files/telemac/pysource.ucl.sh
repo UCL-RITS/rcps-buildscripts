@@ -6,13 +6,13 @@
 ### TELEMAC settings -----------------------------------------------------------
 ###
 # Path to telemac root dir
-export HOMETEL=$HOME/telemac-v8p0r0
+export HOMETEL=/home/cceahke/telemac-v8p0r0
 # Adding python scripts to PATH
 export PATH=$HOMETEL/scripts/python27:.:$PATH
 # Configuration file
 export SYSTELCFG=$HOMETEL/configs/systel.ucl.cfg
 # Name of the configuration to use
-export USETELCFG=mpi
+export USETELCFG=mpi-submitter
 # Path to this file
 export SOURCEFILE=$HOMETEL/configs/pysource.ucl.sh
 ### Python
