@@ -47,6 +47,8 @@ do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
+
+       # THIS IS A TERRIBLE HACK UNTIL THERE IS A SCIPY WHEEL.
        set +e
        NP_OPENBLAS=`ls /shared/ucl/apps/python/bundles/${TIME_STAMP}-${PYTHON_VERSION}/venv/lib/python3.8/site-packages/numpy/.libs/libopenblas*.so`
        set -e
