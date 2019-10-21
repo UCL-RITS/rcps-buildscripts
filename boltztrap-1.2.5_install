@@ -1,124 +1,40 @@
 #!/usr/bin/env bash
 
-##########################
-#Installing Boltztrap
+###############################################
+# Installing 
 #
+# by Owain Kenway, 2018
 #
-
 set -e
 
-package_name="bolztrap"
-package_version="1.2.5"
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
-for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
+require gcc-libs/4.9.2
+require compilers/intel/2018
 
-_env_setup(){
-module purge
-require openblas/0.3.2-serial/gnu-4.9.2
+NAME=${NAME:-boltztrap}
+VERSION=${VERSION:-1.2.5}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-a550114eabec625cc7307e7f034e92e15e7ed9d0e1dbd92a7fd4f8f8e141d5fe}
 
-make_build_env
-}
+SRC_ARCHIVE=${SRC_ARCHIVE:-}
 
-_file_setup() {
-  cd "$build_dir"
+rm -rf $INSTALL_PREFIX
+mkdir $INSTALL_PREFIX
 
-  cp "$package_store/$package_file" "./$package_file"
+cd $INSTALL_PREFIX
 
-  tar -xf $package_file
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
 
-  wget https://owncloud.tuwien.ac.at/index.php/s/s2d55LYlZnioa3s/download
+sha256sum -c <<< "$SHA256 $archive"
 
-  sha256sum -c <<<"a550114eabec625cc7307e7f034e92e15e7ed9d0e1dbd92a7fd4f8f8e141d5fe  download"
+tar -xvf $archive
 
-  tar -xvf download
-}
+cd ${NAME}-${VERSION}
 
-_pre_build() {
-  cd "$unpack_dir"
-  cp arch/makefile.include.linux_intel ./makefile.include
-  cd ..
+cd src
+cp /shared/ucl/apps/build_scripts/patches/boltztrap.makefile.patch .
+patch < boltztrap.makefile.patch
 
-  cd vtstcode-*
-  cp ./* "../$unpack_dir/src"
-  cd ..
-
-  # Modify main.F and .objects as stated at http://theory.cm.utexas.edu/vtsttools/installation.html
-  cd "$unpack_dir/src"
-  cat >tmp.patch <<EOF
---- main.F.orig 2019-07-16 10:27:55.539475649 +0100
-+++ main.F      2019-07-16 10:28:39.697810676 +0100
-@@ -3144,7 +3144,7 @@
-       ENDIF
-       CALL CHAIN_FORCE(T_INFO%NIONS,DYN%POSION,TOTEN,TIFOR, &
--           LATT_CUR%A,LATT_CUR%B,IO%IU6)
-+           TSIF,LATT_CUR%A,LATT_CUR%B,IO%IU6)
-       CALL PARALLEL_TEMPERING(NSTEP,T_INFO%NIONS,DYN%POSION,DYN%VEL,TOTEN,TIFOR,DYN%TEBEG,DYN%TEEND, &
-            LATT_CUR%A,LATT_CUR%B,IO%IU6)
-EOF
-  patch -i tmp.patch
-
-  cat >tmp.patch <<'EOF'
---- .objects.orig       2019-07-16 10:41:37.399709954 +0100
-+++ .objects    2019-07-16 10:41:45.623772328 +0100
-@@ -69,6 +69,19 @@
- 	tet.o \
- 	tetweight.o \
- 	hamil_rot.o \
-+	bfgs.o \
-+	dynmat.o \
-+	instanton.o \
-+	lbfgs.o\
-+	sd.o \
-+	cg.o \
-+	dimer.o \
-+	bbm.o \
-+	fire.o \
-+	lanczos.o \
-+	neb.o \
-+	qm.o \
-+	opt.o \
- 	chain.o \
- 	dyna.o \
- 	k-proj.o \
-EOF
-
-  patch -i tmp.patch
-
-  # There exists a vasp-5.4.4-mpmd.patch but a compilation question was answered "you do not need to apply the mpmd patch or run the mkbdrpro.pl script for a standard installation of the vtstcode."
-  # It doesn't say anywhere in what circumstances you do want that patch.
-
-  cd ../../
-  echo "Ending pre-build in: $(pwd)"
-
-}
-
-_build() {
-  cd "$unpack_dir"
-  make
-  cd ..
-}
-
-_post_build() {
-  mkdir -p "$install_prefix"
-  chgrp -R "$vasp_access_group" "$install_prefix"
-  mkdir -p "$install_prefix/bin"
-  'cp' -v "$unpack_dir"/bin/vasp* "$install_prefix/bin"
-  'mv' vtstscripts-* vtstscripts
-  'cp' -rv vtstscripts "$install_prefix"
-
-  # These are fiddlier to deal with now -- will separate from VASP exe installs
-  #mkdir -p "$install_prefix/potentials"
-  #'cp' -v potentials/* "$install_prefix/potentials/"
-}
-
-_clean_up() {
-  #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
-  :
-}
-
-_env_setup
-_file_setup
-_pre_build
-_build
-_post_build
-_clean_up
+make 
