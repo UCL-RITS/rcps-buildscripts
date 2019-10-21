@@ -41,7 +41,7 @@ pip3 install --upgrade pip
 
 old_IFS="$IFS"
 IFS=$'\n'
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared38-fixed.list`
 do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
