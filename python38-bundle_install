@@ -29,8 +29,8 @@ require python/3.8.0
 require openblas/0.3.7-serial/gnu-4.9.2
 
 NP_OPENBLAS=/shared/ucl/apps/openblas/0.3.7-serial/gnu-4.9.2/lib/libopenblas.so
-LAPACK=${NP_OPENBLAS}
-BLAS=${NP_OPENBLAS}
+export LAPACK=${NP_OPENBLAS}
+export BLAS=${NP_OPENBLAS}
 
 mkdir -p $INSTALL_PREFIX
 
