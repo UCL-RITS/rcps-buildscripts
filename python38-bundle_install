@@ -15,6 +15,9 @@ TIME_STAMP=`date +"%s"`
 # Disable wheels for some packages
 PIPNOBIN=${PIPNOBIN:-numpy,scipy}
 
+# Fix for Numpy
+export CFLAGS=-std=c99
+
 set -e
 
 # module dependencies:
