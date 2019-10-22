@@ -16,14 +16,14 @@ temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 wget $SRC_ARCHIVE
-CHECKSUM=`md5sum ${PRODUCT}_$ARCH.tgz | awk '{print $1}'`
+CHECKSUM=`md5sum impute_v${VERSION}_x86_64_$LIBTYPE.tgz | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
     cd /shared/ucl/apps
     mkdir -p Impute2
     cd Impute2
-    tar -xvf $temp_dir/impute_v${VERSION}_$LIBTYPE.tgz
+    tar -xvf $temp_dir/impute_v${VERSION}_x86_64_$LIBTYPE.tgz
 else
    echo "***** Hash mismatch,"
    echo "       Expected: $MD5"
