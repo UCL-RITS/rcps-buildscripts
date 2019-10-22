@@ -28,6 +28,8 @@ cd $INSTALL_PREFIX
 mkdir $TIME_STAMP-$PYTHON_VERSION
 cd $TIME_STAMP-$PYTHON_VERSION
 
+# Part of the ungodly scipy hack:
+export LD_LIBRARY_PATH=${INSTALL_PREFIX}/${TIME_STAMP}-${PYTHON_VERSION}/venv/lib/python3.8/site-packages/numpy/.libs:${LD_LIBRARY_PATH}
 
 # Update pip, setuptools and virtualenv as old versions can cause
 # issues with packages due to --system-site-packages.
