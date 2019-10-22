@@ -24,6 +24,7 @@ then
     mkdir -p Impute2
     cd Impute2
     tar -xvf $temp_dir/impute_v${VERSION}_x86_64_$LIBTYPE.tgz
+    chmod -R go+rx impute_v${VERSION}_x86_64_$LIBTYPE
 else
    echo "***** Hash mismatch,"
    echo "       Expected: $MD5"
