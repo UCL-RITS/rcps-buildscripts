@@ -7,7 +7,7 @@
 VERSION=${VERSION:-2.3.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Impute2/${VERSION}}
 LIBTYPE=${LIBTYPE:-dynamic}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://mathgen.stats.ox.ac.uk/impute/impute_v${VERSION}_$LIBTYPE.tgz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://mathgen.stats.ox.ac.uk/impute/impute_v${VERSION}_x86_64_$LIBTYPE.tgz}
 MD5=${MD5:-0e1bafb8f63eb5cf9ae02ab761af58aa}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
