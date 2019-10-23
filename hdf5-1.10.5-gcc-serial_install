@@ -58,7 +58,7 @@ _prepare_module() {
               -c "${PACKAGE_NAME}" \
               -r "gcc-libs/4.9.2" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
-	      -v "HDF5HOME=$INSTALL_PREFIX"
+	      -v "HDF5HOME=$INSTALL_PREFIX" \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Serial version built with GNU."
   echo "Module files put in: $MODULE_DIR" >&2
 }
