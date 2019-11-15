@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Tensorflow 2.0.0 with MKL
+#
+# by Owain Kenway, 2019
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-2.0.0}
+TYPE=${TYPE:-gpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}-37/$TYPE}
+
+MARCH=${MARCH:-native}
+CONFIG_OPTS="--config=cuda --copt=-march=${MARCH} --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=0 --copt=-O3"
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/tensorflow/tensorflow}
+
+initdir=`pwd`
+
+set -e
+
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require python/3.7.4
+require bazel/0.24.1
+require cuda/10.0.130/gnu-4.9.2 
+require cudnn/7.4.2.24/cuda-10.0 
+
+# Delete the old install, clear the bazel cache and any old builds in /dev/shm
+echo "Cleaning old install"
+rm -rf $INSTALL_PREFIX /dev/shm/tensorflow ~/.cache/bazel
+
+# Build in /dev/shm for speed and space.
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+cd $temp_dir
+
+export TMP=$tmp_dir
+
+# Set up our environment.
+# This is a cludge, I know.
+virtualenv $INSTALL_PREFIX
+source $INSTALL_PREFIX/bin/activate
+pip3 install numpy==1.16.4 keras
+
+export PYTHON_BIN_PATH=`which python3`
+export PYTHON_LIB_PATH=${INSTALL_PREFIX}/lib/python3.7/site-packages
+
+export TF_CUDA_PATHS=/shared/ucl/apps/cuda/10.0.130/gnu-4.9.2,/shared/ucl/apps/cudnn/7.4.2.24/10.0/cuda
+
+# Checkout the version of tensorflow we want.
+git clone $SRC_ARCHIVE
+cd tensorflow
+git checkout v$VERSION
+
+echo ">>> Answer yes to all defaults <<<"
+
+cp $initdir/patches/tensorflow-configure.py.patch-1.14.0 .
+
+patch < tensorflow-configure.py.patch-1.14.0
+export TF_ENABLE_XLA=1
+export TF_NEED_GDR=0
+export TF_NEED_VERBS=0
+export TF_DOWNLOAD_CLANG=0
+export TF_NEED_OPENCL_SYCL=0
+export TF_NEED_CUDA=1
+export TF_CUDA_CLANG=0
+export TF_NEED_MPI=0
+export TF_NEED_TENSORRT=0
+export TF_CUDA_COMPUTE_CAPABILITIES="3.5,6.0,7.0"
+export TF_SET_ANDROID_WORKSPACE=0
+export TF_NEED_COMPUTECPP=0
+export CC_OPT_FLAGS=" -march=${MARCH} "
+export TF_NEED_ROCM=0
+
+./configure
+
+
+# Build our pip wheel
+bazel build --verbose_failures $CONFIG_OPTS //tensorflow/tools/pip_package:build_pip_package 
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $temp_dir/tf_pip
+
+cd $temp_dir
+
+builtname=`ls $temp_dir/tf_pip/tensorflow-$VERSION-*.whl`
+base_builtname=`basename $builtname`
+
+cd $temp_dir/tf_pip/
+
+pip3 install $base_builtname
+
+# De-venv it.
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*

@@ -49,7 +49,8 @@ git checkout v${VERSION}
 # fp-model precise required to make the tests pass
 IFCORE="-lifcore"
 ISTRICT="-fp-model precise"
-IOPTS="-axSSE4.2,AVX"
+#IOPTS="-vec -axSSE4.2,AVX"
+IOPTS="-axSSE4.2,AVX -finline -funroll-loops -vec"
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
@@ -62,7 +63,8 @@ if [ "$BLAS_TAG" == "openblas" ]
 then
   ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LDFLAGS="-L${OPENBLASROOT}/lib" LIBS="-lopenblas ${IFCORE} -lmatheval -lfl" CXXFLAGS="-O3 ${IOPTS} ${ISTRICT}"
 else
-  ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-mkl ${IFCORE} -lmatheval -lfl" CXXFLAGS="-O3 ${IOPTS} ${ISTRICT}"
+ # ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-mkl ${IFCORE} -lmatheval -lfl" CFLAGS="-O1 ${IOPTS} ${ISTRICT}"  CXXFLAGS="-O1 ${IOPTS} ${ISTRICT}"
+  ./configure --prefix="$INSTALL_PREFIX" CXX=mpicxx CC=mpicc FC=mpif90 LIBS="-mkl ${IFCORE} -lmatheval -lfl" CFLAGS="-O1 ${IOPTS} ${ISTRICT}"  CXXFLAGS="-O1 ${IOPTS} ${ISTRICT}"
 fi
 # Turn on Crystallization module
 touch src/crystallization.on

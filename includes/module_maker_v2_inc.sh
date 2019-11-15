@@ -125,11 +125,11 @@ function make_module_v2() {
         fi
         if [[ -d "$module_prefix/lib" ]]; then
             let prefix_type_dirs+=1
-            printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib' '$prefix/lib'
+            printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_RUN_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib' '$prefix/lib' '$prefix/lib'
         fi
         if [[ -d "$module_prefix/lib64" ]]; then
             let prefix_type_dirs+=1
-            printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib64' '$prefix/lib64'
+            printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_RUN_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib64' '$prefix/lib64' '$prefix/lib64'
         fi
         if [[ -d "$module_prefix/lib/pkgconfig" ]]; then
             let prefix_type_dirs+=1

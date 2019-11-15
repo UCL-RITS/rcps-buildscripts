@@ -62,7 +62,6 @@ cd ..
 # Overwrite make.charm with the real location
 echo "CHARMBASE = ${INSTALL_PREFIX}/${NANAME}/charm-${CHARMVER}" > Make.charm
 
-plumed patch -p
 
 cd arch
 cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
@@ -72,6 +71,7 @@ patch < Linux-x86_64.fftw.patch
 cd ..
 ./config Linux-x86_64-icc --charm-arch ${CHARMARC}
 
+plumed patch -p -e namd-2.13
 
 cd Linux-x86_64-icc
 make
@@ -79,7 +79,7 @@ make
 cd ${temp_dir}/${NANAME}/Linux-x86_64-icc
 rm ${INSTALL_PREFIX}/${NANAME}
 mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
-for a in flipbinpdb flipdcd namd2 psfgen
+for a in flipbinpdb flipdcd namd2 psfgen sortreplicas
 do
   echo "Installing $a"
   cp $a ${INSTALL_PREFIX}/${NANAME}/bin
