@@ -8,16 +8,17 @@ require beta-modules
 require gcc-libs/7.3.0
 require compilers/gnu/7.3.0
 require mpi/openmpi/3.1.4/gnu-7.3.0
+require flex/2.5.39
 
 NAME=${NAME:-openfoamplus}
 VERSION=${VERSION:-v1906}
 COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-ab7017e262c0c0fceec55c31e2153180}
+MD5=${MD5:-6bd1f66c3eebbcaeaf2d115d311be1e1}
 TPMD5=${TPMD5:-81af204ef7aa804bc6b633f20f28749e}
 
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/OpenFOAM-${VERSION}.tgz}
-TPSRC_ARCHIVE=${TPSRC_ARCHIVE:-https://sourceforge.net/projects/openfoamplus/files/${VERSION}/ThirdParty-${VERSION}.tgz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/openfoam/files/${VERSION}/OpenFOAM-${VERSION}.tgz}
+TPSRC_ARCHIVE=${TPSRC_ARCHIVE:-https://sourceforge.net/projects/openfoam/files/${VERSION}/ThirdParty-${VERSION}.tgz}
 
 rm -rf $INSTALL_PREFIX
 
@@ -28,21 +29,16 @@ cd $INSTALL_PREFIX
 wget $SRC_ARCHIVE
 wget $TPSRC_ARCHIVE
 
-
 archive=$(basename "${SRC_ARCHIVE}")
 tparchive=$(basename "${TPSRC_ARCHIVE}")
 
 md5sum -c <<< "$MD5 $archive"
 md5sum -c <<< "$TPMD5 $tparchive"
 
-
 tar -xvf $archive
 tar -xvf $tparchive
 
-
-
 sed -i.bak "s|FOAM_INST_DIR=\$HOME/\$WM_PROJECT|FOAM_INST_DIR=${INSTALL_PREFIX}\$WM_PROJECT|g" OpenFOAM-${VERSION}/etc/bashrc
-
 
 # Fix for Intel compilers.
 if [ "${COMPILER_TAG:0:5}" == "intel" ]
@@ -50,11 +46,14 @@ then
   sed -i.bak2 "s|export WM_COMPILER=Gcc|export WM_COMPILER=Icc|g" OpenFOAM-${VERSION}/etc/bashrc
 fi
 
-source OpenFOAM-${VERSION}/etc/bashrc
+set +e
+source ${INSTALL_PREFIX}/OpenFOAM-${VERSION}/etc/bashrc
+set -e
+
 export cgal_version=CGAL-4.9
 export boost_version=boost_1_62_0
-cd $WM_PROJECT_DIR
-echo "In WM_Project_dir"
-foamSystemCheck
-./Allwmake
 
+foamSystemCheck
+
+cd $INSTALL_PREFIX/OpenFOAM-v1906
+./Allwmake
