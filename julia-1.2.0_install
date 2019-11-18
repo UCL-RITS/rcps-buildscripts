@@ -56,6 +56,6 @@ fi
 
 make
 echo prefix=${INSTALL_PREFIX} >> Make.user
-echo USE_BINARYBUILDER_LIBUV=0 >>  Make.user
-
+echo "USE_BINARYBUILDER_LIBUV = 0" >>  Make.user
+export USE_BINARYBUILDER_LIBUV=0 
 make install
