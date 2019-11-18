@@ -16,8 +16,8 @@ require binutils/2.29.1/gnu-4.9.2
 
 VERSION=${VERSION:-1.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
-SHA256=${SHA256:-2419b268fc5c3666dd9aeb554815fe7cf9e0e7265bc9b94a43957c31a68d9184}
-ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}-full.tar.gz}
+SHA256=${SHA256:-36aa3056c758dbbfd7d0b2f08cd1f9c72edefd5a314a0c1fe03735048f770ac8}
+ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
 EXTDIR=${EXTDIR:-julia-1.2.0}
 
@@ -55,7 +55,7 @@ then
 fi
 
 make
-echo prefix=${INSTALL_PREFIX} >> Make.user
-echo "USE_BINARYBUILDER_LIBUV = 0" >>  Make.user
-export USE_BINARYBUILDER_LIBUV=0 
+echo "prefix=${INSTALL_PREFIX}" >> Make.user
+echo "USE_BINARYBUILDER=0" >>  Make.user
+export USE_BINARYBUILDER=0 
 make install
