@@ -53,9 +53,9 @@ then
   echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
   echo "MARCH = ${TARGET_ARCH}" >> Make.user
 fi
-
-make
-echo "prefix=${INSTALL_PREFIX}" >> Make.user
 echo "USE_BINARYBUILDER=0" >>  Make.user
 export USE_BINARYBUILDER=0 
+echo "prefix=${INSTALL_PREFIX}" >> Make.user
+
+make
 make install
