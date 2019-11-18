@@ -53,8 +53,11 @@ then
   echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
   echo "MARCH = ${TARGET_ARCH}" >> Make.user
 fi
-echo "USE_BINARYBUILDER=0" >>  Make.user
-export USE_BINARYBUILDER=0 
+
+# Disable binary deps for libuv.
+# Putting this in Make.user doesn't work.
+echo "USE_BINARYBUILDER_LIBUV := 0" >> Make.inc
+
 echo "prefix=${INSTALL_PREFIX}" >> Make.user
 
 make
