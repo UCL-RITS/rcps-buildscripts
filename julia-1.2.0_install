@@ -12,6 +12,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
+require binutils/2.29.1/gnu-4.9.2
 
 VERSION=${VERSION:-1.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
