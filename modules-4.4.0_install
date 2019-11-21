@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name="modules"
+package_version="4.4.0"
+package_description="The Environment Modules package provides for the dynamic modification of a user's environment via modulefiles."
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://downloads.sourceforge.net/project/modules/Modules/modules-${package_version}/modules-${package_version}.tar.gz"
+manifest \
+    sha256:4dd55ad6cc684905e891ad1ba9e3c542e79eea0a9cd9a0e99cd77abe6ed63fab  modules-4.4.0.tar.gz
+
+
+tar -xf "modules-${package_version}.tar.gz"
+
+cd "modules-${package_version}"
+
+./configure \
+    --prefix="$install_prefix" \
+    --disable-example-modulefiles \
+    --with-modulepath="/shared/ucl/apps/modulefiles/core:/shared/ucl/apps/modulefiles/applications:/shared/ucl/apps/modulefiles/libraries:/shared/ucl/apps/modulefiles/compilers:/shared/ucl/apps/modulefiles/development:/shared/ucl/apps/modulefiles/bundles"
+
+make
+make install
+
+post_build_report
+
