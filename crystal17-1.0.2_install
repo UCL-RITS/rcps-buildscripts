@@ -22,7 +22,7 @@ cd "$build_dir"
 
 # The MPP distribution includes the other versions as well.
 cp \
-    /shared/ucl/apps/pkg-store/crystal17-documentation.zip \
+    /shared/ucl/apps/pkg-store/crystal17_v1_0_2_documentation.zip \
     /shared/ucl/apps/pkg-store/crystal17-utils.zip \
     /shared/ucl/apps/pkg-store/crystal17_v"${package_version//\./_}"_Linux-ifort17_emt64_MPPdistrib.tar.gz \
     ./
@@ -70,6 +70,11 @@ wget http://www.crystal.unito.it/test_cases/inputs_wf.tar.gz
 mkdir -p "$install_prefix/test_cases/inputs"
 cd "$install_prefix/test_cases/inputs"
 tar -xf "$build_dir/inputs_wf.tar.gz"
+
+mkdir -p "$install_prefix/docs"
+cd "$install_prefix/docs"
+unzip "$build_dir/crystal17_v1_0_2_documentation.zip"
+
 
 # These labels are arbitrary random nonsense from the .bashrc file.
 #  I'm guessing a bit as to what bit of what string goes where.
