@@ -88,7 +88,7 @@ make_module_v2 \
     -v CRY17_ARCH="Linux-ifort17_XE_emt64" \
     -v VERSION="v1.0.2-UCL-RCPS" \
     -v CRY17_SCRDIR='$env(TMPDIR)' \
-    -v CRY17_EXEDIR="$install_prefix/bin/Linux-ifort17_XE_emt64" \
+    -v CRY17_EXEDIR="$install_prefix/bin/Linux-ifort17_XE_emt64/v1.0.2" \
     -v CRY17_UTILS="$install_prefix/utils17" \
     -v CRY2K6_GRA="$install_prefix/crgra2006" \
     -v CRY17_TEST="$install_prefix/test_cases/inputs" \
