@@ -53,6 +53,7 @@ make \
     MPPLIB=-mkl=cluster \
     MPP
 
+mkdir -p "$install_prefix"
 cp -r ../bin "$install_prefix/"
 
 mkdir -p "$install_prefix/utils17"
