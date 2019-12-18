@@ -57,7 +57,7 @@ _prepare_module() {
   make_module_v2 -p "$INSTALL_PREFIX/${BASENAME}" \
               -c "${PACKAGE_NAME}" \
               -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
-              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Serial version built with GNU."
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Sequential version built with Intel and METIS."
   echo "Module files put in: $MODULE_DIR" >&2
 }
 
