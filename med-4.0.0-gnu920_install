@@ -57,7 +57,7 @@ _build() {
 _prepare_module() {
   make_module_v2 -p "$INSTALL_PREFIX" \
               -c "${PACKAGE_NAME}" \
-              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \ 
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
               -e "PYTHONPATH:$INSTALL_PREFIX/lib/python3.7/site-packages" \
               -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Allows reading and writing of MED format files."
   echo "Module files put in: $MODULE_DIR" >&2
