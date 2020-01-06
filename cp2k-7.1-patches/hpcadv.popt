@@ -1,0 +1,24 @@
+INTEL_MKL=/shared/ucl/apps/intel/2019.Update4/compilers_and_libraries_2019.4.243/linux/mkl
+INTEL_INC=$(INTEL_MKL)/include/fftw
+INTEL_LIB=$(INTEL_MKL)/lib/intel64
+
+CC=mpicc
+FC=mpiifort
+LD=mpiifort
+AR=xiar -r
+
+DFLAGS=-D__INTEL -D__FFTSG -D__FFTW3 -D__FFTMKL -D__parallel -D__BLACS -D__SCALAPACK
+
+CPPFLAGS=-C -traditional $(DFLAGS_ -I$(INTEL_INC)
+
+FCFLAGS = $(DFLAGS) -I$(INTEL_INC) -O2 -xHost -heap-arrays 64 -fpp -free -unroll -pc 64 -convert big_endian
+
+LDFLAGS = $(FCFLAGS) -static-intel
+
+MKL_LIB=$(INTEL_LIB)
+
+LIBS=-L$(INTEL_LIB) -lfftw3xf_intel -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64
+
+LDFLAGS_C = $(FCFLAGS) -static-intel -nofor_main
+
+OBJECTS_ARCHITECTURE=machine_intel.o
