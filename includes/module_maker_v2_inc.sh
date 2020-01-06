@@ -147,6 +147,10 @@ function make_module_v2() {
             let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path MAN_PATH %s\n" "$prefix_block" '$prefix/share/man'
         fi
+        if [[ -d "$module_prefix/share/info" ]]; then
+            let prefix_type_dirs+=1
+            printf -v prefix_block "%sprepend-path INFO_PATH %s\n" "$prefix_block" '$prefix/share/info'
+        fi
     fi
 
     #Create dir for module if necessary
