@@ -44,7 +44,6 @@ cp /shared/ucl/apps/build_scripts/patches/cp2k-7.1-patches/install_elpa_oldgcc.p
 patch < install_elpa_oldgcc.patch
 cd ..
 
-# Don't build libxsmm as it's broken.
 ./install_cp2k_toolchain.sh --with-sirius=no --with-spfft=no --enable-omp --with-quip=install
 
 
