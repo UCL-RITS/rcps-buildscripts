@@ -79,7 +79,7 @@ function make_module_v2() {
             ;;
           *)
             echo "Module maker: Invalid argument specified: $flag" >&2
-            exit 5
+            return 5
             ;;
         esac
     done
@@ -100,13 +100,14 @@ function make_module_v2() {
       -r   modules this module depends on. Space separate, quote. (Default: currently loaded modules)
       -R   reset module dependencies. (esp. if the default is not what you want)
       -C   reset module conflicts.    (esp. if the default is not what you want)
+      -g   a group that the user must be in to load the module.
       -h   print this.
     "
 
     #Send the help message and exit if -h was specified.
     if [[ "$send_help_and_quit" == "y" ]]; then
         echo -e "$module_maker_help_file"
-        exit
+        return
     fi
 
 
