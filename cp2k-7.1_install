@@ -40,7 +40,7 @@ cd tools/toolchain
 
 cd scripts
 
-cp /shared/ucl/apps/build_scripts/patches/cp2k-7.1-patches/install_elpa_oldgcc.patch .
+cp /shared/ucl/apps/build_scripts/cp2k-7.1-patches/install_elpa_oldgcc.patch .
 patch < install_elpa_oldgcc.patch
 cd ..
 
