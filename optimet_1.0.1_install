@@ -39,7 +39,6 @@ cd build
 
 cmake .. -DCMAKE_BUILD_TYPE=Release -Ddompi=ON -Ddotesting=OFF -Ddobenchmarks=OFF -DCMAKE_EXE_LINKER_FLAGS=-lgfortran -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX 
 make 
-make install
 
 mkdir ../bin
 mkdir ../lib
