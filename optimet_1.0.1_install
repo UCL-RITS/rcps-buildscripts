@@ -20,7 +20,7 @@ require scalapack/2.0.2/gnu-4.9.2/openblas-0.3.7
 require f2c
 require cmake
 
-NAME=${NAME:-}
+NAME=${NAME:-optimet}
 VERSION=${VERSION:-1.0.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
