@@ -33,7 +33,7 @@ temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
 
 cd $temp_dir
 
-git checkout $SRC_ARCHIVE
+git clone $SRC_ARCHIVE
 cd OPTIMET
 git checkout v${VERSION}
 
