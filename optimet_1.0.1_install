@@ -26,12 +26,9 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OPTIMET/OPTIMET}
 
-
-mkdir -p /dev/shm/$(whoami)/${NAME}
-
-temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
-
-cd $temp_dir
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
 
 git clone $SRC_ARCHIVE
 cd OPTIMET
@@ -44,4 +41,8 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -Ddompi=ON -Ddotesting=OFF -Ddobenchmarks=OF
 make 
 make install
 
-rm -rf $temp_dir
+mkdir ../bin
+mkdir ../lib
+
+cp Optimet3D ../bin
+cp liboptilib.a ../lib
