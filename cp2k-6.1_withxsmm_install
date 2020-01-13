@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2020
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require openblas/0.3.7-openmp/gnu-4.9.2
+require cmake
+
+NAME=${NAME:-cp2k}
+VERSION=${VERSION:-6.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}-libxsmm-master/${COMPILER_TAG}}
+SHA256=${SHA256:-af803558e0a6b9e9d9ce8a3ab955ba32bacd179922455424e061c82c9fefa34b}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k-6.1.tar.bz2}
+
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# Build toolchain
+cd tools/toolchain
+
+# Fix weird naming
+sed -i.bak 's|-lopenblas_omp|-lopenblas|g' scripts/install_openblas.sh
+
+# Use master libxsmm as default is broken.
+./install_cp2k_toolchain.sh --with-openblas=system --enable-libxsmm-master
+
+# Get arch files
+cp install/arch/* ../../arch
+
+cd ../../makefiles
+
+source ../tools/toolchain/install/setup
+
+# Build main package
+make -j 8 ARCH=local VERSION="sopt ssmp popt psmp"
+
+# Need to do this to make sure libxsmm-master is OK
+make ARCH=local VERSION="sopt ssmp popt psmp" test TESTOPTS="-mpiranks 2 -maxtasks 12"
+
+cd ..
+
+mkdir bin
+cp exe/local/* bin
