@@ -17,6 +17,11 @@ FLAGS=${FLAGS:-"--with-sge --without-verbs"}
 
 set -e
 
+source includes/source_includes.sh
+module purge
+module load gcc-libs
+module load compilers/gnu/4.9.2
+
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 mkdir -p /dev/shm/${NAME}
