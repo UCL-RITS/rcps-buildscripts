@@ -13,6 +13,10 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TA
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/alexdobin/STAR/archive/$VERSION.tar.gz}
 
 set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh
+do
+    . $i
+done
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
