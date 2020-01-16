@@ -12,7 +12,8 @@
 
 VERSION=${VERSION:-16}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/StataMP}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/STATA/Stata${VERSION}Linux64.tar.gz}
+# SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/STATA/Stata${VERSION}Linux64.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/STATA/Stata${VERSION}Linux64-Legacy.tar.gz}
 STATA_INSTALLER=${STATA_INSTALLER:-install}
 # EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
 
