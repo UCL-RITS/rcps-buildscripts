@@ -56,7 +56,7 @@ source ../tools/toolchain/install/setup
 make -j 8 ARCH=local VERSION="sopt ssmp popt psmp"
 
 # Need to do this to make sure libxsmm-master is OK
-make ARCH=local VERSION="sopt ssmp popt psmp" test TESTOPTS="-mpiranks 2 -maxtasks 12"
+make ARCH=local VERSION="sopt ssmp popt psmp" test TESTOPTS="-mpiranks 2 -maxtasks 12 -mpiexec `which mpirun`"
 
 cd ..
 
