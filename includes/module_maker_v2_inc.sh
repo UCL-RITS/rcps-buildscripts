@@ -36,9 +36,14 @@ function make_module_v2() {
     local variables_to_prepend=""
     local send_help_and_quit="n"
     local omit_prefix_block=""
+    local needs_module_functions=""
+    local needs_group=""
 
+
+    echo "$@"
     #Get command line arguments
-    while getopts  "hp:o:n:v:a:e:w:Cc:Rr:d" flag
+    local flag
+    while getopts  "hp:o:n:v:a:e:w:Cc:Rr:dg:t:" flag
     do
         case "$flag" in
           "p")
@@ -76,6 +81,10 @@ function make_module_v2() {
             ;;
           "h")
             send_help_and_quit="y"
+            ;;
+          "g")
+            needs_module_functions="y"
+            needs_group="$OPTARG"
             ;;
           *)
             echo "Module maker: Invalid argument specified: $flag" >&2
@@ -159,6 +168,10 @@ function make_module_v2() {
 
     exec 5>"$output_file"
     >&5 printf "#%%Module -*- tcl -*-\n## module_made (v2)\nproc ModulesHelp { } {\n  puts stderr {%s}\n}\nmodule-whatis {%s}\n\n" "$module_whatis" "$module_whatis"
+    [[ -n "$needs_module_functions" ]] && \
+        >&5 printf "\nlappend auto_path /shared/ucl/apps/modulelibs/UsefulModuleFunctions\npackage require modulefunctions 1.0\n"
+    [[ -n "$needs_group" ]] && \
+        >&5 printf "\nmodulefunctions::mustBeMemberToLoad %s\n" "$needs_group"
     >&5 printf "%s%s\n" "$module_conflicts" "$module_prereqs"
     >&5 printf "set prefix %s\n" "$module_prefix"
     [[ -n "$variables_to_import$variables_to_prepend$variables_to_append" ]] && \
