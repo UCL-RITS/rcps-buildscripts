@@ -106,8 +106,12 @@ make -l 10 -j \
     INSTALL_DIR="$install_prefix/bin" \
     install 
 
+# Delete this one test because it has known reproducibility problems
+# and failed to converge an SCF in MPI builds
+# https://bitbucket.org/castep/castep/issues/1870/monitor-reproducibility-of-electronic-fe
+rm -rf Test/Electronic/Fe-NCM
 
-# And now the same for the MPI version
+# And now run the same build process for the MPI version
 make -l 10 -j \
     FFT=mkl \
     MATHLIBS=mkl10 \
