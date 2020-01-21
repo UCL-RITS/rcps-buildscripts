@@ -3,12 +3,16 @@
 # This script installs SPM12
 # Owain Kenway 2015
 
+# Updated January 2020 for latest version of SPM 12 and Matlab R2019b. Note: the
+# Jan 2020 version doesn't need a pathc ziz as all updates are included in
+# spm12.zip.
+
 # You need to register and download the spm12.zip file and the most up to date 
 # patch zip and place it somewhere in your file-system and set the SRC_ARCHIVE 
 # variable appropriately.
 
 VERSION=${VERSION:-spm12}
-RELEASE=${RELEASE:-r6470}
+RELEASE=${RELEASE:-jan2020}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/spm}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/spm/sources}
 
@@ -17,9 +21,9 @@ set -e
 cd $INSTALL_PREFIX
 unzip $SRC_ARCHIVE/${VERSION}.zip
 
-cd $VERSION
-unzip -o $SRC_ARCHIVE/${VERSION}_updates_${RELEASE}.zip
-cd ..
+# cd $VERSION
+# unzip -o $SRC_ARCHIVE/${VERSION}_updates_${RELEASE}.zip
+# cd ..
 
 mv ${VERSION} ${VERSION}-${RELEASE}
 cd ${VERSION}-${RELEASE}/src
