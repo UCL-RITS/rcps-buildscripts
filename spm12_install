@@ -9,6 +9,8 @@
 #
 # Also Matlab R2019b complains that our version of GCC (4.9.2) is too old - using
 # version from beta modules instead.
+#
+# Includes the additional CAT 12 toolbox.
 
 # You need to register and download the spm12.zip file and the most up to date 
 # patch zip and place it somewhere in your file-system and set the SRC_ARCHIVE 
@@ -47,3 +49,10 @@ make install
 make external-distclean
 make external 
 make external-install
+
+# Install additional CAT 12 toolbox
+
+cd $SRC_ARCHIVE
+wget http://dbm.neuro.uni-jena.de/cat12/cat12_latest.zip
+cd $INSTALL_PREFIX/${VERSION}-${RELEASE}/toolbox
+unzip -x $SRC_ARCHIVE/cat12_latest.zip
