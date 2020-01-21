@@ -18,6 +18,12 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/spm/sources}
 
 set -e
 
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require xorg-utils/X11R7.7
+require matlab/full/r2019b/9.7
+
 cd $INSTALL_PREFIX
 unzip $SRC_ARCHIVE/${VERSION}.zip
 
