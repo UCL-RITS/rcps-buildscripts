@@ -57,7 +57,7 @@ make -l 10 -j \
 #  the docs that they sometimes fail without anything being wrong --
 #  so if the overall test fails, we log it, and then re-run all the other
 #  classes of test.
-make -l 10 -j \
+make  \
     FFT=mkl \
     MATHLIBS=mkl10 \
     FFTLIBDIR= \
@@ -66,7 +66,7 @@ make -l 10 -j \
     INSTALL_DIR="$install_prefix/bin" \
     check \
     || \
-    make -C Test -l 10 -j \
+    make -C Test \
         FFT=mkl \
         MATHLIBS=mkl10 \
         FFTLIBDIR= \
@@ -75,7 +75,7 @@ make -l 10 -j \
         INSTALL_DIR="$install_prefix/bin" \
         diff \
         ||
-        make -C Test -l 10 -j \
+        make -C Test \
             FFT=mkl \
             MATHLIBS=mkl10 \
             FFTLIBDIR= \
@@ -96,7 +96,7 @@ make -l 10 -j \
             check-tddft 
 
 # If you don't set F90 explicitly here it'll try to compile one of the utilities with gfortran >:(
-make -l 10 -j \
+make  \
     F90=ifort \
     FFT=mkl \
     MATHLIBS=mkl10 \
@@ -112,7 +112,7 @@ make -l 10 -j \
 rm -rf Test/Electronic/Fe-NCM
 
 # And now run the same build process for the MPI version
-make -l 10 -j \
+make  \
     FFT=mkl \
     MATHLIBS=mkl10 \
     FFTLIBDIR= \
@@ -122,7 +122,7 @@ make -l 10 -j \
     BUILD="$build_opt_level" \
     INSTALL_DIR="$install_prefix/bin" 
 
-make -l 10 -j \
+make  \
     FFT=mkl \
     MATHLIBS=mkl10 \
     FFTLIBDIR= \
@@ -133,7 +133,7 @@ make -l 10 -j \
     INSTALL_DIR="$install_prefix/bin" \
     check \
     ||
-    make -C Test -l 10 -j \
+    make -C Test \
         FFT=mkl \
         MATHLIBS=mkl10 \
         FFTLIBDIR= \
@@ -144,7 +144,7 @@ make -l 10 -j \
         INSTALL_DIR="$install_prefix/bin" \
         diff \
         || \
-        make -C Test -l 10 -j \
+        make -C Test \
             FFT=mkl \
             MATHLIBS=mkl10 \
             FFTLIBDIR= \
@@ -168,7 +168,7 @@ make -l 10 -j \
 
 # You don't need to set F90 here (unlike the serial version) because only one of the utilities
 #  is rebuilt in MPI mode and it's not the one with the broken build process
-make -l 10 -j \
+make \
     FFT=mkl \
     MATHLIBS=mkl10 \
     FFTLIBDIR= \
