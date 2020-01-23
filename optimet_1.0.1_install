@@ -26,18 +26,36 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OPTIMET/OPTIMET}
 
-rm -rf $INSTALL_PREFIX
-mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
+rm -rf ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
 
-git clone $SRC_ARCHIVE
+git clone ${SRC_ARCHIVE}
 cd OPTIMET
 git checkout v${VERSION}
+
+# Build Belos which is part of Trilinos
+mkdir deps
+cd deps
+git clone https://github.com/trilinos/Trilinos
+cd Trilinos
+git checkout trilinos-release-12-10-1 # Newer versions of Belos don't work :(
 
 mkdir build
 cd build
 
-cmake .. -DCMAKE_BUILD_TYPE=Release -Ddompi=ON -Ddotesting=OFF -Ddobenchmarks=OFF -DCMAKE_EXE_LINKER_FLAGS=-lgfortran -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX 
+cmake .. -DTPL_ENABLE_MPI=ON -DTrilinos_ENABLE_Belos=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/OPTIMET/deps/belos_install
+make
+make install
+export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${INSTALL_PREFIX}/OPTIMET/deps/belos_install
+
+# Build Optimet
+cd ${INSTALL_PREFIX}/OPTIMET
+
+mkdir build
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -Ddompi=ON -Ddotesting=OFF -Ddobenchmarks=OFF -DCMAKE_EXE_LINKER_FLAGS=-lgfortran -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
 make 
 
 mkdir ../bin
