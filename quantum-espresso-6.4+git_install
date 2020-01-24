@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 #
-# Note that pw_pawatom test will probably fail, so can do second run without tests:
-# RUN_TESTS="no" ./quantum-espresso-6.1_install
-#
 # Includes building d3q add-on
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/intel/2018
+require mpi/intel/2018
 
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-6.4.1}
@@ -15,13 +20,6 @@ RUN_TESTS=${RUN_TESTS:-"yes"}
 
 set -o errexit -o nounset
 
-# module prereqs for building
-dirname=$(dirname $0 2>/dev/null)
-INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
-source ${INCLUDES_DIR}/require_inc.sh
-require gcc-libs
-require compilers/intel/2018
-require mpi/intel/2018
 
 cd $BUILD_DIR
 echo "Starting to build in: $BUILD_DIR"
