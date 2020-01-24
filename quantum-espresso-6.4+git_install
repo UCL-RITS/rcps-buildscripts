@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# Note that pw_pawatom test will probably fail, so can do second run without tests:
+# RUN_TESTS="no" ./quantum-espresso-6.1_install
+#
+# Includes building d3q add-on
+
+NAME=${NAME:-quantum-espresso}
+VERSION=${VERSION:-6.4.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
+COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
+RUN_TESTS=${RUN_TESTS:-"yes"}
+
+set -o errexit -o nounset
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/intel/2018
+require mpi/intel/2018
+
+cd $BUILD_DIR
+echo "Starting to build in: $BUILD_DIR"
+
+git clone $SRC_ARCHIVE
+archive=$(basename "$SRC_ARCHIVE")
+
+cd $archive
+git checkout qe-${VERSION}
+# Should probably add this to the MKL module but it needs to be set either way
+export CPATH=$MKLROOT/include/fftw:$CPATH
+
+./configure --prefix=${INSTALL_PREFIX} FFLAGS="${COMPILE_FLAGS}" --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+  
+# want and couple not compilable with 6.2.1
+make all w90 want west couple gui epw d3q 2>&1 | tee make.log
+if [ "$RUN_TESTS" == "yes" ]
+then
+  echo "Running tests: pw_pawatom expected to fail (benchmark is serial multithreaded 4)"
+  make test-suite 2>&1 | tee test.log
+fi
+make install 
+
+# need to copy the whole PWgui directory into the install location
+pwguidir=${BUILD_DIR}/${archive}/GUI
+cp -r $pwguidir ${INSTALL_PREFIX}
+ln -s ${INSTALL_PREFIX}/GUI/PWgui/pwgui ${INSTALL_PREFIX}/bin
+
+echo "Installed to: $INSTALL_PREFIX"
+rm -Rf $BUILD_DIR
