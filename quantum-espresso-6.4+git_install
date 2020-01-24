@@ -2,6 +2,8 @@
 #
 # Includes building d3q add-on
 
+set -o errexit -o nounset
+
 # module prereqs for building
 dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
@@ -17,9 +19,6 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
 BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
 COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
 RUN_TESTS=${RUN_TESTS:-"yes"}
-
-set -o errexit -o nounset
-
 
 cd $BUILD_DIR
 echo "Starting to build in: $BUILD_DIR"
