@@ -13,7 +13,8 @@ PYTHON_VERSION=${PYTHON_VERSION_TAG:-38}
 TIME_STAMP=`date +"%s"`
 
 # Disable wheels for some packages
-PIPNOBIN=${PIPNOBIN:-numpy,scipy}
+#PIPNOBIN=${PIPNOBIN:-numpy,scipy}
+PIPNOBIN=${PIPNOBIN:-""}
 
 set -e
 
