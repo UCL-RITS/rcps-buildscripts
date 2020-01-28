@@ -50,7 +50,7 @@ _build() {
     --tmpdir=$build_dir \
    --installpath=$install_prefix \
    --toolkit \
-    --toolkitpath=$install_prefix \
+    --toolkitpath=$install_prefix 
   echo "Installed to: $install_prefix"
   rm -rf $build_dir
 
