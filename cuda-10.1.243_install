@@ -46,7 +46,8 @@ _build() {
   ./$actual_file_name \
     --silent \
     --tmpdir=$build_dir \
-    --toolkit \
+   --installpath=$install_prefix \
+   --toolkit \
     --toolkitpath=$install_prefix \
     --samples \
     --samplespath=$install_prefix 
