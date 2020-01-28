@@ -45,7 +45,6 @@ _build() {
   chmod +x $actual_file_name  
   ./$actual_file_name \
     --silent \
-    --verbose \
     --tmpdir=$build_dir \
     --toolkit \
     --toolkitpath=$install_prefix \
