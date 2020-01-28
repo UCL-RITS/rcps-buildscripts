@@ -42,6 +42,7 @@ _setup_files() {
 }
 
 _build() {
+  rm -Rf $install_prefix
   mkdir -p $install_prefix # amazingly the installer doesn't do this.
   chmod +x $actual_file_name  
   ./$actual_file_name \
