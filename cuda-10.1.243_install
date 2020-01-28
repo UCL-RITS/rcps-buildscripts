@@ -7,14 +7,14 @@ package_name="cuda"
 package_version="10.1.243"
 driver_version=418.87.00
 
-src_urls=https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_${package_version}_${driver_version}_linux
+src_urls=https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_${package_version}_${driver_version}_linux.run
 
 
 # Optional: 
 # package_variant=""
 package_description="This is for compiling CUDA code to run on NVIDIA GPUs."
 
-actual_file_name=cuda_${package_version}_${driver_version}_linux-run
+actual_file_name=cuda_${package_version}_${driver_version}_linux.run
 actual_file_sha512=f92b19d0242969a65a6e6db43bc293e442abc07a9e168c9e995692e1a401679504598c782e511be3879e1650b90f71a50bbc63c9ee45654c26b5007cdf33c4fe
 
 
