@@ -65,7 +65,7 @@ do
    fi
 done
 
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-338-fixed.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
 do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
