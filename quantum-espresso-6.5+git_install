@@ -43,7 +43,7 @@ make all w90 want couple gui epw d3q 2>&1 | tee make.log
 make links
 if [ "$RUN_TESTS" == "yes" ]
 then
-  echo "Running tests: pw_pawatom expected to fail (benchmark is serial multithreaded 4)"
+  echo "Running tests:"
   make test-suite 2>&1 | tee test.log
 fi
 

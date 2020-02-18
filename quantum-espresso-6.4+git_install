@@ -13,7 +13,8 @@ module load mpi/intel/2018
 
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-6.4.1}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+VARIANT=${VARIANT:-}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/"$VERSION"-"$VARIANT"/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
 #BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
 COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
@@ -42,7 +43,7 @@ make all w90 want couple gui epw d3q 2>&1 | tee make.log
 make links
 if [ "$RUN_TESTS" == "yes" ]
 then
-  echo "Running tests: pw_pawatom expected to fail (benchmark is serial multithreaded 4)"
+  echo "Running tests:"
   make test-suite 2>&1 | tee test.log
 fi
 
