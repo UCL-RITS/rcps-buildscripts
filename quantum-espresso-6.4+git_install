@@ -14,7 +14,7 @@ module load mpi/intel/2018
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-6.4.1}
 VARIANT=${VARIANT:-}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/"$VERSION"-"$VARIANT"/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${NAME}/${VERSION}${VARIANT:+-${VARIANT}}/${COMPILER_TAG}"}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
 #BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
 COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
