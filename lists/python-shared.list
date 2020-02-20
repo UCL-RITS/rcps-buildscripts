@@ -45,3 +45,4 @@ cyvcf2
 seaborn
 ldap3
 deap
+bitarray
