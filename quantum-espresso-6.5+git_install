@@ -12,7 +12,7 @@ module load compilers/intel/2018
 module load mpi/intel/2018
 
 NAME=${NAME:-quantum-espresso}
-VERSION=${VERSION:-6.4.1}
+VERSION=${VERSION:-6.5}
 VARIANT=${VARIANT:-}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${NAME}/${VERSION}${VARIANT:+-${VARIANT}}/${COMPILER_TAG}"}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
@@ -21,15 +21,15 @@ COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
 RUN_TESTS=${RUN_TESTS:-"yes"}
 
 # make install doesn't work with make links, so build in place
-mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
 echo "Starting to build in: $INSTALL_PREFIX"
 
 # clone the tag we wanted only
-git clone -b qe-${VERSION} --single-branch $SRC_ARCHIVE
+git clone -b "qe-${VERSION}" --single-branch "$SRC_ARCHIVE"
 archive=$(basename "$SRC_ARCHIVE")
 
-cd $archive
+cd "$archive"
 
 # Should probably add this to the MKL module but it needs to be set either way
 export CPATH=$MKLROOT/include/fftw:$CPATH
@@ -50,7 +50,7 @@ fi
 # need to copy the whole PWgui directory into the install location
 #pwguidir=${BUILD_DIR}/${archive}/GUI
 #cp -r $pwguidir ${INSTALL_PREFIX}
-ln -s ${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui ${INSTALL_PREFIX}/${archive}/bin
+ln -s "${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui" "${INSTALL_PREFIX}/${archive}/bin"
 
 echo "Installed to: $INSTALL_PREFIX"
 
