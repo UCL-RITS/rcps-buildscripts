@@ -7,7 +7,7 @@
 VERSION=${VERSION:-9.1.12}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Mosek/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.mosek.com/stable/${VERSION}/mosektoolslinux64x86.tar.bz2}
-INSTALL_ARCHIVE=${INSTALL_ARCHIVE:mosektoolslinux64x86.tar.bz2}
+INSTALL_ARCHIVE=${INSTALL_ARCHIVE:-mosektoolslinux64x86.tar.bz2}
 SHA256=${SHA256:-a0183954e0a29c8e11fb3de0f504c9c17d6bfe31711655dfbced021353dec0b1}
 
 set -e
