@@ -24,7 +24,8 @@ CHKSUM=`shasum -a 256 $INSTALL_ARCHIVE | awk '{print $1}'`
 # If checksum matches unpack the install archive in place
 
 if [[ "$CHKSUM" == "$SHA256" ]]
-then   
+then
+    mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
     tar -tvf $temp_dir/$INSTALL_ARCHIVE
     echo ""
