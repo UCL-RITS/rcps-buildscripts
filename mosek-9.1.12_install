@@ -27,7 +27,7 @@ if [[ "$CHKSUM" == "$SHA256" ]]
 then
     mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
-    tar -tvf $temp_dir/$INSTALL_ARCHIVE
+    tar -xvf $temp_dir/$INSTALL_ARCHIVE
     echo ""
     echo "Mosek installation completed. Access to the UCL wide license manager needs to be"
     echo "configured in the Mosek module file."
