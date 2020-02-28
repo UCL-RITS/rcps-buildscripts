@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+###############################################
+
+package_name="gromacs"
+package_version="2020"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+
+TYPE=${TYPE:-cpu}
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require cmake
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+make_build_env ""
+
+set -e
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+manifest md5:de80ea146f33e76a655e346966a43346 ${tarfile}
+
+tar -xf "$tarfile"
+
+cd "${package_name}-${package_version}"
+
+mkdir build
+cd build
+
+echo "Building and installing full, serial, single precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+
+rm -rf *
+ 
+echo "Building and installing full, serial, double precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=on \
+    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+  
+echo "Building and installing mdrun-only, MPI, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=off \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=mkl \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+echo "Building and installing mdrun-only, MPI, double precision GROMACS"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=on \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_mpi_d \
+    -DGMX_LIBS_SUFFIX=_mpi_d \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+if [ "$TYPE" == "cuda" ]
+then
+module purge
+require gcc-libs
+require cmake
+require compilers/gnu/4.9.2
+require cuda/10.0.130
+INSTALL_PREFIX=${install_prefix}/gpu
+
+echo "Building and installing full, GPU, single precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_GPU=ON \
+    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.0.130/gnu-4.9.2 \
+    -DGMX_CUDA_TARGET_SM=60 \
+    -DGMX_FFT_LIBRARY=fftw3 \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_SIMD=AVX2_256 \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_cuda \
+    -DGMX_LIBS_SUFFIX=_cuda \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+require mpi/openmpi/3.1.4/gnu-4.9.2
+
+echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=ON \
+    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.0.130/gnu-4.9.2 \
+    -DGMX_CUDA_TARGET_SM=60 \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=fftw3 \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_SIMD=AVX2_256 \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_cuda \
+    -DGMX_LIBS_SUFFIX=_cuda \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+
+fi
