@@ -11,7 +11,8 @@ TYPE=${TYPE:-cpu}
 
 source includes/source_includes.sh
 module purge
-require gcc-libs
+require beta-modules
+require gcc-libs/7.3.0
 require cmake
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
