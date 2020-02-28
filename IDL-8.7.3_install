@@ -21,7 +21,7 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 
 startDir=`pwd`
 
-if [ ! -f $SRC_ARCHIVE/$ENVI_INSTALLER ]
+if [ ! -f $SRC_ARCHIVE/$IDL_INSTALLER ]
 then
     echo ""
     echo "*** ERROR: Cannot find IDL installer"
