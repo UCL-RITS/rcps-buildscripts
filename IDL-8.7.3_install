@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# This script installs ENVI 5.5.2 & IDL 8.7.2
-# Brian Alston JUNE 2019
+# This script installs  IDL 8.7.3 as a standalone application (without ENVI)
+# Brian Alston February 2020
 
-# You need to download the ENVI installer from the Harris Download and License Center
+# You need to download the IDL installer from the Harris Download and License Center
 # (https://harrisgeospatial.flexnetoperations.com/control/xlsv/login?nextURL=%2Fcontrol%2Fxlsv%2Fhome)
 # using a UCL site admin login.
 # Place it somewhere in your file-system and set the SRC_ARCHIVE & ENVI_INSTALLER variables
 # appropriately.
 
-VERSION=${VERSION:-5.5.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ENVI/${VERSION}}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/ENVI/installers}
-ENVI_INSTALLER=${ENVI_INSTALLER:-envi552-linux.tar.gz}
-ANSWER_FILE=${ANSWER_FILE:-/shared/ucl/apps/build_scripts/files/ENVI-5.5.2_answer_file}
-LICENSE_FILE=${LICENSE_FILE:-/shared/ucl/apps/build_scripts/files/ENVI-5.5.2_license_file}
+VERSION=${VERSION:-8.7.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/IDL/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/IDL/installers}
+IDL_INSTALLER=${IDL_INSTALLER:-idl873-linux.tar.gz}
+ANSWER_FILE=${ANSWER_FILE:-/shared/ucl/apps/build_scripts/files/IDL-8.7.3_answer_file}
+LICENSE_FILE=${LICENSE_FILE:-/shared/ucl/apps/build_scripts/files/ENVI-5.5.3_license_file}
 
 set -e
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -24,24 +24,24 @@ startDir=`pwd`
 if [ ! -f $SRC_ARCHIVE/$ENVI_INSTALLER ]
 then
     echo ""
-    echo "*** ERROR: Cannot find ENVI installer"
+    echo "*** ERROR: Cannot find IDL installer"
     echo ""
-    echo "You need to download the ENVI installer from the Harris Download and License Center"
+    echo "You need to download the IDL installer from the Harris Download and License Center"
     echo " (https://harrisgeospatial.flexnetoperations.com/control/xlsv/login?nextURL=%2Fcontrol%2Fxlsv%2Fhome)"
     echo "using a UCL site admin login."
-    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & ENVI_INSTALLER variables"
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & IDL_INSTALLER variables"
     echo "appropriately."
     echo ""
     exit 1
 fi 
 
 temp_dir=`mktemp -d -p /dev/shm`
-mkdir -p $temp_dir/ENVI
+mkdir -p $temp_dir/IDL
 
 # Unpack the installer archive
 
-cd $temp_dir/ENVI
-tar -xvf $SRC_ARCHIVE/$ENVI_INSTALLER
+cd $temp_dir/IDL
+tar -xvf $SRC_ARCHIVE/$IDL_INSTALLER
 
 # Run the installer.
 
