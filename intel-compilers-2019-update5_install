@@ -41,7 +41,7 @@ make_build_env "$package_name" "${HOME}/temporary-intel-dirs"
 # Package label is set by make_build_env but we need to override it
 #  (to include the compilers top-level)
 package_label="compilers/intel/$package_version"
-mpi_package_label="mpi/intel/2019/update4/intel"
+mpi_package_label="mpi/intel/2019/update5/intel"
 
 cd "$build_dir"
 
