@@ -14,8 +14,8 @@ module purge
 require beta-modules
 require gcc-libs/7.3.0
 require cmake
-require compilers/intel/2019/update4
-require mpi/intel/2019/update4/intel
+require compilers/intel/2019/update5
+require mpi/intel/2019/update5/intel
 
 make_build_env ""
 
