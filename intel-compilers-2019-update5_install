@@ -66,6 +66,8 @@ PSET_INSTALL_DIR=$install_prefix
 PSET_MODE=install
 EOF
 
+rm -rf $install_prefix
+
 for i in */install.sh; do
     $i --cli-mode --silent ./silent_config_file.cfg
 done
