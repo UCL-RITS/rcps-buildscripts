@@ -173,7 +173,7 @@ make_module -d \
             -e PATH:"${mprefix}/intel64/libfabric/bin" \
             -e LD_LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
             -e LIBRARY_PATH:"${mprefix}/intel64/libfabric/lib" \
-            -v FI_PROVIDER_PATH:"${mprefix}/intel64/libfabric/lib/prov" \
+            -v FI_PROVIDER_PATH="${mprefix}/intel64/libfabric/lib/prov" \
             -w "[Intel MPI/${mpi_package_version}] This is Intel's MPI implementation, version ${mpi_package_version}, which is bundled with compiler package version ${package_version}."
 
 cat >>"${module_dir}/${mpi_package_label}" <<'EOF'
