@@ -19,7 +19,7 @@ package_description="This is the package for the Intel C, C++, and Fortran compi
 
 intel_license="28518@lic-intel.ucl.ac.uk"
 
-src_file=parallel_studio_xe_2029_cluster_edition.tgz
+src_file=parallel_studio_xe_2020_cluster_edition.tgz
 
 module purge
 require gcc-libs
