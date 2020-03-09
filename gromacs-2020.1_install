@@ -3,7 +3,7 @@
 ###############################################
 
 package_name="gromacs"
-package_version="2020"
+package_version="2020.1"
 package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
 
@@ -14,10 +14,10 @@ module purge
 require beta-modules
 require gcc-libs/7.3.0
 require cmake
-#require compilers/intel/2020/release
-#require mpi/intel/2019/update6/intel
-require compilers/intel/2019/update4
-require mpi/intel/2019/update4/intel
+require compilers/intel/2020/release
+require mpi/intel/2019/update6/intel
+#require compilers/intel/2019/update4
+#require mpi/intel/2019/update4/intel
 
 make_build_env ""
 
@@ -28,7 +28,7 @@ cd "$build_dir"
 wget "$SRC_ARCHIVE"
 tarfile=$(basename "${SRC_ARCHIVE}")
 
-manifest md5:de80ea146f33e76a655e346966a43346 ${tarfile}
+manifest md5:1c1b5c0f904d4eac7e3515bc01ce3781 ${tarfile}
 
 tar -xf "$tarfile"
 
