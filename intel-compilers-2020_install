@@ -94,7 +94,7 @@ make_module -p "$install_prefix" \
             -v F77=ifort \
             -v F90=ifort \
             -v FC=ifort \
-            -v COMPILER_TAG=intel-2019 \
+            -v COMPILER_TAG=intel-2020 \
             -v BLAS_TAG=mkl \
             -v MKLROOT="$nprefix/linux/mkl" \
             -v IPPROOT="$nprefix/linux/ipp" \
