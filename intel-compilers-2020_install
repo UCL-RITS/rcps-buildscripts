@@ -13,8 +13,8 @@ source includes/source_includes.sh
 
 package_name="intel"
 package_version="2020"
-numeric_version="2020.0.0"
-mpi_package_version="2020.0.0"
+numeric_version="2020.0.166"
+mpi_package_version="2020.0.166"
 package_description="This is the package for the Intel C, C++, and Fortran compilers."
 
 intel_license="28518@lic-intel.ucl.ac.uk"
