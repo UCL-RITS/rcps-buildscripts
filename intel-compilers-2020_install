@@ -14,7 +14,7 @@ source includes/source_includes.sh
 package_name="intel"
 package_version="2020"
 numeric_version="2020.0.166"
-mpi_package_version="2020.0.166"
+mpi_package_version="2019.6.166"
 package_description="This is the package for the Intel C, C++, and Fortran compilers."
 
 intel_license="28518@lic-intel.ucl.ac.uk"
@@ -41,7 +41,7 @@ make_build_env "$package_name" "${HOME}/temporary-intel-dirs"
 # Package label is set by make_build_env but we need to override it
 #  (to include the compilers top-level)
 package_label="compilers/intel/$package_version"
-mpi_package_label="mpi/intel/2020/intel"
+mpi_package_label="mpi/intel/2019/update6/intel"
 
 cd "$build_dir"
 
