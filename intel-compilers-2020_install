@@ -48,8 +48,10 @@ cd "$build_dir"
 cp "/shared/ucl/apps/intel/installers/$src_file" ./
 manifest sha1:e62a75613909995d50e4ee08d52704dfa00fc973 $src_file
 
+echo "Unpacking installer..."
 tar -xf "$src_file"
 
+echo "Writing silent installer config..."
 cd "$build_dir"
 cat > silent_config_file.cfg <<EOF
 ACCEPT_EULA=accept
@@ -67,6 +69,7 @@ PSET_MODE=install
 EOF
 
 for i in */install.sh; do
+    echo "Running install script: ${i}..."
     $i --cli-mode --silent ./silent_config_file.cfg
 done
 
@@ -161,7 +164,7 @@ make_module -d \
             -e MANPATH:"${mprefix}/man" \
             -e LD_LIBRARY_PATH:"${mprefix}/intel64/lib" \
             -e LIBRARY_PATH:"${mprefix}/intel64/lib" \
-            -e CPATH:"${mprefix}/include" \
+            -e CPATH:"${mprefix}/intel64/include" \
             -v GERUN_LAUNCHER=intel \
             -v MPI_HOME="$mprefix" \
             -v I_MPI_ROOT="$mprefix" \
