@@ -93,10 +93,11 @@ rm -rf *
 if [ "$TYPE" == "cuda" ]
 then
 module purge
-require gcc-libs
+require beta-modules
+require gcc-libs/7.3.0
 require cmake
-require compilers/gnu/4.9.2
-require cuda/10.0.130
+require compilers/gnu/7.3.0
+require cuda/10.1.243/gnu-7.3.0
 INSTALL_PREFIX=${install_prefix}/gpu
 
 echo "Building and installing full, GPU, single precision GROMACS with gmx view"
@@ -117,7 +118,7 @@ make
 make install
 rm -rf *
 
-require mpi/openmpi/3.1.4/gnu-4.9.2
+require mpi/openmpi/3.1.4/gnu-7.3.0
 
 echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
 cmake .. \
