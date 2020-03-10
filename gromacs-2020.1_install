@@ -133,8 +133,8 @@ cmake .. \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
     -DGMX_DEFAULT_SUFFIX=OFF \
-    -DGMX_BINARY_SUFFIX=_cuda \
-    -DGMX_LIBS_SUFFIX=_cuda \
+    -DGMX_BINARY_SUFFIX=_cuda_mpi \
+    -DGMX_LIBS_SUFFIX=_cuda_mpi \
     $CMAKE_FLAGS
 make
 make install
