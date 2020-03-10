@@ -103,7 +103,7 @@ INSTALL_PREFIX=${install_prefix}/gpu
 echo "Building and installing full, GPU, single precision GROMACS with gmx view"
 cmake .. \
     -DGMX_GPU=ON \
-    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.0.130/gnu-4.9.2 \
+    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.1.243/gnu-7.3.0 \
     -DGMX_CUDA_TARGET_SM=60 \
     -DGMX_FFT_LIBRARY=fftw3 \
     -DGMX_BUILD_OWN_FFTW=ON \
@@ -123,7 +123,7 @@ require mpi/openmpi/3.1.4/gnu-7.3.0
 echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
 cmake .. \
     -DGMX_GPU=ON \
-    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.0.130/gnu-4.9.2 \
+    -DCUDA_TOOLKIT_ROOT_DIR=/shared/ucl/apps/cuda/10.1.243/gnu-7.3.0 \
     -DGMX_CUDA_TARGET_SM=60 \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
