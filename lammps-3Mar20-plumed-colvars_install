@@ -61,7 +61,7 @@ do
 done
 
 # use plumed
-make lib-plumed args="-p $PLUMED_KERNEL/../.."
+make lib-plumed args="-p $(dirname $PLUMED_KERNEL)/.."
 make yes-plumed 
 
 # These packages need external libs but provide the source with LAMMPS
