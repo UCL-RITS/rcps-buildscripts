@@ -55,7 +55,7 @@ fi
 
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
-for a in k-space manybody molecule rigid
+for a in kspace manybody molecule rigid
 do
   make yes-${a}
 done
@@ -70,7 +70,7 @@ do
   # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
   sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
   make lib-${a} args="-m mpi"  
-  make yes-${a}
+  #make yes-${a}
 
 done
 
