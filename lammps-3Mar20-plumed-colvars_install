@@ -62,7 +62,7 @@ done
 
 # use plumed
 make lib-plumed args="-p $(dirname $PLUMED_KERNEL)/.."
-make yes-plumed 
+make yes-user-plumed 
 
 # These packages need external libs but provide the source with LAMMPS
 for a in linalg
@@ -74,8 +74,8 @@ do
 
 done
 
-# user-colvars needs an extra flag for c++11
-sed -i "s|CXXFLAGS = -O2 -g -Wall -fPIC -funroll-loops|CXXFLAGS = -O2 -g -Wall -fPIC -funroll-loops -std=c++11|g" ../lib/colvars/Makefile.mpi
+# user-colvars needs an extra CXXFLAGS for c++11
+sed -i "s|-O2 -g -Wall -fPIC -funroll-loops|-O2 -g -Wall -fPIC -funroll-loops -std=c++11|g" ../lib/colvars/Makefile.mpi
 make lib-colvars args="-m mpi"
 make yes-user-colvars
 
