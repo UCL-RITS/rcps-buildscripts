@@ -4,7 +4,7 @@
 # Installing LAMMPS
 #
 # Version with plumed, k-space, manybody, molecule, rigid, lib-linalg, user-colvars
-#
+# Uses LAMMPS default Makefile.mpi so does not use MKL for FFT.
 
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-plumed-colvars}
@@ -45,13 +45,13 @@ mkdir -p MAKE/MINE
 # Copy in appropriate Makefile with correct architecture flags
 # For compiler type use the fully-specified compiler version if a makefile exists for it
 # otherwise use the one for intel, gnu etc.
-if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} ]
-then
-  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
-else
-  compiler_type=$(echo $COMPILER_TAG | cut -d- -f1)
-  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-$compiler_type MAKE/MINE/Makefile.$cluster
-fi
+#if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} ]
+#then
+#  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
+#else
+#  compiler_type=$(echo $COMPILER_TAG | cut -d- -f1)
+#  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-$compiler_type MAKE/MINE/Makefile.$cluster
+#fi
 
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
@@ -81,11 +81,13 @@ make yes-user-colvars
 
 
 # Make binaries, libraries
-make $cluster
+#make $cluster
+make mpi
 
 # Put them outside the source tree
 mkdir ../bin
-mv lmp_${cluster} ../bin
+#mv lmp_${cluster} ../bin
+mv lmp_mpi ../bin
 
 # Wipe out our old object files.
 make clean-all
@@ -98,7 +100,7 @@ mv lammps $INSTALL_PREFIX
 
 # Make default binary symlink and lmp_mpi symlink
 cd $INSTALL_PREFIX/lammps/bin
-ln -s lmp_${cluster} lmp_default
-ln -s lmp_${cluster} lmp_mpi
+#ln -s lmp_${cluster} lmp_default
+#ln -s lmp_mpi lmp_default
 
 rm -Rf $temp_dir
