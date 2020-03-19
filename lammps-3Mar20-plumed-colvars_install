@@ -3,14 +3,12 @@
 ###############################################
 # Installing LAMMPS
 #
-# Version with plumed, k-space, manybody, molecule, rigid, lib-linalg, user-colvars
+# Version with plumed, kspace, manybody, molecule, rigid, lib-linalg, user-colvars
 # Uses LAMMPS default Makefile.mpi so does not use MKL for FFT.
 
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-plumed-colvars}
-COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-3Mar2020}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps}
 
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
@@ -28,6 +26,9 @@ module load flex
 module load libmatheval
 module load plumed/2.6.0/intel-2018
 
+# set once we know the compiler tag
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 mkdir -p /dev/shm/$(whoami)/$NAME
@@ -42,16 +43,9 @@ cluster=$WHEREAMI
 cd src
 mkdir -p MAKE/MINE
 
-# Copy in appropriate Makefile with correct architecture flags
-# For compiler type use the fully-specified compiler version if a makefile exists for it
-# otherwise use the one for intel, gnu etc.
-#if [ -e /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} ]
-#then
-#  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-${COMPILER_TAG} MAKE/MINE/Makefile.$cluster
-#else
-#  compiler_type=$(echo $COMPILER_TAG | cut -d- -f1)
-#  cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.$cluster-$compiler_type MAKE/MINE/Makefile.$cluster
-#fi
+# Copy in appropriate Makefile with correct architecture flags and link options
+cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.UCL_3Mar2020_intel MAKE/MINE/Makefile.ucl
+
 
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
@@ -81,13 +75,11 @@ make yes-user-colvars
 
 
 # Make binaries, libraries
-#make $cluster
-make mpi
+make ucl
 
 # Put them outside the source tree
 mkdir ../bin
-#mv lmp_${cluster} ../bin
-mv lmp_mpi ../bin
+mv lmp_ucl ../bin
 
 # Wipe out our old object files.
 make clean-all
@@ -100,7 +92,7 @@ mv lammps $INSTALL_PREFIX
 
 # Make default binary symlink and lmp_mpi symlink
 cd $INSTALL_PREFIX/lammps/bin
-#ln -s lmp_${cluster} lmp_default
-#ln -s lmp_mpi lmp_default
+ln -s lmp_ucl lmp_default
+ln -s lmp_ucl lmp_mpi
 
 rm -Rf $temp_dir
