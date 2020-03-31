@@ -5,6 +5,7 @@
 #
 # by Owain Kenway, 2015
 # Updated June 2019 for GDAL 3.0.0
+#
 # Note: defaults to building without HDF5 support as this is breaking on Myriad
 
 ### This hasn't worked! Need to check configure options. Maybe need more uptodate libtool?
@@ -13,14 +14,15 @@ APPNAME=${APPNAME:-gdal}
 VERSION=${VERSION:-3.0.0}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-797a4400e673aa2ba647603c57b9b2b6}
+MD5=${MD5:-c6bbb5caca06e96bd97a32918e0aa9aa}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/releases/download/v${VERSION}/gdal-${VERSION}.tar.gz}
 HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
 # Need yes for 3.0.0 (see release notes)
-LINK_PROJ=${LINK_PROJ:-yes}
+# no first.
+LINK_PROJ=${LINK_PROJ:-no}
 WITH_HDF5=${WITH_HDF5:-no}
-PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.0.0/lib}
+PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.1.0/lib}
 
 set -e
 
@@ -38,7 +40,7 @@ require netcdf/4.3.3.1/gnu-4.9.2
 if [ "$LINK_PROJ" == "yes" ]
 then
   require gmt/recommended
-  require proj.4/6.0.0
+  require proj.4/6.1.0
 fi
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
