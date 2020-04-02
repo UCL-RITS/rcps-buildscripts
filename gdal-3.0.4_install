@@ -19,9 +19,8 @@ MD5=${MD5:-c6bbb5caca06e96bd97a32918e0aa9aa}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/releases/download/v${VERSION}/gdal-${VERSION}.tar.gz}
 HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.8.15-gcc.4.9.2}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
-# Need yes for 3.0.0 (see release notes) - Not sure for 3.0.4 so trying with
-# no first.
-LINK_PROJ=${LINK_PROJ:-no}
+# Need yes for 3.0.0 (see release notes) - Looks like 3.0.4 also needs PROJ whatever!
+LINK_PROJ=${LINK_PROJ:-yes}
 WITH_HDF5=${WITH_HDF5:-no}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.1.0/lib}
 
