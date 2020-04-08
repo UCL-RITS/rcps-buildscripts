@@ -21,7 +21,7 @@ HDF5=${HDF5:-/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2/}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
 # Need yes for 3.0.0 (see release notes) - Looks like 3.0.4 also needs PROJ whatever!
 LINK_PROJ=${LINK_PROJ:-yes}
-WITH_HDF5=${WITH_HDF5:-yes}
+WITH_HDF5=${WITH_HDF5:-no}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/6.1.0/lib}
 
 set -e
@@ -34,8 +34,11 @@ require gcc-libs
 require compilers/gnu
 require perl/5.22.0
 require python/2.7.12
-require hdf/5-1.10.5/gnu-4.9.2
-require netcdf/4.3.3.1/gnu-4.9.2
+require proj.4/6.1.0
+require libtool/2.4.6
+
+# require hdf/5-1.10.5/gnu-4.9.2
+# require netcdf/4.3.3.1/gnu-4.9.2
 
 if [ "$LINK_PROJ" == "yes" ]
 then
