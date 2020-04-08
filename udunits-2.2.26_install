@@ -7,10 +7,11 @@
 #
 # Updated September 2018 for udunits 2.2.26 (versions oder than 2.2.21 are
 # no longer available)
+# Updated April 2020 for different compiler versions
 
 
 VERSION=${VERSION:-2.2.26}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/udunits/$VERSION}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/udunits/$VERSION/$COMPILER_TAG}
 SHA256=${SHA256:-368f4869c9c7d50d2920fa8c58654124e9ed0d8d2a8c714a9d7fdadc08c7356d}
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-${VERSION}.tar.gz}
 
