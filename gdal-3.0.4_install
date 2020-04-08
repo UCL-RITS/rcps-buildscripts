@@ -42,7 +42,7 @@ require libtool/2.4.6
 
 if [ "$LINK_PROJ" == "yes" ]
 then
-  require gmt/recommended
+#  require gmt/recommended
   require proj.4/6.1.0
 fi
 
