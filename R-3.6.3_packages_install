@@ -136,7 +136,7 @@ export PATH=/shared/ucl/apps/curl/7.21.3/bin:$PATH
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH\:/shared/ucl/apps/curl/7.21.3/lib
 export PKG_LIBS="-L/shared/ucl/apps/curl/7.21.3/lib"
 
-R_input=${LOCALDIR}/R_packages_UCL_2.R
+R_input=${LOCALDIR}/R_packages_UCL_2_3.6.3.R
 R --no-save < $R_input
 
 R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/OPE_0.7-ucl.tar.gz
