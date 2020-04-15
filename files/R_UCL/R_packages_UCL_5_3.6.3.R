@@ -189,6 +189,10 @@ install.packages ("quanteda", lib=mainLib, repos=repros);
 install.packages ("topicmodels", lib=mainLib, repos=repros);
 devtools::install_github ("quanteda/quanteda.corpora");
 
+# For Covid-19 - April 2020
+
+install.packages ("Rfast", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
