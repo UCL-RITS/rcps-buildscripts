@@ -208,6 +208,9 @@ BiocManager::install ("DEXSeq", type="source", lib=mainLib);
 # Additional CRAN packages
 install.packages ("PSCBS", lib=mainLib, repos=repros);
 
+# INLA
+install.packages ("INLA", lib=mainLib, repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
+
 # End of Bioconductor_UCL_1
 
 # BiocManager::install ("XXX", type="source", lib=mainLib);

@@ -81,7 +81,8 @@ install.packages ("fields", lib=mainLib, repos=repros);
 install.packages ("pixmap", lib=mainLib, repos=repros);
 install.packages ("sp", lib=mainLib, repos=repros);
 
-# INLA needs to be downloaded from http://www.r-inla.org/:
+# INLA needs to be downloaded from http://www.r-inla.org/ - depends on some Bioconductor packages
+# so moved to Bioconductor_UCL_1_3.6.3.R 
 
 # install.packages("INLA", lib=mainLib, repos="https://www.math.ntnu.no/inla/R/stable")
 # install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
