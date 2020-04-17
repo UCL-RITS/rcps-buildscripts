@@ -46,7 +46,7 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 # wget $DATUM_ARCHIVE
-# wget $EPSG_ARCHIVE
+wget $EPSG_ARCHIVE
 
 CHECKSUM=`md5sum proj-${VERSION}.tar.gz| awk '{print $1}'`
 
@@ -66,13 +66,13 @@ then
 
    # Get data files
    export PATH=${INSTALL_PREFIX}/bin:$PATH
-   projsync --system-directory
+   projsync --system-directory --all
    
-#   cd $temp_dir
+   cd $temp_dir
 
    # epsg is required by R package sf
-#   rpm2cpio proj-epsg-5.2.0-1.fc30.aarch64.rpm | cpio -idmv 
-#   cp ./usr/share/proj/epsg ${INSTALL_PREFIX}/share/proj/
+   rpm2cpio proj-epsg-5.2.0-1.fc30.aarch64.rpm | cpio -idmv 
+   cp ./usr/share/proj/epsg ${INSTALL_PREFIX}/share/proj/
 
 else
    echo "***** Hash mismatch,"
