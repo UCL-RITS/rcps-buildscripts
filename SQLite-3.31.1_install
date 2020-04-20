@@ -39,7 +39,7 @@ if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar -xvf sqlite-autoconf-${VERSION}.tar.gz
    cd sqlite-autoconf-${VERSION}
-   ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
+   CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA" ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
    make 2>&1 | tee make-log
    make install 2>&1 | tee make-install-log
 
