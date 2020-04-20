@@ -24,6 +24,7 @@ HDF5=${HDF5:-/shared/ucl/apps/hdf/5-1.10.5/gnu-9.2.0/}
 LINK_PROJ=${LINK_PROJ:-yes}
 WITH_HDF5=${WITH_HDF5:-yes}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/7.0.0/lib}
+SQLITE3=${SQLITE3:-/shared/ucl/apps/SQLite/3310100/lib}
 
 set -e
 
@@ -65,9 +66,9 @@ then
   cd ${APPNAME}-${VERSION}
   if [ "$WITH_HDF5" == "yes" ]
   then
-    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5
+    ./configure --prefix=$INSTALL_PREFIX --with-hdf5=$HDF5 --with-sqlite3=$SQLITE3
   else
-    ./configure --prefix=$INSTALL_PREFIX
+    ./configure --prefix=$INSTALL_PREFIX --with-sqlite3=$SQLITE3
   fi
   make && make install
 else
