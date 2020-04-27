@@ -20,7 +20,7 @@ _env_setup() {
 
     unpack_dir="${package_name}-${package_version}"
     package_file="${package_name}-${package_version}.tar.gz"
-    package_url="https://github.com/openucx/ucx/releases/download/v${package_version%\.?}/${package_name}-${package_version}.tar.gz"
+    package_url="https://github.com/openucx/ucx/releases/download/v${package_version}/${package_name}-${package_version}.tar.gz"
 }
 
 
