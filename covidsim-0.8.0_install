@@ -68,7 +68,7 @@ make
 cd ..
 mkdir build-us
 cd build-us
-cmake -DCOUNTRY=UK ../src
+cmake -DCOUNTRY=US ../src
 make
 
 cd ..
