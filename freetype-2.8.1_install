@@ -17,7 +17,7 @@ _env_setup() {
     module_dir="$module_dir"
 
     unpack_dir="${package_name}-${package_version}"
-    package_file="${package_name}-${package_version}.tar.gz"
+    package_file="${package_name}-${package_version}.tar.bz2"
     package_url="https://download.savannah.gnu.org/releases/freetype/freetype-${package_version}.tar.bz2"
 }
 
