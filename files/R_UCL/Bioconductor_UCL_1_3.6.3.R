@@ -209,7 +209,8 @@ BiocManager::install ("DEXSeq", type="source", lib=mainLib);
 install.packages ("PSCBS", lib=mainLib, repos=repros);
 
 # INLA
-install.packages ("INLA", lib=mainLib, repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
+
+install.packages ("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
 
 # End of Bioconductor_UCL_1
 
