@@ -69,19 +69,20 @@ require mpi/openmpi/3.1.5/gnu-9.2.0
 
 require perl/5.22.0
 require libtool/2.4.6
-
-# Not currently installed - 15/4/2020
-# require graphicsmagick/1.3.21
-
+require freetype/2.8.1/gnu-4.9.2
+require graphicsmagick/1.3.21
 require python2/recommended
 require sqlite/3.31.1/gnu-9.2.0
 require proj.4/7.0.0/gnu-9.2.0
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require gdal/3.0.4/gnu-9.2.0
+require geos/3.8.1/gnu-9.2.0
+require gmt/6.0.0/gnu-9.2.0
+
 
 # Not currently installed - 15/4/2020
 
-# module load gdal/2.1.4
-# module load gmt/5.4.5
-# module load geos/3.5.0/gnu-4.9.2
 # module load v8/3.15
 # module load protobuf/12-2017/gnu-4.9.2
 # module load jq/1.5/gnu-4.9.2
