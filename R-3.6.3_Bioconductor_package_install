@@ -53,8 +53,15 @@ mainLib;
 dbLib;
 repros;
 
-source ("https://bioconductor.org/biocLite.R");
-biocLite (pkgs="$PACKAGE", type="source", lib=mainLib);
+# Download the Bioconductor installer and install the base package
+
+if (!requireNamespace ("BiocManager"))
+    install.packages ("BiocManager", repos=repros)
+BiocManager::install ()
+
+# Install Bioconductor package
+
+BiocManager::install ("$PACKAGE", type="source", lib=mainLib);
 
 EOF
 
