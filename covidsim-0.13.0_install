@@ -62,7 +62,7 @@ cd ${NAME}-${VERSION}
 
 mkdir build
 cd build
-cmake ../src
+cmake ..
 make 
 
 

@@ -30,39 +30,13 @@ temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
 
 cd $temp_dir
 
-if [ ! -f ${SRC_ARCHIVE} ]; then
-   echo "No archive found, attempting to clone repo ${REPO}."
    git clone $REPO
-   cd covid-sim
-   git checkout v${VERSION}
-   cd ..
-else 
-   cp $SRC_ARCHIVE .
-   archive=$(basename "${SRC_ARCHIVE}")
-   if [[ $archive == *.tar* ]]; then
-      echo "Tar detected..."
-      tar xvf $archive | tee untar.log
-      rm $archive
-   else 
-      echo "File unknown - assuming zip..."
-      unzip $archive | tee unzip.log
-      rm $archive
-   fi
-fi
-
-adir=`ls | grep covid*`
-if [[ $adir == ${NAME}-${VERSION} ]]; then
-  echo "Correctly named archive - doing nothing..."
-else
-  echo "Moving ${adir} to ${NAME}-${VERSION}..."
-  mv $adir ${NAME}-${VERSION}
-fi
-
-cd ${NAME}-${VERSION}
+cd covid-sim
+git checkout v${VERSION}
 
 mkdir build
 cd build
-cmake ../src
+cmake ..
 make 
 
 
