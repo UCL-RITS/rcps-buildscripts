@@ -71,7 +71,7 @@ cd ..
 rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX/bin
 
-cp build/CovidSim $INSTALL_PREFIX/bin/CovidSim
+cp build/src/CovidSim $INSTALL_PREFIX/bin/CovidSim
 
 cp -R data $INSTALL_PREFIX/data
 cp -R docs $INSTALL_PREFIX/docs
