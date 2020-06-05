@@ -19,6 +19,7 @@ require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
 require flex/2.5.39
 require libmatheval/1.1.11
+require plumed/2.5.2/intel-2018
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-2.13}
