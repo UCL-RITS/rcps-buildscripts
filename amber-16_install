@@ -52,14 +52,14 @@ fi
 set -e
 
 # Installl a suitable MPI4PY for MMPBSA
-if [ "${PARALLEL:-}" = "-mpi" ]; then
-  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
-  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
+#if [ "${PARALLEL:-}" = "-mpi" ]; then
+#  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
+#  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
 
-fi
+#fi
 
 # Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
-pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
+#pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
 
 
 mkdir -p $INSTALL_PREFIX
