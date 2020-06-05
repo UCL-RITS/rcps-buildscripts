@@ -23,7 +23,7 @@ require mpi/intel/2018/update3/intel
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-2.13}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}-opt}
 NANAME=${NANAME:-NAMD_${VERSION}_Source}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
 
