@@ -1,5 +1,5 @@
 FFTDIR=$(MKLROOT)
-FFTINCL=-I(FFTDIR)/include/fftw
-FFTLIB=-L(FFTDIR)/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+FFTINCL=-I$(FFTDIR)/include/fftw
+FFTLIB=-L$(FFTDIR)/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
 FFTFLAGS=-DNAMD_FFTW -NAMD_FFTW_3
 FFT=$(FFTINCL) $(FFTFLAGS)
