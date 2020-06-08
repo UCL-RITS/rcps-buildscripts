@@ -23,7 +23,7 @@ require mpi/intel/2018/update3/intel
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-2.13}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}-opt}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/namd/${COMPILER_TAG}-opt2}
 NANAME=${NANAME:-NAMD_${VERSION}_Source}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/namd/source/NAMD_${VERSION}_Source.tar.gz}
 
@@ -71,7 +71,8 @@ patch < Linux-x86_64.tcl.patch
 patch < Linux-x86_64.fftw.patch
 cp /shared/ucl/apps/build_scripts/namd-patches/*.fftw3 .
 
-sed -i.bak 's|-axAVX|-xHost -qopenmp-simd|g' Linux-x86_64-icc.arch
+sed -i.bak 's|-axAVX|-xCORE-AVX512 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
+
 
 cd ..
 ./config Linux-x86_64-icc --with-fftw3 --charm-arch ${CHARMARC}-iccstatic
