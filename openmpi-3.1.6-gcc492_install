@@ -4,8 +4,7 @@ set -e
 
 package_name="openmpi"
 package_version="3.1.6"
-package_variant="no-atomics"
-package_description="The Open MPI Project is an open source Message Passing Interface implementation. This version built with --disable-builtin-atomics"
+package_description="The Open MPI Project is an open source Message Passing Interface implementation."
 
 source includes/source_includes.sh
 
@@ -35,12 +34,11 @@ _file_setup() {
 
 _pre_build() {
     cd "$build_dir/$unpack_dir/"
-    # 3.1.x have bugs where builtin atomics sometimes cause hangs
+
     ./configure \
         --prefix="$install_prefix" \
         --with-sge \
         --without-verbs
-        --disable-builtin-atomics
 
     cd "$owd"
 }
