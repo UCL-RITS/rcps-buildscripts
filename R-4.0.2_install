@@ -54,6 +54,7 @@ require gsl/2.6/gnu-9.2.0
 require hdf/5-1.10.5/gnu-9.2.0
 require udunits/2.2.26/gnu-9.2.0
 require netcdf/4.7.4/gnu-9.2.0
+require pcre2/10.35/gnu-9.2.0
 
 # Not doing Jags or ROOT initially.
 # require jags/4.2.0/gnu.4.9.2-openblas
