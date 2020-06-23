@@ -17,6 +17,7 @@ actual_file_md5=a0674e2cc5941d738c1afddf43fb8745
 actual_file_sha=2e5ee2dd397fa8c3ce9aed1a986e51d66a88bdb0
 
 module purge
+require beta-modules
 require gcc-libs/9.2.0
 require compilers/gnu/9.2.0
 
