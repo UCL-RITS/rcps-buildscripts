@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing UCL needed additional R and Bioconductor
+# packages.
+#
+# This replaces the old ~ccaabaa/Software/R/extra-pkgs-order.txt file from
+# previous version of R on Legion etc. It will need to be updated each time
+# an extra package is added to the current R installation.
+#
+# For R 4.0.2
+#
+# by Brian Alston, June 2016
+# Updated Sep 2016 to updated JAGS version
+# Updated Nov 2016 for R 3.3.2 and extra modules for rgdal and rgeos packages.
+# Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
+# Updated May 2017 for R 3.4.0 and to add udunits/2.2.20/gnu-4.9.2 module.
+# Updated October 2017 for R 3.4.2
+# Updated May 2018 for R 3.5.0
+# Updated June 2018 to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
+# Updated September 2018 for R 3.5.1 and ROOT 5.34.36
+# Also updated for udunits 2.2.26
+# Updated October 2018 to create ~/.R/Makevars to allow installaion of rstan
+# Updated April 2019 for R 3.5.3 and PROJ.4 6.0.0
+# Updated June 2019 for R 3.6.0, Texinfo 6.6 and TeX Live 2019
+# Further updates to get a working set of Geographic packages (PROJ, GDAL etc) July 2019
+# Updated April 2020 for R 3.6.3 and GNU 9.2.0 - some packages not currently installed
+# - see below
+# Updated June 2020 for R 4.0.2
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+set -e
+
+VERSION=${VERSION:-3.6.3}   
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
+export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require openblas/0.3.7-serial/gnu-9.2.0
+require java/1.8.0_92
+require fftw/3.3.8/gnu-9.2.0
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.6/gnu-9.2.0
+require hdf/5-1.10.5/gnu-9.2.0
+require udunits/2.2.26/gnu-9.2.0
+require netcdf/4.7.4/gnu-9.2.0
+require mpi/openmpi/3.1.5/gnu-9.2.0
+require pcre2/10.35/gnu-9.2.0
+
+# Not currently installed - 15/4/2020
+# require jags/4.2.0/gnu.4.9.2-openblas
+# require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+# require glpk/4.60/gnu-4.9.2
+
+require perl/5.22.0
+require libtool/2.4.6
+require freetype/2.8.1/gnu-4.9.2
+require graphicsmagick/1.3.21
+require python/2.7.12
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require gdal/3.0.4/gnu-9.2.0
+require geos/3.8.1/gnu-9.2.0
+require gmt/6.0.0/gnu-9.2.0
+
+
+# Not currently installed - 15/4/2020
+
+# module load v8/3.15
+# module load protobuf/12-2017/gnu-4.9.2
+# module load jq/1.5/gnu-4.9.2
+
+require r/3.6.3-openblas/gnu-9.2.0
+
+# Set up ~/.R/Makevars for rstan which needs C++ 2014 stuff
+
+mkdir -p ~/.R
+cd ~/.R
+cat > Makevars <<EOF
+CXX14 = g++ -std=c++1y
+CXX14FLAGS = -Wno-unused-variable -Wno-unused-function -fPIC
+EOF
+
+# temp_dir=`mktemp -d -p /dev/shm`
+temp_dir='/home/ccspapp/Software/R/Packages'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+mkdir -p $RLIB_DB
+
+
+# Note: some old packages need to be installed from local files that have had minor updates applied eg:
+#
+# adapt fails to install on R > 3.0.1 with: ERROR: a 'NAMESPACE' file is required
+# 
+# tar xvzf adapt_1.0-4.tar.gz
+# cd adapt
+# Create NAMESPACE with contents:
+# 
+# exportPattern("^[^\\.]")
+# 
+# cd ..
+# tar cvzf adapt_1.0-4-ucl.tar.gz adapt
+# 
+# Do this for all packages that fail with abover error.
+
+R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/adapt_1.0-4-ucl.tar.gz
+
+R_input=${LOCALDIR}/R_packages_UCL_1.R
+R --no-save < $R_input
+
+# No longer on CRAN current - July 2013
+
+R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/Design_2.3-0-ucl.tar.gz
+
+# So build of RCurl picks up currect version of libcurl
+
+export PATH=/shared/ucl/apps/curl/7.21.3/bin:$PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH\:/shared/ucl/apps/curl/7.21.3/lib
+export PKG_LIBS="-L/shared/ucl/apps/curl/7.21.3/lib"
+
+R_input=${LOCALDIR}/R_packages_UCL_2_3.6.3.R
+R --no-save < $R_input
+
+R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/OPE_0.7-ucl.tar.gz
+
+R_input=${LOCALDIR}/R_packages_UCL_3.R
+R --no-save < $R_input
+
+# No longer on CRAN - Aug 2014
+# Removed from packages to be built June 2019 as it fails to build with R 3.6.0
+
+#   ${LOCALDIR}/NetworkAnalysis_0.3-1.tar.gz
+
+R_input=${LOCALDIR}/R_packages_UCL_4.R
+R --no-save < $R_input
+
+# For Julie Bertrand (j.bertrand@ucl.ac.uk) - added Jan 2014
+# No longer on CRAN current - June 2016 - Breaks install with R 3.5.3
+
+# R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/ridge_2.1-3.tar.gz
+
+R_input=${LOCALDIR}/R_packages_UCL_5_3.6.3.R
+R --no-save < $R_input
+
+# Now to install Bioconductor.
+
+R_input=${LOCALDIR}/Bioconductor_UCL_1_3.6.3.R
+R --no-save < $R_input
+
