@@ -89,7 +89,7 @@ require gmt/6.0.0/gnu-9.2.0
 # module load protobuf/12-2017/gnu-4.9.2
 # module load jq/1.5/gnu-4.9.2
 
-require r/3.6.3-openblas/gnu-9.2.0
+require r/4.0.2-openblas/gnu-9.2.0
 
 # Set up ~/.R/Makevars for rstan which needs C++ 2014 stuff
 
