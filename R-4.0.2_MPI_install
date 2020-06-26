@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing R and Bioconductor MPI support
+# packages.
+#
+# This replaces the old ~ccaabaa/Software/R/extra-pkgs-order.txt file from
+# previous version of R on Legion etc. It will need to be updated each time
+# an extra package is added to the current R installation.
+#
+# For R 4.0.2 and later Note: R-<version>_packages_install should be run first.
+#
+# This is needed on Grace for the Rmpi package to install correctly:
+#
+# export OMPI_MCA_mtl=^psm
+#
+# by Brian Alston, June 2016
+# Updated Nov 2016 for R 3.3.2
+# Updated May 2017 for R 3.4.0
+# Updated December 2017 for R 3.4.2
+# Updated June 2018 for R 3.5.0
+# Updated June 2018 (19th) to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
+# Updated September 2018 for R 3.5.1
+#    Also for udunits 2.2.26.
+# Updated April 2019 for R 3.5.3
+# Updated July 2019 for R 3.6.0
+# Updated April 2020 for R 3.6.3
+# Updated June 2020 for R 4.0.2
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-4.0.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
+export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require openblas/0.3.7-serial/gnu-9.2.0
+require java/1.8.0_92
+require fftw/3.3.8/gnu-9.2.0
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.6/gnu-9.2.0
+require hdf/5-1.10.5/gnu-9.2.0
+require udunits/2.2.26/gnu-9.2.0
+require netcdf/4.7.4/gnu-9.2.0
+require mpi/openmpi/3.1.5/gnu-9.2.0
+require pcre2/10.35/gnu-9.2.0
+
+# Not currently installed - 15/4/2020
+# require jags/4.2.0/gnu.4.9.2-openblas
+# require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+# require glpk/4.60/gnu-4.9.2
+
+require perl/5.22.0
+require libtool/2.4.6
+require freetype/2.8.1/gnu-4.9.2
+require graphicsmagick/1.3.21
+require python/2.7.12
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require gdal/3.0.4/gnu-9.2.0
+require geos/3.8.1/gnu-9.2.0
+require gmt/6.0.0/gnu-9.2.0
+require v8/3.15
+
+# Not currently installed - 15/4/2020
+# module load protobuf/12-2017/gnu-4.9.2
+# module load jq/1.5/gnu-4.9.2
+
+require r/4.0.2-openblas/gnu-9.2.0
+
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+mkdir -p $RLIB_DB
+
+export OMPI_MCA_btl=vader,self
+
+# Note: some old packages need to be installed from local files that have had minor updates applied eg:
+#
+# adapt fails to install on R > 3.0.1 with: ERROR: a 'NAMESPACE' file is required
+# 
+# tar xvzf adapt_1.0-4.tar.gz
+# cd adapt
+# Create NAMESPACE with contents:
+# 
+# exportPattern("^[^\\.]")
+# 
+# cd ..
+# tar cvzf adapt_1.0-4-ucl.tar.gz adapt
+# 
+# Do this for all packages that fail with abover error.
+
+R_input=${LOCALDIR}/R_packages_MPI_1_3.6.3.R
+R --no-save < $R_input
+

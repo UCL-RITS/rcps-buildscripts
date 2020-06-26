@@ -32,8 +32,8 @@ a
 $INSTALL_PREFIX
 EOF
    echo ""
-   echo "Installation completed. You now need to install a valid license file to point to the Excalibur project"
-   echo "license server."
+   echo "Installation completed. You now need to install a valid license file to point"
+   echo "to the Excalibur Project license server."
    echo ""	
 else
    echo "***** Hash mismatch,"
