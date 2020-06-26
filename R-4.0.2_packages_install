@@ -81,11 +81,10 @@ require proj.4/7.0.0/gnu-9.2.0
 require gdal/3.0.4/gnu-9.2.0
 require geos/3.8.1/gnu-9.2.0
 require gmt/6.0.0/gnu-9.2.0
-
+require v8/3.15
 
 # Not currently installed - 15/4/2020
 
-# module load v8/3.15
 # module load protobuf/12-2017/gnu-4.9.2
 # module load jq/1.5/gnu-4.9.2
 
