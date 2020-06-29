@@ -136,8 +136,8 @@ install.packages ("roxygen2", lib=mainLib, repos=repros);
 
 # More requsts from Political Science
 
-# install.packages ("rgdal", lib=mainLib, repos=repros);
-# install.packages ("rgeos", lib=mainLib, repos=repros);
+install.packages ("rgdal", lib=mainLib, repos=repros);
+install.packages ("rgeos", lib=mainLib, repos=repros);
 
 install.packages ("erer", lib=mainLib, repos=repros);
 install.packages ("panelAR", lib=mainLib, repos=repros);
@@ -150,7 +150,7 @@ install.packages("Rcpp", lib=mainLib, repos=repros);
 install.packages("jsonlite", lib=mainLib, repos=repros);
 install.packages("curl", lib=mainLib, repos=repros);
 v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
-# install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
+install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/include --with-udunits2-lib=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9.2/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
 lwgeomconf <- 'CFLAGS="${CFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
