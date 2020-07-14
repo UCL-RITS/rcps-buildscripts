@@ -11,7 +11,7 @@
 # Updated June 2019 to defULT TO R 3.6.0
 # Updated July 2020 for R 4.0.2
 #
-# usage: R-4.0.2_single_package_install <R package name>
+# usage: R-4.0.2_single_package_install <R package name> <extra args for install.package>
 #
 # Will need modules: r/recommended or possibly r/new
 
@@ -74,11 +74,14 @@ require v8/3.15
 require r/4.0.2-openblas/gnu-9.2.0
 
 
-if [ $# -ne 1 ]; then
-	echo "usage: R-4.0.2_single_package_install <R package name>"
+if [ $# -lt 1 ]; then
+	echo "usage: R-4.0.2_single_package_install <R package name> <extra args for install.package>"
 	exit 1
 fi
 PACKAGE=$1
+if [ $# -eq 2]; then
+    EXTRAS=$2
+fi
 
 temp_dir=`mktemp -d -p /dev/shm`
 # temp_dir='/home/ccspapp/Software/R'
@@ -95,7 +98,7 @@ mainLib;
 dbLib;
 repros;
 
-install.packages ("$PACKAGE", lib=mainLib, repos=repros);
+install.packages ("$PACKAGE", lib=mainLib, repos=repros, $EXTRAS);
 
 EOF
 
