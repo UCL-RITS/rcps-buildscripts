@@ -11,7 +11,7 @@
 # Updated June 2019 to defULT TO R 3.6.0
 # Updated July 2020 for R 4.0.2
 #
-# usage: R-4.0.2_single_package_install <R package name> <extra args for install.package>
+# usage: R-4.0.2_single_package_install <R package name> <extra args for install.packages>
 #
 # Will need modules: r/recommended or possibly r/new
 
@@ -75,12 +75,13 @@ require r/4.0.2-openblas/gnu-9.2.0
 
 
 if [ $# -lt 1 ]; then
-	echo "usage: R-4.0.2_single_package_install <R package name> <extra args for install.package>"
+	echo "usage: R-4.0.2_single_package_install <R package name> <extra args for install.packages>"
 	exit 1
 fi
 PACKAGE=$1
-if [ $# -eq 2]; then
+if [ $# -eq 2 ]; then
     EXTRAS=$2
+    echo "extra args - $EXTRAS"
 fi
 
 temp_dir=`mktemp -d -p /dev/shm`
