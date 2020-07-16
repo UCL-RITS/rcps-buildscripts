@@ -31,6 +31,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 # require r/recommended
 # require r/new
+require beta-modules
 require r/r-4.0.2_bc-3.11
 
 if [ $# -ne 1 ]; then
