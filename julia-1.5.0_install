@@ -3,37 +3,26 @@
 ###############################################
 # Installing julia
 #
-# by Owain Kenway, 2019 
+# by Owain Kenway, 2020
 #
+# Using binaries because compiling Julia on RHEL 7.x is a "castle of pain".
 
 set -e
 
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-require llvm/8.0.0/gnu-4.9.2
-require binutils/2.29.1/gnu-4.9.2
-
-export CC=clang
-export CXX=clang++
 
 VERSION=${VERSION:-1.5.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
-SHA256=${SHA256:-b42be61a7da963edb6bbe18f3882ef17f9a2ee51b0282b9673e0b1fd6956ef49}
-ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}.tar.gz}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JuliaLang/julia/releases/download/v${VERSION}/${ARCHIVENAME}}
-EXTDIR=${EXTDIR:-julia-1.5.0}
+SHA256=${SHA256:-be7af676f8474afce098861275d28a0eb8a4ece3f83a11027e3554dcdecddb91}
+ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}-linux-x86_64.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://julialang-s3.julialang.org/bin/linux/x64/1.5/${ARCHIVENAME}}
 
-# Target architecture
-# Need to set this so that when built on Legion it builds for nehalem.
-LEGION=${LEGION:-no}
+rm -Rf $INSTALL_PREFIX
+mkdir $INSTALL_PREFIX
+cd $INSTALL_PREFIX
 
-export PATH=$INSTALL_PREFIX/bin:$PATH
-
-mkdir -p /dev/shm/julia
-temp_dir=`mktemp -d -p /dev/shm/julia`
-
-cd $temp_dir
 
 wget $SRC_ARCHIVE
 
@@ -48,18 +37,3 @@ then
 fi
 
 tar -zxvf ${ARCHIVENAME}
-cd $EXTDIR
-
-if [ "$LEGION" == "yes" ]
-then
-  TARGET_ARCH=${TARGET_ARCH:-nehalem}
-  echo "JULIA_CPU_TARGET = ${TARGET_ARCH}" > Make.user
-  echo "MARCH = ${TARGET_ARCH}" >> Make.user
-fi
-
-echo "prefix=${INSTALL_PREFIX}" >> Make.user
-echo "USECLANG := 1" >> Make.user
-echo "USE_BINARYBUILDER := 0" >> Make.user
-
-make
-make install
