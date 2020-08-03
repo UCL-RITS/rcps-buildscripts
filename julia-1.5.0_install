@@ -11,8 +11,11 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-require compilers/gnu/4.9.2
+require llvm/8.0.0/gnu-4.9.2
 require binutils/2.29.1/gnu-4.9.2
+
+export CC=clang
+export CXX=clang++
 
 VERSION=${VERSION:-1.5.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
