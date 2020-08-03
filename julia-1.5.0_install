@@ -63,7 +63,7 @@ echo "USE_BINARYBUILDER_LIBUV := 0" >> Make.inc
 echo "USE_BINARYBUILDER_LIBUNWIND := 0" >> Make.inc
 
 echo "prefix=${INSTALL_PREFIX}" >> Make.user
-echo "USE_CLANG := 1" >> Make.user
+echo "USECLANG := 1" >> Make.user
 
 make
 make install
