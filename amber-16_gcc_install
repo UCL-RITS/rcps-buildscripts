@@ -59,7 +59,7 @@ if [ "${PARALLEL:-}" = "-mpi" ]; then
 fi
 
 # Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
-#pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
+pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy==1.15.2
 
 
 mkdir -p $INSTALL_PREFIX
@@ -77,6 +77,13 @@ mv amber${VERSION} ${ABNAME}
 ln -fsT `pwd`/${ABNAME} $AMBERHOME
 
 cd $AMBERHOME
+
+# Do a serial pre-install as the parallel versions lack some stuff.
+echo 'y' \
+    | ./configure --with-python `which python` $COMPILER
+source amber.sh
+make install
+make clean
 
 # There isn't a flag to pre-answer the question of whether to apply patches C_C
 echo 'y' \

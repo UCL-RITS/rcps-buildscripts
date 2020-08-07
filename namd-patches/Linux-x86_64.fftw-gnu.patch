@@ -1,0 +1,9 @@
+--- Linux-x86_64.fftw.old	2015-06-18 11:52:39.000000000 +0100
++++ Linux-x86_64.fftw	2015-06-18 11:54:11.000000000 +0100
+@@ -1,5 +1,5 @@
+ 
+-FFTDIR=/Projects/namd2/fftw/linux-x86_64
++FFTDIR=/shared/ucl/apps/fftw/2.1.5/gnu-4.9.2
+ FFTINCL=-I$(FFTDIR)/include
+ FFTLIB=-L$(FFTDIR)/lib -lsrfftw -lsfftw
+ FFTFLAGS=-DNAMD_FFTW

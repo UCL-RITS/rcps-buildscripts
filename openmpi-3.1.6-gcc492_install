@@ -3,7 +3,7 @@
 set -e
 
 package_name="openmpi"
-package_version="4.0.3"
+package_version="3.1.6"
 package_description="The Open MPI Project is an open source Message Passing Interface implementation."
 
 cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
@@ -17,7 +17,7 @@ _env_setup() {
 
     # On Myriad, build with UCX
     if [ cluster == "myriad" ]
-    then 
+    then
         require numactl/2.0.12
         require binutils/2.29.1/gnu-4.9.2
         require ucx/1.8.0/gnu-4.9.2
@@ -37,7 +37,7 @@ _file_setup() {
 
     wget "$package_url"
 
-    manifest sha1:d958454e32da2c86dd32b7d557cf9a401f0a08d3 ${package_file}
+    manifest sha1:bc4cd7fa0a7993d0ae05ead839e6056207e432d4 ${package_file}
 
     tar -xf "$package_file"
 }
@@ -73,7 +73,6 @@ _post_build() {
         -p "$install_prefix" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
         -c "mpi" \
-        -d \
         -v "MPI_HOME=${install_prefix}" \
         -v "MPI_RUN=${install_prefix}/bin/mpirun" \
         -v "GERUN_LAUNCHER=openmpi-sge" \

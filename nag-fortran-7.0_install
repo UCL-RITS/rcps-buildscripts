@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# This script installs NAG Fortran Compiler 7.0
+# Brian Alston April 2016
+# Based on spm12_install by Owain Kenway
+
+# Updated July 2020 for 7.0
+
+
+VERSION=${VERSION:-7.0}
+BUILD=${BUILD:-7020}
+PRODUCT=${PRODUCT:-npl6a70na}
+ARCH=${ARCH:-amd64}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-compiler/${VERSION}-${BUILD}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.nag.co.uk/downloads/impl/${PRODUCT}_$ARCH.tgz}
+MD5=${MD5:-3c497ff5891c92a4223ee8780682dc47}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+CHECKSUM=`md5sum ${PRODUCT}_$ARCH.tgz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf ${PRODUCT}_$ARCH.tgz
+   cd NAG_Fortran-$ARCH
+
+    # Run the installer.
+   echo "Install to ${INSTALL_PREFIX}/bin"
+   ./INSTALL.sh 
+
+else
+   echo "***** Hash mismatch,"
+   echo "       Expected: $MD5"
+   echo "       Got:      $CHECKSUM"
+fi
+
+

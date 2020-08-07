@@ -8,7 +8,7 @@
 # previous version of R on Legion etc. It will need to be updated each time
 # an extra package is added to the current R installation.
 #
-# For R 3.6.3
+# For R 4.0.2
 #
 # by Brian Alston, June 2016
 # Updated Sep 2016 to updated JAGS version
@@ -26,6 +26,7 @@
 # Further updates to get a working set of Geographic packages (PROJ, GDAL etc) July 2019
 # Updated April 2020 for R 3.6.3 and GNU 9.2.0 - some packages not currently installed
 # - see below
+# Updated June 2020 for R 4.0.2
 #
 # Using Ian's require function to load modules
 #
@@ -33,7 +34,7 @@
 
 set -e
 
-VERSION=${VERSION:-3.6.3}   
+VERSION=${VERSION:-4.0.2}   
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
 export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
 export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
@@ -61,6 +62,7 @@ require hdf/5-1.10.5/gnu-9.2.0
 require udunits/2.2.26/gnu-9.2.0
 require netcdf/4.7.4/gnu-9.2.0
 require mpi/openmpi/3.1.5/gnu-9.2.0
+require pcre2/10.35/gnu-9.2.0
 
 # Not currently installed - 15/4/2020
 # require jags/4.2.0/gnu.4.9.2-openblas
@@ -79,15 +81,14 @@ require proj.4/7.0.0/gnu-9.2.0
 require gdal/3.0.4/gnu-9.2.0
 require geos/3.8.1/gnu-9.2.0
 require gmt/6.0.0/gnu-9.2.0
-
+require v8/3.15
 
 # Not currently installed - 15/4/2020
 
-# module load v8/3.15
 # module load protobuf/12-2017/gnu-4.9.2
 # module load jq/1.5/gnu-4.9.2
 
-require r/3.6.3-openblas/gnu-9.2.0
+require r/4.0.2-openblas/gnu-9.2.0
 
 # Set up ~/.R/Makevars for rstan which needs C++ 2014 stuff
 
