@@ -44,8 +44,8 @@ require netcdf/4.7.4/gnu-9.2.0
 if [ "$LINK_PROJ" == "yes" ]
 then
 #  require gmt/recommended
-    require proj.4/7.0.0/gnu-9.2.0
     require sqlite/3.31.1/gnu-9.2.0
+    require proj.4/7.0.0/gnu-9.2.0
 fi
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
