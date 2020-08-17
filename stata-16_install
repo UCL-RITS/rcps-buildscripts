@@ -3,6 +3,8 @@
 # This script installs StataMP 16 
 # Brian Alston January 2018
 # Updated January 2020 for Stata 16
+# Updated August 2020 to add older libpng fix needed on mnodern linbux distros
+# the fix is from: https://github.com/kylebarron/stata-png-fix
 
 # Based on spm12_install by Owain Kenway
 
@@ -17,6 +19,12 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspapp/Software/STATA/Stata${VERSION}Linux64.t
 STATA_INSTALLER=${STATA_INSTALLER:-install}
 # EXTRA_FILES=${EXTRA_FILES:-/shared/ucl/apps/build_scripts/files/mathematica_UCL}
 
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require compilers/gnu/4.9.2
 
 if [ ! -f $SRC_ARCHIVE ]
 then
@@ -49,6 +57,36 @@ y
 y
 EOF
 
+# install Stata libpng fix using method from https://github.com/kylebarron/stata-png-fix
+
+mkdir -p $INSTALL_PREFIX/oldlibs
+cd $temp_dir
+
+# These are the old library versions needed by STATA
+
+echo "Install old versions of zlib and libpng needed by STATA ..."
+
+git clone https://github.com/kylebarron/stata-png-fix
+wget http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.gz
+wget http://downloads.sourceforge.net/project/libpng/libpng16/older-releases/1.6.2/libpng-1.6.2.tar.gz
+
+tar -xvf zlib-1.2.3.tar.gz
+cd zlib-1.2.3
+export CFLAGS="-fPIC"
+./configure --prefix=$INSTALL_PREFIX/oldlibs
+make
+make install
+
+cd ..
+tar -xvf libpng-1.6.2.tar.gz
+cd libpng-1.6.2
+export CFLAGS="-I$INSTALL_PREFIX/oldlibs/include -fPIC"
+export LDFLAGS="-L$INSTALl_PREFIX/oldlibs/lib"
+./configure --prefix=$INSTALL_PREFIX/oldlibs
+patch -p1 < ../stata-png-fix/stata-png.patch
+make
+make install
+
 # install UCL StataMP license for Myriad
 
 echo ""
@@ -59,6 +97,7 @@ read -p "Do you wish to run the STATA license setup? [y/n] " answer
 
 if [ "$answer" == "y" ]
 then
+    cd $INSTALL_PREFIX/stata$VERSION
     ./stinit
 fi
 
