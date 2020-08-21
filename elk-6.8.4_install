@@ -1,0 +1,108 @@
+#!/bin/bash
+
+package_name="elk"
+package_version="6.8.4"
+package_description="An all-electron full-potential linearised augmented-planewave (FP-LAPW) code."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3
+require fftw/3.3.8-impi/intel-2018
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://www.tddft.org/programs/libxc/down/5.0.0/libxc-5.0.0.tar.gz
+wget https://downloads.sourceforge.net/project/elk/elk-6.8.4.tgz
+wget https://github.com/wannier-developers/wannier90/archive/v3.1.0.tar.gz
+mv v3.1.0.tar.gz wannier90-3.1.0.tar.gz
+
+manifest \
+    sha256:96e7a4803ada84ebb86e3c85c18abb9052d00ee32be8ad0b1ee674cbe3c8ff61 elk-6.8.4.tgz \
+    sha256:1cdc57930f7b57da4eb9b2c55a50ba1c2c385936ddaf5582fee830994461a892  libxc-5.0.0.tar.gz \
+    sha256:40651a9832eb93dec20a8360dd535262c261c34e13c41b6755fa6915c936b254  wannier90-3.1.0.tar.gz
+
+# Run a build of libxc first to the get the static lib
+cd "$build_dir"
+tar -xf libxc-5.0.0.tar.gz
+cd libxc-5.0.0
+./configure --prefix="$build_dir/tmp-libxc-build"
+make
+make check
+make install
+
+
+# Same for wannier90
+cd "$build_dir"
+tar -xf wannier90-3.1.0.tar.gz
+cd wannier90-3.1.0
+touch make.inc # just set the options on the command line, w/e
+make COMMS=mpi LIBS=-mkl MPIF90=mpif90 lib tests
+
+cp libwannier.a "$build_dir"/
+
+
+# Now for Elk
+cd "$build_dir"
+tar -xf elk-6.8.4.tgz
+cd elk-6.8.4
+
+# Prep the make.inc file because apparently cmake and autotools are beyond their ken
+printf "
+F90 = mpif90
+F77 = mpif90
+
+# These opts taken from the semi-automatic setup script
+F90_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp
+F77_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp -assume protect_parens
+
+SRC_MKL =
+LIB_LPK = -mkl
+LIB_libxc = libxcf90.a libxc.a
+SRC_libxc = libxcf90.f90 libxcifc.f90
+SRC_FFT = zfftifc_fftw.f90
+LIB_FFT = libfftw3.a
+SRC_W90S =
+LIB_W90 = libwannier.a
+
+# For whatever reason, you have to include these stubs for libs you're not using
+SRC_OBLAS = oblas_stub.f90
+SRC_BLIS = blis_stub.f90
+" >make.inc
+
+# Link in the files from external libs it needs
+cp "$build_dir"/tmp-libxc-build/lib/libxc{.a,f90.a} ./src/
+cp "$build_dir/libwannier.a" ./src/
+cp "$FFTWLIBDIR/libfftw3.a" ./src/
+
+
+# And build
+make all
+
+# And test
+# `make test` only runs the serial tests, `make test-all` runs the libxc tests and MPI tests
+make test-all
+
+# Of course, it doesn't *have* an install target, so we have to take care of it somehow ourselves
+mkdir -p "$install_prefix"/bin
+cp src/elk src/eos/eos src/spacegroup/spacegroup "$install_prefix"/bin/
+cp -r docs "$install_prefix"/
+cp src/eos/README "$install_prefix"/docs/eos.README
+cp -r species "$install_prefix"/
+cp -r examples "$install_prefix"/
+
+
+# Because FFTW is linked statically, we don't need the module later
+module unload fftw 
+
+
+make_module_v2 -v "ELK_SPECIES_DIR=$install_prefix/species" -v "ELK_EXAMPLES_DIR=$install_prefix/examples"
+
+post_build_report
