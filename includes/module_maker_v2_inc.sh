@@ -40,7 +40,6 @@ function make_module_v2() {
     local needs_group=""
 
 
-    echo "$@"
     #Get command line arguments
     local flag
     while getopts  "hp:o:n:v:a:e:w:Cc:Rr:dg:t:" flag
@@ -120,51 +119,43 @@ function make_module_v2() {
     fi
 
 
-    local prefix_type_dirs=0
     local prefix_block=""
 
     if [[ -z "${omit_prefix_block:-}" ]] && [[ -n "${module_prefix:-}" ]] && [[ -d "$module_prefix" ]]; then
         printf -v prefix_block "prepend-path CMAKE_PREFIX_PATH %s\n" '$prefix'
         if [[ -d "$module_prefix/bin" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path PATH %s\n" "$prefix_block" '$prefix/bin'
         fi
         if [[ -d "$module_prefix/include" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path CPATH %s\nprepend-path INCLUDE_PATH %s\n" "$prefix_block" '$prefix/include' '$prefix/include'
         fi
         if [[ -d "$module_prefix/lib" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_RUN_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib' '$prefix/lib' '$prefix/lib'
         fi
         if [[ -d "$module_prefix/lib64" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path LIBRARY_PATH %s\nprepend-path LD_RUN_PATH %s\nprepend-path LD_LIBRARY_PATH %s\n" "$prefix_block" '$prefix/lib64' '$prefix/lib64' '$prefix/lib64'
         fi
         if [[ -d "$module_prefix/lib/pkgconfig" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path PKG_CONFIG_PATH %s\n" "$prefix_block" '$prefix/lib/pkgconfig'
         fi
         if [[ -d "$module_prefix/lib64/pkgconfig" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path PKG_CONFIG_PATH %s\n" "$prefix_block" '$prefix/lib64/pkgconfig'
         fi
         if [[ -d "$module_prefix/man" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path MAN_PATH %s\n" "$prefix_block" '$prefix/man'
         fi
         if [[ -d "$module_prefix/share/man" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path MAN_PATH %s\n" "$prefix_block" '$prefix/share/man'
         fi
         if [[ -d "$module_prefix/share/info" ]]; then
-            let prefix_type_dirs+=1
             printf -v prefix_block "%sprepend-path INFO_PATH %s\n" "$prefix_block" '$prefix/share/info'
         fi
     fi
 
     #Create dir for module if necessary
     mkdir -p "$(dirname "$output_file")"
+
+    printf "Creating module file as: $output_file" >&2
 
     exec 5>"$output_file"
     >&5 printf "#%%Module -*- tcl -*-\n## module_made (v2)\nproc ModulesHelp { } {\n  puts stderr {%s}\n}\nmodule-whatis {%s}\n\n" "$module_whatis" "$module_whatis"
