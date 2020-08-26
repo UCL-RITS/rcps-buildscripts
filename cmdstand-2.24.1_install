@@ -28,6 +28,6 @@ git checkout v${VERSION}
 
 git submodule update --init --recursive
 
-make 
+make build STANCFLAGS=-std=g++11
 
 rm -rf $temp_dir
