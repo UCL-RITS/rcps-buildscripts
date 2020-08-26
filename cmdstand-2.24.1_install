@@ -23,7 +23,7 @@ cd ${INSTALL_PREFIX}
 
 git clone $SRC_ARCHIVE
 
-cd cmdstand
+cd cmdstan
 git checkout v${VERSION}
 
 git submodule update --init --recursive
