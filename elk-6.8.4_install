@@ -60,8 +60,11 @@ F90 = mpif90
 F77 = mpif90
 
 # These opts taken from the semi-automatic setup script
-F90_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp
-F77_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp -assume protect_parens
+#F90_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp
+#F77_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp -assume protect_parens
+# Removing -no-prec-div because accuracy issues make the tests fail on some processors
+F90_OPTS = -O3 -ip -unroll -qopenmp
+F77_OPTS = -O3 -ip -unroll -qopenmp -assume protect_parens
 
 SRC_MKL =
 LIB_LPK = -mkl
