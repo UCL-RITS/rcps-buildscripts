@@ -22,12 +22,15 @@ cd "$build_dir"
 wget https://www.tddft.org/programs/libxc/down/5.0.0/libxc-5.0.0.tar.gz
 wget https://downloads.sourceforge.net/project/elk/elk-6.8.4.tgz
 wget https://github.com/wannier-developers/wannier90/archive/v3.1.0.tar.gz
+wget https://github.com/wannier-developers/wannier90/commit/0ec22d34f33a0dc5e86fa4ce7835de673a52bf15.patch
+
 mv v3.1.0.tar.gz wannier90-3.1.0.tar.gz
 
 manifest \
     sha256:96e7a4803ada84ebb86e3c85c18abb9052d00ee32be8ad0b1ee674cbe3c8ff61 elk-6.8.4.tgz \
     sha256:1cdc57930f7b57da4eb9b2c55a50ba1c2c385936ddaf5582fee830994461a892  libxc-5.0.0.tar.gz \
-    sha256:40651a9832eb93dec20a8360dd535262c261c34e13c41b6755fa6915c936b254  wannier90-3.1.0.tar.gz
+    sha256:40651a9832eb93dec20a8360dd535262c261c34e13c41b6755fa6915c936b254  wannier90-3.1.0.tar.gz \
+    sha256:6587e9f6c83c17a571baebf9f647663b83a057bd83b7e9ccb0e4f80b96c0d999  0ec22d34f33a0dc5e86fa4ce7835de673a52bf15.patch
 
 # Run a build of libxc first to the get the static lib
 cd "$build_dir"
@@ -44,6 +47,8 @@ cd "$build_dir"
 tar -xf wannier90-3.1.0.tar.gz
 cd wannier90-3.1.0
 touch make.inc # just set the options on the command line, w/e
+# This patch just widens the tolerances for the tests, as per a post-3.1.0 commit recommended by one of the authors.
+patch -p1 <"$build_dir/0ec22d34f33a0dc5e86fa4ce7835de673a52bf15.patch"
 make COMMS=mpi LIBS=-mkl MPIF90=mpif90 lib tests
 
 cp libwannier.a "$build_dir"/
@@ -62,9 +67,6 @@ F77 = mpif90
 # These opts taken from the semi-automatic setup script
 #F90_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp
 #F77_OPTS = -O3 -ip -unroll -no-prec-div -qopenmp -assume protect_parens
-# Removing -no-prec-div because accuracy issues make the tests fail on some processors
-F90_OPTS = -O3 -ip -unroll -qopenmp
-F77_OPTS = -O3 -ip -unroll -qopenmp -assume protect_parens
 
 SRC_MKL =
 LIB_LPK = -mkl
