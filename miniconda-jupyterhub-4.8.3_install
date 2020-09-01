@@ -46,6 +46,17 @@ conda install -y jupyterlab notebook  # needed if running the notebook servers l
 conda install -y -c conda-forge jupyterlab-git
 jupyter lab build
 
+# Extensions - VS Code via jupyter-lab
+conda install -y -c conda-forge jupyter-server-proxy jupyter-vscode-proxy # VS code interface
+jupyter labextension install @jupyterlab/server-proxy # It's not being installed from conda?
+jupyter lab build
+
+# creating it in its own environment:
+conda create -n jhubcode -c conda-forge code-server -y
+sed -i "2iCONDA_PREFIX=/shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode" /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server
+sed -i 's|node|${CONDA_PREFIX}/bin/node|' /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server
+ln -s  /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server /shared/ucl/apps/miniconda-jhub/4.8.3/bin/code-server
+code-server --install-extension ms-python.pythonnp
 
 PATH=$oldpath
 
