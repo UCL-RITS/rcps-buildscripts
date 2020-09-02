@@ -58,6 +58,34 @@ sed -i 's|node|${CONDA_PREFIX}/bin/node|' /shared/ucl/apps/miniconda-jhub/4.8.3/
 ln -s  /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server /shared/ucl/apps/miniconda-jhub/4.8.3/bin/code-server
 code-server --install-extension ms-python.pythonnp
 
+# package dependencies
+packages=(
+    # Scientific stack
+    numpy numpydoc scipy pandas pandas-datareader pandasql
+    # python tooling
+    pip setuptools sphinx requests
+    # plotting
+    matplotlib bokeh plotly
+    # domain libraries
+    astropy biopython nltk proj4 scikit-image scikit-learn statsmodels sympy pytorch tensorflow pywavelets gdal
+    # Performance and distribution
+    cython dask dask-core dask-glm dask-ml numba
+    # Files and db
+    dill h5py hdf5 pytables pyyaml xarray xlsxwriter sqlalchemy sqlalchemy-utils
+    # tooling
+    flake8 isort memory_profiler python-language-server rope typing typing_extensions yapf tox
+    # testing
+    pytest pytest-arraydiff pytest-astropy pytest-asyncio pytest-cov pytest-doctestplus pytest-mock
+    pytest-pep8 pytest-runner pytest-timeout pytest-xdist mock
+    # conda related and notebooks
+    nb_conda_kernels
+    # Teaching
+    nbgrader
+)
+
+conda install -y -c conda-forge "${packages[@]}"
+
+
 PATH=$oldpath
 
 cd
