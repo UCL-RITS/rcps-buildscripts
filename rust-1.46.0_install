@@ -1,0 +1,28 @@
+#!/bin/bash
+
+package_name="rust"
+package_version="1.46.0"
+package_description="The toolchain for the Rust programming language."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+make_build_env --tmp-root="$XDG_RUNTIME_DIR"
+
+cd "$build_dir"
+
+wget https://static.rust-lang.org/dist/rust-"$package_version"-x86_64-unknown-linux-gnu.tar.gz
+
+manifest sha256:e3b98bc3440fe92817881933f9564389eccb396f5f431f33d48b979fa2fbdcf5  rust-1.46.0-x86_64-unknown-linux-gnu.tar.gz
+
+tar -xf rust-"$package_version"-x86_64-unknown-linux-gnu.tar.gz
+cd rust-"$package_version"-x86_64-unknown-linux-gnu
+./install.sh --prefix="$install_prefix"
+
+make_module_v2 -o "$module_dir/compilers/rust/$package_version" -c "compilers/rust"
+post_build_report
+
