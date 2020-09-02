@@ -155,7 +155,7 @@ function make_module_v2() {
     #Create dir for module if necessary
     mkdir -p "$(dirname "$output_file")"
 
-    printf "Creating module file as: $output_file" >&2
+    printf "Creating module file as: $output_file\n" >&2
 
     exec 5>"$output_file"
     >&5 printf "#%%Module -*- tcl -*-\n## module_made (v2)\nproc ModulesHelp { } {\n  puts stderr {%s}\n}\nmodule-whatis {%s}\n\n" "$module_whatis" "$module_whatis"
