@@ -178,23 +178,28 @@ function post_build_report() {
     local build_size
     local exec_list
     build_size="$(du -hs "$install_prefix" | cut -f 1 -d $'\t')"
-    exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10)"
-    cat <<EOF
+    # If -o pipefail is set, this line will exit with status 141, because SIGPIPE kills the find
+    #  So we catch it and test for it
+    exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10 || [[ "${PIPESTATUS[0]}" -eq 141 ]])"
+    echo "Printing report"
+    printf "
     ==========================
     =    Post Build Info     =
     ==========================
 
-    Package label:            $package_label
-    Build took place in:      $build_dir
-    Modules were put in:      $module_dir
-    Package was installed to: $install_prefix
-    Package size:             ${build_size}B
+    Package label:            %s
+    Build took place in:      %s
+    Modules were put in:      %s
+    Package was installed to: %s
+    Package size:             %sB
 
     -- First execs (max 10) --
-    $exec_list
+%s
 
     ==========================
-EOF
+    " "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list"
+
+
 }
 
 function github_download() {
