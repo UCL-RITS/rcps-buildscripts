@@ -1,0 +1,33 @@
+#!/bin/bash
+
+package_name="dakota"
+package_version="6.12.0"
+package_description="Dakota is a package for performing parametric analysis with other software packages."
+package_variant="bindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://dakota.sandia.gov/sites/default/files/distributions/public/dakota-"$package_version"-release-public-rhel7.x86_64-UI.tar.gz
+
+manifest md5:d56a163939f3c04bdbe1767a19a54b38 dakota-6.12.0-release-public-rhel7.x86_64-UI.tar.gz
+
+mkdir -p "$install_prefix"
+tar \
+    -C "$install_prefix" \
+    --strip-components=1 \
+    -xf dakota-"$package_version"-release-public-rhel7.x86_64-UI.tar.gz
+
+make_module_v2 -e PATH:"$install_prefix/gui"
+chmod -R a+rX "$module_dir"
+post_build_report
+
