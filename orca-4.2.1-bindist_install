@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+package_name="orca"
+package_version="4.2.1"
+package_description=""
+package_variant="bindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+# Templating of MPI libs prevents loose versioning here
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+module load mpi/openmpi/3.1.4/gnu-4.9.2
+
+make_build_env ""
+
+
+cd "$build_dir"
+
+cp /shared/ucl/apps/pkg-store/orca_4_2_1_linux_x86-64_shared_openmpi314.tar.xz ./
+
+manifest \
+    sha256:a84b6d2706f0ddb2f3750951864502a5c49d081836b00164448b1d81c577f51a  orca_4_2_1_linux_x86-64_shared_openmpi314.tar.xz
+
+mkdir -p "$install_prefix"
+
+tar \
+    -C "$install_prefix" \
+    --strip-components=1 \
+    -xf "$build_dir"/orca_4_2_1_linux_x86-64_shared_openmpi314.tar.xz
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix" \
+    -v RSH_COMMAND=ssh \
+    -g legorca
+chmod -R a+rX "$module_dir"
+chgrp -R legorca "$install_prefix"
+post_build_report
+
+
