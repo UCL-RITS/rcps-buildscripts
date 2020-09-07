@@ -2,7 +2,7 @@
 
 package_name="orca"
 package_version="4.2.1"
-package_description=""
+package_description="ORCA is an ab initio, DFT, and semiempirical SCF-MO package."
 package_variant="bindist"
 
 set -o errexit \
