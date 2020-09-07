@@ -181,7 +181,6 @@ function post_build_report() {
     # If -o pipefail is set, this line will exit with status 141, because SIGPIPE kills the find
     #  So we catch it and test for it
     exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10 || [[ "${PIPESTATUS[0]}" -eq 141 ]])"
-    echo "Printing report"
     printf "
     ==========================
     =    Post Build Info     =
@@ -196,8 +195,8 @@ function post_build_report() {
     -- First execs (max 10) --
 %s
 
-    ==========================
-    " "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list"
+    ==========================\n" \
+    "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list"
 
 
 }
