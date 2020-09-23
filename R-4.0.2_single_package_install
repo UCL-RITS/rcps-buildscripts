@@ -10,6 +10,9 @@
 # Updated October 2018 to default to R 3.5.1
 # Updated June 2019 to defULT TO R 3.6.0
 # Updated July 2020 for R 4.0.2
+# Updated September 2020 to set currect value for R_LIBS_SITE - WILL NEED TO CHANGE FOR EACH
+# NEW R VERSION!
+
 #
 # usage: R-4.0.2_single_package_install <R package name> <extra args for install.packages>
 #
@@ -72,6 +75,8 @@ require v8/3.15
 # module load jq/1.5/gnu-4.9.2
 
 require r/4.0.2-openblas/gnu-9.2.0
+
+export R_LIBS_SITE=/shared/ucl/apps/R/R-4.0.2-OpenBLAS/lib64/R/library:/home/ccspapp/Scratch//R/R-4.0.2-OpenBLAS/library
 
 
 if [ $# -lt 1 ]; then
