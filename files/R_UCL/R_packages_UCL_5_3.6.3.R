@@ -196,6 +196,10 @@ install.packages ("spdep", lib=mainLib, repos=repros);
 
 install.packages ("Rfast", lib=mainLib, repos=repros);
 
+# For Ricardo Silva (ricardo.silva@ucl.ac.uk) - September 2020
+
+install.packages ("learnr", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
