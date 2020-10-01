@@ -1,0 +1,43 @@
+#!/bin/bash
+
+package_name="armforge"
+package_version="20.1.2"
+package_description="ArmForge is a collection of parallel profiling and debugging tools for x86_64 and ARM processors."
+
+# NB: this isn't the package_variant: it doesn't get included in the module file name. (There's no reason to put it there.)
+platform_variant="Redhat-7.0-x86_64"
+
+licence_file_location="/shared/ucl/apps/pkg-store/armforge-cs-licence.txt"
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+# ARM Forge is pretty large, so put it in /dev/shm instead of /tmp
+make_build_env --tmp-root=/dev/shm
+
+
+cd "$build_dir"
+
+wget http://content.allinea.com/downloads/arm-forge-"$package_version"-"$platform_variant".tar
+
+manifest \
+    sha256:bdf5daf596faca952572ab79d38d689aabb03e733246dfe2210a4c32e9436c02  arm-forge-20.1.2-Redhat-7.0-x86_64.tar
+
+tar -xf arm-forge-"$package_version"-"$platform_variant".tar
+cd "arm-forge-$package_version-$platform_variant"
+./textinstall.sh  --accept-licence "$install_prefix"
+
+cp \
+    "$licence_file_location" \
+    "$install_prefix/licences/Licence.client"
+
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
+
