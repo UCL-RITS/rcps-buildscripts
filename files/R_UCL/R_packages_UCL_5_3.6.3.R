@@ -155,6 +155,7 @@ udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/UDUNITS/2.2.20-gnu-4.9
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
 lwgeomconf <- 'CFLAGS="${CFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
 install.packages ("lwgeom", lib=mainLib, repos=repros, configure.vars=lwgeomconf);
+install.packages ("classInt", lib=mainLib, repos=repros);
 install.packages ("tmap", lib=mainLib, repos=repros);
 
 # For Lucia Conde (l.conde@ucl.ac.uk) May 2017
@@ -199,6 +200,10 @@ install.packages ("Rfast", lib=mainLib, repos=repros);
 # For Ricardo Silva (ricardo.silva@ucl.ac.uk) - September 2020
 
 install.packages ("learnr", lib=mainLib, repos=repros);
+
+# For benchmarking - October 2020
+
+install.packages ("benchmarkme", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
