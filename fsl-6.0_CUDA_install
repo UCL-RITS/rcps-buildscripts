@@ -122,6 +122,10 @@ wget https://fsl.fmrib.ox.ac.uk/fsldownloads/patches/eddy-patch-fsl-5.0.11/cento
 chmod a+x eddy_cuda8.0
 ln -s eddy_cuda8.0 eddy_cuda
 
+# Ditto Probtrackx
+wget http://users.fmrib.ox.ac.uk/~moisesf/Probtrackx_GPU/FSL_6/CUDA_8.0/probtrackx2_gpu.zip
+unzip probtrackx2_gpu.zip && rm probtrackx_gpu.zip
+
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
