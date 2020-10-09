@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing SAC
+#
+# by Owain Kenway, 2015 
+#
+# Updated October 2018 to use Matlab R2016b
+# Updated October 2020 for SAC 102.0 and Matlab R2019b
+
+# You need to register to download a copy of the source of this package
+# and then place it in the location in $SRC_ARCHIVE
+
+# You also need to find the line in src/mat/matBlackBoardVars.c which
+# caused a redeclaration error of a variable and set REDEC_BUG appropriately 
+# (line 86 in 102.0)
+
+APPNAME=${APPNAME:-sac}
+VERSION=${VERSION:-102.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}_R2019b/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/sac/sources/sac-102.0.tar.gz}
+REDEC_BUG=${REDEC_BUG:-86}
+# By default don't do tests as they need an X11 session.
+TESTS=${TESTS:-no}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+tar -zxvf $SRC_ARCHIVE
+
+cd ${APPNAME}-${VERSION}
+
+# Delete line of src/mat/matBlackBoardVars.c
+cp src/mat/matBlackBoardVars.c src/mat/matBlackBoardVars.c.old
+sed ''"$REDEC_BUG"'d' src/mat/matBlackBoardVars.c.old > src/mat/matBlackBoardVars.c 
+
+./configure --prefix=$INSTALL_PREFIX --enable-xpm --enable-zlib --enable-png --enable-xft --enable-optim=2 --with-matlab=/shared/ucl/apps/Matlab/R2019b/full
+make 
+
+# This step needs X11
+if [ "$TESTS" == "yes" ]
+then
+   # We have to set TERM to rxvt as the output files that the pytest test
+   # uses have rxvt control characters embedded in them and one of the tests 
+   # will fail file comparison as a result.
+   # The test suite reports this as 65 errors, when it means 65 lines of
+   # errors from one test.
+   TERM=rxvt make check
+fi
+
+make install
