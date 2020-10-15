@@ -38,6 +38,7 @@ function make_module_v2() {
     local omit_prefix_block=""
     local needs_module_functions=""
     local needs_group=""
+    local custom_tmpdir_vars=""
 
 
     #Get command line arguments
@@ -85,6 +86,10 @@ function make_module_v2() {
             needs_module_functions="y"
             needs_group="$OPTARG"
             ;;
+          "t")
+            printf -v custom_tmpdir_vars "%smodulefunctions::tmpdirVar %s\n" "$custom_tmpdir_vars" "$OPTARG"
+            needs_module_functions="y"
+            ;;
           *)
             echo "Module maker: Invalid argument specified: $flag" >&2
             return 5
@@ -109,6 +114,7 @@ function make_module_v2() {
       -R   reset module dependencies. (esp. if the default is not what you want)
       -C   reset module conflicts.    (esp. if the default is not what you want)
       -g   a group that the user must be in to load the module.
+      -t   variable that should be set to temporary directory (TMPDIR or XDG_RUNTIME_DIR)
       -h   print this.
     "
 
@@ -167,6 +173,8 @@ function make_module_v2() {
     >&5 printf "set prefix %s\n" "$module_prefix"
     [[ -n "$variables_to_import$variables_to_prepend$variables_to_append" ]] && \
         >&5 printf "\n%s%s%s\n" "$variables_to_import" "$variables_to_prepend" "$variables_to_append"
+    [[ -n "$custom_tmpdir_vars" ]] && \
+        >&5 printf "\n%s\n" "$custom_tmpdir_vars"
     >&5 printf "%s\n" "$prefix_block"
     exec 5>&-
 
