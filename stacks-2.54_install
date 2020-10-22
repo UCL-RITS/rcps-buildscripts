@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="stacks"
+package_version="2.54"
+package_description="Stacks is a software pipeline for building loci from short-read sequences, such as those generated on the Illumina platform."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs
+module load compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget https://catchenlab.life.illinois.edu/stacks/source/stacks-${package_version}.tar.gz
+
+manifest \
+    sha256:1278bf006cfd4c1c654b1d353ce453358436e306f88f2f0e80af7f3829c08894  stacks-2.54.tar.gz
+	
+
+tar -xf stacks-${package_version}.tar.gz
+
+cd stacks-${package_version}
+./configure \
+    --prefix="$install_prefix"
+make
+# make check # The release tarball of Stacks appears to have had its tests broken. :(
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
