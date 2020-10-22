@@ -17,9 +17,9 @@ set -e
 # require modules for building
 source includes/source_includes.sh
 module purge
-require gcc-libs
-require compilers/intel
-require mpi/intel
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
 require cmake/3.7.2
 
 mkdir -p "$INSTALL_PREFIX"
