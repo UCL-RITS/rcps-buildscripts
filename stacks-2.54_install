@@ -33,7 +33,6 @@ make install
 
 make_module_v2 \
     -d \
-    -r gcc-libs \
     -e PATH:"$install_prefix"/bin \
 
 chmod -R +rX "$module_dir"
