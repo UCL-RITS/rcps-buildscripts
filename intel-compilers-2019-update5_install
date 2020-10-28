@@ -82,8 +82,8 @@ package_label="${package_label//\.//}"
 export cprefix=$install_prefix
 export nprefix="$cprefix/compilers_and_libraries_$numeric_version"
 make_module -p "$install_prefix" \
-            -c "$package_name" \
-            -o "$module_dir/$package_label" \
+            -c compilers/"$package_name" \
+            -o "$module_dir/compilers/$package_label" \
             -v INTEL_LICENSE_FILE="$intel_license" \
             -v CC=icc \
             -v CXX=icpc \
@@ -155,8 +155,8 @@ make_module -p "$install_prefix" \
 # MPI module
 mprefix="$cprefix/impi/$mpi_package_version"
 make_module -d \
-            -c "$package_name" \
-            -o "${module_dir}/${mpi_package_label}" \
+            -c mpi/"$package_name" \
+            -o "${module_dir}/mpi/${mpi_package_label}" \
             -e PATH:"${mprefix}/intel64/bin" \
             -e MANPATH:"${mprefix}/man" \
             -e LD_LIBRARY_PATH:"${mprefix}/intel64/lib" \
