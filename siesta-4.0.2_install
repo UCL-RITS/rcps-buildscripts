@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+#
+# SIESTA with Intel compiler, MPI and MKL
+#
+
+NAME=${NAME:-siesta}
+VERSION=${VERSION:-4.0.2}
+SHA256=${SHA256:-bafbda19358f0c1dd39bb1253c92ee548791a1c0f648977051d2657216874f7e}
+# Get the major-minor version number
+shortversion=$(echo "$VERSION" | awk -F. 'BEGIN{OFS="."}{print $1,$2}')
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://launchpad.net/${NAME}/${shortversion}/${VERSION}/+download/${NAME}-${VERSION}.tar.gz}
+DOWNLOAD_DIR=${DOWNLOAD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}_dl.XXXXXXXX)}
+ARCH_FILE=${ARCH_FILE:-/shared/ucl/apps/build_scripts/files/siesta_4.0.2_arch.make}
+
+set -o errexit -o nounset
+
+# module prereqs for building
+for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+cd "$DOWNLOAD_DIR"
+wget "$SRC_ARCHIVE"
+
+echo "Downloaded to: $DOWNLOAD_DIR"
+
+archive=$(basename "$SRC_ARCHIVE")
+
+echo "Checking hashes:"
+sha256sum -c <<<"$SHA256 $archive"
+
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+tar -xvf "${DOWNLOAD_DIR}/$archive"
+# This is provided as a build directory
+cd "${NAME}-${VERSION}/Obj"
+
+../Src/obj_setup.sh
+cp "$ARCH_FILE" arch.make
+make
+echo "Main SIESTA build completed"
+
+# Alter 'maxa' parameter in Vibra util to allow 2000 atoms instead of 8.
+# https://github.com/UCL-RITS/rcps-buildscripts/issues/153
+sed -i.bak -e "s|parameter (maxa = 8)|parameter (maxa = 2000)|" "$INSTALL_PREFIX/${NAME}-${VERSION}/Util/Vibra/Src/vibra.h"
+
+# Build as many utils as possible
+echo "Building utils"
+cd ../Util
+./build_all.sh
+
+echo "Installed to: $INSTALL_PREFIX"
+

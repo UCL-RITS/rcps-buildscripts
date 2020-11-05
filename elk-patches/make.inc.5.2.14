@@ -1,0 +1,19 @@
+
+MAKE = make
+F90 = mpif90
+F90_OPTS = -O3 -ip -xHost -qopenmp -I$(MKLROOT)/include
+F77 = mpif90
+F77_OPTS = -O3 -ip -xHost -qopenmp
+AR = xiar
+LIB_SYS =
+LIB_LPK = -mkl
+SRC_MPI =
+LIB_libxc = libxcf90.a libxc.a
+SRC_libxc = libxc_funcs.f90 libxc.f90 libxcifc.f90
+LIB_FFT = fftlib.a
+SRC_FFT = zfftifc.f90
+
+# Using FFTW or the MKL FFT routines produces a build that segfaults in testing.
+# As per [this thread](https://sourceforge.net/p/elk/discussion/897822/thread/efcfff08/), 
+#  rebuilding using the built-in FFT routines produces a version that passes all tests 
+#  without segfaults. This probably isn't optimal, but it's better than nothing.

@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gmt
+#
+# by Owain Kenway, 2015 
+#
+# Updated for gmt 5.3.1 - Nov 2016
+# Updated for gmt 5.4.5 - June 2019
+# Modified again to use PROJ.4 5.2.0 instaead of 6.0.0
+# Modified again to use PROJ.4 6.2.1 - July 2019
+# Updated for GMT 6.0.0 and building with GNU 9.2.0 - April 2020
+
+
+# Need the following loaded to work:
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require perl/5.22.0
+require python/2.7.12
+require hdf/5-1.10.5/gnu-9.2.0
+require netcdf/4.7.4/gnu-9.2.0
+require sqlite/3.31.1/gnu-9.2.0
+require proj.4/7.0.0/gnu-9.2.0
+require gdal/3.0.4/gnu-9.2.0
+require libtool/2.4.6
+require graphicsmagick/1.3.21
+require ghostscript/9.19/gnu-4.9.2
+require fftw/3.3.8/gnu-9.2.0
+require openblas/0.3.7-serial/gnu-9.2.0
+
+
+APPNAME=${APPNAME:-gmt}
+VERSION=${VERSION:-6.0.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHASUM=${SHASUM:-8a0f659274a2ace8c3c572c58fe533b5c31403f1631a46bec3f93dbfcbaf78e1}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/GenericMappingTools/gmt/releases/download/${VERSION}/gmt-${VERSION}-src.tar.gz}
+DATA_PREFIX=${DATA_PREFIX:-/shared/ucl/apps/$APPNAME/data}
+
+# We can't get 1.1.2 any more
+DCW_VERSION=${DCW_VERSION:-1.1.4}
+DCW_MD5=${DCW_MD5:-4f30857a8b12af0f910222fceb591538}
+DCW_ARCHIVE=${DCW_ARCHIVE:-https://github.com/GenericMappingTools/dcw-gmt/releases/download/${DCW_VERSION}/dcw-gmt-${DCW_VERSION}.tar.gz}
+
+GSHHG_VERSION=${GSHHG_VERSION:-2.3.7}
+GSHHG_MD5=${GSHHG_MD5:-8ee2653f9daf84d49fefbf990bbfa1e7}
+GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-https://github.com/GenericMappingTools/gshhg-gmt/releases/download/${GSHHG_VERSION}/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE 
+wget $DCW_ARCHIVE
+wget $GSHHG_ARCHIVE
+
+CHECKSUM=`shasum -a 256 ${APPNAME}-${VERSION}-src.tar.gz | awk '{print $1}'`
+DCWCHECK=`md5sum dcw-gmt-${DCW_VERSION}.tar.gz | awk '{print $1}'`
+GSHHGCHECK=`md5sum gshhg-gmt-${GSHHG_VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$SHASUM" == "$CHECKSUM"  && "$DCW_MD5" == "$DCWCHECK" && "$GSHHG_MD5" == "$GSHHGCHECK" ]]
+then
+
+# Datasets
+  mkdir -p $DATA_PREFIX
+  cd $DATA_PREFIX
+  tar -zxvf $temp_dir/dcw-gmt-${DCW_VERSION}.tar.gz
+  tar -zxvf $temp_dir/gshhg-gmt-${GSHHG_VERSION}.tar.gz
+
+  cd $temp_dir
+
+  tar -zxvf ${APPNAME}-${VERSION}-src.tar.gz
+
+  cd ${APPNAME}-${VERSION}
+
+  mkdir build
+  cd cmake
+  cp ConfigUserTemplate.cmake ConfigUser.cmake
+  cd ../build
+  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.8/gnu-9.2.0 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP=TRUE ..
+
+  make 
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5 $DCW_MD5 $GSHHG_MD5"
+  echo "Got: $CHECKSUM $DCWCHECK $GSHHGCHECK"
+fi

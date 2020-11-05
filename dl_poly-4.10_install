@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing DL_POLY
+#
+# You will need to install as ccspap2 for the lgdlp410 group.
+
+NAME=${NAME:-dl_poly}
+VERSION=${VERSION:-4.10.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-"/shared/ucl/apps/dl_poly/sources/${NAME}_${VERSION}.tar.gz"}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
+GROUP=${GROUP:-lgdlp410}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require cmake/3.7.2
+
+mkdir -p "$INSTALL_PREFIX"
+cd "$BUILD_DIR"
+
+tar -xvf "${SRC_ARCHIVE}"
+
+cd "${NAME}_${VERSION}"
+
+# If you want to test, add -DBUILD_TESTING=ON and make test.
+# This takes some time to download the tests.
+cmake .
+make
+
+cp -r "$BUILD_DIR/${NAME}_${VERSION}"/* "$INSTALL_PREFIX"
+
+# The correct legdlp group needs to have been created and the installing user has to be in it
+chgrp -Rv "$GROUP" "$INSTALL_PREFIX"
+chmod -Rv o-rwx "$INSTALL_PREFIX"
+

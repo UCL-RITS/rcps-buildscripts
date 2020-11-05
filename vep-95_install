@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require perl/5.22.0
+
+NAME=${NAME:-vep}
+VERSION=${VERSION:-95.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-50e8c54fc3894cf4081b2eb31c6dd175b47db9cf20d9d621859d9c03e6733a7ae25ffd1c2baa06e0c31ec2287b8e5cbe48fc279c09adfa2195c390cd470a6ca9}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Ensembl/ensembl-vep/archive/release/${VERSION}.tar.gz}
+
+
+mkdir -p $INSTALL_PREFIX
+rm -rf $INSTALL_PREFIX/ensembl-vep-release-${VERSION}
+
+cd $INSTALL_PREFIX
+archive=$(basename "${SRC_ARCHIVE}")
+
+if [ ! -f ./${archive} ]; then
+   wget $SRC_ARCHIVE
+fi
+
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd ensembl-vep-release-${VERSION}
+
+perl INSTALL.pl -a a -n

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gsl 2.6
+#
+# by Owain Kenway, 2018
+# updated April 2020 for GSL 2.6
+
+NAME=${NAME:-gsl}
+VERSION=${VERSION:-2.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-9273164b6bdf60d0577518a1c1310eff6659e3dd}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://ftp.gnu.org/gnu/gsl/gsl-${VERSION}.tar.gz}
+
+OPTS=""
+
+
+set -e
+
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha1sum -c <<< "$SHA1 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+if [ "${COMPILER_TAG:0:5}" == "intel" ]; then
+  echo "DETECTED INTEL COMPILERS - SETTING FP MODEL TO PRECISE"
+  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O2 -fp-model precise" 
+elif [ "${COMPILER_TAG}" == "gnu-4.9.2" ]; then
+  echo "DETECTED BUGGY GNU COMPILERS - DISABLING OPTIMIZATION"
+  ./configure --prefix=$INSTALL_PREFIX  CFLAGS="-O1" 
+
+else
+  ./configure --prefix=$INSTALL_PREFIX 
+fi
+make
+make check
+make install

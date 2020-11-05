@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+###############################################################################
+#
+# OpenMPI 10.1, not linking against verbs by default
+# Patches hwloc so does not require all hyperthreads of core to be in cpuset
+#
+
+NAME=${NAME:-openmpi}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-1.10.1}
+VARIANT=${VARIANT:-hthread} # hyperthreading
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$VARIANT/$COMPILER_TAG}
+MD5=${MD5:-f0fcd77ed345b7eafb431968124ba16e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.open-mpi.org/software/ompi/v${VERSION%.*}/downloads/${NAME}-${VERSION}.tar.bz2}
+FLAGS=${FLAGS:-"--with-sge --without-verbs"}
+
+set -e
+
+source includes/source_includes.sh
+module purge
+module load gcc-libs
+module load compilers/gnu/4.9.2
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum openmpi-${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -jxvf ${NAME}-${VERSION}.tar.bz2
+
+  cd ${NAME}-${VERSION}
+
+  # patch from https://www.mail-archive.com/users@lists.open-mpi.org//msg28451.html
+  cat >tmp.patch <<EOF
+--- opal/mca/hwloc/base/hwloc_base_util.c.orig  2020-01-10 16:38:55.446517049 +0000
++++ opal/mca/hwloc/base/hwloc_base_util.c       2020-01-10 16:41:50.750562561 +0000
+@@ -513,8 +513,11 @@
+             obj->userdata = (void*)data;
+         }
+         if (NULL == opal_hwloc_base_cpu_set) {
+-            if (!hwloc_bitmap_isincluded(obj->cpuset, obj->allowed_cpuset)) {
+-                /* do not count not allowed cores */
++            if (!hwloc_bitmap_intersects(obj->cpuset, obj->allowed_cpuset)) {
++                /*
++                 * do not count not allowed cores (e.g. cores with zero allowed PU)
++                 * if SMT is enabled, do count cores with at least one allowed hwthread
++                 */
+                 return;
+             }
+             data->npus = 1;
+EOF
+
+  patch -p0 -i tmp.patch
+  ./configure --prefix=$INSTALL_PREFIX ${FLAGS}
+  make && make install
+
+# Install mpirun wrapper
+#  mkdir -p /shared/ucl/apps/openmpi/ucl-wrapper/bin
+#  cp /shared/ucl/apps/build_scripts/files/mpirun /shared/ucl/apps/openmpi/ucl-wrapper/bin
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+

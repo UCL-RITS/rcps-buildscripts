@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Tcl/Tk
+# Built with GCC
+# 
+# Leaves sources in /shared/ucl/apps/tcl/ for building extensions.
+
+NAME=${NAME:-tcl}
+VERSION=${VERSION:-8.6.8}
+TCL_SRC_ARCHIVE=${TCL_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/${NAME}${VERSION}-src.tar.gz}
+TK_SRC_ARCHIVE=${TK_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/tk${VERSION}-src.tar.gz}
+TCL_SHA256=${TCL_SHA256:-c43cb0c1518ce42b00e7c8f6eaddd5195c53a98f94adc717234a65cbcfd3f96a}
+TK_SHA256=${TK_SHA256:-49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33}
+# BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/gnu
+
+# need to set this after compiler module is loaded
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}-full/$COMPILER_TAG}
+BUILD_DIR=${BUILD_DIR:-$INSTALL_PREFIX}
+
+mkdir -p $BUILD_DIR
+cd "$BUILD_DIR"
+
+wget "$TCL_SRC_ARCHIVE"
+tcl_archive=$(basename "${TCL_SRC_ARCHIVE}")
+echo "Checking hashes:"
+sha256sum -c <<<"$TCL_SHA256  $tcl_archive"
+
+wget "$TK_SRC_ARCHIVE"
+tk_archive=$(basename "${TK_SRC_ARCHIVE}")
+echo "Checking hashes:"
+sha256sum -c <<<"$TK_SHA256  $tk_archive"
+
+# build tcl first
+tar -xvf "$tcl_archive"
+cd "${NAME}""${VERSION}"/unix
+./configure --prefix="$INSTALL_PREFIX"
+make 2>&1 | tee make.log
+make test
+make install
+cd ../..
+
+# build tk - will find tcl files it needs if both archives downloaded to same dir
+tar -xvf "$tk_archive"
+cd tk"${VERSION}"/unix
+./configure --prefix="$INSTALL_PREFIX"
+make 2>&1 | tee make.log
+make install
+

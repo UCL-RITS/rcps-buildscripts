@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# This script installs Impute2 2.3.2
+# Brian Alston October 2019
+
+
+VERSION=${VERSION:-2.3.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Impute2/${VERSION}}
+LIBTYPE=${LIBTYPE:-dynamic}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://mathgen.stats.ox.ac.uk/impute/impute_v${VERSION}_x86_64_$LIBTYPE.tgz}
+MD5=${MD5:-0e1bafb8f63eb5cf9ae02ab761af58aa}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+CHECKSUM=`md5sum impute_v${VERSION}_x86_64_$LIBTYPE.tgz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+    cd /shared/ucl/apps
+    mkdir -p Impute2
+    cd Impute2
+    tar -xvf $temp_dir/impute_v${VERSION}_x86_64_$LIBTYPE.tgz
+    chmod -R go+rx impute_v${VERSION}_x86_64_$LIBTYPE
+else
+   echo "***** Hash mismatch,"
+   echo "       Expected: $MD5"
+   echo "       Got:      $CHECKSUM"
+fi
+
+

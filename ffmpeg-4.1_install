@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -o nounset \
+    -o errexit
+
+source includes/source_includes.sh
+
+package_name=ffmpeg
+package_version=4.1
+package_description="FFmpeg is a framework for encoding, decoding, muxing, demuxing, encoding, transcoding, streaming, filtering, and playing many types of audio and video media."
+
+package_source="https://ffmpeg.org/releases/ffmpeg-${package_version}.tar.bz2"
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+module load nasm
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$package_source"
+manifest sha256:b684fb43244a5c4caae652af9022ed5d85ce15210835bce054a33fb26033a1a5  ffmpeg-4.1.tar.bz2
+
+tar -xf "ffmpeg-${package_version}.tar.bz2"
+
+cd "ffmpeg-${package_version}"
+
+./configure --prefix="${install_prefix}"
+
+make
+make check
+make install
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -c "$package_name" \
+    -r "gcc-libs/4.9.2" \
+    -p "$install_prefix" \
+    -w "$package_description"
+
+chmod -R a+rX "$module_dir"
+echo "Modules are in: $module_dir"
+

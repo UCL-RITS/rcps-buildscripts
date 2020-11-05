@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libbeef
+# 
+# Only has a master branch so reference latest commit
+#
+
+NAME=${NAME:-libbeef}
+VERSION=${VERSION:-0.1.3}
+COMMIT=${COMMIT:-2822afe}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/vossjo/libbeef/archive/master.zip}
+SHA256=${SHA256:-829702a2603a33cb34dcf63c32bae030fcfc54a8b2df99f5c22721f0b62053a0}
+BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/intel/2018/update3
+
+# need to set this after compiler module is loaded
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION-$COMMIT/$COMPILER_TAG}
+
+cd "$BUILD_DIR"
+wget "$SRC_ARCHIVE"
+archive=$(basename "${SRC_ARCHIVE}")
+echo "Checking hashes:"
+sha256sum -c <<<"$SHA256 $archive"
+
+unzip "$archive"
+cd libbeef-master
+./configure --prefix="$INSTALL_PREFIX"
+make
+make install
+
+echo "libbeef was installed into $INSTALL_PREFIX"
+

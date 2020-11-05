@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Doxygen
+#
+# by Owain Kenway, 2018
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require cmake/3.7.2
+require flex/2.5.39
+require bison/3.0.4/gnu-4.9.2
+require ghostscript/9.19/gnu-4.9.2
+
+# These are required for graphviz
+require	swig/3.0.5/gnu-4.9.2 
+require	qt/4.8.6/gnu-4.9.2 
+require	lua/5.3.1 
+require	perl/5.22.0 
+require graphviz/2.40.1/gnu-4.9.2
+
+require texlive/2015
+
+NAME=${NAME:-doxygen}
+VERSION=${VERSION:-1.8.14}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-18bc3790b4d5f4d57cb8ee0a77dd63a52518f3f70d7fdff868a7ce7961a6edc3}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/doxygen/doxygen/archive/Release_1_8_14.tar.gz}
+
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd doxygen-Release_1_8_14
+
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+make 
+make install
+
+rm -rf $temp_dir

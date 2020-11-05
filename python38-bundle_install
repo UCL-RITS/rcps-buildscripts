@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Python
+#
+# by Owain Kenway, 2019
+#
+
+VERSION=${VERSION:-5.0.0} # 5.0.0 denotes python 3.8.0 version
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
+PYTHON_VERSION=${PYTHON_VERSION_TAG:-38}
+
+TIME_STAMP=`date +"%s"`
+
+# Disable wheels for some packages
+#PIPNOBIN=${PIPNOBIN:-numpy,scipy}
+PIPNOBIN=${PIPNOBIN:-"DUMMYPACKAGE"}
+
+set -e
+
+# module dependencies:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require compilers/gnu/4.9.2
+require python/3.8.0
+require openblas/0.3.7-serial/gnu-4.9.2
+
+NP_OPENBLAS=/shared/ucl/apps/openblas/0.3.7-serial/gnu-4.9.2/lib/libopenblas.so
+export LAPACK=${NP_OPENBLAS}
+export BLAS=${NP_OPENBLAS}
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+mkdir $TIME_STAMP-$PYTHON_VERSION
+cd $TIME_STAMP-$PYTHON_VERSION
+
+# Update pip, setuptools and virtualenv as old versions can cause
+# issues with packages due to --system-site-packages.
+
+pip3 install --upgrade setuptools virtualenv pip
+
+virtualenv --system-site-packages venv
+
+source venv/bin/activate
+
+pip3 install --upgrade pip
+
+old_IFS="$IFS"
+IFS=$'\n'
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared38-fixed.list`
+do
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       if [[ "$entry" == "numpy" ]] ;
+       then
+         export CFLAGS=-std=c99
+         echo ">>> DETECTED NUMPY <<<"
+       else
+         export CFLAGS=""
+       fi
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+   fi
+done
+
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-3.list`
+do
+   # Ignore blank and comment lines in the lists
+   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
+   then
+       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+   fi
+done
+IFS="$old_IFS"
+
+cd ..
+ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}

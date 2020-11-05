@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+VERSION=${VERSION:-7.0.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/OpenFOAM}
+MD5=${MD5:-2a4fe46807730e70ce0b81d4a4dd4fc8}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://dl.openfoam.org/source/7}
+
+THIRDPARTY_VERSION=${THIRDPARTY_VERSION:-7.0.0}
+THIRDPARTY_ARCHIVE=${THIRDPARTY_ARCHIVE:-http://dl.openfoam.org/third-party/7}
+THIRDPARTY_MD5=${THIRDPARTY_MD5:-2a4fe46807730e70ce0b81d4a4dd4fc8}
+
+wget "SRC_ARCHIVE"
+wget "THIRDPARTY_VERSION"
+
+tar -xzf "7"
+tar -xzf "7.1"

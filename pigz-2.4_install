@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set \
+    -o pipefail \
+    -o nounset \
+    -o errexit
+
+package_name=pigz
+package_version=2.4
+package_description="pigz is a fully functional replacement for gzip that exploits multiple processors and multiple cores when compressing data."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://zlib.net/pigz/pigz-${package_version}.tar.gz
+
+manifest \
+    sha256:a4f816222a7b4269bd232680590b579ccc72591f1bb5adafcd7208ca77e14f73  pigz-2.4.tar.gz
+
+for f in *.gz; do
+    tar -xf "$f"
+done
+
+cd pigz-${package_version}
+make pigz
+# We can't run all the tests because some of them need the "compress" binary, but it doesn't return non-zero so that's okay
+make test
+
+# There's no make install target
+mkdir -p "$install_prefix"/{bin,share/man/man1}
+cp pigz "$install_prefix/bin"
+ln -s "$install_prefix/bin/pigz" "$install_prefix/bin/unpigz"
+cp pigz.1 "$install_prefix/share/man/man1/"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing SQLite using GCC 9.2.0
+#
+# by Brian Alston, April 2020
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: rcps-core/1.0.0, gcc-libs/4.9.2, compilers/gnu/4.9.2
+# Now needs gcc-libs/9.2.0 and compilers/gnu/9.2.0 from beta-modules
+
+VERSION=${VERSION:-3310100}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/SQLite/${VERSION}}
+MD5=${MD5:-2d0a553534c521504e3ac3ad3b90f125}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.sqlite.org/2020/sqlite-autoconf-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum sqlite-autoconf-${VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar -xvf sqlite-autoconf-${VERSION}.tar.gz
+   cd sqlite-autoconf-${VERSION}
+   CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA" ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
+   make 2>&1 | tee make-log
+   make install 2>&1 | tee make-install-log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

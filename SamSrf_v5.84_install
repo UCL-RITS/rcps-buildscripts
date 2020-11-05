@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This script installs the older 5.84 version of SamSrf for m.farahbakhsh.16
+# Brian Alston March 2020
+
+VERSION=${VERSION:-5.84}
+RELEASE=${RELEASE:-jan2020}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/SamSrf}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/SamSrf/sources/SamSrf_v${VERSION}.zip}
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+unzip $SRC_ARCHIVE
+chmod -R a+rx SamSrf_v${VERSION}

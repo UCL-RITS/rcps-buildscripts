@@ -1,7 +1,8 @@
-pysam==0.13
+pysam
 pysamstats
 requests
 nose
+pytest
 numpy
 scipy
 matplotlib
@@ -42,3 +43,6 @@ mako
 regex
 cyvcf2
 seaborn
+ldap3
+deap
+bitarray

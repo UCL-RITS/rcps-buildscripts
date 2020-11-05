@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Install TotalView debugger on Myriad for Economics
+#
+# Version: 2019.2.18
+# April 2020
+
+APPNAME=${APPNAME:-TotalView}
+VERSION=${VERSION:-2019.2.18}
+PLATFORM=${PLATFORM:-linux}
+ARCH=${ARCH:-x86-64}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/$APPNAME/installers/tview.tgz}
+
+dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+cd $temp_dir
+
+tar -xvf $SRC_ARCHIVE
+cd totalview/TotalView_Linux_${ARCH}
+tar -xvf totalview_${VERSION}_${PLATFORM}_${ARCH}.tar
+cd totalview.${VERSION}
+
+# Run install script
+
+mkdir -p $INSTALL_PREFIX
+echo ""
+echo "Installing using: ./Install -agree -directory $INSTALL_PREFIX -install totalview -platform ${PLATFORM}-${ARCH} -nosymlink"
+echo ""
+./Install -agree -directory $INSTALL_PREFIX -install totalview -platform ${PLATFORM}-${ARCH} -nosymlink
+echo ""
+echo "Installing using: ./Install -agree -directory $INSTALL_PREFIX -install license -platform ${PLATFORM}-${ARCH} -nosymlink"
+echo ""
+./Install -agree -directory $INSTALL_PREFIX -install license -platform ${PLATFORM}-${ARCH} -nosymlink
+
+echo "Done. Now need to install the license file by hand."
+

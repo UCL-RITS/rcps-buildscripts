@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2020
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require git/2.19.1
+require hdf/5-1.10.5/gnu-4.9.2
+require gsl/1.16/gnu-4.9.2
+require openblas/0.3.7-serial/gnu-4.9.2
+require scalapack/2.0.2/gnu-4.9.2/openblas-0.3.7
+require f2c
+require cmake
+
+NAME=${NAME:-optimet}
+VERSION=${VERSION:-1.0.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OPTIMET/OPTIMET}
+
+rm -rf ${INSTALL_PREFIX}
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
+
+git clone ${SRC_ARCHIVE}
+cd OPTIMET
+git checkout v${VERSION}
+
+# Build Belos which is part of Trilinos
+mkdir deps
+cd deps
+git clone https://github.com/trilinos/Trilinos
+cd Trilinos
+git checkout trilinos-release-12-10-1 # Newer versions of Belos don't work :(
+
+mkdir build
+cd build
+
+cmake .. -DTPL_ENABLE_MPI=ON -DTrilinos_ENABLE_Belos=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/OPTIMET/deps/belos_install
+make
+make install
+export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${INSTALL_PREFIX}/OPTIMET/deps/belos_install
+
+# Build Optimet
+cd ${INSTALL_PREFIX}/OPTIMET
+
+mkdir build
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -Ddompi=ON -Ddotesting=OFF -Ddobenchmarks=OFF -DCMAKE_EXE_LINKER_FLAGS=-lgfortran -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
+make 
+
+mkdir ../bin
+mkdir ../lib
+
+cp Optimet3D ../bin
+cp liboptilib.a ../lib

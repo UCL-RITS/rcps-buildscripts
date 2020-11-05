@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+#
+# Version with plumed, kspace, manybody, molecule, rigid, lib-linalg, user-colvars
+# Uses LAMMPS default Makefile.mpi so does not use MKL for FFT.
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-plumed-colvars}
+VERSION=${VERSION:-3Mar2020}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+# require modules for building
+source includes/source_includes.sh
+module purge
+module load gcc-libs
+module load git/2.19.1
+module load compilers/intel/2018/update3
+module load mpi/intel/2018/update3/intel
+module load flex
+module load libmatheval
+module load plumed/2.6.0/intel-2018
+
+# set once we know the compiler tag
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$(whoami)/$NAME
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+cd lammps
+git checkout stable_${VERSION}
+cluster=$WHEREAMI
+cd src
+mkdir -p MAKE/MINE
+
+# Copy in appropriate Makefile with correct architecture flags and link options
+cp /shared/ucl/apps/build_scripts/lammps-patches/Makefile.UCL_3Mar2020_intel MAKE/MINE/Makefile.ucl
+
+
+# Add some necessary packages that aren't included by default for some reason
+# All the packages which don't need external libs.
+for a in kspace manybody molecule rigid
+do
+  make yes-${a}
+done
+
+# use plumed
+make lib-plumed args="-p $(dirname $PLUMED_KERNEL)/.."
+make yes-user-plumed 
+
+# These packages need external libs but provide the source with LAMMPS
+for a in linalg
+do
+  # Some of the makefiles incorrectly refer to mpifort instead of mpiifort
+  sed -i "s|mpifort|mpiifort|g" ../lib/${a}/Makefile.mpi
+  make lib-${a} args="-m mpi"  
+  #make yes-${a}
+
+done
+
+# user-colvars needs an extra CXXFLAGS for c++11
+sed -i "s|-O2 -g -Wall -fPIC -funroll-loops|-O2 -g -Wall -fPIC -funroll-loops -std=c++11|g" ../lib/colvars/Makefile.mpi
+make lib-colvars args="-m mpi"
+make yes-user-colvars
+
+
+# Make binaries, libraries
+make ucl
+
+# Put them outside the source tree
+mkdir ../bin
+mv lmp_ucl ../bin
+
+# Wipe out our old object files.
+make clean-all
+  
+# Move install into /shared
+cd ../..
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+mv lammps $INSTALL_PREFIX
+
+# Make default binary symlink and lmp_mpi symlink
+cd $INSTALL_PREFIX/lammps/bin
+ln -s lmp_ucl lmp_default
+ln -s lmp_ucl lmp_mpi
+
+rm -Rf $temp_dir

@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FreeType for Qt (https://www.freetype.org/)
+#
+# by Brian Alston, March 2019
+# Updated from qt-support-libxcb-1.13_install for Qt 5.12.1
+
+NAME=${NAME:-qt}
+VERSION=${VERSION:-5.12.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+FREETYPE_NAME=${FREETYPE_NAME:-freetype-2.9.1}
+FREETYPE_SRC_ARCHIVE=${FREETYPE_SRC_ARCHIVE:-https://download.savannah.gnu.org/releases/freetype/${FREETYPE_NAME}.tar.gz}
+FREETYPE_MD5=${FREETYPE_MD5:-3adb0e35d3c100c456357345ccfa8056}
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+# libxcb must have been installed in $SUPPORT_PREFIX
+# libxcb environment variables
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$SUPPORT_PREFIX/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$SUPPORT_PREFIX/lib/python2.7/site-packages:$PYTHONPATH
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+export CPATH=$SUPPORT_PREFIX/include:$CPATH
+
+# Download FreeType and check its checksum first
+wget $FREETYPE_SRC_ARCHIVE
+freetype_archive=$(basename "$FREETYPE_SRC_ARCHIVE")
+FREETYPE_CHECKSUM=`md5sum $freetype_archive| awk '{print $1}'`
+
+if [ "$FREETYPE_MD5" != "$FREETYPE_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $freetype_archive."
+  echo "Expected: $FREETYPE_MD5"
+  echo "Got: $FREETYPE_CHECKSUM"
+  exit 1;
+fi
+
+tar -xvf $freetype_archive
+cd $FREETYPE_NAME
+
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make install
+
+echo ""
+echo "FreeType items installed in $INSTALL_PREFIX/support. Now run the main Qt buildscript."

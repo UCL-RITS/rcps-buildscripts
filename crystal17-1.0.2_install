@@ -1,0 +1,102 @@
+#!/bin/bash
+
+set -o errexit -o nounset -o pipefail
+
+package_name="crystal17"
+package_version="1.0.2"
+package_description="The CRYSTAL program computes the electronic structure of periodic systems within Hartree Fock, density functional or various hybrid approximations."
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs
+require compilers/intel/2017
+require mpi/intel/2017
+
+[[ -r "/shared/ucl/apps/pkg-store/crystal17-utils.zip" ]] \
+    || (echo "Cannot install: you do not have access to the Crystal17 installation files."; exit 1)
+
+make_build_env ""
+
+cd "$build_dir"
+
+# The MPP distribution includes the other versions as well.
+cp \
+    /shared/ucl/apps/pkg-store/crystal17_v1_0_2_documentation.zip \
+    /shared/ucl/apps/pkg-store/crystal17-utils.zip \
+    /shared/ucl/apps/pkg-store/crystal17_v"${package_version//\./_}"_Linux-ifort17_emt64_MPPdistrib.tar.gz \
+    ./
+
+tar -xf crystal17_v1_0_2_Linux-ifort17_emt64_MPPdistrib.tar.gz
+
+cd build
+
+make dirs
+
+# We change the F90FLAGS here because it's old and uses -xssse3 by default
+make \
+    F90FLAGS="-O3 -align -cxxlib -xHost" \
+    F90=ifort \
+    sequential
+make \
+    F90FLAGS="-O3 -align -cxxlib -xHost" \
+    F90=mpif90 \
+    LD=mpif90 \
+    PLD=mpif90 \
+    parallel
+# For the MPP build we need to tell it how to link against Scalapack&BLACS
+make \
+    F90FLAGS="-O3 -align -cxxlib -xHost" \
+    F90=mpif90 \
+    LD=mpif90 \
+    PLD=mpif90 \
+    MPPLIB=-mkl=cluster \
+    MPP
+
+mkdir -p "$install_prefix"
+cp -r ../bin "$install_prefix/"
+
+mkdir -p "$install_prefix/utils17"
+cd "$install_prefix/utils17"
+unzip "$build_dir/crystal17-utils.zip"
+
+cd "$build_dir"
+wget http://www.crystal.unito.it/crgra2006/crgra2006.tar.gz
+mkdir -p "$install_prefix/crgra2006"
+cd "$install_prefix/crgra2006"
+tar -xf "$build_dir/crgra2006.tar.gz"
+
+cd "$build_dir"
+wget http://www.crystal.unito.it/test_cases/inputs_wf.tar.gz
+mkdir -p "$install_prefix/test_cases/inputs"
+cd "$install_prefix/test_cases/inputs"
+tar -xf "$build_dir/inputs_wf.tar.gz"
+
+mkdir -p "$install_prefix/docs"
+cd "$install_prefix/docs"
+unzip "$build_dir/crystal17_v1_0_2_documentation.zip"
+
+
+# These labels are arbitrary random nonsense from the .bashrc file.
+#  I'm guessing a bit as to what bit of what string goes where.
+# The SCRDIR needs to be set to TMPDIR if it exists or XDG_RUNTIME_DIR or /tmp
+#  but I'm not sure how to do that in a one-liner I could pass through here.
+# (I've added an issue to make a way to do this to make_module_v2, so maybe it'll be possible in future. -- 2019-12-18)
+make_module_v2 \
+    -v CRY17_ROOT="$install_prefix" \
+    -v CRY17_BIN="bin" \
+    -v CRY17_ARCH="Linux-ifort17_XE_emt64" \
+    -v VERSION="v1.0.2-UCL-RCPS" \
+    -v CRY17_SCRDIR='$env(TMPDIR)' \
+    -v CRY17_EXEDIR="$install_prefix/bin/Linux-ifort17_XE_emt64/v1.0.2" \
+    -v CRY17_UTILS="$install_prefix/utils17" \
+    -v CRY2K6_GRA="$install_prefix/crgra2006" \
+    -v CRY17_TEST="$install_prefix/test_cases/inputs" \
+    -v GRA6_EXEDIR="$install_prefix/crgra2006/bin/Linux-pgf" \
+    -e PATH:"$install_prefix/bin/Linux-ifort17_XE_emt64" \
+    -e PATH:"$install_prefix/utils17" \
+    -e PATH:"$install_prefix/crgra2006"
+
+chgrp -R legcryst "$install_prefix"
+
+post_build_report

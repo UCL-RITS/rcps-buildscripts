@@ -8,10 +8,10 @@
 # Updated May 2018 to use fftw 3.3.6 for R 3.5
 # Updated September 2018 to version 5.34.36 for R 3.5.1 (Bioconductor xps)
 #
-# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.6-pl2/gnu-4.9.2 and gsl/1.16/gnu-4.9.2
+# Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2, fftw/3.3.6-pl2/gnu-4.9.2 and gsl/2.4/gnu-4.9.2
 
 VERSION=${VERSION:-5.34.36}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION-FFTW-3.3.6/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ROOT/$VERSION-FFTW-3.3.6-GSL-2.4/$COMPILER_TAG}
 MD5=${MD5:-6a1ad549b3b79b10bbb1f116b49067ee}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://root.cern.ch/download/root_v${VERSION}.source.tar.gz}
 

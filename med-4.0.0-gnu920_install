@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# MED for Telemac
+
+set -e
+
+PACKAGE_NAME="med"
+PACKAGE_VERSION="4.0.0"
+PACKAGE_VARIANT=""
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require hdf/5-1.10.5/gnu-9.2.0
+require openblas/0.3.7-native-threads/gnu-9.2.0
+require python3/3.7
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="http://files.salome-platform.org/Salome/other/${PACKAGE_NAME}-${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-a474e90b5882ce69c5e9f66f6359c53b8b73eb448c5f631fa96e8cd2c14df004}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+
+  CONFIGURE_ADD_OPTS="--enable-fortran --with-f90=gfortran --with-gnu-ld"
+
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz" 
+  cd "$OWD"
+}
+
+_setup_files() {
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.gz"
+  cd "$OWD"
+}
+
+_build() {
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  ./configure --prefix="$INSTALL_PREFIX" $CONFIGURE_ADD_OPTS
+  make
+  make check
+  make installcheck
+  make install
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module_v2 -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+              -e "PYTHONPATH:$INSTALL_PREFIX/lib/python3.7/site-packages" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Allows reading and writing of MED format files."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+

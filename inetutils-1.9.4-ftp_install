@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -o nounset \
+    -o errexit
+
+source includes/source_includes.sh
+
+package_name=inetutils-ftp
+package_version=1.9.4
+package_description="GNU Inetutils is a collection of common network programs. This is only the FTP client from that collection."
+
+package_source="http://ftp.gnu.org/gnu/inetutils/inetutils-${package_version}.tar.xz"
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$package_source"
+manifest sha256:849d96f136effdef69548a940e3e0ec0624fc0c81265296987986a0dd36ded37  inetutils-1.9.4.tar.xz
+
+tar -xf "inetutils-${package_version}.tar.xz"
+
+cd "inetutils-${package_version}"
+
+./configure \
+    --prefix="${install_prefix}" \
+    --disable-servers \
+    --disable-dnsdomainname \
+    --disable-hostname \
+    --disable-ping \
+    --disable-ping6 \
+    --disable-rcp \
+    --disable-rexec \
+    --disable-rlogin \
+    --disable-rsh \
+    --disable-logger \
+    --disable-talk \
+    --disable-telnet \
+    --disable-tftp \
+    --disable-whois \
+    --disable-ifconfig \
+    --disable-traceroute
+
+
+make
+#make check # Fails with some errors relating to talk, unrelated to FTP. -_-
+make install
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -c "$package_name" \
+    -p "$install_prefix" \
+    -w "$package_description"
+
+chmod -R a+rX "$module_dir"
+echo "Modules are in: $module_dir"
+

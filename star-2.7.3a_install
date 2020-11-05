@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing STAR 2.7.3a
+#
+# by Owain Kenway, 2015 
+# Updated for 2.7.3a January 2020
+
+APPNAME=${APPNAME:-star}
+VERSION=${VERSION:-2.7.3a}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/alexdobin/STAR/archive/$VERSION.tar.gz}
+
+set -e
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh
+do
+    . $i
+done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+tar -xvf $VERSION.tar.gz
+cd STAR-$VERSION/source
+make STAR
+
+rm -rf ../bin/* 
+mv STAR ../bin
+
+echo "Done."
+

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+NAME=${NAME:-bamutil}
+VERSION=${VERSION:-1.0.14}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-2178c14abaf349b00a2c160c616f6e02}
+LMD5=${LMD5:-4769f051e4b6b8e43e470b7329d89d98}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/statgen/bamUtil/archive/v${VERSION}.tar.gz}
+LSRC_ARCHIVE=${LSRC_ARCHIVE:-https://github.com/statgen/libStatGen/archive/v${VERSION}.tar.gz}
+
+set -e
+
+rm -rf $INSTALL_PREFIX
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+wget $LSRC_ARCHIVE
+
+archive=$(basename "${SRC_ARCHIVE}")
+larchive=$(basename "${LSRC_ARCHIVE}".1)
+
+md5sum -c <<< "$MD5 $archive"
+md5sum -c <<< "$LMD5 $larchive"
+
+tar -xvf $archive
+tar -xvf $larchive
+
+cd $INSTALL_PREFIX/libStatGen-${VERSION}
+make all
+
+cd $INSTALL_PREFIX/bamUtil-${VERSION}
+file="$INSTALL_PREFIX/bamUtil-1.0.14/Makefile.inc"
+sed -i 's/libStatGen/libStatGen-1.0.14/' ${file}
+make all

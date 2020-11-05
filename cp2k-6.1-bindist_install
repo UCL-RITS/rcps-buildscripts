@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+package_name="cp2k"
+package_version="6.1"
+package_variant="bindist"
+package_description="CP2K is a quantum chemistry and solid state physics software package that can perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget -q \
+     https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k-6.1-Linux-x86_64.sdbg \
+     https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k-6.1-Linux-x86_64.sopt \
+     https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k-6.1-Linux-x86_64.ssmp \
+     https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k_shell-6.1-Linux-x86_64.sopt
+
+mkdir -p "$install_prefix/bin"
+
+cp -v cp2k* "$install_prefix/bin"
+chmod +x "$install_prefix/bin/cp2k"*
+
+# Setting up some easy-use symlinks
+ln -vs "$install_prefix/bin/cp2k-6.1-Linux-x86_64.sopt" "$install_prefix/bin/cp2k.sopt"
+ln -vs "$install_prefix/bin/cp2k-6.1-Linux-x86_64.ssmp" "$install_prefix/bin/cp2k.ssmp"
+ln -vs "$install_prefix/bin/cp2k-6.1-Linux-x86_64.sdbg" "$install_prefix/bin/cp2k.sdbg"
+ln -vs "$install_prefix/bin/cp2k_shell-6.1-Linux-x86_64.sopt" "$install_prefix/bin/cp2k_shell.sopt"
+ln -vs "$install_prefix/bin/cp2k-6.1-Linux-x86_64.ssmp" "$install_prefix/bin/cp2k"
+
+make_module_v2
+post_build_report
+

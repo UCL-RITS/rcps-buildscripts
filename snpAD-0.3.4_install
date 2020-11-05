@@ -1,0 +1,51 @@
+#!/bin/bash
+
+package_name="snpAD"
+package_version="0.3.4"
+package_description="snpAD is an ancient DNA aware genotype caller."
+package_variant="bindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+module purge
+module load beta-modules
+module load gcc-libs/9.2.0
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://bioinf.eva.mpg.de/snpAD/snpAD-${package_version}.tar.gz"
+
+manifest sha256:65e2faf759530bc3d4f7bc0e3efa232a4b5dfca70bcbe46ab694171994fd9a50  snpAD-0.3.4.tar.gz
+
+tar -xf "snpAD-${package_version}.tar.gz"
+
+cd "snpAD-${package_version}"
+
+# The way the makefiles are set up means this tries to rebuild some parts.
+# We don't want that.
+#make install PREFIX="$install_prefix"
+
+# So we're just going to handle it ourselves.
+# Compilation generates more executables than this,
+#  but `make install` doesn't install them, so I'm
+#  choosing to assume they're not needed.
+mkdir -p "$install_prefix/bin"
+cp Bam2snpAD/Bam2snpAD \
+   Bam2snpAD/snpADjoin \
+   snpAD/snpAD \
+   snpAD/snpADCall \
+    "$install_prefix/bin"
+
+cp README "$install_prefix/doc"
+
+make_module_v2
+
+chmod -R a+rX "$module_dir"
+
+post_build_report
+

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+###############################################
+# libpng 1.6.37 needed by STATA 16
+#
+# by Brian Alston February 2020
+
+APPNAME=${APPNAME:-libpng}
+VERSION=${VERSION:-1.6.37}
+COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-6c7519f6c75939efa0ed3053197abd54}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.sourceforge.net/${APPNAME}/${APPNAME}-${VERSION}.tar.gz}
+
+set -e
+
+# load modules for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+# STATA needs recent gcc-libs so:
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf ${APPNAME}-${VERSION}.tar.gz
+  cd ${APPNAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make check
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi

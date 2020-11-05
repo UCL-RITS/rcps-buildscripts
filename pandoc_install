@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Pandoc
+#
+# by Brian Alston, July 2019
+#
+# Will need modules: rcps-core/1.0.0 and haskellplatform/2014.2.0.0
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+require haskellplatform/2014.2.0.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+cabal update
+cabal install cabal-install
+
+mkdir -p /shared/ucl/apps/pandoc/
+cabal install pandoc --prefix=/shared/ucl/apps/pandoc/ --enable-tests

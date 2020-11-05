@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name=mumax
+package_version=3.10
+package_variant=bindist
+package_description="mumax3 is a GPU-accelerated micromagnetic simulation program."
+
+cuda_version=10.1
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://mumax.ugent.be/mumax3-binaries/mumax${package_version}_linux_cuda${cuda_version}.tar.gz"
+
+manifest sha256:82fa0741c5e333a7e8cb27111a1f0c064ff807e9f76df0db8f971cb916de2e3f  mumax3.10_linux_cuda10.1.tar.gz
+
+tar -xf "mumax${package_version}_linux_cuda${cuda_version}.tar.gz"
+
+mkdir -p "$install_prefix"
+mv "mumax${package_version}_linux_cuda${cuda_version}"/* "$install_prefix/"
+
+# Note: because this is a go binary that ships with all its necessary libraries,
+#       AFAICT it has no module dependencies, but some module conflicts.
+make_module_v2 -c cuda -d -e PATH:"$install_prefix"
+
+chmod -R a+rX "$module_dir"
+
+post_build_report

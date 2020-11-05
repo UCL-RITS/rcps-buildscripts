@@ -70,8 +70,8 @@ echo "and run intel-compilers-interfaces_install to install the interfaces."
 
 export cprefix=$install_prefix
 make_module -p "$install_prefix" \
-            -c "${package_name}" \
-            -o "$module_dir/$package_label" \
+            -c compilers/"${package_name}" \
+            -o "$module_dir/compilers/$package_label" \
             -v INTEL_LICENSE_FILE="$intel_license" \
             -v CC=icc \
             -v CXX=icpc \

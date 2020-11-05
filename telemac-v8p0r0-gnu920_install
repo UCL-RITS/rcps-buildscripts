@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# aed2 for TELEMAC. Gets TELEMAC's current version from svn
+
+set -e
+
+PACKAGE_NAME="aed2"
+PACKAGE_VERSION="r13759"
+PACKAGE_VARIANT="telemac"
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/gnu/4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="http://svn.opentelemac.org/svn/opentelemac/trunk/optionals/${PACKAGE_NAME}/"
+  SHA256SUM=${SHA256SUM:-a474e90b5882ce69c5e9f66f6359c53b8b73eb448c5f631fa96e8cd2c14df004}
+
+}
+
+_fetch_files() {
+  mkdir -p "$INSTALL_PREFIX"
+  svn co "$SRC_URLS" . --username=ot-svn-public --password=telemac1*
+  cd "$OWD"
+}
+
+_build() {
+  cd "$INSTALL_PREFIX"
+  make
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module_v2 -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \ 
+              -e "PYTHONPATH:$INSTALL_PREFIX/lib/python3.7/site-packages" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Allows reading and writing of MED format files."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+

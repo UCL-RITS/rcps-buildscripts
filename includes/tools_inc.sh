@@ -97,8 +97,9 @@ make_build_env () {
     local tmp_root_dir
     local prod_apps_dir
 
-    prod_apps_dir="/shared/ucl/apps"
-    service_user="ccspapp"
+    prod_apps_dir="${APPS_DIR:-/shared/ucl/apps}"
+    service_user_pattern="^ccspap.\$"
+    # NB: ccspapp and ccspap2 are both service users
 
     prefix="${package_name:-tmp.}"
     tmp_root_dir="${TMPDIR:-/tmp}"
@@ -144,7 +145,7 @@ make_build_env () {
 
     if [[ -n "${IS_TEST_RUN:-}" ]]; then
         reason_for_test_install="IS_TEST_RUN was set"
-    elif [[ "${LOGNAME:-}" != "$service_user" ]]; then
+    elif [[ ! "${LOGNAME:-}" =~ $service_user_pattern ]]; then
         reason_for_test_install="current user is not service user"
     fi
     
@@ -152,7 +153,8 @@ make_build_env () {
     if [[ -n "${reason_for_test_install:-}" ]]; then
         echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
         echo "         otherwise install prefix would have been $default_install_prefix"
-        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")"}"
+        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")/$package_label"}"
+        mkdir -p "$install_prefix"
     else
         install_prefix="$default_install_prefix"
     fi
@@ -170,6 +172,33 @@ make_build_env () {
 
     =====================
 EOF
+}
+
+function post_build_report() {
+    local build_size
+    local exec_list
+    build_size="$(du -hs "$install_prefix" | cut -f 1 -d $'\t')"
+    # If -o pipefail is set, this line will exit with status 141, because SIGPIPE kills the find
+    #  So we catch it and test for it
+    exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10 || [[ "${PIPESTATUS[0]}" -eq 141 ]])"
+    printf "
+    ==========================
+    =    Post Build Info     =
+    ==========================
+
+    Package label:            %s
+    Build took place in:      %s
+    Modules were put in:      %s
+    Package was installed to: %s
+    Package size:             %sB
+
+    -- First execs (max 10) --
+%s
+
+    ==========================\n" \
+    "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list"
+
+
 }
 
 function github_download() {

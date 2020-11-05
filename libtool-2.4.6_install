@@ -19,7 +19,9 @@ temp_dir=`mktemp -d`
 cd $temp_dir
 
 wget \
-  http://ftp.heanet.ie/mirrors/gnu/libtool/libtool-${VERSION}.tar.xz
+  http://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.xz
+
+md5sum -c <<<"1bfb9b923f2c1339b4d2ce1807064aa5 libtool-2.4.6.tar.xz"
 
 tar -xf libtool-${VERSION}.tar.xz
 

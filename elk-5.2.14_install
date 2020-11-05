@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+set -o errexit \
+    -o nounset
+
+package_name="elk"
+package_version="5.2.14"
+package_description="Elk is an all-electron full-potential linearised augmented-planewave (FP-LAPW) code."
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+require libxc/4.2.3/intel-2018
+
+make_build_env ""
+
+owd="$(pwd)"
+
+cd "$build_dir"
+
+package_url="https://sourceforge.net/projects/elk/files/elk-${package_version}.tgz"
+wget "$package_url"
+
+manifest sha256:fc74362c2f0899ea8c26a023e3fd6d8a37ac2092405c03244366a81ae7d9fe2d  elk-5.2.14.tgz
+
+package_archive="$(basename "$package_url")"
+
+tar -xf "$package_archive"
+
+cd "$package_name-$package_version"
+
+cp "$owd/elk-patches/make.inc.${package_version}" make.inc
+
+# Library fixing
+# This step is referenced in make.inc
+cp /shared/ucl/apps/libxc/4.2.3/intel-2018/lib/libxcf90.a src
+cp /shared/ucl/apps/libxc/4.2.3/intel-2018/lib/libxc.a src
+
+make
+make test
+
+# Elk doesn't have a `make install` target >:(
+mkdir -p "$install_prefix"
+cp -r "$build_dir/$package_name-$package_version/"* "$install_prefix/"
+
+make_module \
+    -o "$module_dir/$package_label" \
+    -c "$package_name" \
+    -r "mpi/intel/2018/update3/intel" \
+    -r "gcc-libs/4.9.2" \
+    -r "compilers/intel/2018/update3" \
+    -p "$install_prefix" \
+    -d \
+    -e PATH:"$install_prefix/src" \
+    -e PATH:"$install_prefix/src/spacegroup" \
+    -w "$package_description"
+
+chmod -R +rX "$module_dir"
+
+echo "Modules installed in: $module_dir"
