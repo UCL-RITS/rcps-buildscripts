@@ -205,6 +205,10 @@ install.packages ("learnr", lib=mainLib, repos=repros);
 
 install.packages ("benchmarkme", lib=mainLib, repos=repros);
 
+# For Ben Lauderdale (POLS0013) - November 2020
+
+install.packages ("BradleyTerry2", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
