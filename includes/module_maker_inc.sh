@@ -125,11 +125,13 @@ if { [file isdirectory \$prefix/share/man] } then {
 
 if { [file isdirectory \$prefix/lib] } then {
   prepend-path      LIBRARY_PATH         \$prefix/lib
+  prepend-path      LD_RUN_PATH          \$prefix/lib
   prepend-path      LD_LIBRARY_PATH      \$prefix/lib
 }
 
 if { [file isdirectory \$prefix/lib64] } then {
   prepend-path      LIBRARY_PATH         \$prefix/lib64
+  prepend-path      LD_RUN_PATH          \$prefix/lib64
   prepend-path      LD_LIBRARY_PATH      \$prefix/lib64
 }
 

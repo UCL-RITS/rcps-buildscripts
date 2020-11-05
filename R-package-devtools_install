@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing a single R additional package that needs devtools to install.
+#
+# Defaults to R 3.6.0
+#
+# by Brian Alston, September 2019 V1.0
+#
+# usage: R-package-devtools_install <R package name>
+#
+# example package name - quanteda/quanteda.corpora
+#
+# Will need modules: r/recommended or possibly r/new
+
+set -e
+
+VERSION=${VERSION:-3.6.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
+export RLIB_DB=${RLIB_DB:-/home/ccspapp/Scratch/R/R-${VERSION}-OpenBLAS/library}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# require r/recommended
+# require r/new
+require r/r-3.6.0_bc-3.9
+
+if [ $# -ne 1 ]; then
+	echo "usage: R-package-devtools_install <R package name>"
+	exit 1
+fi
+PACKAGE=$1
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cat > R_script <<EOF
+mainLib <- Sys.getenv ("RLIB_MAIN");
+dbLib <- Sys.getenv ("RLIB_DB");
+repros <- Sys.getenv ("REPROS");
+mainLib;
+dbLib;
+repros;
+
+devtools::install_github("$PACKAGE");
+
+EOF
+
+echo "Installing $PACKAGE and dependencies ..."
+R --no-save < R_script
+echo "Done."
+

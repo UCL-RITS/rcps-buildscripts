@@ -5,6 +5,22 @@
 #
 # by Owain Kenway, 2018
 #
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python3/recommended
+require opencv/3.4.1/gnu-4.9.2 
+require protobuf/3.5.1/gnu-4.9.2 
+require snappy/1.1.7 
+require gflags/2.2.1 
+require leveldb/1.20 
+require glog/0.3.5 
+require lmdb/0.9.22 
+require compilers/gnu/4.9.2
+#require boost/1_63_0/gnu-4.9.2 
+require hdf/5-1.8.15/gnu-4.9.2 
 
 NAME=${NAME:-caffe}
 VERSION=${VERSION:-1.0}
@@ -15,9 +31,24 @@ SHA256=${SHA256:-71d3c9eb8a183150f965a465824d01fe82826c22505f7aa314f700ace03fa77
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/BVLC/caffe/archive/${VERSION}.tar.gz}
 TESTS=yes
 
-set -e
+if [ "${TYPE}" == "gpu" ]; then
+  require cuda/7.5.18/gnu-4.9.2
+fi
+
+if [ "${TYPE}" == "cudnn" ]; then
+  require cuda/7.5.18/gnu-4.9.2
+  require cudnn/6.0/cuda-7.5
+fi
+
+rm -rf $INSTALL_PREFIX
 
 mkdir -p $INSTALL_PREFIX
+
+export LD_LIBRARY_PATH=/shared/ucl/apps/caffe/boost/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/shared/ucl/apps/caffe/boost/lib:$LIBRARY_PATH
+export CPATH=/shared/ucl/apps/caffe/boost/include:$CPATH
+export BOOST_ROOT=/shared/ucl/apps/caffe/boost
+export BOOSTROOT=/shared/ucl/apps/caffe/boost
 
 cd $INSTALL_PREFIX
 

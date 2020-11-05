@@ -13,7 +13,7 @@ TK_SRC_ARCHIVE=${TK_SRC_ARCHIVE:-https://sourceforge.net/projects/tcl/files/Tcl/
 TCL_SHA256=${TCL_SHA256:-c43cb0c1518ce42b00e7c8f6eaddd5195c53a98f94adc717234a65cbcfd3f96a}
 TK_SHA256=${TK_SHA256:-49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33}
 BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t "${NAME}"-build.XXXXXXXX)}
-
+# BUILD_DIR=${BUILD_DIR:-~/Software/Tcl/}
 set -e
 
 # require modules for building

@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+
+set -o errexit 
+
+
+package_name="castep"
+package_version="19.1.1"
+# Optional: 
+package_variant=""
+package_description="CASTEP is a program that uses density functional theory to calculate the properties of materials from first principles."
+
+source includes/source_includes.sh
+
+package_file="castep-19.1.1_e1fe0d666396.tar.gz"
+
+# CASTEP is on Bitbucket, which produces pretty unhelpful download bundles.
+# This is the commit the version tag is against.
+package_internal_tag="e1fe0d666396"
+
+module purge
+require gcc-libs
+require compilers/intel
+require mpi/intel
+
+# The CASTEP tests are about 2GB so we build in /dev/shm instead of /tmp (the default)
+make_build_env "castep" "/dev/shm"
+
+# We've had problems in the past where "fast" builds didn't pass on Legion --
+#  you might need to cluster-check and downgrade to "intermediate" if that happens
+build_opt_level="fast"
+
+cd "$build_dir"
+
+cp "/shared/ucl/apps/pkg-store/$package_file" ./
+manifest sha256:ca5c357f6108cff758184e74667a549a0e4d18d5658adc33ebd0ec140383b6ee "$package_file"
+
+tar -xf "$package_file"
+
+
+cd "castep-castep-${package_internal_tag}"
+
+# The utilities install target assumes that the c2x makefile has an install target
+# 
+# It doesn't. C_C
+echo -e "install:\n\techo\n" >>Utilities/c2x/Makefile
+
+mkdir -p "$install_prefix/bin" # if it doesn't exist, the make process will read from stdin to ask
+make -l 10 -j \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    BUILD="$build_opt_level" \
+    INSTALL_DIR="$install_prefix/bin"
+
+# The geometry tests aren't properly diagnostic -- it's mentioned in
+#  the docs that they sometimes fail without anything being wrong --
+#  so if the overall test fails, we log it, and then re-run all the other
+#  classes of test.
+make  \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    BUILD="$build_opt_level" \
+    INSTALL_DIR="$install_prefix/bin" \
+    check \
+    || \
+    make -C Test \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        BUILD="$build_opt_level" \
+        INSTALL_DIR="$install_prefix/bin" \
+        diff \
+        ||
+        make -C Test \
+            FFT=mkl \
+            MATHLIBS=mkl10 \
+            FFTLIBDIR= \
+            MATHLIBDIR= \
+            BUILD="$build_opt_level" \
+            INSTALL_DIR="$install_prefix/bin" \
+            check-spe \
+            check-bs \
+            check-phonon \
+            check-md \
+            check-pair-pot \
+            check-magres \
+            check-xc \
+            check-nlxc \
+            check-misc \
+            check-otf \
+            check-pseudo \
+            check-tddft 
+
+# If you don't set F90 explicitly here it'll try to compile one of the utilities with gfortran >:(
+make  \
+    F90=ifort \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    BUILD="$build_opt_level" \
+    INSTALL_DIR="$install_prefix/bin" \
+    install 
+
+# Delete this one test because it has known reproducibility problems
+# and failed to converge an SCF in MPI builds
+# https://bitbucket.org/castep/castep/issues/1870/monitor-reproducibility-of-electronic-fe
+rm -rf Test/Electronic/Fe-NCM
+
+# And now run the same build process for the MPI version
+make  \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    COMMS_ARCH=mpi \
+    SUBARCH=mpi \
+    BUILD="$build_opt_level" \
+    INSTALL_DIR="$install_prefix/bin" 
+
+make  \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    COMMS_ARCH=mpi \
+    SUBARCH=mpi \
+    BUILD=fast \
+    INSTALL_DIR="$install_prefix/bin" \
+    check \
+    ||
+    make -C Test \
+        FFT=mkl \
+        MATHLIBS=mkl10 \
+        FFTLIBDIR= \
+        MATHLIBDIR= \
+        COMMS_ARCH=mpi \
+        SUBARCH=mpi \
+        BUILD=fast \
+        INSTALL_DIR="$install_prefix/bin" \
+        diff \
+        || \
+        make -C Test \
+            FFT=mkl \
+            MATHLIBS=mkl10 \
+            FFTLIBDIR= \
+            MATHLIBDIR= \
+            COMMS_ARCH=mpi \
+            SUBARCH=mpi \
+            BUILD=fast \
+            INSTALL_DIR="$install_prefix/bin" \
+            check-spe \
+            check-bs \
+            check-phonon \
+            check-md \
+            check-pair-pot \
+            check-magres \
+            check-xc \
+            check-nlxc \
+            check-misc \
+            check-otf \
+            check-pseudo \
+            check-tddft 
+
+# You don't need to set F90 here (unlike the serial version) because only one of the utilities
+#  is rebuilt in MPI mode and it's not the one with the broken build process
+make \
+    FFT=mkl \
+    MATHLIBS=mkl10 \
+    FFTLIBDIR= \
+    MATHLIBDIR= \
+    COMMS_ARCH=mpi \
+    SUBARCH=mpi \
+    BUILD=fast \
+    INSTALL_DIR="$install_prefix/bin" \
+    install
+echo "Installed to: $install_prefix"
+
+chgrp -R lgcastep "$install_prefix"
+chmod -R o-rx "$install_prefix"
+
+make_module_v2 -g lgcastep
+
+echo "Module files put in: $module_dir" >&2
+chmod a+rx "$module_dir"
+post_build_report
+
+cd "$owd"
+if [[ -n "$build_dir" ]]; then
+    'rm' -Rf "${build_dir}"
+fi
+

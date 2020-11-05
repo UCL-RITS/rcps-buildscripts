@@ -1,0 +1,60 @@
+#!/bin/bash
+
+package_name="dl_monte"
+package_version="2.07"
+package_description="DL_MONTE is an open-source program for applying Monte Carlo molecular simulation to a wide range of systems."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/intel/2018/update3
+module load mpi/intel/2018/update3/intel
+
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O dl_monte_release_v2.07.tar.gz https://gitlab.com/dl_monte/dl_monte-releases/-/raw/master/dl_monte_release_v2.07.tar.gz
+
+manifest \
+	sha256:7deca1aca97013926ae9018a9242f20226af0ee15444a040085f854fe43619a3 dl_monte_release_v2.07.tar.gz
+	
+
+tar -xf dl_monte_release_v2.07.tar.gz
+
+cd dl_monte_release_v2.07
+
+# -openmp for the Intel compiler is no longer accepted
+sed -i -e 's/-openmp/-fopenmp/g' Makefile_SRL
+
+./build: clean
+./build: ser tab intelmp
+./build: clean
+./build: ser dir intelmp
+./build: clean
+./build: par tab mpi
+./build: clean
+./build: par dir mpi
+./build: clean
+
+# Binaries are labelled with which method of doing vdw corrections
+#  was selected (direct vs table, dir/tab above)
+# The script leaves a copy of the last ones you built without the label:
+#  this would be ambiguous, so we remove those.
+rm bin/DLMONTE-?RL.X
+
+mkdir -p "$install_prefix"
+mv bin "$install_prefix/"
+
+mkdir -p "$install_prefix/doc"
+cp -- CITATION README LICENSE *.pdf "$install_prefix/doc"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+

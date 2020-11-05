@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="ucx"
+package_version="1.8.0"
+package_description="Unified Communication X (UCX) provides an optimized communication layer for Message Passing (MPI), PGAS/OpenSHMEM libraries and RPC/data-centric applications."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+    require numactl/2.0.12
+    require binutils/2.29.1/gnu-4.9.2
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.gz"
+    package_url="https://github.com/openucx/ucx/releases/download/v${package_version}/${package_name}-${package_version}.tar.gz"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:96f2fe1918127edadcf5b195b6532da1da3a74fa ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" \
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make install
+
+    make_module_v2 \
+        -o "${module_dir}/ucx/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

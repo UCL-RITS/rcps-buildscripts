@@ -1,0 +1,11 @@
+--- boost/config/stdlib/libstdcpp3.hpp.old	2010-06-11 12:16:34.000000000 +0100
++++ boost/config/stdlib/libstdcpp3.hpp	2018-10-24 10:16:24.000000000 +0100
+@@ -31,7 +31,7 @@
+ 
+ #ifdef __GLIBCXX__ // gcc 3.4 and greater:
+ #  if defined(_GLIBCXX_HAVE_GTHR_DEFAULT) \
+-        || defined(_GLIBCXX__PTHREADS)
++        || defined(_GLIBCXX_HAS_GTHREADS)
+       //
+       // If the std lib has thread support turned on, then turn it on in Boost
+       // as well.  We do this because some gcc-3.4 std lib headers define _REENTANT

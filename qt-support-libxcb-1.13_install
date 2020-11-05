@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing libxcb for Qt
+#
+# by Heather Kelly, 2015
+# Updated March 2019 for Qt 5.12.1
+
+NAME=${NAME:-qt}
+VERSION=${VERSION:-5.12.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+LIBXCB_NAME=${LIBXCB_NAME:-libxcb-1.13.1}
+LIBXCB_SRC_ARCHIVE=${LIBXCB_SRC_ARCHIVE:-http://xcb.freedesktop.org/dist/${LIBXCB_NAME}.tar.gz}
+LIBXCB_MD5=${LIBXCB_MD5:-4fbe51a0731a5b8e6b4ebff68a1f2f48}
+XCBPROTO_NAME=${XCBPROTO_NAME:-xcb-proto-1.13}
+XCBPROTO_SRC_ARCHIVE=${XCBPROTO_SRC_ARCHIVE:-http://xcb.freedesktop.org/dist/${XCBPROTO_NAME}.tar.gz}
+XCBPROTO_MD5=${XCBPROTO_MD5:-0cc0294eb97e4af3a743e470e6a9d910}
+PTHREADSTUBS_NAME=${PTHREADSTUBS_NAME:-libpthread-stubs-0.4}
+PTHREADSTUBS_SRC_ARCHIVE=${PTHREADSTUBS_SRC_ARCHIVE:-http://xcb.freedesktop.org/dist/${PTHREADSTUBS_NAME}.tar.gz}
+PTHREADSTUBS_MD5=${PTHREADSTUBS_MD5:-7d2734e604a3e2f6f665c420b835ab62}
+
+XUTILMACROS_NAME=${XUTILMACROS_NAME:-util-macros-1.17}
+XUTILMACROS_SRC_ARCHIVE=${XUTILMACROS_SRC_ARCHIVE:-https://www.x.org/releases/X11R7.7/src/util/${XUTILMACROS_NAME}.tar.gz}
+XUTILMACROS_MD5=${XUTILMACROS_MD5:-e162e8921cd08c50bf17b9de5131b3f1}
+XLIBXAU_NAME=${XLIBXAU_NAME:-libXau-1.0.7}
+XLIBXAU_SRC_ARCHIVE=${XLIBXAU_SRC_ARCHIVE:-http://www.x.org/releases/X11R7.7/src/lib/${XLIBXAU_NAME}.tar.gz}
+XLIBXAU_MD5=${XLIBXAU_MD5:-3ab7a4d1aac1b7f8ccc6b9755a19f252}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+# Download xcb parts and check their checksums first
+wget $LIBXCB_SRC_ARCHIVE
+libxcb_archive=$(basename "${LIBXCB_SRC_ARCHIVE}")
+LIBXCB_CHECKSUM=`md5sum $libxcb_archive| awk '{print $1}'`
+
+if [ "$LIBXCB_MD5" != "$LIBXCB_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $libxcb_archive."
+  echo "Expected: $LIBXCB_MD5"
+  echo "Got: $LIBXCB_CHECKSUM"
+  exit 1;
+fi
+
+wget $XCBPROTO_SRC_ARCHIVE
+xcbproto_archive=$(basename "${XCBPROTO_SRC_ARCHIVE}")
+XCBPROTO_CHECKSUM=`md5sum $xcbproto_archive| awk '{print $1}'`
+
+if [ "$XCBPROTO_MD5" != "$XCBPROTO_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xcbproto_archive."
+  echo "Expected: $XCBPROTO_MD5"
+  echo "Got: $XCBPROTO_CHECKSUM"
+  exit 1;
+fi
+
+wget $PTHREADSTUBS_SRC_ARCHIVE
+pthreadstubs_archive=$(basename "${PTHREADSTUBS_SRC_ARCHIVE}")
+PTHREADSTUBS_CHECKSUM=`md5sum $pthreadstubs_archive| awk '{print $1}'`
+
+if [ "$PTHREADSTUBS_MD5" != "$PTHREADSTUBS_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $pthreadstubs_archive."
+  echo "Expected: $PTHREADSTUBS_MD5"
+  echo "Got: $PTHREADSTUBS_CHECKSUM"
+  exit 1;
+fi
+
+wget $XUTILMACROS_SRC_ARCHIVE
+xutilmacros_archive=$(basename "${XUTILMACROS_SRC_ARCHIVE}")
+XUTILMACROS_CHECKSUM=`md5sum $xutilmacros_archive| awk '{print $1}'`
+
+if [ "$XUTILMACROS_MD5" != "$XUTILMACROS_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xutilmacros_archive."
+  echo "Expected: $XUTILMACROS_MD5"
+  echo "Got: $XUTILMACROS_CHECKSUM"
+  exit 1;
+fi
+
+wget $XLIBXAU_SRC_ARCHIVE
+xlibxau_archive=$(basename "${XLIBXAU_SRC_ARCHIVE}")
+XLIBXAU_CHECKSUM=`md5sum $xlibxau_archive| awk '{print $1}'`
+
+if [ "$XLIBXAU_MD5" != "$XLIBXAU_CHECKSUM" ] 
+then
+  echo "Hash mismatch for $xlibxau_archive."
+  echo "Expected: $XLIBXAU_MD5"
+  echo "Got: $XLIBXAU_CHECKSUM"
+  exit 1;
+fi
+
+# required for libxcb: install xorg/util/macros
+tar -xvf $xutilmacros_archive
+cd $XUTILMACROS_NAME
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make install
+
+export PKG_CONFIG_PATH=$INSTALL_PREFIX/support/share/pkgconfig:$PKG_CONFIG_PATH
+
+# build xorg/lib/libXau
+cd $temp_dir
+tar -xvf $xlibxau_archive
+cd $XLIBXAU_NAME
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make install
+
+export LD_LIBRARY_PATH=$INSTALL_PREFIX/support/lib:$LD_LIBRARY_PATH
+
+# build xcb/pthread-stubs
+cd $temp_dir
+tar -xvf $pthreadstubs_archive
+cd $PTHREADSTUBS_NAME
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make install
+
+# build xcb/proto
+cd $temp_dir
+tar -xvf $xcbproto_archive
+cd $XCBPROTO_NAME
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make install
+
+export PYTHONPATH=$INSTALL_PREFIX/support/lib/python2.7/site-packages:$PYTHONPATH
+export PKG_CONFIG_PATH=$INSTALL_PREFIX/support/lib/pkgconfig:$PKG_CONFIG_PATH
+
+# build xcb/libxcb
+cd $temp_dir
+tar -xvf $libxcb_archive
+cd $LIBXCB_NAME
+./configure --prefix=$INSTALL_PREFIX/support
+make 2>&1 | tee make.log
+make check
+make install
+
+echo ""
+echo "Libxcb items installed in $INSTALL_PREFIX/support. Now run the main Qt buildscript."

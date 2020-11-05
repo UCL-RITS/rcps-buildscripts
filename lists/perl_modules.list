@@ -164,3 +164,9 @@ JSON
 Proc::PID::File
 Term::UI
 Term::ReadKey
+DBI
+DBD::mysql
+File::ShareDir::Install
+File::ShareDir
+MIME::Lite
+Set::IntervalTree

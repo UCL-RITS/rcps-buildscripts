@@ -16,23 +16,22 @@ GROUP=${GROUP:-legg16}
 
 set -e
 
-CHECKSUM=`md5sum "${SRC_ARCHIVE}"| awk '{print $1}'`
+CHECKSUM="$(md5sum "${SRC_ARCHIVE}"| awk '{print $1}')"
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
 
-  mkdir -p $INSTALL_PREFIX
-  cd $INSTALL_PREFIX
-  tar -xvf $SRC_ARCHIVE
+  mkdir -p "$INSTALL_PREFIX"
+  cd "$INSTALL_PREFIX"
+  tar -xvf "$SRC_ARCHIVE"
 
   # put in version specific directory
   mv gv gv6
 
-  # Legion specific configuration of gview.csh
- # cp $SRC_SCRIPT/gview6.csh $INSTALL_PREFIX/$VERSION/gview.csh
- # ln -s gview.csh gview
+  # local shim to set up GAUSS_SCRDIR and then run gview.sh
+  cp $SRC_SCRIPT/gview $INSTALL_PREFIX/$VERSION/gview
 
-  chgrp -R $GROUP $VERSION
+  chgrp -R "$GROUP" "$VERSION"
  
 else
   echo "Hash mismatch."

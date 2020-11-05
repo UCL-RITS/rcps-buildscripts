@@ -3,17 +3,14 @@
 ###############################################
 # Installing Python
 #
-# by Owain Kenway, 2017 
+# by Owain Kenway, 2019
 #
 
-VERSION=${VERSION:-4.0.0}
+VERSION=${VERSION:-4.0.1} # 4.0.1 denotes python 3.7.4 version
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
 PYTHON_VERSION=${PYTHON_VERSION_TAG:-37}
 
 TIME_STAMP=`date +"%s"`
-
-# Disable wheels for some packages
-PIPNOBIN=${PIPNOBIN:-numpy,scipy}
 
 set -e
 
@@ -22,7 +19,7 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
-require python/3.7.0
+require python/3.7.4
 require openblas/0.2.14/gnu-4.9.2
 
 mkdir -p $INSTALL_PREFIX
@@ -32,37 +29,25 @@ mkdir $TIME_STAMP-$PYTHON_VERSION
 cd $TIME_STAMP-$PYTHON_VERSION
 
 
+# Update pip, setuptools and virtualenv as old versions can cause
+# issues with packages due to --system-site-packages.
+
+pip3 install --upgrade setuptools virtualenv pip
+
 virtualenv --system-site-packages venv
 
 source venv/bin/activate
-
-LAPACK=${LAPACK:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
-BLAS=${BLAS:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib/libopenblas.so}
-
-#CVXOPT_BLAS_LIB_DIR=${CVXOPT_BLAS_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib} 
-#CVXOPT_BLAS_LIB=${CVXOPT_BLAS_LIB:-openblas}
-#CVXOPT_LAPACK_LIB_DIR=${CVXOPT_LAPACK_LIB_DIR:-/shared/ucl/apps/openblas/0.2.14/gnu-4.9.2/lib}
-#CVXOPT_LAPACK_LIB=${CVXOPT_LAPACK_LIB:-openblas}
-
-
-export LAPACK
-export BLAS
-
-#export CVXOPT_BLAS_LIB_DIR
-#export CVXOPT_BLAS_LIB
-#export CVXOPT_LAPACK_LIB_DIR
-#export CVXOPT_LAPACK_LIB
 
 pip3 install --upgrade pip
 
 old_IFS="$IFS"
 IFS=$'\n'
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared37-fixed.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
 do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
-       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+       pip3 install --no-cache-dir $entry
    fi
 done
 
@@ -71,7 +56,7 @@ do
    # Ignore blank and comment lines in the lists
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
-       pip3 install --no-cache-dir --no-binary $PIPNOBIN $entry
+       pip3 install --no-cache-dir $entry
    fi
 done
 IFS="$old_IFS"

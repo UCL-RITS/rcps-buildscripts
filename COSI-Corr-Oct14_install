@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# This script installs COSI-Corr for ENVI from California Institute of Technology
+# Tectonics Observatory.
+
+# Brian Alston August 2019
+
+# You need to download the COSI-Corr installer from the CalTech website
+# (http://www.tectonics.caltech.edu/slip_history/spot_coseis/)
+# after signing up for a license.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE & COSI_INSTALLER variables
+# appropriately.
+
+VERSION=${VERSION:-Oct14}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/COSI-Corr/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/COSI-Corr/installers}
+COSI_INSTALLER=${COSI_INSTALLER:-cosi-corr_pakOct14.zip}
+LINUX_ARCHIVE=${LINUX_ARCHIVE:-cosicorr-lin.tar.gz}
+COSI_PATH=${COSI_PATH:-${INSTALL_PREFIX}/cosi-corr}
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# ENVI module is needed so location of ENVI files that COSI-Corr needs copied is know.
+
+require envi/5.5.2
+
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$COSI_INSTALLER ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find COSI-Corr installer"
+    echo ""
+    echo "You need to download the COSI-Corr installer from the CalTech website"
+    echo " (http://www.tectonics.caltech.edu/slip_history/spot_coseis/)"
+    echo "after signing up for a license."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & COSI_INSTALLER variables"
+    echo "appropriately."
+    echo ""
+    exit 1
+fi 
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+# Unpack the installer archive
+
+unzip -x $SRC_ARCHIVE/$COSI_INSTALLER
+
+# Install Linux version
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+tar -xvf $temp_dir/$LINUX_ARCHIVE
+
+# Install required ENVI files in COSI_Corr
+
+cd $COSI_PATH
+cp $ENVI_DIR/classic/menu/envi.cfg .
+cp $ENVI_DIR/classic/menu/e_locate.pro .
+
+# the copied envi.cfg needs to be modified.
+
+sed -i.bak -e "/default save_add/s|=|= $COSI_PATH\/save_add|" -e "/total cache size/s/= 2048.00/= 1000/" -e "/image tile size/s/= 8.00/= 100/" envi.cfg
+
+# Module file updates these variables as follows:
+#
+# export IDL_PATH='pathToCosi:<IDL_DEFAULT>'
+# export IDL_DLM_PATH='pathToCosi/cosi-modules:<IDL_DEFAULT>'
+# export PATH=$PATH:pathToCosi/usgs
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:pathToCosi/cosi-modules

@@ -83,7 +83,8 @@ install.packages ("sp", lib=mainLib, repos=repros);
 
 # INLA needs to be downloaded from http://www.r-inla.org/:
 
-install.packages("INLA", lib=mainLib, repos="https://www.math.ntnu.no/inla/R/stable")
+# install.packages("INLA", lib=mainLib, repos="https://www.math.ntnu.no/inla/R/stable")
+install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
 
 # End of R_packages_UCL_2
 

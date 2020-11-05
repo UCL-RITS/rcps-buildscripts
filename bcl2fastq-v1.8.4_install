@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bcl2fastq
+#
+# by Owain Kenway, 2018
+#
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+# Doxygen
+require cmake/3.7.2
+require flex/2.5.39
+require bison/3.0.4/gnu-4.9.2
+require ghostscript/9.19/gnu-4.9.2
+require texlive/2015
+require compilers/gnu/4.9.2 
+require swig/3.0.5/gnu-4.9.2 
+require qt/4.8.6/gnu-4.9.2 
+require lua/5.3.1 
+require	perl/5.22.0 
+
+require graphviz/2.40.1
+
+require doxygen/1.8.14
+
+NAME=${NAME:-bcl2fastq}
+VERSION=${VERSION:-1.8.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-48972db9f6a891c2dfa409bf0a740527}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-${VERSION}.tar.bz2}
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar xvf bcl2fastq-${VERSION}.tar.bz2
+  cd bcl2fastq
+
+# Patch boost.
+  echo "Patching Boost for modern compilers."
+  echo "Unpacking provided Boost."
+  cd redist
+  tar xf boost_1_44_0.tar.gz
+
+  cd boost_1_44_0
+  cp /shared/ucl/apps/build_scripts/patches/boost-1.44.0/*.patch .
+  
+  for a in *.patch
+  do
+    echo "Applying patch: $a"
+    patch -p0 < $a
+  done
+
+  cd ..
+
+  echo "Building new archive..."
+  rm boost_1_44_0.tar.gz
+  tar -cf boost_1_44_0.tar boost_1_44_0
+  gzip boost_1_44_0.tar
+  rm -rf boost_1_44_0
+
+  echo "Done - returning to build."
+
+  cd $temp_dir/bcl2fastq
+
+  mkdir build
+  cd build
+  ../src/configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
+rm -rf $temp_dir

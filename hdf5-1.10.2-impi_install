@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HDF5 1.10.2 Serial Version with currently loaded compiler
+#
+# by Owain Kenway, 2018
+#
+VERSION=${VERSION:-5-1.10.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/impi/${COMPILER_TAG}}
+MD5=${MD5:-41fb9347801b546fba323523a1c1af51}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
+PARALLEL_SCRATCH_DIR=$HOME/Scratch
+set -e
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require gerun
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/hdf5
+temp_dir=`mktemp -d -p /dev/shm/hdf5`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum hdf${VERSION}.tar.bz2| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvf hdf${VERSION}.tar.bz2
+   cd hdf${VERSION}
+   CC=mpicc FC=mpiifort ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
+   make 
+   export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
+
+   make check-s &> serial-test.log
+   make check-p RUNPARALLEL='mpirun ' HDF5_Make_Ignore="y" &> parallel-test.log
+
+   make install
+   cat serial-test.log
+   cat parallel-test.log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

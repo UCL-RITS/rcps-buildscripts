@@ -14,19 +14,21 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COM
 MD5=${MD5:-8059f1cac17ac74c099ba6c5a5e3a558} 
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://lammps.sandia.gov/tars/lammps-${VERSION}.tar.gz}
 
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
 set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-mkdir -p /dev/shm/$NAME
-temp_dir=`mktemp -d -p /dev/shm/$NAME`
+mkdir -p /dev/shm/$(whoami)/$NAME
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
 
 cd $temp_dir
 
 wget $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
 
-CHECKSUM=`md5sum $archive| awk '{print $1}'`
+CHECKSUM=$(md5sum $archive| awk '{print $1}')
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
@@ -34,23 +36,7 @@ then
 
   cd lammps-${VERSION}/src
 
-  # Get host machine
-  if hostname -A | grep -q legion
-  then
-    cluster="legion"
-  elif hostname -A | grep -q grace
-  then
-    cluster="grace"
-  elif hostname -A | grep -q thomas
-  then
-    cluster="thomas"
-  elif hostname -A | grep -q myriad
-  then
-    cluster="myriad"
-  else
-    echo "Unknown machine, exiting: $(hostname -A)"
-    exit 1
-  fi
+  cluster=$WHEREAMI
 
   # Copy in appropriate Makefile with correct architecture flags
   # For compiler type use the fully-specified compiler version if a makefile exists for it
@@ -71,7 +57,7 @@ then
 
 # Add some necessary packages that aren't included by default for some reason
 # All the packages which don't need external libs.
-  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd
+  for a in asphere body class2 colloid compress coreshell dipole granular kspace manybody mc misc molecule mpiio peri qeq replica rigid shock snap srd user-reaxc
   do
     make yes-${a}
   done
@@ -124,6 +110,8 @@ then
 # Make default binary symlink
   cd $INSTALL_PREFIX/lammps-${VERSION}/bin
   ln -s lmp_${cluster} lmp_default
+
+  rm -Rf $temp_dir
 
 else
   echo "Hash mismatch."

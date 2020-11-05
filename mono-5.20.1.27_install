@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+package_name="mono"
+package_version="5.20.1.27"
+package_description=""
+
+libgdiplus_version="5.6.1"
+
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://download.mono-project.com/sources/mono/mono-${package_version}.tar.bz2"
+wget -O "libgdiplus-${libgdiplus_version}.tar.gz" "https://github.com/mono/libgdiplus/archive/${libgdiplus_version}.tar.gz"
+
+manifest \
+    sha256:5e829e143a0180dc1f1129333b8370442c2ada91b6cc91940d4d096278e73797  mono-5.20.1.27.tar.bz2 \
+    sha256:deff863023950b1d1de7e47e44fc31c8ba39cfc06334737261965f697b2ad312  libgdiplus-5.6.1.tar.gz
+
+tar -xf libgdiplus-${libgdiplus_version}.tar.gz
+cd libgdiplus-${libgdiplus_version}
+./autogen.sh --prefix="$install_prefix"
+make -j 8
+make install
+
+cd "$build_dir"
+tar -xf "mono-${package_version}.tar.bz2"
+cd "mono-${package_version}"
+./configure --prefix="$install_prefix"
+make -j 8
+make install
+
+
+module unload compilers
+make_module_v2
+chmod -R a+rX "$module_dir"
+
+post_build_report

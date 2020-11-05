@@ -52,11 +52,11 @@ fi
 set -e
 
 # Installl a suitable MPI4PY for MMPBSA
-if [ "${PARALLEL:-}" = "-mpi" ]; then
-  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
-  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
+#if [ "${PARALLEL:-}" = "-mpi" ]; then
+#  mkdir -p /shared/ucl/apps/amber/support/${VERSION}
+#  pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py
 
-fi
+#fi
 
 # Give Amber its own numpy - REMOVE THIS IN >16 VERSIONS
 #pip install --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy
@@ -77,6 +77,13 @@ mv amber${VERSION} ${ABNAME}
 ln -fsT `pwd`/${ABNAME} $AMBERHOME
 
 cd $AMBERHOME
+
+# Do a serial pre-install as the parallel versions lack some stuff.
+echo 'y' \
+    | ./configure --with-python `which python` $COMPILER
+source amber.sh
+make install
+make clean
 
 # There isn't a flag to pre-answer the question of whether to apply patches C_C
 echo 'y' \

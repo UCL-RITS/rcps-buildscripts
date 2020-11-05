@@ -1,0 +1,68 @@
+#
+#  This file is part of MUMPS 5.2.1, released
+#  on Fri Jun 14 14:46:05 UTC 2019
+#
+# These settings for a GNU sequential install with :
+# metis (no parmetis), no scotch (no ptscotch), no openmpi, gfortran, openblas
+
+# Begin orderings
+#LSCOTCHDIR = /usr/lib
+#ISCOTCH   = -I/usr/include/scotch
+
+#LSCOTCH   = -L$(LSCOTCHDIR) -lptesmumps -lptscotch -lptscotcherr
+#LSCOTCH   = -L$(LSCOTCHDIR) -lesmumps -lscotch -lscotcherr
+
+LPORDDIR = $(topdir)/PORD/lib/
+IPORD    = -I$(topdir)/PORD/include/
+LPORD    = -L$(LPORDDIR) -lpord
+
+LMETISDIR = $(METIS_HOME)
+#IMETIS    = -I/usr/include/parmetis
+IMETIS    = -I$(LMETISDIR)/include
+
+# LMETIS    = -L$(LMETISDIR) -lparmetis -lmetis
+LMETIS    = -L$(LMETISDIR)/lib -lmetis
+
+# Corresponding variables reused later
+#ORDERINGSF = -Dmetis -Dpord -Dparmetis -Dscotch -Dptscotch
+ORDERINGSF = -Dmetis -Dpord
+ORDERINGSC  = $(ORDERINGSF)
+
+LORDERINGS = $(LMETIS) $(LPORD) $(LSCOTCH)
+IORDERINGSF = $(ISCOTCH)
+IORDERINGSC = $(IMETIS) $(IPORD) $(ISCOTCH)
+# End orderings
+################################################################################
+
+PLAT    =
+LIBEXT  = .a
+OUTC    = -o 
+OUTF    = -o 
+RM = /bin/rm -f
+#CC = gcc # (set by compiler module)
+#FC = gfortran
+FL = $(FC)
+AR = ar vr 
+RANLIB = ranlib
+LAPACK = -lopenblas
+
+
+
+INCSEQ = -I$(topdir)/libseq
+LIBSEQ  = $(LAPACK) -L$(topdir)/libseq -lmpiseq
+
+LIBBLAS = -lopenblas
+LIBOTHERS = -lpthread
+
+#Preprocessor defs for calling Fortran from C (-DAdd_ or -DAdd__ or -DUPPER)
+CDEFS   = -DAdd_
+
+#Begin Optimized options
+OPTF    = -O -fopenmp
+OPTL    = -O -fopenmp
+OPTC    = -O -fopenmp
+#End Optimized options
+ 
+INCS = $(INCSEQ)
+LIBS = $(LIBSEQ)
+LIBSEQNEEDED = libseqneeded

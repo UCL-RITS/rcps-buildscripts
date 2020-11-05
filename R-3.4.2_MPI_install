@@ -92,6 +92,6 @@ mkdir -p $RLIB_DB
 # 
 # Do this for all packages that fail with abover error.
 
-R_input=${LOCALDIR}/R_packages_MPI_1.R
+R_input=${LOCALDIR}/R_packages_MPI_1-old.R
 R --no-save < $R_input
 

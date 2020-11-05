@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="emacs"
+package_version="26.3"
+package_description=""
+
+set -o errexit -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget http://ftpmirror.gnu.org/emacs/emacs-26.3.tar.xz
+manifest sha256:4d90e6751ad8967822c6e092db07466b9d383ef1653feb2f95c93e7de66d3485  emacs-26.3.tar.xz
+
+tar -xf emacs-26.3.tar.xz
+cd emacs-26.3
+
+# We don't have the libgif library installed
+./configure \
+    --prefix="$install_prefix" \
+    --with-gif=no
+make
+
+## Release tarballs do not include tests >:(
+# make check
+
+make install
+
+make_module_v2
+
+chmod -R +rX "$module_dir"
+
+post_build_report

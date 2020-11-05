@@ -1,0 +1,36 @@
+--- Makefile.old	2019-10-21 11:07:29.000000000 +0100
++++ Makefile	2019-10-21 11:38:44.000000000 +0100
+@@ -1,25 +1,26 @@
+ SHELL = /bin/sh
+ 
+ # gfortran
+-FC = gfortran
++#FC = gfortran
+ #FC = gfortran-mp-4.5
+ 
+-FOPT  = -g -march=native -funroll-loops -O3 -ffast-math -fgcse-lm -fgcse-sm -ffast-math -ftree-vectorize -fexternal-blas
++#FOPT  = -g -march=native -funroll-loops -O3 -ffast-math -fgcse-lm -fgcse-sm -ffast-math -ftree-vectorize -fexternal-blas
+ #FOPT += -g -p -pg -Wall -fbounds-check -finit-integer=-666 -finit-real=nan
+ #LDFLAGS =
+-LIBS = -llapack -lblas
++#LIBS = -llapack -lblas
+ 
+ # ifort
+-#FC = ifort
+-#FOPT = -FR -mp1 -w -prec_div -pc80 -pad -ip -DINTEL_VML
++FC = ifort
++#FOPT = -O3 -xHost -fp-model precise -FR -mp1 -w -prec_div -pc80 -pad -ip -DINTEL_VML
++FOPT = -O3 -fp-model precise -FR -mp1 -w -prec_div -pc80 -pad -ip -DINTEL_VML
+ 
+ #LDFLAGS = -L/opt/intel/mkl/10.0.1.014/lib/32/ -Vaxlib -static-libcxa -pthread
+ #LIBS = -lmkl_lapack -lmkl_ia32 -lguide
+ # ifort bis: other mkl options
+ #LDFLAGS = $(FOPT) -L/opt/intel/mkl/10.0.1.014/lib/32 -pthread -i-static
+ #LIBS = -lmkl_lapack -lmkl -lguide
+-#LDFLAGS = $(FOPT) -L/cluster/intel/Compiler/11.1/046/mkl/lib/em64t -pthread -i-static
+-#LIBS = -lmkl_lapack -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lguide
++LDFLAGS = $(FOPT) -pthread -i-static
++LIBS = -mkl
+ 
+ # generic
+ LINKER  =       $(FC)

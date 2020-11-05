@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing OpenBLAS
+
+set -e
+
+package_name="openblas"
+package_version="0.3.7"
+package_description="OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version."
+package_source="${SRC_ARCHIVE:-https://github.com/xianyi/OpenBLAS/archive/v${package_version}.tar.gz}"
+
+source "includes/source_includes.sh"
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+
+declare -a module_dir_list
+
+owd="$(pwd -P)"
+for package_variant in "serial" "native-threads" "openmp"; do
+
+    make_build_env ""
+
+    cd "$build_dir"
+
+    wget "$package_source"
+    manifest sha512:9c4898301c675471bbce2bb99b6bbe7c90724784fac06504416d4bd5da3cd4488f727b0a118c9a38ea342daac2af9e32597a847004241cc57de693b58b856262 "v${package_version}.tar.gz"
+
+    tar -zxvf "v${package_version}.tar.gz"
+
+    if [[ "$package_variant" == "serial" ]]; then
+        use_threads=0
+        use_openmp=0
+    elif [[ "$package_variant" == "native-threads" ]]; then
+        use_threads=1
+        use_openmp=0
+    elif [[ "$package_variant" == "openmp" ]]; then
+        use_threads=1
+        use_openmp=1
+    fi 
+
+    cd "OpenBLAS-${package_version}"
+    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREAD="$use_threads" USE_OPENMP="$use_openmp"
+
+    rm -rf ${install_prefix}
+    mkdir -p ${install_prefix}
+
+    make PREFIX=${install_prefix} DYNAMIC_ARCH=1 USE_THREAD="$use_threads" USE_OPENMP="$use_openmp" install
+
+    # Fixes for various packages e.g. numpy with broken search routines.
+    cd $install_prefix/lib
+    ln -s libopenblas.so liblapack.so
+    ln -s libopenblas.so libblas.so
+    ln -s libopenblas.a liblapack.a
+    ln -s libopenblas.a libblas.a
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs \
+        -r compilers/gnu/4.9.2 \
+        -c openblas \
+        -c atlas \
+        -v BLAS_TAG=openblas \
+        -v OPENBLASROOT="$install_prefix"
+        #  ^-- this is a convenience variable for other installations
+        #      not automatically supported by anything 
+
+    module_dir_list+=("$module_dir")
+    chmod -R +rX "$module_dir"
+
+    cd "$owd"
+done
+
+echo "Module files placed in: ${module_dir_list[@]}"
+

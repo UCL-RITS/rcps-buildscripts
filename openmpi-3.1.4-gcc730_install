@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="openmpi"
+package_version="3.1.4"
+package_description="The Open MPI Project is an open source Message Passing Interface implementation."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require beta-modules
+    require gcc-libs/7.3.0
+    require compilers/gnu/7.3.0
+
+    make_build_env ""
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.bz2"
+    package_url="https://www.open-mpi.org/software/ompi/v${package_version%\.?}/downloads/${package_name}-${package_version}.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:957b5547bc61fd53d08af0713d0eaa5cd6ee3d58 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" \
+        --with-sge \
+        --without-verbs
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make check 
+
+    make install
+
+    make_module \
+        -o "${module_dir}/mpi/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "mpi" \
+        -v "MPI_HOME=${install_prefix}" \
+        -v "MPI_RUN=${install_prefix}/bin/mpirun" \
+        -v "GERUN_LAUNCHER=openmpi-sge" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp3+/bin" \
+        -r beta-modules \
+        -r gcc-libs/7.3.0 \
+        -r compilers/gnu/7.3.0
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

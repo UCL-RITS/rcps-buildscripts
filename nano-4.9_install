@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set \
+    -o pipefail \
+    -o nounset \
+    -o errexit
+
+package_name=nano
+package_version=4.9
+package_description="The nano text editor."
+
+source includes/source_includes.sh
+
+module purge
+
+# We want automatic file detection but we don't want a separate module for libmagic,
+#  so we want to build that statically. Unfortunately this also means we have to build
+#  libz statically, since the system version is dynamic-only.
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://github.com/threatstack/libmagic/archive/5.18.tar.gz
+wget https://www.nano-editor.org/dist/v4/nano-4.9.tar.xz
+wget https://www.zlib.net/zlib-1.2.11.tar.xz
+
+mv 5.18.tar.gz libmagic-5.18.tar.gz
+
+manifest \
+    sha256:a6ae87df22becb60793e6f8a06e280f3d528fad4aa15d6389a7ec088be664492  libmagic-5.18.tar.gz \
+    sha256:0e399729d105cb1a587b4140db5cf1b23215a0886a42b215efa98137164233a6  nano-4.9.tar.xz \
+    sha256:4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066  zlib-1.2.11.tar.xz
+
+for f in *.gz *.xz; do
+    tar -xf "$f"
+done
+
+export TMP_PREFIX="$build_dir/tmp-prefix"
+
+cd zlib-1.2.11
+./configure --prefix="$TMP_PREFIX" --static
+make
+make install
+
+export LD_LIBRARY_PATH="$TMP_PREFIX/lib:${LD_LIBRARY_PATH:-}"
+export LIBRARY_PATH="$TMP_PREFIX/lib:${LIBRARY_PATH:-}"
+export CPATH="$TMP_PREFIX/include:${CPATH:-}"
+export INCLUDE_PATH="$TMP_PREFIX/include:${INCLUDE_PATH:-}"
+export LDFLAGS="-lz"
+# If you don't add -lz as LDFLAGS here, configure doesn't pick up libmagic
+#  because it doesn't know it needs it to be able to link successfully
+
+cd "$build_dir"
+cd libmagic-5.18
+./configure --prefix="$TMP_PREFIX" --disable-shared --enable-static 
+make
+make install
+
+cd "$build_dir"
+cd nano-4.9
+./configure --prefix="$install_prefix"
+make
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+

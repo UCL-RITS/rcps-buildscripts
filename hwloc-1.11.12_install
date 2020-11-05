@@ -1,0 +1,40 @@
+#!/bin/bash
+
+package_name=hwloc
+package_version=1.11.12
+package_description="The Portable Hardware Locality (hwloc) software package provides a portable abstraction (across OS, versions, architectures, ...) of the hierarchical topology of modern architectures, including NUMA memory nodes, sockets, shared caches, cores and simultaneous multithreading. This installation includes the optional libnuma dependency."
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+require numactl
+
+make_build_env
+
+cd "$build_dir"
+
+wget https://download.open-mpi.org/release/hwloc/v1.11/hwloc-1.11.12.tar.bz2
+manifest sha256:ddfb7b9b4571551165b0fd824a340e58814c8c2b4af64c818579d4bc695a417d  hwloc-1.11.12.tar.bz2
+
+tar -xf "hwloc-${package_version}.tar.bz2"
+cd "hwloc-${package_version}"
+
+./configure \
+    --prefix="$install_prefix" \
+    --enable-shared \
+    --enable-static
+
+make
+make check
+make install
+
+make_module_v2
+
+chmod -R +rX "$module_dir"
+
+post_build_report
+
+

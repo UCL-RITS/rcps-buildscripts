@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing h5py outside python bundle as it requires an MPI module
+# For python3
+# 
+#
+
+set -e
+
+PACKAGE_NAME="h5py"
+PACKAGE_VERSION="2.10.0"
+PACKAGE_VARIANT="ompi"
+
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require hdf/5-1.10.5-ompi/gnu-4.9.2
+require python3/3.7
+require mpi4py/3.0.2/gnu-4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}/python${PYTHON_VERSION_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="https://github.com/${PACKAGE_NAME}/${PACKAGE_NAME}/releases/download/${PACKAGE_VERSION}/${PACKAGE_NAME}-${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-b8fad55638f473e8011dcbce1c23e794e15e753b016fc5260fe01c3ff230c2c4}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+
+  # install location must be in PYTHONPATH
+  #PYTHONPATH=${INSTALL_PREFIX}/lib/python${PYTHON_VERSION_TAG}/site-packages:$PYTHONPATH
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
+  cd "$OWD"
+}
+
+_setup_files() {
+  cd "$BUILD_DIR"
+  tar -xf "${BASENAME}.tar.gz"
+  cd "$OWD"
+}
+
+_build() {
+  cd "$BUILD_DIR"
+  cd "${BASENAME}"
+  #mkdir -p "$INSTALL_PREFIX/lib/python${PYTHON_VERSION_TAG}/site-packages"
+  #python3 setup.py configure --mpi
+  #python3 setup.py build
+  #python3 setup.py install --prefix=$INSTALL_PREFIX --always-unzip
+  CC="mpicc" HDF5_MPI="ON" pip3 install --prefix=$INSTALL_PREFIX --no-cache-dir --no-binary=h5py .
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module -p "$INSTALL_PREFIX" \
+              -c "${PACKAGE_NAME}" \
+              -r "gcc-libs/4.9.2" \
+              -r "compilers/gnu/4.9.2" \
+              -r "mpi/openmpi/3.1.4/gnu-4.9.2" \
+              -r "hdf/5-1.10.5-ompi/gnu-4.9.2" \
+              -r "python3/3.7" \
+              -r "mpi4py/3.0.2/gnu-4.9.2" \
+              -e "PYTHONPATH:$INSTALL_PREFIX/lib/python${PYTHON_VERSION_TAG}/site-packages" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+              -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} for Python ${PYTHON_VERSION_TAG} to your environment."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+

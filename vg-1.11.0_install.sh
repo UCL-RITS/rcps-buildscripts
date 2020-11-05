@@ -21,6 +21,9 @@ require compilers/gnu/4.9.2
 require bison
 require flex
 require jansson
+require lz4
+
+rm -rf $INSTALL_PREFIX
 
 mkdir -p $INSTALL_PREFIX
 
@@ -31,5 +34,10 @@ git clone --recursive $SRC_ARCHIVE
 cd vg
 git checkout v${VERSION}
 
+cd deps/vcflib
+git checkout d50b14c085d3c1c645bff2baf37dbb1e2bfd280c
+
+cd $INSTALL_PREFIX/vg
+
 source source_me.sh
-make static
+make

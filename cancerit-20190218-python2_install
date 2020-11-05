@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="cancerit"
+package_version="20190218"
+package_variant="python-2.7.12"
+package_description="The CancerIT Suite is a collection of linked bioinformatics tools."
+# default install prefix should be ${prod_apps_dir}/${package_name}/${package_version}${package_variant}
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs
+    require compilers/gnu/4.9.2
+    require python/2.7.12 # a python is prereq for boost module
+    require boost/1_63_0/gnu-4.9.2
+    require pstreams
+    require perl
+    require htslib
+    require curl
+    require bedtools/2.25.0
+    require exonerate/2.2.0
+
+    # all the basic R requirements for 3.5.1
+    require openblas/0.2.14/gnu-4.9.2
+    require java/1.8.0_92
+    require fftw/3.3.6-pl2/gnu-4.9.2
+    require ghostscript/9.19/gnu-4.9.2
+    require texinfo/5.2/gnu-4.9.2
+    require texlive/2015
+    require gsl/1.16/gnu-4.9.2
+    require hdf/5-1.8.15/gnu-4.9.2
+    require netcdf/4.3.3.1/gnu-4.9.2
+    require jags/4.2.0/gnu.4.9.2-openblas
+    require r/3.5.1-openblas/gnu-4.9.2
+
+    make_build_env
+    module_dir="$module_dir"
+
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    github_download \
+        https://github.com/cancerit/alleleCount/archive/v4.0.0.tar.gz \
+        https://github.com/cancerit/ascatNgs/archive/v4.2.1.tar.gz \
+        https://github.com/cancerit/BRASS/archive/6.2.0.tar.gz \
+        https://github.com/cancerit/CaVEMan/archive/1.13.8.tar.gz \
+        https://github.com/cancerit/cgpBigWig/archive/1.0.2.tar.gz \
+        https://github.com/cancerit/cgpCaVEManPostProcessing/archive/1.8.5.tar.gz \
+        https://github.com/cancerit/cgpPindel/archive/v3.0.6.tar.gz \
+        https://github.com/cancerit/cgpVcf/archive/v2.0.4.tar.gz \
+        https://github.com/cancerit/grass/archive/v2.1.1.tar.gz \
+        https://github.com/cancerit/PCAP-core/archive/4.2.3.tar.gz \
+        https://github.com/cancerit/VAGrENT/archive/v3.3.3.tar.gz \
+        https://github.com/cancerit/cgpBattenberg/archive/v3.3.0.tar.gz
+
+    manifest  \
+        sha256:3841dee52b79ec520d5a2faa83dff048badb46dafddb0053b7553eb20aa7fea1  alleleCount-4.0.0.tar.gz \
+        sha256:24439ce32fa6abe7642f2d422742c86243055f7e96648bf6df68e3855cf3ee6d  ascatNgs-4.2.1.tar.gz \
+        sha256:d277dcc887f6fd3b54a619d193fb9e1a9a5a5685c6afae290de948598e41be47  BRASS-6.2.0.tar.gz \
+        sha256:e124f4b74df6218a126c3ba09a5342b34aaacfc30eca2252d998ac6a8ae7fe26  CaVEMan-1.13.8.tar.gz \
+        sha256:1858d4f59e8a28b95080cfcc48d98571fb50466bb4e6cd20fac8207360910a61  cgpBigWig-1.0.2.tar.gz \
+        sha256:8a1813b021adc4e7592b07ce2b1d8fc330f9c959b43dd9d4940a0bd45f73df04  cgpCaVEManPostProcessing-1.8.5.tar.gz \
+        sha256:f8dc10153f96848b1f0d841db2b4935c7c9f5eb2b897569beb131e6d1ffc3dc8  cgpPindel-3.0.6.tar.gz \
+        sha256:53054c32ab5561407a7339cff1b664d3e45eb6eaffaac9b676b8df4005be3b01  cgpVcf-2.0.4.tar.gz \
+        sha256:8fee68ac02dfac3f5ba1a30bbfa4125c1775613b72ba7299c0fa7380d91c465a  grass-2.1.1.tar.gz \
+        sha256:fe33da61685f667cddf886d8c2caf24bfe9045865e99cbc2e205a30ee6d43ab5  PCAP-core-4.2.3.tar.gz \
+        sha256:14a0a85bbd22d767fbd9597fb1363334e8995229ff621d0217eda5602ac2dcb3  VAGrENT-3.3.3.tar.gz \
+        sha256:e32396e0fbbb7f71306022026ab356977e9a119d53524f3adb6d23867664399f  cgpBattenberg-3.3.0.tar.gz 
+
+    for file in \
+        alleleCount-4.0.0.tar.gz \
+        ascatNgs-4.2.1.tar.gz \
+        BRASS-6.2.0.tar.gz \
+        CaVEMan-1.13.8.tar.gz \
+        cgpBigWig-1.0.2.tar.gz \
+        cgpCaVEManPostProcessing-1.8.5.tar.gz \
+        cgpPindel-3.0.6.tar.gz \
+        cgpVcf-2.0.4.tar.gz \
+        grass-2.1.1.tar.gz \
+        PCAP-core-4.2.3.tar.gz \
+        VAGrENT-3.3.3.tar.gz \
+        cgpBattenberg-3.3.0.tar.gz 
+    do
+        tar -xf "$file"
+        /usr/bin/rm "$file"
+    done
+}
+
+_pre_build() {
+    cd "$build_dir"
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir"
+
+    # some of the below unset PERL5LIB
+    perl_libs="$install_prefix/lib/perl5:$PERL5LIB"
+
+    export PATH="$install_prefix/bin:$PATH"
+
+    # These are in an order that satisfies dependencies. Do not shuffle.
+    # See: https://user-images.githubusercontent.com/479061/35330098-1b9d07e2-00fa-11e8-9c13-c516bde69646.png
+    for dir in  \
+        cgpBigWig-1.0.2 \
+        PCAP-core-4.2.3 \
+        alleleCount-4.0.0 \
+        cgpVcf-2.0.4 \
+        ascatNgs-4.2.1 \
+        cgpPindel-3.0.6 \
+        cgpCaVEManPostProcessing-1.8.5 \
+        VAGrENT-3.3.3 \
+        grass-2.1.1 
+    do
+        echo "Running setup in ${dir}..."
+        (cd "$dir" && ./setup.sh "$install_prefix")
+    done
+
+    # BRASS needs to be told not to build exonerate itself
+    echo "Running setup in BRASS-6.2.0..."
+    (cd BRASS-6.2.0 && ./setup.sh "$install_prefix" 2)
+
+    # cgpBattenberg unsets PERL5LIB so needs to know where the above got installed
+    # and has an extra step for R
+    echo "Running setup in cgpBattenberg-3.3.0..."
+    cd cgpBattenberg-3.3.0
+    ./setup.sh "$install_prefix" "$perl_libs" 
+    cd Rsupport && ./setupR.sh "${install_prefix}/R-libs"
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} program versions as of ${package_version} to your environment. ${package_description}" \
+        -c "${package_name}" \
+        -r  gcc-libs \
+        -r  compilers/gnu/4.9.2 \
+        -r  python/2.7.12 \
+        -r  boost/1_63_0/gnu-4.9.2 \
+        -r  perl \
+        -r  htslib \
+        -r  bedtools/2.25.0 \
+        -r  exonerate/2.2.0 \
+        -r  fasta/36.3.8d/gnu-4.9.2 \
+        -r  velvet/1.2.10 \
+        -r  r/recommended
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+

@@ -1,75 +1,61 @@
 #!/usr/bin/env bash
 
-# CP2K
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2020
+#
+set -e
 
-## Env setup
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
-set -o errexit
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require openblas/0.3.7-openmp/gnu-4.9.2
+require cmake
 
-package_name=cp2k
-package_version=6.1
+NAME=${NAME:-cp2k}
+VERSION=${VERSION:-6.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-af803558e0a6b9e9d9ce8a3ab955ba32bacd179922455424e061c82c9fefa34b}
 
-cp2k_build_arch="${ARCH:-UCL-x86-64-gfortran}"
-cp2k_build_type="${TYPE:-popt}"
-cp2k_arch_file="${ARCHFILE:-cp2k-${package_version}-patches/${cp2k_build_arch}.${cp2k_build_type}}"
-run_regression_tests="no"
-# ^-- The tests take hours and use 2 cores, so shouldn't be run on a login node.
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v6.1.0/cp2k-6.1.tar.bz2}
 
-source includes/source_includes.sh
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
 
-module purge
-module load gcc-libs/4.9.2
-module load compilers/gnu/4.9.2
-module load mpi/openmpi/3.1.1/gnu-4.9.2
+cd $INSTALL_PREFIX
 
-make_build_env --tmp-root="/dev/shm"
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
 
-export PATH=$install_prefix/bin:$PATH
+sha256sum -c <<< "$SHA256 $archive"
 
-original_working_directory="$(dirname "$0")"
+tar -xvf $archive
 
-## Download and copy in our pre-prepared config
+cd ${NAME}-${VERSION}
 
-cd "$build_dir"
+# Build toolchain
+cd tools/toolchain
 
-wget "https://downloads.sourceforge.net/project/cp2k/cp2k-${package_version}.tar.bz2"
+# Fix weird naming
+sed -i.bak 's|-lopenblas_omp|-lopenblas|g' scripts/install_openblas.sh
 
-manifest sha256:af803558e0a6b9e9d9ce8a3ab955ba32bacd179922455424e061c82c9fefa34b "cp2k-6.1.tar.bz2"
+# Don't build libxsmm as it's broken.
+./install_cp2k_toolchain.sh --with-openblas=system --with-libxsmm=no
 
-tar -xf "cp2k-${package_version}.tar.bz2"
+# Get arch files
+cp install/arch/* ../../arch
 
-cd "cp2k-${package_version}"
-cp "${original_working_directory}/${cp2k_arch_file}" arch
+cd ../../makefiles
 
+source ../tools/toolchain/install/setup
 
-## Build
-
-cd "makefiles"
-
-make ARCH="${ARCH}" VERSION="${TYPE}"
-
-# Only run the regression tests somewhere we aren't affecting users.
-if [[ "${run_regression_tests}" == "yes" ]]
-then
-  make ARCH=${ARCH} VERSION="${TYPE}" test
-else
-  echo "REGTEST set to no in buildscript so not running tests"
-fi
-
-
-## Install
-
-mkdir -p ${INSTALL_PREFIX}/bin
-mkdir -p ${INSTALL_PREFIX}/lib/${TYPE}
-
-mkdir -p ${install_prefix}/data
-cp -R ../data/* ${install_prefix}/data
+# Build main package
+make -j 8 ARCH=local VERSION="sopt ssmp popt psmp"
 
 cd ..
 
-cp exe/${ARCH}/* ${INSTALL_PREFIX}/bin
-cp lib/${ARCH}/${TYPE}/*.a ${INSTALL_PREFIX}/lib/${TYPE}
-
-echo "Finshed building cp2k."
-
-
+mkdir bin
+cp exe/local/* bin

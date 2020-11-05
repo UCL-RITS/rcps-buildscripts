@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2020
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+
+TYPES=${TYPES:-"sopt ssmp popt psmp"}
+NAME=${NAME:-cp2k}
+VERSION=${VERSION:-7.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-ccd711a09a426145440e666310dd01cc5772ab103493c4ae6a3470898cd0addb}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v7.1.0/cp2k-7.1.tar.bz2}
+
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# Build toolchain
+cd tools/toolchain
+
+cd scripts
+
+cp /shared/ucl/apps/build_scripts/cp2k-7.1-patches/install_elpa_oldgcc.patch .
+patch < install_elpa_oldgcc.patch
+cd ..
+
+./install_cp2k_toolchain.sh --with-sirius=no --with-spfft=no --enable-omp --with-quip=install
+
+
+# Get arch files
+cp install/arch/* ../../arch
+
+cd ../..
+
+#source ../tools/toolchain/install/setup # don't actually need this
+
+# Build main package
+for a in ${TYPES}
+do
+  make -j 8 ARCH=local VERSION="$a"
+done
+
+mkdir bin
+cp exe/local/* bin

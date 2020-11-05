@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+NAME=${NAME:-bazel}
+VERSION=${VERSION:-0.24.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-cb402caf333731c168e83eac4ef6a9198ea08ca7d25401661404bf2303384d12afb0e6a65024852c318d352e5fca3a40dcc261e692487abb21d03b667dbae52f}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/bazelbuild/bazel/releases/download/${VERSION}/bazel-${VERSION}-installer-linux-x86_64.sh}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha512sum -c <<< "$SHA512 $archive"
+
+chmod +x $archive
+./$archive --prefix=$INSTALL_PREFIX
+
+rm -rf $temp_dir

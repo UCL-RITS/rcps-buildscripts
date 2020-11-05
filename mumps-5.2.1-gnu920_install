@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MUMPS sequential version with GNU, OpenBLAS and METIS
+#
+#
+
+set -e
+
+PACKAGE_NAME="mumps"
+PACKAGE_VERSION="5.2.1"
+PACKAGE_VARIANT=""
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require openblas/0.3.7-native-threads/gnu-9.2.0
+require metis/5.1.0/gnu-4.9.2
+
+_env_setup() {
+  OWD=$(pwd)
+  INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}"}
+  BUILD_DIR=${BUILD_DIR:-$(mktemp -d)}
+  MODULE_DIR=${MODULE_DIR:-$(mktemp -d)}
+  SRC_URLS="http://mumps.enseeiht.fr/MUMPS_${PACKAGE_VERSION}.tar.gz"
+  SHA256SUM=${SHA256SUM:-d988fc34dfc8f5eee0533e361052a972aa69cc39ab193e7f987178d24981744a}
+  BASENAME=$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<"$SRC_URLS"))
+  ARCH="Makefile.UCL.SEQ_5.2.1"
+
+  CONFIGURE_ADD_OPTS=""
+}
+
+_fetch_files() {
+  cd "$BUILD_DIR"
+  wget "$SRC_URLS"
+  sha256sum -c <<<"$SHA256SUM  $BASENAME.tar.gz"
+  cd "$OWD"
+}
+
+_setup_files() {
+  mkdir -p "$INSTALL_PREFIX"  
+  cd "$INSTALL_PREFIX"
+  tar -xf "$BUILD_DIR"/"${BASENAME}.tar.gz"
+  cp "$OWD/files/MUMPS/$ARCH" ${BASENAME}/Makefile.inc
+  cd "$OWD"
+}
+
+_build() {
+  cd "$INSTALL_PREFIX"
+  cd "${BASENAME}"
+  make all
+  cd "$OWD"
+}
+
+_prepare_module() {
+  make_module_v2 -p "$INSTALL_PREFIX/${BASENAME}" \
+              -c "${PACKAGE_NAME}" \
+              -o "$MODULE_DIR/${PACKAGE_NAME}/${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}}/${COMPILER_TAG}" \
+	      -w "Adds ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VARIANT:+-${PACKAGE_VARIANT}} to your environment. Sequential (threaded) version built with GNU, OpenBLAS and METIS."
+  echo "Module files put in: $MODULE_DIR" >&2
+}
+
+_clean_up() {
+  if [ -n "$BUILD_DIR" ]; then
+    rm -Rf "${BUILD_DIR}"
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+
+_build
+
+_prepare_module
+
+_clean_up
+

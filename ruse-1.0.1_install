@@ -1,0 +1,35 @@
+#!/bin/bash
+
+package_name="ruse"
+package_version="1.0.1"
+package_description="A command-line utility to periodically measure the memory use of a process and its subprocesses."
+# Other resource-tracking is planned but not yet implemented.
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://github.com/JanneM/Ruse/releases/download/v1.0.1/ruse-1.0.1.tar.gz
+manifest \
+   sha256:ce83a8a46e75bd0af29dcd5e50153702da92f1f46811ce3c54bd8189944f12a6  ruse-1.0.1.tar.gz
+
+tar -xf ruse-1.0.1.tar.gz
+cd ruse-1.0.1
+
+./configure --prefix="$install_prefix"
+make
+make install
+# there are no tests :(
+
+make_module_v2
+chmod -R +rX "$module_dir"
+
+post_build_report
+
