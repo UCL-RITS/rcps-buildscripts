@@ -8,6 +8,7 @@
 # Updated April 2019 for Bioconductor 3.8 which uses a new installation 
 # tool - BiocManager also addeded IlluminaHumanMethylationEPICanno.ilm10b4.hg19
 # Updated April 2020 to remove ROOT for R 3.6.3
+# Updated November 2020 to fix install of INLA for RedHhat 7
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -208,9 +209,18 @@ BiocManager::install ("DEXSeq", type="source", lib=mainLib);
 # Additional CRAN packages
 install.packages ("PSCBS", lib=mainLib, repos=repros);
 
-# INLA
+# INLA - updated with extra packages and to fix binary install of INLA itself with a version that
+# will run on RedHat 7.
 
-install.packages ("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
+# install.packages ("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
+
+install.packages("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/testing"), dep=TRUE);
+
+# Replace binary INLA that doesn't work on redHat 7 with one that does. NOTE: interactive will prompt
+# you to choose the correct binary.
+#
+library (INLA);
+inla.binary.install();
 
 # End of Bioconductor_UCL_1
 
