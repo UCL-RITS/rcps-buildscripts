@@ -6,7 +6,7 @@
 # by Owain Kenway, 2019
 #
 
-VERSION=${VERSION:-5.0.0} # 5.0.0 denotes python 3.8.0 version
+VERSION=${VERSION:-5.0.0} # 5.0.0 denotes python 3.8.x version
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/python/bundles}
 PYTHON_VERSION=${PYTHON_VERSION_TAG:-38}
 
