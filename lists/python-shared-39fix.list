@@ -8,7 +8,7 @@ scipy
 matplotlib
 Cython
 biopython
-acora
+#acora
 python-Levenshtein
 pandas
 ephem
