@@ -19,8 +19,8 @@ cutadapt
 lxml
 astropy
 pyspglib
-scikit-learn
-scikit-image
+#scikit-learn
+#scikit-image
 weblogo
 nibabel
 Pmw
