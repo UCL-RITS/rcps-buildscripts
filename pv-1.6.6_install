@@ -15,13 +15,12 @@ module purge
 make_build_env ""
 
 cd "$build_dir"
-wget -O pv-1.6.6.tar.bz2 https://downloads.sourceforge.net/project/pipeviewer/pipeviewer/1.6.6/pv-1.6.6.tar.bz2
+wget -O pv-1.6.6.tar.gz https://github.com/icetee/pv/archive/v1.6.6.tar.gz
 
 manifest \
-	sha256:839488ebc08446a096a893996ed23eac321ac166724cd8c5d9092057834d2d79 pv-1.6.6.tar.bz2
-	
+    sha256:74a78d4682b91cb7eeb6247780f882871b56fca157ce26dfeb69de14c81ad20c  pv-1.6.6.tar.gz 
 
-tar -xf pv-1.6.6.tar.bz2
+tar -xf pv-1.6.6.tar.gz
 
 cd pv-1.6.6
 # This will happily build statically and we don't want anything to mess with it.
