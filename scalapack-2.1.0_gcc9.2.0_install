@@ -56,7 +56,11 @@ make install
 
 make_module_v2 \
     -d \
-    -v SCALAPACK_HOME="$install_prefix" 
+    -v SCALAPACK_HOME="$install_prefix" \ 
+    -e LD_LIBRARY_PATH:"$install_prefix/lib" \
+    -e LIBRARY_PATH:"$install_prefix/lib" \
+    -e PKG_CONFIG_PATH:"$install_prefix/lib/pkgconfig" \
+    -e CMAKE_PREFIX_PATH:"$install_prefix"
 chmod -R +rX "$module_dir"
 cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
 
