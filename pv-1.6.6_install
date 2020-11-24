@@ -23,9 +23,7 @@ manifest \
 tar -xf pv-1.6.6.tar.gz
 
 cd pv-1.6.6
-# This will happily build statically and we don't want anything to mess with it.
 ./configure \
-    LDFLAGS="-static" \
     --prefix="$install_prefix"
 make
 make check
