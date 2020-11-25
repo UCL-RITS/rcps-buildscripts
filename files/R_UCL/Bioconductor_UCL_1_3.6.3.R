@@ -221,6 +221,7 @@ install.packages("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https:/
 #
 library (INLA);
 inla.binary.install();
+2
 
 # End of Bioconductor_UCL_1
 
