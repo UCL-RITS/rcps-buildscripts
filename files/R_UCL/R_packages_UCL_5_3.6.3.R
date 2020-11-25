@@ -205,6 +205,11 @@ install.packages ("learnr", lib=mainLib, repos=repros);
 
 install.packages ("benchmarkme", lib=mainLib, repos=repros);
 
+# Added November 2020
+
+install.packages ("spatstat", lib=mainLib, repos=repros);
+install.packages ("tictoc", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
