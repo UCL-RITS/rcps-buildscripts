@@ -61,5 +61,7 @@ do
 done
 IFS="$old_IFS"
 
+pip3 freeze > requirements.txt
+
 cd ..
 ln -Tfs $TIME_STAMP-$PYTHON_VERSION python${PYTHON_VERSION}-${VERSION}
