@@ -14,6 +14,7 @@ TYPE=${TYPE:-openmp}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}/${TYPE}}
 SOURCE_DIR=${SOURCE_DIR:-/shared/ucl/apps/molpro/sources/${VERSION}}
 INSTALLER=${INSTALLER:-molpro-mpp-${VERSION}.2.linux_x86_64_${TYPE}.sh}
+TOKEN=${TOKEN:-token_2020-2.txt}
 
 set -e
 
@@ -26,4 +27,17 @@ gunzip ${INSTALLER}.gz
 chmod u+x $INSTALLER
 echo "Running: ./$INSTALLER -batch -prefix $INSTALL_PREFIX"
 ./$INSTALLER -batch -prefix $INSTALL_PREFIX
+
+# Make sure license token is installed as the -batch option may not do this step.
+
+cd ${INSTALL_PREFIX}/lib
+cp ${SOURCE_DIR}/${TOKEN} .token
+
+echo ""
+echo "Molpro $VERSION $TYPE and license token $TOKEN installed."
+echo ""
+echo "On the Tier 2 clusters there is an additional step that must be done - group ownership of:"
+echo "    $INSTALL_PREFIX"
+echo "must be changed to the reserved application group lgmolpro"
+echo ""
 
