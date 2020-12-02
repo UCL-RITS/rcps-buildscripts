@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Molpro OpenMP binary version
+#
+# Version 2020.1
+# December 2020
+
+# You need to register for Molpro, and download a token and binary
+# from their licensee website. Put the token in ~/.molpro/token.
+
+VERSION=${VERSION:-2020.1}
+TYPE=${TYPE:-openmp}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/molpro/${VERSION}/${TYPE}}
+SOURCE_DIR=${SOURCE_DIR:-/shared/ucl/apps/molpro/sources/${VERSION}}
+INSTALLER=${INSTALLER:-molpro-mpp-${VERSION}.2.linux_x86_64_${TYPE}.sh}
+
+set -e
+
+mkdir -p /dev/shm/molpro
+temp_dir=`mktemp -d -p /dev/shm/molpro`
+
+cd $temp_dir
+cp ${SOURCE_DIR}/${INSTALLER}.gz .
+gunzip ${INSTALLER}.gz
+chmod u+x $INSTALLER
+echo "Running: ./$INSTALLER -batch -prefix $INSTALL_PREFIX"
+./$INSTALLER -batch -prefix $INSTALL_PREFIX
+
