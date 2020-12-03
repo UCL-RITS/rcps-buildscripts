@@ -24,7 +24,7 @@ _env_setup() {
 
     package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20201201/6x}"
     package_file="vasp.6.1.2_patched.tgz"
-    unpack_dir="vasp.6.1.2_patche"
+    unpack_dir="vasp.6.1.2_patched"
 
 
 }
