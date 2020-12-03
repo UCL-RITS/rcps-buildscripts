@@ -20,15 +20,11 @@ _env_setup() {
 
     vasp_access_group=legvasp
 
-    # protect even temporary files.
-    newgrp legvasp
-    umask 0027
-
     make_build_env
 
     package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20201201/6x}"
     package_file="vasp.6.1.2_patched.tgz"
-    unpack_dir="vasp.6.1.2_patched}"
+    unpack_dir="vasp.6.1.2_patche"
 
 
 }
