@@ -210,6 +210,10 @@ install.packages ("benchmarkme", lib=mainLib, repos=repros);
 install.packages ("spatstat", lib=mainLib, repos=repros);
 install.packages ("tictoc", lib=mainLib, repos=repros);
 
+# For Ben lauderdale (b.lauderdale@ucl.ac.uk) - December 2020
+
+install.packages ("BradleyTerry2", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
