@@ -14,7 +14,7 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-VERSION=${VERSION:-3.19.3}
+VERSION=${VERSION:-3.19.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cmake/$VERSION/$COMPILER_TAG}
 SHA512=${SHA512:-1a1c9a8546c80f8602babffc7fd398cea5d9163512ef74333f87e26a97ca35358bd0e90423768cfc971ebfed185e19d775737e557e0e982403b77a2ccbcd063a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Kitware/CMake/releases/download/v3.19.1/cmake-3.19.1.tar.gz}
