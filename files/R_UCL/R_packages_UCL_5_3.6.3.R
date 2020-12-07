@@ -214,6 +214,10 @@ install.packages ("tictoc", lib=mainLib, repos=repros);
 
 install.packages ("BradleyTerry2", lib=mainLib, repos=repros);
 
+# For Adam Dennett (a.dennett@ucl.ac.uk) - December 2020.
+
+install.packages ("geojsonio", lib=mainLib, repos=repros);
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);
