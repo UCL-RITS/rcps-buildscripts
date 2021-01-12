@@ -41,7 +41,6 @@ cp /shared/ucl/apps/pkg-store/cellranger-extra-files/sge.template "$install_path
 make_module \
     -d \
     -c "${package_name}" \
-    -r bcl2fastq2 \
     -o "$install_path/.tcl_env_modules.generated/cellranger/${package_version}" \
     -e PATH:"$install_path/bin" \
     -v UCLRC_CELLRANGER_REFS_DIR="${cellranger_base}/references" \
