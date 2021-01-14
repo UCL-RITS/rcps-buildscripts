@@ -19,11 +19,10 @@ COMSOLGROUP=${COMSOLGROUP:-lgcomsol}
 
 set -e
 
-if [ "$USER" != "ccspapp" ]
-then
-    echo "Must use ccspapp to install this for the lgcomsol group"
-    exit 1
-fi
+echo ""
+echo "**** WARNING: Must use an account that is in the $COMSOLGROUP group to install or chown and"
+echo "     chgrp after installation to a suitable account."
+echo ""
 
 # Check if LICSERV is empty
 if [ -z "$LICSERV" ]
