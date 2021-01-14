@@ -62,7 +62,7 @@ sed -i -e "s|firewall = 1|firewall = 0|" setupconfig.ini
 # set permissions to restricted group only
 chgrp -Rv "$COMSOLGROUP" "$INSTALL_PREFIX"
 chmod o-rx "$INSTALL_PREFIX"
-cd $INSTALL_PREFIX/..
+cd ${INSTALL_PREFIX}/../..
 chgrp -v "$COMSOLGROUP" "comsol${VERSION}"
 chmod o-rx "comsol${VERSION}"
 cd -
