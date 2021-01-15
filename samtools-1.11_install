@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="samtools"
+package_version="1.11"
+package_description="Tools for reading/writing/editing/indexing/viewing SAM/BAM/CRAM formatted data."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/4.9.2
+module load compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O samtools-1.11.tar.bz2 https://github.com/samtools/samtools/releases/download/1.11/samtools-1.11.tar.bz2
+
+manifest \
+	sha256:e283cebd6c1c49f0cf8a3ca4fa56e1d651496b4d2e42f80ab75991a9ece4e5b6 samtools-1.11.tar.bz2
+	
+
+tar -xf samtools-1.11.tar.bz2
+
+cd samtools-1.11
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
