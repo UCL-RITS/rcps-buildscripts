@@ -32,6 +32,7 @@ make
 make check
 make install
 
+module unload compilers
 make_module_v2
 chmod a+rX "$module_dir"
 post_build_report
