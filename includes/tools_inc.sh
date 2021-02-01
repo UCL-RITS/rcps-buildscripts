@@ -134,7 +134,6 @@ make_build_env () {
     #  but are *not* exported because only *bash* needs them
     owd=$(pwd)                                                                    
     build_dir="${BUILD_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-build.XXXXXXXXXX")"}"
-    module_dir="${MODULE_DIR:-$(mkdir -p "$build_dir/.uclrc_modules" && echo "$build_dir/.uclrc_modules")}"
     
 
     if [[ -n "${package_name:-}" ]] && [[ -n "${package_version:-}" ]]; then
@@ -159,6 +158,8 @@ make_build_env () {
     else
         install_prefix="$default_install_prefix"
     fi
+    
+    module_dir="${MODULE_DIR:-"$install_prefix/.uclrc_modules"}"
 
     cat <<EOF
     =====================
