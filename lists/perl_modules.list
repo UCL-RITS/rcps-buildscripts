@@ -170,3 +170,4 @@ File::ShareDir::Install
 File::ShareDir
 MIME::Lite
 Set::IntervalTree
+File::Rename
