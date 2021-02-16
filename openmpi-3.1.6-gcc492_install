@@ -16,7 +16,7 @@ _env_setup() {
     require compilers/gnu/4.9.2
 
     # On Myriad, build with UCX
-    if [ cluster == "myriad" ]
+    if [ $cluster == "myriad" ]
     then
         require numactl/2.0.12
         require binutils/2.29.1/gnu-4.9.2
