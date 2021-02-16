@@ -10,6 +10,7 @@ source includes/source_includes.sh
 
 _env_setup() {
     module purge
+    require beta-modules
     require gcc-libs/10.2.0
     require compilers/gnu/10.2.0
     require numactl/2.0.12
