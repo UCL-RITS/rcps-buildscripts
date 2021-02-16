@@ -27,7 +27,7 @@ _file_setup() {
 
     wget "$package_url"
 
-    manifest sha512:d748d22306477d60d921078804d21943248c23fca0707aac9b016a352c01c75ca69e82624ae37fb0bbd03af3b17088a94f60dfe1a86a7ff82e18ece3c24f0fd0 ${package_file}
+    manifest sha512:cc24590bcead10b90763386b6f96bb027d7594c659c2d95174a6352e8b98465a50ec3e4088d0da038428abe059bbc4ae5f37b269f31a40fc048072c8a234f4e9 ${package_file}
 
     tar -xf "$package_file"
 }
