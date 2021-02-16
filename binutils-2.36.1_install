@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="binutils"
+package_version="2.36.1"
+package_description="The GNU binutils are a collection of tools for working with binary files and assembling and disassembling machine instructions."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require beta-modules
+    require gcc-libs/10.2.0
+    require compilers/gnu/10.2.0
+
+    make_build_env ""
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.xz"
+    package_url="http://ftp.gnu.org/gnu/${package_name}/${package_name}-${package_version}.tar.xz"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha512:d748d22306477d60d921078804d21943248c23fca0707aac9b016a352c01c75ca69e82624ae37fb0bbd03af3b17088a94f60dfe1a86a7ff82e18ece3c24f0fd0 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure --prefix="$install_prefix" --enable-shared --disable-gold --disable-ld --enable-install-libiberty
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    # If you try to build in parallel, binutils fails
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+    make check 
+
+    make install
+
+    # If these become the first in the path, they break gcc
+    #  and cause errors like:
+    # /usr/bin/ld: /tmp/cc7A0CW5.o: access beyond end of merged section (479)
+    mv "$install_prefix/bin/as" "$install_prefix/bin/as.x"
+    mv "$install_prefix/x86_64-pc-linux-gnu/bin/as" "$install_prefix/x86_64-pc-linux-gnu/bin/as.x"
+
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -c "${package_name}" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -r gcc-libs 
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
