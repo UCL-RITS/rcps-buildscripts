@@ -74,7 +74,6 @@ _post_build() {
         -p "$install_prefix" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
         -c "mpi" \
-        -d \
         -v "MPI_HOME=${install_prefix}" \
         -v "MPI_RUN=${install_prefix}/bin/mpirun" \
         -v "GERUN_LAUNCHER=openmpi-sge" \
