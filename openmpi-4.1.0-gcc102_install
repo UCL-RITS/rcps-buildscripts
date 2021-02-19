@@ -80,6 +80,8 @@ _post_build() {
         -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp3+/bin" \
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
+    echo "This modulefile needs manual intervention to add the correct ucl-wrapper to the PATH"
+    echo "and to add the Myriad-specific UCX alterations."
     cd "$owd"
 }
 
