@@ -1,0 +1,30 @@
+#!/bin/bash
+
+package_name=jq
+package_version=1.6
+package_variant=bindist
+package_description="jq is a lightweight and flexible command-line JSON processor."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "https://github.com/stedolan/jq/releases/download/jq-$package_version/jq-linux64"
+manifest \
+    sha256:af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44  jq-linux64 
+
+mkdir -p "$install_prefix/bin"
+
+cp jq-linux64 "$install_prefix/bin/jq"
+chmod +x "$install_prefix/bin/jq"
+
+make_module_v2
+post_build_report
