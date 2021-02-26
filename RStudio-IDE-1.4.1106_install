@@ -15,7 +15,7 @@ PARTCODE=${PARTCODE:-f1ac345}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/RStudio/IDE}
 SHA256=${SHA256:-b52d4bb51350d89bb15bf214642d690c0a64f346874afa8ffef86eca8dc1b13e}
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://download1.rstudio.org/desktop/centos7/x86_64/rstudio-${VERSION}-x86_64-fedora.tar.gz}
-LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- rstudio-${VERSION}-x86_64-fedora.tar.gz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-rstudio-${VERSION}-x86_64-fedora.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
