@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Install RStudio IDE for use with r/recommended etc
+#
+# RStudio 1.4.1106 binary install
+#
+# by Brian Alston, July 2019
+# updated for RStudio IDE February 2021
+#
+
+
+VERSION=${VERSION:-1.4.1106}
+PARTCODE=${PARTCODE:-f1ac345}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/RStudio/IDE}
+SHA256=${SHA256:-b52d4bb51350d89bb15bf214642d690c0a64f346874afa8ffef86eca8dc1b13e}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://download1.rstudio.org/desktop/centos7/x86_64/rstudio-${VERSION}-x86_64-fedora.tar.gz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- rstudio-${VERSION}-x86_64-fedora.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+
+wget -O $LOCAL_ARCHIVE $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum $LOCAL_ARCHIVE | awk '{print $1}'`
+
+if [[ "$SHA256" == "$CHECKSUM" ]]
+then
+    cd $INSTALL_PREFIX
+    tar -xvf $temp_dir/$LOCAL_ARCHIVE
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $SHA256"
+   echo "	Got:      $CHECKSUM"
+fi
