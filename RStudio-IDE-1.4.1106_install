@@ -35,6 +35,7 @@ CHECKSUM=`sha256sum $LOCAL_ARCHIVE | awk '{print $1}'`
 
 if [[ "$SHA256" == "$CHECKSUM" ]]
 then
+    mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
     tar -xvf $temp_dir/$LOCAL_ARCHIVE
 else
