@@ -37,7 +37,7 @@ if [[ "$SHA256" == "$CHECKSUM" ]]
 then
     mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
-    tar -xvf $temp_dir/$LOCAL_ARCHIVE
+    tar -xvf ${temp_dir}/${LOCAL_ARCHIVE}
 else
    echo "***** Hash mismatch,"
    echo "	Expected: $SHA256"
