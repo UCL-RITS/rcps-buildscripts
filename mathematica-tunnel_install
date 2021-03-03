@@ -9,8 +9,9 @@
 # Updated January 2018 for Mathematica 11.3.
 # Updated May 2018 for MAthematica 11.3
 # Updated February 2019 to copy tunnel support scripts to /shared/ucl/apps/Mathematica/UCL
+# Updated March 2021 for Mathematica 12.2
 #
-# Will need modules: rcps-core/1.0.0, mathematica/11.3.0 ,git/2.10.2
+# Will need modules: rcps-core/1.0.0, mathematica/12.2.0 ,git/2.10.2
 
 VERSION=${VERSION:-2.2.20}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
@@ -28,9 +29,9 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require gcc-libs/4.9.2
+require gcc-libs
 require xorg-utils/X11R7.7
-require mathematica/11.3.0
+require mathematica/12.2.0
 require git/2.19.1
 
 temp_dir=`mktemp -d -p /dev/shm`
