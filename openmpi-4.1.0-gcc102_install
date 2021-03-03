@@ -69,6 +69,9 @@ _post_build() {
 
     make install
 
+    # useful to keep the config.log for MPI installs
+    cp "$build_dir/$unpack_dir/config.log" "$install_prefix"
+
     make_module_v2 \
         -o "${module_dir}/mpi/${package_label}" \
         -p "$install_prefix" \
