@@ -7,6 +7,6 @@ protected = Unprotect[$ProcessorCount]
 $ProcessorCount = ToExpression [Environment["OMP_NUM_THREADS"]]
 protected = Protect [$ProcessorCount]
 
-WriteString [$Output, "Mathematica running on Legion, Grace and Aristotle at UCL"]
+WriteString [$Output, "Mathematica running on Myriad, Kathleen, Aristotle etc. at UCL"]
 
 End[]
