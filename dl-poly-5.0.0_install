@@ -41,6 +41,7 @@ cmake \
     -DMPI_Fortran_COMPILER=mpiifort \
     -DCMAKE_INSTALL_PREFIX="$install_prefix" \
     -DBUILD_TESTING=on \
+    -DWITH_MPI=on \
     -DPYTHON_EXECUTABLE="$(command -v python3)" \
     ../
 
