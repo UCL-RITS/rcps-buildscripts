@@ -49,6 +49,9 @@ make
 make test
 make install
 
+# Removing build-time dependency so that it doesn't get included in the modulefile
+module unload python
+
 make_module_v2
 chmod a+rX "$module_dir"
 post_build_report
