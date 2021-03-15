@@ -1,0 +1,54 @@
+#!/bin/bash
+
+package_name="dl-poly"
+package_version="5.0.0"
+package_description="DL_POLY is a general-purpose classical molecular dynamics (MD) simulation software package."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs
+require cmake
+
+# Current defaults, 2021-03-15
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+
+# Needs python 3 at build time, for tests, not for runtime
+require python
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O dl-poly-5.0.0.tar.gz https://gitlab.com/ccp5/dl-poly/-/archive/5.0.0/dl-poly-5.0.0.tar.gz
+
+manifest \
+	sha256:00aeffd94a991b36d41bd629d5cb8f4e7796d2c07759e6d94687c4eae7d731ac dl-poly-5.0.0.tar.gz
+	
+
+tar -xf dl-poly-5.0.0.tar.gz
+
+cd dl-poly-5.0.0
+mkdir this-build
+cd this-build
+
+# Basic install, no extras
+cmake \
+    -DMPI_Fortran_COMPILER=mpiifort \
+    -DCMAKE_INSTALL_PREFIX="$install_prefix" \
+    -DBUILD_TESTING=on \
+    -DPYTHON_EXECUTABLE="$(command -v python3)" \
+    ../
+
+make
+make test
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
