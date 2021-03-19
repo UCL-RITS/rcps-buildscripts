@@ -18,7 +18,7 @@ actual_file_md5=3a1a9bff20cb06b7d97c46d337504447
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
 require openblas/0.3.13-native-threads/gnu-10.2.0
-require cmake/3.2.1 # needs >=2.8.12
+require cmake/3.19.1 # needs >=2.8.12
 
 _env_setup() {
   owd=$(pwd)
