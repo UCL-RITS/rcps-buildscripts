@@ -58,8 +58,9 @@ _build() {
 _prepare_module() {
   make_module -p "$install_prefix" \
               -c "${package_name}" \
-              -r "gcc-libs/4.9.2" \
-              -r "compilers/intel/2015/update2" \
+              -r "gcc-libs/10.2.0" \
+              -r "compilers/gnu/10.2.0" \
+	      -r "openblas/0.3.13-native-threads/gnu-10.2.0" \
               -o "$module_dir/$package_label" \
               -w "Adds ${package_name} ${package_version} to your environment. $package_description"
   echo "Module files put in: $module_dir" >&2
