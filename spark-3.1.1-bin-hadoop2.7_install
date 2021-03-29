@@ -1,0 +1,32 @@
+#!/bin/bash
+
+package_name="spark"
+package_version="3.1.1"
+package_description="Apache Spark is an analytics engine for data processing."
+package_variant="bin-hadoop2.7"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O spark-3.1.1-bin-hadoop2.7.tgz https://www.mirrorservice.org/sites/ftp.apache.org/spark/spark-3.1.1/spark-3.1.1-bin-hadoop2.7.tgz
+
+manifest \
+	sha256:4e0846207bf10311de43451bc99309086fce7990aaf54bf3038608b1981afbe7 spark-3.1.1-bin-hadoop2.7.tgz
+
+mkdir -p "$install_prefix"
+cd "$install_prefix"
+tar --strip-components=1 -xf "$build_dir"/spark-3.1.1-bin-hadoop2.7.tgz
+
+# This has to be Python 3 but there's no way to specify that in our current module setup
+make_module_v2 -r java -r python
+chmod a+rX "$module_dir"
+post_build_report
+
