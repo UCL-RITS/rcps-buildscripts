@@ -132,6 +132,9 @@ function make_module_v2() {
         if [[ -d "$module_prefix/bin" ]]; then
             printf -v prefix_block "%sprepend-path PATH %s\n" "$prefix_block" '$prefix/bin'
         fi
+        if [[ -d "$module_prefix/sbin" ]]; then
+            printf -v prefix_block "%sprepend-path PATH %s\n" "$prefix_block" '$prefix/sbin'
+        fi
         if [[ -d "$module_prefix/include" ]]; then
             printf -v prefix_block "%sprepend-path CPATH %s\nprepend-path INCLUDE_PATH %s\n" "$prefix_block" '$prefix/include' '$prefix/include'
         fi
