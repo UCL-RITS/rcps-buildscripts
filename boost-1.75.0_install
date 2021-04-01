@@ -1,0 +1,44 @@
+#!/bin/bash
+
+package_name="boost"
+package_version="1.75.0"
+package_description="Boost is a collection of miscellaneous C++ libraries. This build does not include Python bindings or MPI support, and is multi-threaded."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+# It needs a C++ compiler that is at least C++11 compliant but that's it.
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O boost_1_75_0.tar.bz2 https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.bz2
+
+manifest \
+	sha256:953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb boost_1_75_0.tar.bz2
+	
+
+tar -xf boost_1_75_0.tar.bz2
+
+cd boost_1_75_0
+./bootstrap.sh \
+    --with-libraries=all\
+    --without-libraries=python,mpi,graph_parallel\
+    --prefix="$install_prefix"
+./b2 \
+    install
+#   Use this to build single-threaded version:
+#    --threading=single
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
+
