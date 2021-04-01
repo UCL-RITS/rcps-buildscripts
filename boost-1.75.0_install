@@ -37,6 +37,8 @@ cd boost_1_75_0
 #   Use this to build single-threaded version:
 #    --threading=single
 
+# We want to load the compiler module for the build tag but it's not a runtime dependency.
+module unload compilers
 make_module_v2
 chmod a+rX "$module_dir"
 post_build_report
