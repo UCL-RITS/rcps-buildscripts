@@ -33,7 +33,12 @@ tar -xf /shared/ucl/apps/pkg-store/cellranger-${package_version}.tar.gz
 mkdir -p "$cellranger_base/references"
 cd "$cellranger_base/references"
 
-tar -xf /shared/ucl/apps/pkg-store/cellranger-reference-genomes/refdata-gex-GRCh38-and-mm10-2020-A.tar.gz
+# Only unpack the reference if it isn't already there.
+reference_tar_file="/shared/ucl/apps/pkg-store/cellranger-reference-genomes/refdata-gex-GRCh38-and-mm10-2020-A.tar.gz"
+contents_dir="$(tar -tf "$reference_tar_file" | head -n 1 )"
+if [[ ! -d "$contents_dir" ]]; then
+    tar -xf /shared/ucl/apps/pkg-store/cellranger-reference-genomes/refdata-gex-GRCh38-and-mm10-2020-A.tar.gz
+fi
 
 # copy in our configured version of the automatic job submission template
 cp /shared/ucl/apps/pkg-store/cellranger-extra-files/sge.template "$install_path/external/martian/jobmanagers/"
