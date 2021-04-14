@@ -42,6 +42,7 @@ fi
 
 # copy in our configured version of the automatic job submission template
 cp /shared/ucl/apps/pkg-store/cellranger-extra-files/sge.template "$install_path/external/martian/jobmanagers/"
+sed --in-place "s/%CELLRANGER_VERSION_TAG%/$package_version/" "$install_path/external/martian/jobmanagers/sge.template"
 
 make_module \
     -d \
