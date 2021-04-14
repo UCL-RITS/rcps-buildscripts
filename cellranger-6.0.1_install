@@ -35,7 +35,7 @@ cd "$cellranger_base/references"
 
 # Only unpack the reference if it isn't already there.
 reference_tar_file="/shared/ucl/apps/pkg-store/cellranger-reference-genomes/refdata-gex-GRCh38-and-mm10-2020-A.tar.gz"
-contents_dir="$(tar -tf "$reference_tar_file" | head -n 1 )"
+contents_dir="$(tar -tf "$reference_tar_file" | sed -n 1p )"
 if [[ ! -d "$contents_dir" ]]; then
     tar -xf /shared/ucl/apps/pkg-store/cellranger-reference-genomes/refdata-gex-GRCh38-and-mm10-2020-A.tar.gz
 fi
