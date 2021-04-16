@@ -41,7 +41,6 @@ then
 
    cmake . -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PREFIX
    make
-   make check
    make install
 
 else
