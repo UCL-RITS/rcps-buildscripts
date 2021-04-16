@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ATLAS Ancient DNA Analysis
+#
+# by Brian Alston April 2021
+
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require openblas/0.3.13-native-threads/gnu-10.2.0
+require arpack-ng/3.8.0-threaded/gnu-10.2.0
+require superlu/5.2.1/gnu-10.2.0
+require armadillo/10.4.0/gnu-10.2.0
+
+APPNAME=${APPNAME:-ATLAS-ADNA}
+TODAY=${TODAY:-`date +%F`}
+VERSION=${VERSION:-0.9_${TODAY}}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://bitbucket.org/WegmannLab/atlas.git}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+git clone --depth 1 $SRC_ARCHIVE
+cd atlas
+make
+
+# No make install so:
+mkdir -p $INSTALL_PREFIX/bin
+cp atlas $INSTALL_PREFIX/bin/
+
+# I'm not sure if any support files are needed from the git clone so stopping at this point.
