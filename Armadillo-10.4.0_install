@@ -5,11 +5,6 @@
 #
 # by Brian Alston, April 2021
 
-VERSION=${VERSION:-10.4.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Armadillo/${VERSION}-${COMPILER_TAG} }
-MD5=${MD5:-9479b5ec68c0cc6b56abb0fbbd590faa}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/arma/files/armadillo-${VERSION}.tar.xz}
-INSTALL_ARCHIVE=${INSTALL_ARCHIVE:-armadillo-${VERSION}.tar.xz}
 
 set -e
 
@@ -29,6 +24,12 @@ require openblas/0.3.13-native-threads/gnu-10.2.0
 require arpack-ng/3.8.0-threaded/gnu-10.2.0
 require superlu/5.2.1/gnu-10.2.0
 require cmake/3.19.1 # needs >=2.8.12
+
+VERSION=${VERSION:-10.4.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Armadillo/${VERSION}-${COMPILER_TAG} }
+MD5=${MD5:-9479b5ec68c0cc6b56abb0fbbd590faa}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/arma/files/armadillo-${VERSION}.tar.xz}
+INSTALL_ARCHIVE=${INSTALL_ARCHIVE:-armadillo-${VERSION}.tar.xz}
 
 wget $SRC_ARCHIVE
 
