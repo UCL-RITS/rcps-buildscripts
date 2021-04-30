@@ -151,10 +151,10 @@ function make_module_v2() {
             printf -v prefix_block "%sprepend-path PKG_CONFIG_PATH %s\n" "$prefix_block" '$prefix/lib64/pkgconfig'
         fi
         if [[ -d "$module_prefix/man" ]]; then
-            printf -v prefix_block "%sprepend-path MAN_PATH %s\n" "$prefix_block" '$prefix/man'
+            printf -v prefix_block "%sprepend-path MANPATH %s\n" "$prefix_block" '$prefix/man'
         fi
         if [[ -d "$module_prefix/share/man" ]]; then
-            printf -v prefix_block "%sprepend-path MAN_PATH %s\n" "$prefix_block" '$prefix/share/man'
+            printf -v prefix_block "%sprepend-path MANPATH %s\n" "$prefix_block" '$prefix/share/man'
         fi
         if [[ -d "$module_prefix/share/info" ]]; then
             printf -v prefix_block "%sprepend-path INFO_PATH %s\n" "$prefix_block" '$prefix/share/info'
