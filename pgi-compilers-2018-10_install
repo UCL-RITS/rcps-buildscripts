@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+package_name="pgi"
+package_version="18.10"
+# Optional: 
+# package_variant=""
+package_description="The PGI Compilers are primarily installed to build Gaussian, which is not compatible with other compilers. Please do not use these over the Intel or GNU compilers unless you have a good reason for doing so."
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+
+make_build_env --tmp-root=/dev/shm
+
+cd "$build_dir"
+# These require a username and password to download, so we have them stored on the systems already.
+# UCL RCAS/RCI/ARC/RCPS people, see internal wiki entry for how to obtain this: 
+#  https://wiki.ucl.ac.uk/display/ISResComInternal/Licence+Manager+Support+Notes
+package_tar=/shared/ucl/apps/PGI/installers/pgilinux-20${package_version:0:2}-${package_version:0:2}${package_version##*\.}-x86-64.tar.gz
+tar -xf "$package_tar"
+
+# It's a tarbomb, so the install script is just in the same directory you unpacked it in.
+
+export PGI_SILENT=true
+export PGI_ACCEPT_EULA=accept
+export PGI_INSTALL_TYPE=single
+export PGI_INSTALL_DIR="$install_prefix"
+#  export PGI_INSTALL_LOCAL_DIR=$install_prefix
+export PGI_INSTALL_NVIDIA=true
+export PGI_INSTALL_AMD=true
+export PGI_INSTALL_JAVA=true
+export PGI_INSTALL_MPI=true
+export PGI_MPI_GPU_SUPPORT=true
+./install
+
+cat >> "$install_prefix/linux86-64/$package_version/bin/siterc" \
+<<EOF
+append LDLIBARGS="-L/shared/ucl/apps/gcc/4.9.2/lib64";
+EOF
+cat >> "$install_prefix/linux86-64-llvm/$package_version/bin/siterc" \
+<<EOF
+append LDLIBARGS="-L/shared/ucl/apps/gcc/4.9.2/lib64";
+EOF
+
+# This isn't needed during install, just to create the modulefile
+LM_LICENSE_FILE=27000@lic-pgi.ucl.ac.uk
+
+# The PGI bundle packs together basically two separate prefixes, one for the LLVM version and one for the non-LLVM version.
+# So we set the prefix to those for each module generation.
+pgi_prefix_llvm="$install_prefix/linux86-64-llvm/$package_version"
+pgi_prefix_no_llvm="$install_prefix/linux86-64/$package_version"
+
+make_module \
+    -w "$package_description" \
+    -p "$pgi_prefix_no_llvm" \
+    -o "$module_dir/compilers/pgi/$package_version" \
+    -r gcc-libs \
+    -c compilers \
+    -c pgi \
+    -v PGI="$install_prefix" \
+    -a LM_LICENSE_FILE:"$LM_LICENSE_FILE" \
+    -v CC=pgcc \
+    -v CXX=pgc++ \
+    -v FC=pgfortran \
+    -v F90=pgf90 \
+    -v F77=pgf77 \
+    -v CXXCPP="pgc++ -E" \
+    -v COMPILER_TAG="pgi-$package_version"
+make_module \
+    -w "$package_description" \
+    -p "$pgi_prefix_llvm" \
+    -o "$module_dir/compilers/pgi/$package_version-llvm" \
+    -r gcc-libs \
+    -c compilers \
+    -c pgi \
+    -v PGI="$install_prefix" \
+    -a LM_LICENSE_FILE:"$LM_LICENSE_FILE" \
+    -v CC=pgcc \
+    -v CXX=pgc++ \
+    -v FC=pgfortran \
+    -v F90=pgf90 \
+    -v F77=pgf77 \
+    -v CXXCPP="pgc++ -E" \
+    -v COMPILER_TAG="pgi-$package_version-llvm"
+
+post_build_report
+
