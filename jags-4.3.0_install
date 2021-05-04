@@ -45,6 +45,7 @@ then
            --with-blas="-lopenblas" \
            --with-lapack="-lopenblas"
    make
+   make check
    make install
    ( cd $INSTALL_PREFIX; ln -s lib lib64 )
 
