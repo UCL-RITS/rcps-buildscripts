@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CppUnit built with with GCC
+#
+# by Brian Alston, May 2021
+#
+# CppUnit is a C++ framework for unit testing similar
+# to CUnit.
+#
+
+VERSION=${VERSION:-1.15.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/CppUnit/${VERSION}}
+MD5=${MD5:-9dc669e6145cadd9674873e24943e6dd}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://dev-www.libreoffice.org/src/cppunit-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require rcps-core/1.0.0
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum cppunit-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf cppunit-${VERSION}.tar.gz
+   cd cppunit-${VERSION}
+   ./configure --prefix=$INSTALL_PREFIX
+   make
+   make check
+   make install
+   # ( cd $INSTALL_PREFIX; ln -s lib lib64 )
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
