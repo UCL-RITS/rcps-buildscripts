@@ -8,6 +8,7 @@
 # Now using Ian's require function to load modules
 #
 # Will need modules: rcps-core/1.0.0, compilers/gnu/4.9.2 and openblas/0.3.7-native-threads/gnu-4.9.2
+# alsdo needs the CppUnit module to allow make check to work
 #
 # Updated: July 2016 for JAGS 4.2.0
 # Updated: May 2021 for JAGS 4.3.0 and openblas/0.3.7-native-threads/gnu-4.9.2
@@ -28,6 +29,7 @@ require rcps-core/1.0.0
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require openblas/0.3.7-native-threads/gnu-4.9.2
+require cppunit/1.15.1/gnu-4.9.2
 
 temp_dir=`mktemp -d -p /dev/shm`
 
