@@ -18,7 +18,7 @@ _env_setup() {
     require  compilers/intel/2019/update5
     require  mpi/intel/2019/update5/intel
 
-    vasp_access_group=legvasp
+    vasp_access_group=legvasp6
 
     make_build_env
 
