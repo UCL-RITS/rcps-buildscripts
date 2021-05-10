@@ -53,6 +53,8 @@ _post_build() {
   chgrp -R "$vasp_access_group" "$install_prefix"
   mkdir -p "$install_prefix/bin"
   'cp' -v "$unpack_dir"/bin/vasp* "$install_prefix/bin"
+  chgrp -Rv "$vasp_access_group" "$install_prefix"
+  chmod -R o-rwx "$install_prefix" 
 
   # These are fiddlier to deal with now -- will separate from VASP exe installs
   #mkdir -p "$install_prefix/potentials"
