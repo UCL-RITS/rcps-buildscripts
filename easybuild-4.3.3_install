@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+package_name="easybuild"
+package_version="4.3.3"
+install_prefix=${install_prefix:-"/shared/ucl/apps/$package_name/$package_version"}
+eb_python="/shared/ucl/apps/python/3.8.6/gnu-4.9.2"
+eb_modulecmd="/shared/ucl/apps/modules/4.7.0"
+
+set -e
+
+source includes/source_includes.sh
+
+module purge
+
+# Easybuild needs a python that it uses without loading a module
+export PATH="$eb_python/bin:$PATH"
+export LD_LIBRARY_PATH="$eb_python/lib:$LD_LIBRARY_PATH"
+
+export EB_PYTHON="$eb_python/bin/python3"
+export EASYBUILD_PREFIX="$install_prefix"
+
+# have to use newer version of modulecmd and add EB's module locations to MODULEPATH
+export PATH="$eb_modulecmd/bin:$PATH"
+export MODULESHOME="$eb_modulecmd"
+export MODULEPATH="$EASYBUILD_PREFIX/modules/compiler:$EASYBUILD_PREFIX/modules/devel:$EASYBUILD_PREFIX/modules/lang:$EASYBUILD_PREFIX/modules/lib:$EASYBUILD_PREFIX/modules/mpi:$EASYBUILD_PREFIX/modules/system:$EASYBUILD_PREFIX/modules/tools:$MODULEPATH"
+
+# Tell EB which module command we have, and what layout of modules to create.
+# CategorizedModuleNamingScheme uses module names like category/program/version-toolchain
+export EASYBUILD_MODULES_TOOL=EnvironmentModules
+export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme
+
+# This is the bootstrapped EB install, which installs the current PyPI version.
+# You can also pre-download the source tars and export $EASYBUILD_BOOTSTRAP_SOURCEPATH 
+# to point at their location before running the bootstrap script.
+wget https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+python3 bootstrap_eb.py $EASYBUILD_PREFIX
+
+module load tools/EasyBuild
+export EASYBUILD_CONFIGFILES=/shared/ucl/apps/buildscripts/easybuild/easybuild_config/UCL_config.cfg
+
+# create a tmplogs directory - during-build logs go here.
+mkdir -p $EASYBUILD_PREFIX/tmplogs
+
+echo "EasyBuild itself is installed: now run easybuild-4.3.3-fosstoolchain_install"
+
