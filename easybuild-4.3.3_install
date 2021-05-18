@@ -31,7 +31,7 @@ wget "$src_eb_configs"
 wget "$src_eb_blocks"
 manifest sha1:"$sha1_eb_framework" "$(basename "$src_eb_framework")"
 manifest sha1:"$sha1_eb_configs" "$(basename "$src_eb_configs")"
-manifest sha1:"$sha1_eb_blocks" "$(basename "$src_eb_configs")"
+manifest sha1:"$sha1_eb_blocks" "$(basename "$src_eb_blocks")"
 
 export EASYBUILD_BOOTSTRAP_SOURCEPATH="$build_dir"
 
