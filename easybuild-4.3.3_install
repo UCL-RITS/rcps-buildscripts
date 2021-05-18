@@ -2,15 +2,38 @@
 
 package_name="easybuild"
 package_version="4.3.3"
-install_prefix=${install_prefix:-"/shared/ucl/apps/$package_name/$package_version"}
+#install_prefix=${install_prefix:-"/shared/ucl/apps/$package_name/$package_version"}
 eb_python="/shared/ucl/apps/python/3.8.6/gnu-4.9.2"
 eb_modulecmd="/shared/ucl/apps/modules/4.7.0"
 
-set -e
+src_eb_framework="https://github.com/easybuilders/easybuild-framework/archive/refs/tags/easybuild-framework-v${package_version}.tar.gz"
+src_eb_configs="https://github.com/easybuilders/easybuild-easyconfigs/archive/refs/tags/easybuild-easyconfigs-v${package_version}.tar.gz"
+src_eb_blocks="https://github.com/easybuilders/easybuild-easyblocks/archive/refs/tags/easybuild-easyblocks-v${package_version}.tar.gz"
+sha1_eb_framework="1c8d36ab915b61440ee0fb092ef5c7de58d7abbe"
+sha1_eb_configs="b00db76a3bde1d516b611c2c3ea69edf15ea2f89"
+sha1_eb_blocks="923789d3fb4b7fe54907f96228a1f2849e96e7e8"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
 
 source includes/source_includes.sh
 
 module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+# use a specific version of EB and not just the most recent
+wget "$src_eb_framework"
+wget "$src_eb_configs"
+wget "$src_eb_blocks"
+manifest sha1:"$sha1_eb_framework" "$(basename "$src_eb_framework")"
+manifest sha1:"$sha1_eb_configs" "$(basename "$src_eb_configs")"
+manifest sha1:"$sha1_eb_blocks" "$(basename "$src_eb_configs")"
+
+export EASYBUILD_BOOTSTRAP_SOURCEPATH="$build_dir"
 
 # Easybuild needs a python that it uses without loading a module
 export PATH="$eb_python/bin:$PATH"
