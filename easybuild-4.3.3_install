@@ -37,7 +37,7 @@ export EASYBUILD_BOOTSTRAP_SOURCEPATH="$build_dir"
 
 # Easybuild needs a python that it uses without loading a module
 export PATH="$eb_python/bin:$PATH"
-export LD_LIBRARY_PATH="$eb_python/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$eb_python/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 export EB_PYTHON="$eb_python/bin/python3"
 export EASYBUILD_PREFIX="$install_prefix"
