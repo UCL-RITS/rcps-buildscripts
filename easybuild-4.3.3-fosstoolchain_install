@@ -34,6 +34,9 @@ source "$eb_prefix/easybuild_setup.sh"
 
 export EASYBUILD_CONFIGFILES=/shared/ucl/apps/buildscripts/easybuild/easybuild_config/UCL_config.cfg
 
+# Use this number of cores at maximum
+export EASYBUILD_PARALLEL=12
+
 module load EasyBuild/4.3.3 
 
 # Need our gcc-libs actually loaded so GCCcore-10.2.0.eb builds correctly. 
