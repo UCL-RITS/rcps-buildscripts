@@ -67,6 +67,7 @@ mkdir -p $EASYBUILD_PREFIX/tmplogs
 # make an easybuild_setup.sh script for this install that we can use later
 cat <<EOF > $EASYBUILD_PREFIX/easybuild_setup.sh
 #!/bin/bash
+# Source this script to set up EasyBuild in your current session.
 
 module purge
 echo "Unloading all modules"
