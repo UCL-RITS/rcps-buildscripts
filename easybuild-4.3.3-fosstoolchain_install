@@ -24,7 +24,7 @@ module purge
 
 # Locate EasyBuild's python
 export PATH="$eb_python/bin:$PATH"
-export LD_LIBRARY_PATH="$eb_python/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$eb_python/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export EB_PYTHON="$eb_python/bin/python3"
 
 export EASYBUILD_PREFIX="$eb_prefix"
