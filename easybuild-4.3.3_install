@@ -69,12 +69,14 @@ cat <<EOF > $EASYBUILD_PREFIX/easybuild_setup.sh
 #!/bin/bash
 
 module purge
+echo "Unloading all modules"
+
 EASYBUILD_PREFIX=$EASYBUILD_PREFIX
 export MODULESHOME=$eb_modulecmd
+echo "Set modules version in use to $eb_modulecmd"
+
 export MODULEPATH=\$EASYBUILD_PREFIX/modules/base:\$EASYBUILD_PREFIX/modules/astro:\$EASYBUILD_PREFIX/modules/bio:\$EASYBUILD_PREFIX/modules/cae:\$EASYBUILD_PREFIX/modules/chem:\$EASYBUILD_PREFIX/modules/compiler:\$EASYBUILD_PREFIX/modules/data:\$EASYBUILD_PREFIX/modules/debugger:\$EASYBUILD_PREFIX/modules/devel:\$EASYBUILD_PREFIX/modules/geo:\$EASYBUILD_PREFIX/modules/ide:\$EASYBUILD_PREFIX/modules/lang:\$EASYBUILD_PREFIX/modules/lib:\$EASYBUILD_PREFIX/modules/math:\$EASYBUILD_PREFIX/modules/mpi:\$EASYBUILD_PREFIX/modules/numlib:\$EASYBUILD_PREFIX/modules/perf:\$EASYBUILD_PREFIX/modules/quantum:\$EASYBUILD_PREFIX/modules/phys:\$EASYBUILD_PREFIX/modules/system:\$EASYBUILD_PREFIX/modules/toolchain:\$EASYBUILD_PREFIX/modules/tools:\$EASYBUILD_PREFIX/modules/vis:\$MODULEPATH
 
-echo "Unloading all modules"
-echo "Set modules version in use to $eb_modulecmd"
 echo "Made EasyBuild modules visible at top of module avail"
 
 EOF
