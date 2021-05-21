@@ -38,7 +38,7 @@ export EASYBUILD_CONFIGFILES=/shared/ucl/apps/buildscripts/easybuild/easybuild_c
 # Use this number of cores at maximum
 export EASYBUILD_PARALLEL=12
 
-module load EasyBuild/4.3.3 
+module load tools/EasyBuild/4.3.3 
 
 # Need our gcc-libs actually loaded so GCCcore-10.2.0.eb builds correctly. 
 # (ISL fails otherwise)
