@@ -33,7 +33,7 @@ export EASYBUILD_PREFIX="$eb_prefix"
 export MODULESHOME="$eb_modulecmd"
 export MODULEPATH=$EASYBUILD_PREFIX/modules/base:$EASYBUILD_PREFIX/modules/astro:$EASYBUILD_PREFIX/modules/bio:$EASYBUILD_PREFIX/modules/cae:$EASYBUILD_PREFIX/modules/chem:$EASYBUILD_PREFIX/modules/compiler:$EASYBUILD_PREFIX/modules/data:$EASYBUILD_PREFIX/modules/debugger:$EASYBUILD_PREFIX/modules/devel:$EASYBUILD_PREFIX/modules/geo:$EASYBUILD_PREFIX/modules/ide:$EASYBUILD_PREFIX/modules/lang:$EASYBUILD_PREFIX/modules/lib:$EASYBUILD_PREFIX/modules/math:$EASYBUILD_PREFIX/modules/mpi:$EASYBUILD_PREFIX/modules/numlib:$EASYBUILD_PREFIX/modules/perf:$EASYBUILD_PREFIX/modules/quantum:$EASYBUILD_PREFIX/modules/phys:$EASYBUILD_PREFIX/modules/system:$EASYBUILD_PREFIX/modules/toolchain:$EASYBUILD_PREFIX/modules/tools:$EASYBUILD_PREFIX/modules/vis:$MODULEPATH
 
-export EASYBUILD_CONFIGFILES=/shared/ucl/apps/buildscripts/easybuild/easybuild_config/UCL_config.cfg
+export EASYBUILD_CONFIGFILES=/shared/ucl/apps/buildi_scripts/easybuild/UCL_config_4.3.3/UCL_config.cfg
 
 # Use this number of cores at maximum
 export EASYBUILD_PARALLEL=12
