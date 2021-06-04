@@ -31,6 +31,7 @@ cmake ../ -DCMAKE_INSTALL_PREFIX="$install_prefix" -DBUILD_THIRDPARTY=true
 make -l $(( $(nproc) - 1 ))
 make install
 
+module unload compilers
 make_module_v2
 post_build_report
 
