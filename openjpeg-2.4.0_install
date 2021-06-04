@@ -1,0 +1,35 @@
+#!/bin/bash
+
+package_name=openjpeg
+package_version=2.4.0
+package_description=
+
+set -o errexit \
+    -o nounset 
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs
+
+make_build_env ""
+
+cd "$build_dir"
+wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.tar.gz
+
+manifest sha256:8702ba68b442657f11aaeb2b338443ca8d5fb95b0d845757968a7be31ef7f16d  v2.4.0.tar.gz 
+
+tar -xf v2.4.0.tar.gz
+cd openjpeg-"${package_version}"
+
+mkdir build
+cd build
+# This needs LCMS but it's easiest to let it build its own version automatically
+cmake ../ -DCMAKE_INSTALL_PREFIX="$install_prefix" -DBUILD_THIRDPARTY=true
+
+make -l $(( $(nproc) - 1 ))
+make install
+
+make_module_v2
+post_build_report
+
