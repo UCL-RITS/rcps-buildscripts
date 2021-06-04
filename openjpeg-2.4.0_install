@@ -2,7 +2,7 @@
 
 package_name=openjpeg
 package_version=2.4.0
-package_description=
+package_description="OpenJPEG is an open-source JPEG 2000 codec written in C language."
 
 set -o errexit \
     -o nounset 
