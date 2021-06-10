@@ -4,7 +4,7 @@
 # Installing Kallisto 0.46.1
 #
 # by Owain Kenway, 2016 
-# Updated for v0.46.1 June 2021
+# Updated for v0.46.1 June 2021 and HDF5 requirement
 
 APPNAME=${APPNAME:-kallisto}
 VERSION=${VERSION:-v0.46.1}
@@ -19,6 +19,7 @@ set -o errexit -o nounset
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require compilers/gnu/4.9.2
+require hdf/5-1.10.5/gnu-4.9.2
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
