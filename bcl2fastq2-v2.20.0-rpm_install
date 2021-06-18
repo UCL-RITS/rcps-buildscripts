@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bcl2fastq2 from unpacked rpm for cellranger
+# Download via Illumina account.
+# 
+#
+
+NAME=${NAME:-bcl2fastq2}
+VERSION=${VERSION:-v2.20.0-rpm}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-baba7a02767fd868e87cb36781d2be26}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm}
+
+set -e
+
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+
+rpm2cpio "$SRC_ARCHIVE" | cpio -idmv
+
+
