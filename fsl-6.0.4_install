@@ -3,6 +3,7 @@
 ###############################################
 # Installing FSL
 #
+# Using GNU 9.2.0 compilers to try and fix build issues.
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-6.0.4}
@@ -17,7 +18,8 @@ dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
-require compilers/gnu/4.9.2
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
 require hdf/5-1.8.15/gnu-4.9.2
 require python2/recommended
 require java/1.8.0_45
