@@ -56,7 +56,7 @@ then
   patch -p0 -i fsl-${VERSION}_fslconf.patch
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
-  cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
+#  cp -r $FSLDIR/config/linux_64-gcc4.4 $FSLDIR/config/$FSLMACHTYPE
 
   # patch systemvars after above copy
   #patch -p0 -i fsl-5.0.9_systemvars.patch
