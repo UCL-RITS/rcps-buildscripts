@@ -7,6 +7,7 @@
 # It looks like FSL now needs CUDA available for some tools otherwise
 # the build fails.
 # So also now using GNU 10.2.0
+# Set up so this can be run from a job on a GPU node.
 #
 # June 2021
 
@@ -31,9 +32,23 @@ require java/1.8.0_45
 require qt/4.8.6/gnu-4.9.2
 require vtk/6.2.0/gnu-4.9.2
 
+# Check that we are on a GPU node and abort if not.
+
+x=`which nvidia-smi`
+if [ $? != 0 ]
+then
+    echo ''
+    echo '****** ERROR: Not on a GPU node - building CUDA version of FSL must'
+    echo '              be done on a GPU node - Aborting!'
+    echo ''
+    exit 1
+fi
+nvidia-smi
+
 # Build keeps filling up /dev/shm so using ~ccsaapp/Software/FSL instead!
 
-temp_dir=~ccspapp/Software/FSL
+# temp_dir=~ccspapp/Software/FSL
+temp_dir=~ccspapp/Scratch/Software/FSL_CUDA/$JOB_ID
 mkdir -p $temp_dir
 
 cd $temp_dir
