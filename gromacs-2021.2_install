@@ -16,6 +16,7 @@ require gcc-libs/7.3.0
 require cmake
 require compilers/intel/2020/release
 require mpi/intel/2019/update6/intel
+module list
 #require compilers/intel/2019/update4
 #require mpi/intel/2019/update4/intel
 
