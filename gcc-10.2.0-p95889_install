@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+set -o errexit \
+    -o nounset
+
+package_name="gcc"
+package_version="10.2.0"
+package_variant="-p95889"
+package_description="The GNU Compiler Collection includes front ends for C, C++, Objective-C, and Fortran, as well as libraries for these languages (libstdc++,...)."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+
+    # Autogen is required for tests, guile and libbdwgc are deps for autogen
+    require libbdwgc/7.4.2/gnu-4.9.2 
+    require guile/2.0.11/gnu-4.9.2
+    require autogen/5.18.12/gnu-4.9.2
+
+    unset COMPILER_TAG
+    # Otherwise it'll end up in the module def
+
+    make_build_env --tmp-root="/dev/shm"
+
+    # GCC makes and builds a lot of temporary files during the build
+    #  and /tmp can fill up with them.
+    export TMPDIR
+    TMPDIR="$(mktemp -d -p "$build_dir" tmpdir.XXXXXX)"
+
+
+    package_url="ftp://ftp.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-${package_version}/gcc-${package_version}.tar.xz"
+    package_file="gcc-${package_version}.tar.xz"
+    unpack_dir="gcc-${package_version}"
+    patch95889="/shared/ucl/apps/build_scripts/patches/GCC-10.2_fix-has-include-Fortran.patch"
+}
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    manifest sha512:42ae38928bd2e8183af445da34220964eb690b675b1892bbeb7cd5bb62be499011ec9a93397dba5e2fb681afadfc6f2767d03b9035b44ba9be807187ae6dc65e  gcc-10.2.0.tar.xz
+    tar -xf "$package_file"
+
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+
+    contrib/download_prerequisites
+    # There's currently a bug where the MPFR tests fail because they look for the system GMP header,
+    #  and compare that to the just-compiled in-tree library version.
+    # The system version is currently 6.0.0, and the in-tree auto-download one is 6.1.0, and using
+    #  the system one seems to pass all tests, so the line below deletes the auto-downloaded copy
+    #  before it's built.
+    # For reference, the test failure looks like this: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84554
+    # Confirmed with GCC 9.1 and GCC 9.2 and GCC 9.3 builds
+    #rm -Rf gmp gmp-*
+
+    # patch for bug 95889 "[10 regression] __has_include broken with -traditional-cpp 
+    # (and therefore with Fortran)" https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95889
+    patch -p0 ${patch95889}
+
+    cd ..
+    mkdir out-of-tree_build
+    cd out-of-tree_build
+
+
+    ../gcc-${package_version}/configure \
+        --prefix="${install_prefix}" \
+        --enable-libssp \
+        --with-quad \
+        --disable-multilib \
+        --enable-lto \
+        --enable-languages=c,c++,fortran,lto,brig,objc,obj-c++,d \
+        --enable-bootstrap \
+        --enable-stage1-checking
+
+    cd ..
+}
+
+_build() {
+    cd "out-of-tree_build"
+    make -l $(( $(nproc) - 4)) -j
+    cd ..
+}
+
+_post_build() {
+    cd "out-of-tree_build"
+
+    #make check
+
+    make install
+
+    make_module \
+        -o "${module_dir}/gcc-libs/${package_version}" \
+        -d \
+        -e LIBRARY_PATH:"$install_prefix/lib" \
+        -e LIBRARY_PATH:"$install_prefix/lib64" \
+        -e LD_LIBRARY_PATH:"$install_prefix/lib" \
+        -e LD_LIBRARY_PATH:"$install_prefix/lib64" \
+        -e PATH:"$install_prefix/bin" \
+        -e MANPATH:"$install_prefix/man" \
+        -p "$install_prefix" \
+        -c "gcc-libs" \
+        -w "Base module for $package_name ${package_version} -- does not set the standard compiler environment variables. $package_description"
+    make_module \
+        -o "${module_dir}/compilers/gnu/${package_version}" \
+        -v CC=gcc \
+        -v CXX=g++ \
+        -v FC=gfortran \
+        -v F90=gfortran \
+        -v F77=gfortran \
+        -v COMPILER_TAG=gnu-${package_version} \
+        -r gcc-libs/${package_version} \
+        -d \
+        -p "$install_prefix" \
+        -c "compilers" \
+        -c "$package_name" \
+        -w "$package_description"
+    post_build_report
+    chmod a+rx "$module_dir"
+    cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+    cd ..
+}
+
+_clean_up() {
+    rm -Rf "${build_dir}" "${module_dir}"
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
