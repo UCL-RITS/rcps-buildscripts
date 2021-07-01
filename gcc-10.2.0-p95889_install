@@ -61,7 +61,8 @@ _pre_build() {
 
     # patch for bug 95889 "[10 regression] __has_include broken with -traditional-cpp 
     # (and therefore with Fortran)" https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95889
-    patch -p0 ${patch95889}
+    echo "Applying patch: $patch95889"
+    patch -p1 < "$patch95889"
 
     cd ..
     mkdir out-of-tree_build
