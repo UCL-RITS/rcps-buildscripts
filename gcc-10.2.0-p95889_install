@@ -5,7 +5,7 @@ set -o errexit \
 
 package_name="gcc"
 package_version="10.2.0"
-package_variant="-p95889"
+package_variant="p95889"
 package_description="The GNU Compiler Collection includes front ends for C, C++, Objective-C, and Fortran, as well as libraries for these languages (libstdc++,...)."
 
 source includes/source_includes.sh
