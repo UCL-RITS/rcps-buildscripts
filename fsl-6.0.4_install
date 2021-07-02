@@ -8,8 +8,9 @@
 # the build fails.
 # So also now using GNU 10.2.0
 # Set up so this can be run from a job on a GPU node.
+# Needed to make some config changes for CUDA on Myriad.
 #
-# June 2021
+# June / July 2021
 
 NAME=${NAME:-fsl}
 VERSION=${VERSION:-6.0.4}
@@ -78,6 +79,10 @@ then
 
   sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
   sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+
+  # For CUDA on Myriad
+
+  sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/8.0.61/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
 
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/lib|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/lib|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
