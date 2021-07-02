@@ -72,17 +72,18 @@ then
 
   . ${FSLDIR}/etc/fslconf/fsl.sh
   # Use GNU 4.8 config from FSL 6.0.0 source
-  cp -r /home/ccspapp/Software/FSL/fsl-6.0.0/config/linux_64-gcc4.8 $FSLDIR/config/$FSLMACHTYPE
-
+  # cp -r /home/ccspapp/Software/FSL/fsl-6.0.0/config/linux_64-gcc4.8 $FSLDIR/config/$FSLMACHTYPE
+ 
   # patch systemvars after above copy
   #patch -p0 -i fsl-5.0.9_systemvars.patch
 
-  sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
-  sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak 's|scl enable devtoolset-2 -- c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  # sed -i.bak 's|c++|g++|g' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
 
   # For CUDA on Myriad
-
-  sed -i.bak '/^CUDA_/s|/opt/cuda-7.5|/shared/ucl/apps/cuda/8.0.61/gnu-4.9.2/|' $FSLDIR/config/$FSLMACHTYPE/systemvars.mk
+  
+  sed -i.bak '/^CUDA_/s/\/opt\/cuda-${CUDAVER}/\/shared\/ucl\/apps\/cuda\/8.0.61\/gnu-4.9.2/'  $FSLDIR/config/buildSettings.mk
+  export CUDAVER=8.0
 
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/include/vtk-7.0|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/include/vtk-6.2|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
   sed -i.bak 's|/home/fs0/cowboy/var/caper_linux_64-gcc4.4/VTK7/lib|/shared/ucl/apps/vtk/6.2.0/gnu-4.9.2/lib|g' $FSLDIR/config/$FSLMACHTYPE/externallibs.mk
