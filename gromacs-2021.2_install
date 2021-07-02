@@ -44,7 +44,7 @@ cmake .. \
     -DGMX_GPU=OFF \
     -DGMX_FFT_LIBRARY=mkl \
     -DCMAKE_CXX_FLAGS=-std=c++17
-    -DGMX_X11=ON \
+#    -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
