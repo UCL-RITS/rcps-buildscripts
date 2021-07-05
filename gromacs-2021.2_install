@@ -15,8 +15,9 @@ require beta-modules
 require gcc-libs/7.3.0
 require cmake
 require python3
-require compilers/intel/2020/release
-require mpi/intel/2019/update6/intel
+require compilers/gnu/7.3.0 
+#require compilers/intel/2020/release
+#require mpi/intel/2019/update6/intel
 module list
 #require compilers/intel/2019/update4
 #require mpi/intel/2019/update4/intel
@@ -41,22 +42,22 @@ cd build
 
 echo "Building and installing full, serial, single precision GROMACS with gmx view"
 cmake .. \
-    -DGMX_GPU=OFF \
-    -DGMX_FFT_LIBRARY=mkl \
-    -DCMAKE_CXX_FLAGS=-std=c++17
-#    -DGMX_X11=ON \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DREGRESSIONTEST_DOWNLOAD=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
 make install
 
+#    -DGMX_X11=ON \
 rm -rf *
  
 echo "Building and installing full, serial, double precision GROMACS with gmx view"
 cmake .. \
     -DGMX_GPU=OFF \
     -DGMX_DOUBLE=on \
-    -DGMX_FFT_LIBRARY=mkl \
+#    -DGMX_FFT_LIBRARY=mkl \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
@@ -70,7 +71,8 @@ cmake .. \
     -DGMX_DOUBLE=off \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
-    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_BUILD_OWN_FFTW=ON \
+#    -DGMX_FFT_LIBRARY=mkl \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
@@ -83,7 +85,8 @@ cmake .. \
     -DGMX_DOUBLE=on \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
-    -DGMX_FFT_LIBRARY=mkl \
+#    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_DEFAULT_SUFFIX=OFF \
     -DGMX_BINARY_SUFFIX=_mpi_d \
     -DGMX_LIBS_SUFFIX=_mpi_d \
