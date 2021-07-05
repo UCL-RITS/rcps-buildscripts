@@ -57,7 +57,8 @@ echo "Building and installing full, serial, double precision GROMACS with gmx vi
 cmake .. \
     -DGMX_GPU=OFF \
     -DGMX_DOUBLE=on \
-#    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_FFT_LIBRARY=fftpack \
+    -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
@@ -71,8 +72,7 @@ cmake .. \
     -DGMX_DOUBLE=off \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
-#    -DGMX_BUILD_OWN_FFTW=ON \
-#    -DGMX_FFT_LIBRARY=mkl \
+    -DGMX_BUILD_OWN_FFTW=ON \
     -DCMAKE_INSTALL_PREFIX=$install_prefix \
     $CMAKE_FLAGS
 make
@@ -85,8 +85,7 @@ cmake .. \
     -DGMX_DOUBLE=on \
     -DGMX_MPI=on \
     -DGMX_BUILD_MDRUN_ONLY=ON \
-#    -DGMX_FFT_LIBRARY=mkl \
-#    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_DEFAULT_SUFFIX=OFF \
     -DGMX_BINARY_SUFFIX=_mpi_d \
     -DGMX_LIBS_SUFFIX=_mpi_d \
