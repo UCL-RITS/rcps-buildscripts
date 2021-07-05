@@ -231,7 +231,7 @@
 +      mins_conv $2
        shift;;
      -q)
-       queue=$2
+       queue="$2"
 +      echo "Queue must not be specified on Myriad"
 +      exit 127
        queueCmd=" -q $queue " 
@@ -256,19 +256,19 @@
    esac
 @@ -469,7 +474,7 @@
  
- 	if [ "x$tasks" = "x" ] ; then
- 	    if [ $scriptmode -ne 1 ] ; then
+    if [[ -z "$tasks" ]] ; then
+        if [[ "$scriptmode" -ne 1 ]] ; then
 -		sge_command=$(qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold)
 +		sge_command=$(qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities -l h_rt=$h_rt $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold)
  	    else
  		sge_command=$(qsub $LogOpts $sge_arch $sge_hold)
  	    fi
-@@ -478,7 +483,7 @@
+@@ -478,1 +483,1 @@
  	    fi
- 	    exec $sge_command $@ | awk '{print $3}'
+	    exec "${sge_command[@]}" "${commandline[@]}" | awk '{print $3}'
  	else
 -	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
 +	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
- 	    if [ $verbose -eq 1 ] ; then 
- 		echo sge_command: $sge_command >&2
- 		echo control file: $taskfile >&2
+        if [[ "$verbose" -eq 1 ]] ; then
+          echo "sge_command: ${sge_command[*]}" >&2
+          echo "control file: $taskfile" >&2
