@@ -56,7 +56,7 @@ cd $temp_dir
 
 rm -f $SRC_ARCHIVE
 rm -rf $NAME
-wget $SRC_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
 
 CHECKSUM=`md5sum $archive| awk '{print $1}'`
