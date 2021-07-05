@@ -26,7 +26,6 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
 require compilers/gnu/4.9.2
-require openblas/0.3.7-serial/gnu-4.9.2
 require cuda/8.0.61-patch2/gnu-4.9.2
 require hdf/5-1.8.15/gnu-4.9.2
 require python2/recommended
