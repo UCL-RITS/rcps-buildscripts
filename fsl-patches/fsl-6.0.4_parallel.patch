@@ -129,7 +129,7 @@
  
  ###########################################################################
 +# 
-+#   Convert FSL runtimne in minutes to h_rt=hrs:mins:secs for Legion
++#   Convert FSL runtimne in minutes to h_rt=hrs:mins:secs for Myriad
 +# 
 +###########################################################################
 +
@@ -144,9 +144,9 @@
  # Don't change the following (but keep scrolling down!)
  ###########################################################################
  
-@@ -139,9 +156,11 @@
+@@ -139,6 +156,8 @@
  export POSIXLY_CORRECT
- command=`basename $0`
+ command=$(basename "$0")
  
 +##### Modified for Myriad to remove reference to queues etc.
 +#
@@ -218,9 +218,9 @@
  
  queue=long.q
 -queueCmd=" -q long.q "
--mailto=`whoami`@`hostname -f | cut -d . -f 2-`
+-mailto=$(whoami)@$(hostname -f | cut -d . -f 2-)
 +queueCmd=""			# no user queues on Myriad
-+mailto=`whoami`@ucl.ac.uk	# changed for UCL
++mailto=$(whoami)@ucl.ac.uk	# changed for UCL
  MailOpts="a"
  
  
@@ -252,26 +252,26 @@
 @@ -355,6 +359,7 @@
      -s)
        pe_string=$2;
-       peName=`echo $pe_string | cut -d',' -f 1`
+       peName=$(echo "$pe_string" | cut -d',' -f 1)
 +      peName='smp'	# must be smp on legion
-       peThreads=`echo $pe_string | cut -d',' -f 2`
+       peThreads=$(echo "$pe_string" | cut -d',' -f 2)
        shift;;
    esac
 @@ -469,7 +474,7 @@
  
  	if [ "x$tasks" = "x" ] ; then
  	    if [ $scriptmode -ne 1 ] ; then
--		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
-+		sge_command="qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities -l h_rt=$h_rt $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold"
+-		sge_command=$(qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold)
++		sge_command=$(qsub -V -cwd -shell n -b y -r y $queueCmd $proc_affinities -l h_rt=$h_rt $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold)
  	    else
- 		sge_command="qsub $LogOpts $sge_arch $sge_hold"
+ 		sge_command=$(qsub $LogOpts $sge_arch $sge_hold)
  	    fi
 @@ -478,7 +483,7 @@
  	    fi
  	    exec $sge_command $@ | awk '{print $3}'
  	else
--	    sge_command="qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
-+	    sge_command="qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N $JobName -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks"
+-	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
++	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
  	    if [ $verbose -eq 1 ] ; then 
  		echo sge_command: $sge_command >&2
  		echo control file: $taskfile >&2
