@@ -167,8 +167,8 @@
 -  -a <arch-name>        Architecture [e.g., darwin or lx24-amd64]
 +  -a <arch-name>        Architecture [e.g., darwin (not on Myriad) or lx24-amd64]
    -p <job-priority>     Lower priority [0:-1024] default = 0                 
--  -M <email-address>    Who to email, default = `whoami`@fmrib.ox.ac.uk 
-+  -M <email-address>    Who to email, default = `whoami`@ucl.ac.uk 
+-  -M <email-address>    Who to email, default = $(whoami)@$(hostname -f | cut -d . -f 2-) 
++  -M <email-address>    Who to email, default = $(whoami)@ucl.ac.uk 
    -j <jid>              Place a hold on this task until job jid has completed
    -t <filename>         Specify a task file of commands to execute in parallel
    -N <jobname>          Specify jobname as it will appear on queue
