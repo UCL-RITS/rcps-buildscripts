@@ -110,7 +110,7 @@
  #   Imaging of the Brain), Department of Clinical Neurology, Oxford
  #   University, Oxford, UK
  #   
-+#   Modified for use on UCL Legion/Myriad - December 2019 by BAA  
++#   Modified for use on UCL Myriad - July 2021 by BAA  
 +#   
  #   
  #   LICENCE
@@ -121,7 +121,7 @@
      fi
 -    queueCmd=" -q $queue " 
 +
-+    # No user queues on Legion
++    # No user queues on Myriad
 +    queueCmd="" 
  
      #echo "Estimated time was $1 mins: queue name is $queue"
@@ -144,15 +144,18 @@
  # Don't change the following (but keep scrolling down!)
  ###########################################################################
  
-@@ -139,6 +156,8 @@
+@@ -139,9 +156,11 @@
  export POSIXLY_CORRECT
  command=`basename $0`
  
-+##### Modified for Legion to remove reference to queues etc.
++##### Modified for Myriad to remove reference to queues etc.
 +#
  usage ()
  {
    cat <<EOF
+
+   $command V1.1 - wrapper for job control system such as SGE
+   
 @@ -148,16 +167,12 @@
  Usage: $command [options] <command>
  
@@ -165,7 +168,7 @@
 -                        and "short.q". See below for details
 -                        Default is "long.q".
 -  -a <arch-name>        Architecture [e.g., darwin or lx24-amd64]
-+  -a <arch-name>        Architecture [e.g., darwin (not Legion) or lx24-amd64]
++  -a <arch-name>        Architecture [e.g., darwin (not on Myriad) or lx24-amd64]
    -p <job-priority>     Lower priority [0:-1024] default = 0                 
 -  -M <email-address>    Who to email, default = `whoami`@fmrib.ox.ac.uk 
 +  -M <email-address>    Who to email, default = `whoami`@ucl.ac.uk 
@@ -179,7 +182,7 @@
 -  -s <pename>,<threads> Submit a multi-threaded task - requires a PE (<pename>) to be
 -                        configured for the requested queues.
 +  -s <pename>,<threads> Submit a multi-threaded task - requires PE (<pename>) to be
-+                        smp for Legion.
++                        smp for Myriad.
                          <threads> specifies the number of threads to run
    -v                    Verbose mode.
  
@@ -205,7 +208,7 @@
  ###########################################################################
  
 -omp_pe='openmp'
-+# Set for Legion
++# Set for Myriad
 +omp_pe='smp'
  
  ###########################################################################
@@ -216,7 +219,7 @@
  queue=long.q
 -queueCmd=" -q long.q "
 -mailto=`whoami`@`hostname -f | cut -d . -f 2-`
-+queueCmd=""			# no user queues on Legion
++queueCmd=""			# no user queues on Myriad
 +mailto=`whoami`@ucl.ac.uk	# changed for UCL
  MailOpts="a"
  
@@ -227,12 +230,12 @@
        shift;;
 -    -T)
 -      map_qname $2
-+    -T) # For Legion convert given minutes to ht_rt value
++    -T) # For Myriad convert given minutes to ht_rt value
 +      mins_conv $2
        shift;;
      -q)
        queue=$2
-+      echo "Queue must not be specified on Legion"
++      echo "Queue must not be specified on Myriad"
 +      exit 127
        queueCmd=" -q $queue " 
        $QCONF -sq $queue >/dev/null 2>&1
