@@ -16,6 +16,7 @@ require gcc-libs/7.3.0
 require cmake
 require python3
 require compilers/gnu/7.3.0 
+require mpi/openmpi/3.1.4/gnu-7.3.0
 #require compilers/intel/2020/release
 #require mpi/intel/2019/update6/intel
 module list
