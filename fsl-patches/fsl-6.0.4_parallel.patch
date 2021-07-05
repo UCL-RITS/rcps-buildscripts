@@ -152,10 +152,7 @@
 +#
  usage ()
  {
-   cat <<EOF
-
-   $command V1.1 - wrapper for job control system such as SGE
-   
+   cat <<EOF   
 @@ -148,16 +167,12 @@
  Usage: $command [options] <command>
  
