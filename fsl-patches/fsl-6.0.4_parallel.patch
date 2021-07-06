@@ -265,10 +265,10 @@
  	    fi
 @@ -478,7 +483,7 @@
  	    fi
- 	    exec $sge_command $@ | awk '{print $3}'
+ 	    exec "${sge_command[@]}" "${commandline[@]}" | awk '{print $3}'
  	else
--	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
-+	    sge_command=$(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
- 	    if [ $verbose -eq 1 ] ; then 
- 		echo sge_command: $sge_command >&2
- 		echo control file: $taskfile >&2
+-	    sge_command=(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
++	    sge_command=(qsub -V -cwd $queueCmd $proc_affinities $pe_options -M $mailto -N "$JobName" -l h_rt=$h_rt -m $MailOpts $LogOpts $sge_arch $RAM $sge_hold $sge_tasks)
+ 	    if [[ $verbose -eq 1 ]] ; then 
+ 		echo "sge_command: ${sge_command[*]}" >&2
+ 		echo "control file: $taskfile" >&2
