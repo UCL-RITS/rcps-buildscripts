@@ -226,17 +226,17 @@
        fi
        shift;;
 -    -T)
--      map_qname $2
+-      map_qname "$2"
 +    -T) # For Myriad convert given minutes to ht_rt value
-+      mins_conv $2
++      mins_conv "$2"
        shift;;
      -q)
        queue="$2"
 +      echo "Queue must not be specified on Myriad"
 +      exit 127
        queueCmd=" -q $queue " 
-       $QCONF -sq $queue >/dev/null 2>&1
-       if [ $? -eq 1 ]; then
+       "$QCONF" -sq "$queue" >/dev/null 2>&1
+       if [[ $? -eq 1 ]]; then
 @@ -328,7 +332,7 @@
        JobName=$2;
        shift;;
