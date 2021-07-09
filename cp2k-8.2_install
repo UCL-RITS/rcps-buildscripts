@@ -14,8 +14,9 @@ package_description="CP2K is a quantum chemistry and solid state physics softwar
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$package_version/$COMPILER_TAG}
 SHA256=${SHA256:-2e24768720efed1a5a4a58e83e2aca502cd8b95544c21695eb0de71ed652f20a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v8.2.0/cp2k-8.2.tar.bz2}
+ssmp_patch="/shared/ucl/apps/build_scripts/patches/cp2k-8.2_local_ssmp_nompi.patch"
 
-TYPES=${TYPES:-"sopt ssmp popt psmp"}
+TYPES=${TYPES:-"ssmp psmp"}
 
 cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
 source includes/source_includes.sh
@@ -65,7 +66,8 @@ cp install/arch/* ../../arch
 
 cd ../..
 
-# TODO: update local.ssmp so doesn't link -lfftw3_mpi
+# patch local.ssmp so doesn't link -lfftw3_mpi
+patch -p0 -i ${ssmp_patch}
 
 #source ../tools/toolchain/install/setup # don't actually need this
 
