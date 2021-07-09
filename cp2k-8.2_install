@@ -47,19 +47,12 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}
+cd ${package_name}-${package_version}
 
 # Build toolchain
 cd tools/toolchain
 
-#cd scripts
-
-#cp /shared/ucl/apps/build_scripts/cp2k-7.1-patches/install_elpa_oldgcc.patch .
-#patch < install_elpa_oldgcc.patch
-#cd ..
-
 ./install_cp2k_toolchain.sh -j 8 --with-sirius=no --with-spfft=no --with-quip=install --with-openblas=system
-
 
 # Get arch files
 cp install/arch/* ../../arch
@@ -68,10 +61,6 @@ cd ../..
 
 # patch local.ssmp so doesn't link -lfftw3_mpi
 patch -p0 -i ${ssmp_patch}
-
-#source ../tools/toolchain/install/setup # don't actually need this
-
-source tools/toolchain/install/setup
 
 # Build main package
 for a in ${TYPES}
