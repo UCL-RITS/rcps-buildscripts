@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CP2K 8.2
+#
+# 
+#
+set -e
+
+package_name="cp2k"
+package_version="8.2"
+package_description="CP2K is a quantum chemistry and solid state physics software package that can perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems."
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$package_version/$COMPILER_TAG}
+SHA256=${SHA256:-2e24768720efed1a5a4a58e83e2aca502cd8b95544c21695eb0de71ed652f20a}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v8.2.0/cp2k-8.2.tar.bz2}
+
+TYPES=${TYPES:-"sopt ssmp popt psmp"}
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require openblas/0.3.13-openmp/gnu-10.2.0
+require python/3.8.6 
+# On Myriad, this mpi needs UCX
+if [ $cluster == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+
+#rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+# Build toolchain
+cd tools/toolchain
+
+#cd scripts
+
+#cp /shared/ucl/apps/build_scripts/cp2k-7.1-patches/install_elpa_oldgcc.patch .
+#patch < install_elpa_oldgcc.patch
+#cd ..
+
+./install_cp2k_toolchain.sh -j 8 --with-sirius=no --with-spfft=no --with-quip=install --with-openblas=system
+
+
+# Get arch files
+cp install/arch/* ../../arch
+
+cd ../..
+
+# TODO: update local.ssmp so doesn't link -lfftw3_mpi
+
+#source ../tools/toolchain/install/setup # don't actually need this
+
+source tools/toolchain/install/setup
+
+# Build main package
+for a in ${TYPES}
+do
+  make -j 8 ARCH=local VERSION="$a"
+done
+
+mkdir bin
+cp exe/local/* bin
+
