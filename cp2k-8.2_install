@@ -2,7 +2,7 @@
 
 ###############################################
 # Installing CP2K 8.2
-#
+# If running inside screen you'll need to unset TERMCAP
 # 
 #
 set -e
