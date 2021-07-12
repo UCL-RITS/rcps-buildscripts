@@ -14,7 +14,7 @@ package_description="CP2K is a quantum chemistry and solid state physics softwar
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$package_name/$package_version/$COMPILER_TAG}
 SHA256=${SHA256:-2e24768720efed1a5a4a58e83e2aca502cd8b95544c21695eb0de71ed652f20a}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/cp2k/cp2k/releases/download/v8.2.0/cp2k-8.2.tar.bz2}
-ssmp_patch="/shared/ucl/apps/build_scripts/patches/cp2k-8.2_local_ssmp_nompi.patch"
+#ssmp_patch="/shared/ucl/apps/build_scripts/patches/cp2k-8.2_local_ssmp_nompi.patch"
 
 TYPES=${TYPES:-"ssmp psmp"}
 
@@ -60,7 +60,8 @@ cp install/arch/* ../../arch
 cd ../..
 
 # patch local.ssmp so doesn't link -lfftw3_mpi
-patch -p0 -i ${ssmp_patch}
+#patch -p0 -i ${ssmp_patch}
+sed -i.bak -e "s|LIBS        = -lsymspg -lquip_core -latoms -lFoX_sax -lFoX_common -lFoX_utils -lFoX_fsys    -lxsmmf -lxsmm -ldl -lpthread -lxcf03 -lxc -lint2 -lfftw3_mpi -lfftw3 -lfftw3_omp    -lopenblas -lvori -lstdc++ -lstdc++|LIBS        = -lsymspg -lquip_core -latoms -lFoX_sax -lFoX_common -lFoX_utils -lFoX_fsys    -lxsmmf -lxsmm -ldl -lpthread -lxcf03 -lxc -lint2 -lfftw3 -lfftw3_omp    -lopenblas -lvori -lstdc++ -lstdc++|" arch/local.ssmp
 
 # Build main package
 for a in ${TYPES}
