@@ -24,9 +24,6 @@ module purge
 require beta-modules
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
-require mpi/openmpi/4.0.5/gnu-10.2.0
-require openblas/0.3.13-openmp/gnu-10.2.0
-require python/3.8.6 
 # On Myriad, this mpi needs UCX
 if [ $cluster == "myriad" ]
 then
@@ -34,6 +31,9 @@ then
     require binutils/2.36.1/gnu-10.2.0
     require ucx/1.9.0/gnu-10.2.0
 fi
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require openblas/0.3.13-openmp/gnu-10.2.0
+require python/3.8.6
 
 #rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
