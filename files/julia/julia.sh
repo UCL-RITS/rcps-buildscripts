@@ -10,4 +10,4 @@ location=$(readlink -f $0)
 directory=$(readlink -f $(dirname ${location})/..)
 
 export LD_LIBRARY_PATH=${directory}/lib/julia:${LD_LIBRARY_PATH}
-exec ${directory}/bin/julia
+exec ${directory}/bin/julia "$@"
