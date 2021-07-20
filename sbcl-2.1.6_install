@@ -34,7 +34,7 @@ sha256sum -c <<< "$SHA256 $archive"
 
 tar -xvf $archive
 
-cd ${NAME}-${VERSION}-x86-64-linux
+cd ${NAME}-${VERSION}
 
 export GNUMAKE=make
 
