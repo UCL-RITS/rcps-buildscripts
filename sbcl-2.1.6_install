@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Steelbank Common Lisp
+#
+# by Owain Kenway, 2021
+#
+
+NAME=${NAME:-sbcl}
+VERSION=${VERSION:-2.1.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-d120765fe5148de7cec23f0b20d9bbf92b03d7f4429d1754a95898c43323e367}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://prdownloads.sourceforge.net/sbcl/sbcl-${VERSION}-x86-64-linux-binary.tar.bz2}
+
+set -e
+
+mkdir -p /dev/shm/${NAME}
+
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+wget "${SRC_ARCHIVE}"
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}-x86-64-linux
+
+export GNUMAKE=make
+
+INSTALL_ROOT=${INSTALL_PREFIX} sh install.sh
+
