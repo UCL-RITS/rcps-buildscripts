@@ -35,3 +35,8 @@ then
 fi
 
 tar -zxvf ${ARCHIVENAME}
+
+echo "Installing UCL binary wrapper (needed for Julia >= 1.6.0"
+cd julia-${VERSION}
+mkdir ucl-wrapper
+cp /shared/ucl/apps/build_scripts/files/julia/julia.sh ucl-wrapper/julia
