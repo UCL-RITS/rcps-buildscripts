@@ -9,6 +9,15 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/xmds/files/xmds-${VER
 
 set -e
 
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require python3/3.7
+require compilers/gnu/4.9.2
+require mpi/intel/2015/update3/gnu-4.9.2
+require fftw/3.3.4-impi/gnu-4.9.2
+require hdf/5-1.8.15/gnu-4.9.2
+
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 mkdir -p /dev/shm/$APPNAME
