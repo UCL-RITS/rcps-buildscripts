@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+APPNAME=${APPNAME:-xmds}
+VERSION=${VERSION:-3.0.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-bb94ba44a419ed2beae6c4cb9736ce47dc48a857}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://sourceforge.net/projects/xmds/files/xmds-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+shasum -c <<<"$SHA1  ${APPNAME}-${VERSION}.tar.gz"
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+tar -zxvf $temp_dir/${APPNAME}-${VERSION}.tar.gz
+
+# Install script so users can create their own svn version.
+cp /shared/ucl/apps/build_scripts/xmds-patches/create-svn-xmds3-inst .
+
+# Fix permissions on python scripts in bin
+cd ${APPNAME}-${VERSION}
+chmod +x bin/*
+
+# Create place to put installation.
+mkdir -p $INSTALL_PREFIX/xmds/lib/python3.7/site-packages
+mkdir -p $INSTALL_PREFIX/xmds/scripts
+
+# Install user setup script.
+cp /shared/ucl/apps/build_scripts/xmds-patches/xmds3-setup $INSTALL_PREFIX/xmds/scripts
+  
+# Install xmds
+export PYTHONPATH=$INSTALL_PREFIX/xmds/lib/python3.7/site-packages:$PYTHONPATH
+export PATH=$INSTALL_PREFIX/xmds/bin:$INSTALL_PREFIX/${APPNAME}-${VERSION}/bin:$PATH
+./setup.py develop --prefix=$INSTALL_PREFIX/xmds
+
+# Install the h5py package (needed for XMDS).
+pip install --prefix=$INSTALL_PREFIX/xmds h5py
+pip install --prefix=$INSTALL_PREFIX/xmds Cheetah3
+
+echo "Installation of XMDS complete."
+
