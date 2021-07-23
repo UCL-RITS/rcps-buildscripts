@@ -3,7 +3,7 @@
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/xmds/3.0.0/gnu-4.9.2}
 VERSION=${VERSION:-3.0.0}
 export PATH=$INSTALL_PREFIX/xmds-${VERSION}/bin:$PATH
-export PYTHONPATH=$INSTALL_PREFIX/xmds-${VERSION}/lib/python3.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=$INSTALL_PREFIX/xmds-${VERSION}:$PYTHONPATH
 
 source /etc/profile.d/modules.sh
 module unload default-modules
