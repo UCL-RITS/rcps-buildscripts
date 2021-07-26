@@ -9,9 +9,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or/Ipopt.git}
 
 source includes/source_includes.sh
 module purge
-module use /home/cceaosk/my_modules
-require beta-modules
-require gcc-libs/7.3.0
+require gcc-libs/4.9.2
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
 require metis/5.1.0/intel-2018
@@ -35,7 +33,8 @@ cd build
 ../configure CXXLIBS="-L/shared/ucl/apps/gcc/7.3.0/lib/../lib64 -lstdc++" \
              LIBS="-lmetis -lcoinmumps" \
              --prefix=$INSTALL_PREFIX \
-             --with-mumps
+             --with-mumps \
+             --disable-java
 
 make
 make install
