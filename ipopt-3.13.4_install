@@ -7,33 +7,38 @@ package_version="3.13.4"
 package_description="Ipopt (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization."
 SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or/Ipopt.git}
 
-TYPE=${TYPE:-cpu}
-
 source includes/source_includes.sh
 module purge
+module use /home/cceaosk/my_modules
 require beta-modules
 require gcc-libs/7.3.0
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
-require coinor-mumps/5.4.0/intel-2018
-require metis/5.1.0/intel-2018-update3
+require metis/5.1.0/intel-2018
+require mumps-thirdparty/5.4.0/intel-2018
 
 make_build_env ""
 
 set -e
 
+module list
+echo $MKLROOT
+
 cd "$build_dir"
 
-git clone "$SRC_ARCHIVE"
+git clone "$SRC_ARCHIVE" "${package_name}"
 
 cd "${package_name}"
 
 mkdir build
 cd build
-../configure CXXLIBS="-L/shared/ucl/apps/gcc/7.3.0/ -lstdc++" \
-            --with-lapack="-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lm" \
-            --with-mumps-cflags="-I$MUMPS_INSTALL_DIR/include/coin-or/mumps" \
-            --with-mumps-lflags="-L$MUMPS_INSTALL_DIR -lcoinmumps"
+../configure CXXLIBS="-L/shared/ucl/apps/gcc/7.3.0/lib/../lib64 -lstdc++" \
+             LIBS="-lmetis -lcoinmumps" \
+             --prefix=$INSTALL_PREFIX \
+             --with-mumps
 
 make
-make install --prefix=$INSTALL_PREFIX
+make install
+
+make_module_v2 
+post_build_report

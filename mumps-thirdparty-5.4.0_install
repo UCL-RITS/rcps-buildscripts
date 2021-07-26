@@ -2,13 +2,14 @@
 
 ###############################################
 
-package_name="coinor-mumps"
+package_name="mumps-thirdparty"
 package_version="5.4.0"
 package_description="The COIN-OR Tools project ThirdParty-Mumps can be used to download the MUMPS code and build a MUMPS library that is recognized by Ipopt."
 SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or-tools/ThirdParty-Mumps.git}
 
 source includes/source_includes.sh
 module purge
+module use /home/cceaosk/my_modules
 require beta-modules
 require gcc-libs/7.3.0
 require compilers/intel/2018/update3
@@ -29,3 +30,10 @@ cd "${package_name}"
 
 make
 make install
+make test
+
+make_module_v2 \
+    -e INCLUDE_PATH:"$install_prefix/include/coin-or/mumps/" \
+    -e CPATH:"$install_prefix/include/coin-or/mumps/" \
+    -c mumps
+post_build_report
