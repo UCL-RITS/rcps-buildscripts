@@ -25,7 +25,7 @@ wget $SRC_ARCHIVE
 
 CHECKSUM=`sha256sum screen-${VERSION}.tar.gz| awk '{print $1}'`
 
-if [ "$SHA2565" == "$CHECKSUM" ]
+if [ "$SHA256" == "$CHECKSUM" ]
 then
   tar -zxvf screen-${VERSION}.tar.gz
 
