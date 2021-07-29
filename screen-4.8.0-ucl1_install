@@ -48,4 +48,4 @@ else
   echo "Hash mismatch."
   echo "Expected: $SHA256"
   echo "Got: $CHECKSUM"
-fi/
+fi
