@@ -54,6 +54,7 @@ md5sum -c <<< "$SQLITE_MD5 $sqarchive"
 sha256sum -c <<< "$SERF_SHA256 $sarchive"
 sha512sum -c <<< "$SHA512 $archive"
 
+rm -rf $INSTALL_PREFIX
 
 tar xvf $sqarchive
 cd sqlite-autoconf-${SQ_VER}
