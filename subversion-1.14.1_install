@@ -74,7 +74,7 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 
-./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX --with-sqlite=$INSTALL_PREFIX --with-lz4=internal
+./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX --with-sqlite=$INSTALL_PREFIX --with-lz4=internal --with-utf8proc=internal
 make 
 make install
 
