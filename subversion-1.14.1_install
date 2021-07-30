@@ -56,14 +56,6 @@ sha512sum -c <<< "$SHA512 $archive"
 
 rm -rf $INSTALL_PREFIX
 
-#tar xvf $sqarchive
-#cd sqlite-autoconf-${SQ_VER}
-#CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA" ./configure --prefix=${INSTALL_PREFIX} 2>&1 | tee configure-log
-#make 2>&1 | tee make-log
-#make install 2>&1 | tee make-install-log
-
-#cd ..
-
 tar xvf $sarchive
 cd serf-${SERF_VERSION}
 scons APR=/shared/ucl/apps/apr/${APR_VER} APU=/shared/ucl/apps/apr-util/${APRU_VER} OPENSSL=/usr PREFIX=$INSTALL_PREFIX
@@ -76,9 +68,6 @@ tar -xvf $archive
 cd ${NAME}-${VERSION}
 tar -xvf ../$sqarchive
 ln -s  sqlite-autoconf-${SQ_VER} sqlite-amalgamation
-
-#./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX --with-sqlite=$INSTALL_PREFIX --with-lz4=internal --with-utf8proc=internal
-
 
 ./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX --with-lz4=internal --with-utf8proc=internal
 make 
