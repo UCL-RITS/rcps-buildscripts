@@ -9,6 +9,7 @@ set -e
 
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
+module purge
 require gcc-libs/4.9.2
 
 APR_VER=${APR_VER:-1.7.0}
