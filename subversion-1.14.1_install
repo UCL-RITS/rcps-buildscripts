@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2021
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+module purge
+
+APR_VER=${APR_VER:-1.7.0}
+APRU_VER=${APRU_VER:-1.6.1}
+SERF_VERSION=${SERF_VERSION:-1.3.9}
+
+require gcc-libs/4.9.2
+require apr/${APR_VER}
+require apr-util/${APRU_VER}
+require python/2.7.12
+require scons/2.3.4
+
+NAME=${NAME:-subversion}
+VERSION=${VERSION:-1.14.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SERF_SHA256=${SHA256:-549c2d21c577a8a9c0450facb5cca809f26591f048e466552240947bdf7a87cc}
+SHA512=${SHA512:-0a70c7152b77cdbcb810a029263e4b3240b6ef41d1c19714e793594088d3cca758d40dfbc05622a806b06463becb73207df249393924ce591026b749b875fcdd}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-}
+SERF_ARCHIVE=${SERF_ARCHIVE:-https://archive.apache.org/dist/serf/serf-${SERF_VERSION}.bz2}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://archive.apache.org/dist/subversion//subversion-${VERSION}.tar.bz2}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $SERF_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+sarchive=$(basename "${SERF_ARCHIVE}")
+
+sha256sum -c <<< "$SERF_SHA256 $sarchive"
+sha512sum -c <<< "$SHA512 $archive"
+
+tar xvf $sarchive
+cd serf-${SERF_VERSION}
+scons APR=/shared/ucl/apps/apr/${APR_VER} APU=/shared/ucl/apps/apr-util/${APRU_VER} OPENSSL=/usr PREFIX=$INSTALL_PREFIX
+scons install
+
+cd ..
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX
+make 
+make install
+
+rm -rf $temp_dir
