@@ -3,9 +3,9 @@
 ###############################################
 
 package_name="mumps-thirdparty"
-package_version="5.4.0"
-package_description="The COIN-OR Tools project ThirdParty-Mumps can be used to download the MUMPS code and build a MUMPS library that is recognized by Ipopt."
-SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or-tools/ThirdParty-Mumps.git}
+package_version="3.0.0"
+package_description="The COIN-OR Tools project ThirdParty-Mumps can be used to download the MUMPS code and build a MUMPS library that is recognized by Ipopt. This version of ThirdParty-Mumps retrieves and builds MUMPS 5.4.0."
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/coin-or-tools/ThirdParty-Mumps/archive/refs/tags/releases/3.0.0.tar.gz}
 
 source includes/source_includes.sh
 module purge
@@ -20,15 +20,15 @@ set -e
 
 cd "$build_dir"
 
+wget $SRC_ARCHIVE
+tar xfz $package_version.tar.gz
+cd ThirdParty-Mumps-releases-$package_version
 
-git clone "$SRC_ARCHIVE" $package_name
-cd "${package_name}"
 ./get.Mumps
 ./configure --prefix=$INSTALL_PREFIX --with-metis
 
 make
 make install
-make test
 
 make_module_v2 \
     -e INCLUDE_PATH:"$install_prefix/include/coin-or/mumps/" \

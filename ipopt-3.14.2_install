@@ -3,15 +3,17 @@
 ###############################################
 
 package_name="ipopt"
-package_version="3.13.4"
+package_version="3.14.2"
 package_description="Ipopt (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization."
-SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or/Ipopt.git}
+#SRC_ARCHIVE=${SRC_ARCHIVE:-git@github.com:coin-or/Ipopt.git}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.2.tar.gz}
 
 source includes/source_includes.sh
 module purge
 require gcc-libs/4.9.2
 require compilers/intel/2018/update3
 require mpi/intel/2018/update3/intel
+module use /home/cceaosk/my_modules
 require metis/5.1.0/intel-2018
 require mumps-thirdparty/5.4.0/intel-2018
 
@@ -24,9 +26,9 @@ echo $MKLROOT
 
 cd "$build_dir"
 
-git clone "$SRC_ARCHIVE" "${package_name}"
-
-cd "${package_name}"
+wget "$SRC_ARCHIVE"
+tar xfz $package_version.tar.gz
+cd Ipopt-releases-$package_version
 
 mkdir build
 cd build
