@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Cmake
+#
+# by Owain Kenway, 2021
+#
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+VERSION=${VERSION:-3.21.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/cmake/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-1453b1f5139950f501c570c305257e4e5dacb8224944de8ed1489aae162c6dd75fe1cd5188d619c47e4e53ca5b846f07318ffb3ab004a0547f2c8b13f60083b4}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha512sum cmake-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA512" == "$CHECKSUM" ]
+then
+  tar -zxvf cmake-${VERSION}.tar.gz
+
+  cd cmake-${VERSION}
+  ./bootstrap --prefix=$INSTALL_PREFIX --system-curl
+  make && make install
+
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA512"
+  echo "Got: $CHECKSUM"
+fi
