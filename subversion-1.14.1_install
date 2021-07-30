@@ -28,7 +28,7 @@ SERF_SHA256=${SHA256:-549c2d21c577a8a9c0450facb5cca809f26591f048e466552240947bdf
 SHA512=${SHA512:-0a70c7152b77cdbcb810a029263e4b3240b6ef41d1c19714e793594088d3cca758d40dfbc05622a806b06463becb73207df249393924ce591026b749b875fcdd}
 
 SRC_ARCHIVE=${SRC_ARCHIVE:-}
-SERF_ARCHIVE=${SERF_ARCHIVE:-https://archive.apache.org/dist/serf/serf-${SERF_VERSION}.bz2}
+SERF_ARCHIVE=${SERF_ARCHIVE:-https://archive.apache.org/dist/serf/serf-${SERF_VERSION}.tar.bz2}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://archive.apache.org/dist/subversion//subversion-${VERSION}.tar.bz2}
 
 
