@@ -75,7 +75,7 @@ tar -xvf $archive
 
 cd ${NAME}-${VERSION}
 tar -xvf ../$sqarchive
-ln -s  sqlite-autoconf-${SQ_VER} sqlite-amalgmation
+ln -s  sqlite-autoconf-${SQ_VER} sqlite-amalgamation
 
 #./configure --prefix=$INSTALL_PREFIX --with-serf=$INSTALL_PREFIX --with-sqlite=$INSTALL_PREFIX --with-lz4=internal --with-utf8proc=internal
 
