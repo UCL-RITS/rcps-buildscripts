@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+###############################################
+
+package_name="mumps-thirdparty"
+package_version="3.0.0"
+package_description="The COIN-OR Tools project ThirdParty-Mumps can be used to download the MUMPS code and build a MUMPS library that is recognized by Ipopt. This version of ThirdParty-Mumps retrieves and builds MUMPS 5.4.0."
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/coin-or-tools/ThirdParty-Mumps/archive/refs/tags/releases/3.0.0.tar.gz}
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require metis/5.1.0/intel-2018
+
+make_build_env ""
+
+set -e
+
+cd "$build_dir"
+
+wget $SRC_ARCHIVE
+tar xfz $package_version.tar.gz
+cd ThirdParty-Mumps-releases-$package_version
+
+./get.Mumps
+./configure --prefix=$INSTALL_PREFIX --with-metis
+
+make
+make install
+
+make_module_v2 \
+    -e INCLUDE_PATH:"$install_prefix/include/coin-or/mumps/" \
+    -e CPATH:"$install_prefix/include/coin-or/mumps/" \
+    -c mumps
+post_build_report

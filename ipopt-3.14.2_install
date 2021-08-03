@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+
+package_name="ipopt"
+package_version="3.14.2"
+package_description="Ipopt (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization."
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.2.tar.gz}
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require metis/5.1.0/intel-2018
+require mumps-thirdparty/3.0.0/intel-2018
+
+make_build_env ""
+
+set -e
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tar xfz $package_version.tar.gz
+cd Ipopt-releases-$package_version
+
+mkdir build
+cd build
+../configure CXXLIBS="-L/shared/ucl/apps/gcc/7.3.0/lib/../lib64 -lstdc++" \
+             LIBS="-lmetis -lcoinmumps" \
+             --prefix=$INSTALL_PREFIX \
+             --with-mumps \
+             --disable-java
+
+make
+make install
+
+make_module_v2 
+post_build_report
