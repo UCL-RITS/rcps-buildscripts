@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing bcl2fastq
+#
+# by Owain Kenway, 2018
+#
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/intel/2018
+# Doxygen
+#require cmake/3.7.2
+#require flex/2.5.39
+#require bison/3.0.4/gnu-4.9.2
+#require ghostscript/9.19/gnu-4.9.2
+#require texlive/2015
+#require compilers/gnu/4.9.2 
+#require swig/3.0.5/gnu-4.9.2 
+#require qt/4.8.6/gnu-4.9.2 
+#require lua/5.3.1 
+#require	perl/5.22.0 
+
+#require graphviz/2.40.1
+
+#require doxygen/1.8.14
+#require python/2.7.12
+#require boost/1_54_0/gnu-4.9.2
+
+#export BOOSTROOT=/dev/shm/boosttest
+
+#export LD_LIBRARY_PATH=$BOOSTROOT/lib:$LD_LIBRARY_PATH
+#export LIBRARY_PATH=$BOOSTROOT/lib:$LIBRARY_PATH 
+#export CPATH=$BOOSTROOT/include:$CPATH
+#export BOOST_ROOT=$BOOSTROOT
+#export CMAKE_PREFIX_PATH=$BOOSTROOT:$CMAKE_PREFIX_PATH
+
+
+NAME=${NAME:-bcl2fastq}
+VERSION=${VERSION:-1.8.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-48972db9f6a891c2dfa409bf0a740527}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-${VERSION}.tar.bz2}
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar xvf bcl2fastq-${VERSION}.tar.bz2
+  cd bcl2fastq
+  mkdir build
+  cd build
+  ../src/configure --prefix=$INSTALL_PREFIX
+  make
+  make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
+rm -rf $temp_dir
