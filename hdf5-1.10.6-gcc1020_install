@@ -6,7 +6,7 @@
 #
 VERSION=${VERSION:-5-1.10.6}
 COMPILER_TAG=${COMPILER_TAG:-gcc-10.2.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${VERSION}/openmpi/${COMPILER_TAG}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/openmpi/${COMPILER_TAG}}
 #MD5=${MD5:-7c19d6b81ee2a3ba7d36f6922b2f90d3}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.hdfgroup.org/ftp/HDF5/releases/hdf${VERSION:0:6}/hdf${VERSION}/src/hdf${VERSION}.tar.bz2}
 PARALLEL_SCRATCH_DIR=$HOME/Scratch
