@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Installing from binary as source requires glibc-static
+
+set -o errexit \
+    -o nounset
+
+package_name="rvtests"
+package_version="2.1.0"
+package_description="Rvtests: Rare variant test software for next generation sequencing data"
+package_url="https://github.com/zhanxw/rvtests/releases/download/v${package_version}/rvtests_linux64.tar.gz"
+
+source includes/source_includes.sh
+module purge
+
+make_build_env --tmp-root="/dev/shm"
+
+mkdir -p "$install_prefix"
+cd "$install_prefix"
+
+wget "$package_url"
+
+archive=$(basename "${package_url}")
+
+manifest sha1:7eacc128582700d601d9406d735de9f8d9f130ef  "${archive}"
+
+tar -xvf "$archive"
+
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix"/executable 
+chmod -R +rX "$module_dir"
+#cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+
+rm -Rf "${build_dir:?error: tried to rm blank}" "${module_dir:?error: tried to rm blank}"
+
+post_build_report
+
