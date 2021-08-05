@@ -40,7 +40,7 @@ cp -r examples "$install_prefix"
 
 make_module_v2 \
     -d \
-    -e PATH:"$install_prefix"/gcta_${package_version} 
+    -e PATH:"$install_prefix" 
 chmod -R +rX "$module_dir"
 
 rm -Rf "${build_dir:?error: tried to rm blank}" 
