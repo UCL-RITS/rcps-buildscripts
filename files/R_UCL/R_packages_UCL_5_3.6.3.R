@@ -4,8 +4,9 @@
 # Install 5th batch of add on R packages for UCL R instllations.
 #
 # June 2016
-# Latest update April 2020 - to remove problem packages that
+# Update April 2020 - to remove problem packages that
 # need re-building for GNU 9.2.0
+# Update August 2021 - to add additional packages needed for IHI teaching apps
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -217,6 +218,14 @@ install.packages ("BradleyTerry2", lib=mainLib, repos=repros);
 # For Adam Dennett (a.dennett@ucl.ac.uk) - December 2020.
 
 install.packages ("geojsonio", lib=mainLib, repos=repros);
+
+# For IHI teaching apps (j.thygesen@ucl.ac.uk) - August 2021.
+
+install.packages ("plinkQC", lib=mainLib, repos=repros);
+install.packages ("dplyr", lib=mainLib, repos=repros);
+install.packages ("docopt", lib=mainLib, repos=repros);
+install.packages ("MendelianRandomization", lib=mainLib, repos=repros);
+
 
 # End of R_packages_UCL_5
 
