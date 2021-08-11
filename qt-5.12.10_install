@@ -13,10 +13,7 @@ package_description=""
 
 MD5=${MD5:-a781a0e247400e764c0730b8fb54226f}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.mirrorservice.org/sites/download.qt-project.org/official_releases/qt/5.12/${package_version}/single/${package_name}-everywhere-src-${package_version}.tar.xz}
-SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
-
-#XKB_CONF=${XKB_CONF:-/etc/X11/xorg.conf.d}
-#export QT_XKB_CONFIG_ROOT=/shared/ucl/apps/qt/5.12.10/gnu-4.9.2/support
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-${install_prefix}/support}
 
 source includes/source_includes.sh
 module purge
@@ -50,7 +47,7 @@ then
   cd $build_dir
   tar -xvf $archive
   cd ${package_name}-everywhere-src-${package_version}
-  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -qt-xcb -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
+  ./configure -prefix $install_prefix -opensource -confirm-license -verbose -qt-xcb -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
   gmake -j 4 2>&1 | tee make.log
   gmake install
 
