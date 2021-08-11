@@ -27,7 +27,7 @@ cd Ipopt-releases-$package_version
 
 mkdir build
 cd build
-../configure CXXLIBS="-L/shared/ucl/apps/gcc/7.3.0/lib/../lib64 -lstdc++" \
+../configure CXXLIBS="-L/shared/ucl/apps/gcc/4.9.2/lib/../lib64 -lstdc++" \
              LIBS="-lmetis -lcoinmumps" \
              --prefix=$INSTALL_PREFIX \
              --with-mumps \
