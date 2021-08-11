@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing patchelf
+#
+# by Tuomas Koskela, 2021
+
+
+package_name="patchelf"
+package_version="0.13"
+package_description="PatchELF is a simple utility for modifying existing ELF executables and libraries."
+package_date="20210805"
+package_commit="a949ff2"
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/NixOS/patchelf/releases/download/${package_version}/${package_name}-${package_version}.tar.bz2}
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+
+make_build_env ""
+
+set -e
+
+cd $build_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+cd $build_dir
+tar -xvf $archive
+cd ${package_name}-${package_version}.${package_date}.${package_commit}
+./configure --prefix $install_prefix
+make
+make check
+make install
+
+make_module_v2 
+post_build_report

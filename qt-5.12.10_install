@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Qt
+#
+# by Heather Kelly, 2015
+# Updated for Qt 5.12.10 Aug 2021 by Tuomas Koskela
+
+
+package_name="qt"
+package_version="5.12.10"
+package_description=""
+
+MD5=${MD5:-a781a0e247400e764c0730b8fb54226f}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.mirrorservice.org/sites/download.qt-project.org/official_releases/qt/5.12/${package_version}/single/${package_name}-everywhere-src-${package_version}.tar.xz}
+SUPPORT_PREFIX=${SUPPORT_PREFIX:-${INSTALL_PREFIX}/support}
+
+#XKB_CONF=${XKB_CONF:-/etc/X11/xorg.conf.d}
+#export QT_XKB_CONFIG_ROOT=/shared/ucl/apps/qt/5.12.10/gnu-4.9.2/support
+
+source includes/source_includes.sh
+module purge
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+
+make_build_env --tmp-root=/dev/shm
+
+set -e
+
+# libxcb must have been installed in $SUPPORT_PREFIX
+# libxcb environment variables
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$SUPPORT_PREFIX/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$SUPPORT_PREFIX/lib/python2.7/site-packages:$PYTHONPATH
+export PKG_CONFIG_PATH=$SUPPORT_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+export CPATH=$SUPPORT_PREFIX/include:$CPATH
+
+cd $build_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  cd $build_dir
+  tar -xvf $archive
+  cd ${package_name}-everywhere-src-${package_version}
+  ./configure -prefix $INSTALL_PREFIX -opensource -confirm-license -verbose -qt-xcb -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
+  gmake -j 4 2>&1 | tee make.log
+  gmake install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
+make_module_v2 \
+    -e PKG_CONFIG_PATH:$SUPPORT_PREFIX/share/pkgconfig \
+    -e LD_LIBRARY_PATH:$SUPPORT_PREFIX/lib:$LD_LIBRARY_PATH \
+    -e PYTHONPATH:$SUPPORT_PREFIX/lib/python2.7/site-packages \
+    -e PKG_CONFIG_PATH:$SUPPORT_PREFIX/lib/pkgconfig \
+    -e CPATH:$SUPPORT_PREFIX/include
+
+post_build_report
