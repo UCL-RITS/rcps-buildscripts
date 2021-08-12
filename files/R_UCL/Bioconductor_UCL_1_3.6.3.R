@@ -9,6 +9,7 @@
 # tool - BiocManager also addeded IlluminaHumanMethylationEPICanno.ilm10b4.hg19
 # Updated April 2020 to remove ROOT for R 3.6.3
 # Updated November 2020 to fix install of INLA for RedHhat 7
+# Updated August 2021 to add karyoploteR
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -205,6 +206,10 @@ BiocManager::install ("missMethyl", type="source", lib=dbLib);
 # For Evgeny Galimov (e.galimov@ucl.ac.uk) - added Aug 2017
 
 BiocManager::install ("DEXSeq", type="source", lib=mainLib);
+
+# For Dean Cornish (dean.cornish.19@ucl.ac.uk) - added Aug 2021
+
+BiocManager::install ("karyoploteR", type="source", lib=mainLib);
 
 # Additional CRAN packages
 install.packages ("PSCBS", lib=mainLib, repos=repros);
