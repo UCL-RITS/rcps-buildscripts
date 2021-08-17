@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="openmpi"
+package_version="4.1.1"
+package_description="The Open MPI Project is an open source Message Passing Interface implementation."
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require beta-modules
+    require gcc-libs/10.2.0
+    require compilers/gnu/10.2.0
+
+    # On Myriad, build with UCX
+    if [ $cluster == "myriad" ]
+    then 
+        require numactl/2.0.12
+        require binutils/2.36.1/gnu-10.2.0
+        require ucx/1.9.0/gnu-10.2.0
+    fi
+
+    make_build_env --tmp-root="/dev/shm"
+    module_dir="$module_dir"
+
+    unpack_dir="${package_name}-${package_version}"
+    package_file="${package_name}-${package_version}.tar.bz2"
+    package_url="https://www.open-mpi.org/software/ompi/v${package_version%\.?}/downloads/${package_name}-${package_version}.tar.bz2"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:fa4dc97da18c8c26d5aadb85262a0f2d52b1aa90 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    ./configure \
+        --prefix="$install_prefix" \
+        --with-sge \
+        --without-verbs
+
+    cd "$owd"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make check 
+
+    make install
+
+    # useful to keep the config.log for MPI installs
+    cp "$build_dir/$unpack_dir/config.log" "$install_prefix"
+
+    make_module_v2 \
+        -o "${module_dir}/mpi/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -c "mpi" \
+        -d \
+        -v "MPI_HOME=${install_prefix}" \
+        -v "MPI_RUN=${install_prefix}/bin/mpirun" \
+        -v "GERUN_LAUNCHER=openmpi-sge" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp3+/bin" \
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    rm -Rf "${build_dir:?error: tried to rm blank}"
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
+post_build_report
+
