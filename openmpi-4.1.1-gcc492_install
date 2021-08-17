@@ -23,7 +23,7 @@ _env_setup() {
         require ucx/1.8.0/gnu-4.9.2
     fi
 
-    make_build_env ""
+    make_build_env --tmp-root="/dev/shm"
     module_dir="$module_dir"
 
     unpack_dir="${package_name}-${package_version}"
@@ -87,7 +87,7 @@ _post_build() {
 }
 
 _clean_up() {
-    :
+    rm -Rf "${build_dir:?error: tried to rm blank}"
 }
 
 _env_setup
@@ -96,4 +96,6 @@ _pre_build
 _build
 _post_build
 _clean_up
+
+post_build_report
 
