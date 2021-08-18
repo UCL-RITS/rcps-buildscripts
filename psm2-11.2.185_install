@@ -48,7 +48,7 @@ _post_build() {
     make DESTDIR="$install_prefix" install
 
     make_module_v2 \
-        -o "${module_dir}/mpi/${package_label}" \
+        -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
         -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
         -d \
