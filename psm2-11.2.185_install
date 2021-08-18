@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="psm2"
+package_version="11.2.185"
+package_description="The PSM2 messaging API, libpsm2. A low-level user-level communications interface for the Intel(R) OPA. family of products."
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/4.9.2
+    require compilers/gnu/4.9.2
+    require numactl/2.0.12
+
+    make_build_env --tmp-root="/dev/shm"
+    module_dir="$module_dir"
+
+    unpack_dir="opa-psm2-${package_name^^}_${package_version}"
+    package_file="${package_name^^}_${package_version}.tar.gz"
+    package_url="https://github.com/cornelisnetworks/opa-psm2/archive/refs/tags/${package_name^^}_${package_version}.tar.gz"
+}
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    manifest sha1:364720d2f174565cad33f406dbb2aaac5663a431 ${package_file}
+
+    tar -xf "$package_file"
+}
+
+_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make
+
+    cd "$owd"
+}
+
+_post_build() {
+    cd "$build_dir/$unpack_dir/"
+
+    make DESTDIR="$install_prefix" install
+
+    make_module_v2 \
+        -o "${module_dir}/mpi/${package_label}" \
+        -p "$install_prefix" \
+        -w "Adds ${package_name} ${package_version} to your environment. ${package_description}" \
+        -d \
+    chmod -R a+rX "${module_dir}"
+    echo "Modules in: ${module_dir}"
+    cd "$owd"
+}
+
+_clean_up() {
+    rm -Rf "${build_dir:?error: tried to rm blank}"
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
+post_build_report
+
