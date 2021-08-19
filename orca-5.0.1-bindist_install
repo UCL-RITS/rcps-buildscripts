@@ -28,7 +28,7 @@ else
     require numactl/2.0.12
     require psm2/11.2.185/gnu-4.9.2
 fi
-require mpi/openmpi/4.1.4/gnu-4.9.2
+require mpi/openmpi/4.1.1/gnu-4.9.2
 
 archive="orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz"
 
