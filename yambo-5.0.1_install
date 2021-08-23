@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="yambo"
+package_version="5.0.1"
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require  gcc-libs
+    require  compilers/intel/2017/update4
+    require  mpi/intel/2017/update3/intel
+
+    make_build_env ""
+
+    package_url="https://github.com/yambo-code/yambo/archive/${package_version}.tar.gz"
+    package_file="${package_version}.tar.gz"
+    unpack_dir="yambo-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    # Nothing here.
+    cd ..
+}
+
+_build() {
+    cd "$unpack_dir"
+
+    ./configure \
+        --with-fft-libs=-mkl \
+        --with-blas-libs=-mkl \
+        --with-lapack-libs=-mkl \
+        --enable-etsf-io \
+        --enable-netcdf-LFS \
+        --prefix="$install_prefix"
+    make all
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    #make install
+    mkdir -p "$install_prefix"
+    cp -r bin doc "$install_prefix"/
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r gcc-libs \
+        -r compilers/intel/2017 \
+        -r mpi/intel/2017 \
+        -c yambo 
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
+
