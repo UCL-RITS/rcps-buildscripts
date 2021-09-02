@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing udunits 2
+#
+# by Owain Kenway, 2015 
+#
+# Updated September 2018 for udunits 2.2.26 (versions oder than 2.2.21 are
+# no longer available)
+# Updated April 2020 for different compiler versions
+# Updated September 2021 for udunits 2.2.28
+
+
+VERSION=${VERSION:-2.2.28}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/udunits/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-590baec83161a3fd62c00efa66f6113cec8a7c461e3f61a5182167e0cc5d579e}
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-${VERSION}.tar.gz}
+
+set -e
+
+
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum udunits-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -zxvf udunits-${VERSION}.tar.gz
+
+  cd udunits-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make && make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
