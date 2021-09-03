@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing base R plus recommended packages using GCC + OpenBLAS
+#
+# R 4.1.1
+#
+# by Brian Alston, June 2020
+#
+# May 2017 updated for R 3.4.0
+# October 2017 updated for R 3.4.2
+# May 2018 updated for R 3.5.0 and using fftw 3.3.6 and ROOT built
+#          using fftw 3.3.6
+# Sept 2018 updated for R 3.5.1 and udunits 2.2.26
+# April 2019 updated for R 3.5.3
+# June 2019 updated for R 3.6.0
+# April 2020 updated for R 3.6.3 - now needs GNU 9.2.0 for some
+# additional packages (eg Rfast)
+# June 2020 updated for R 4.0.2
+# September 2021 updated for R 4.1.1 and switched to GNU 10.2.0
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+# May need to update required modules for the latest R. Modules
+# updated:
+#
+# 
+
+VERSION=${VERSION:-4.1.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+MD5=${MD5:-c278cfeb85b1564540ab214e45fe68d9}
+# Slight change in location for R from 4.x
+SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-4/R-${VERSION}.tar.gz}
+# LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
+# SRC_ARCHIVE=${SRC_ARCHIVE:- /home/ccaabaa/Software/R//R-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require openblas/0.3.13-native-threads/gnu-10.2.0
+require java/1.8.0_92
+require fftw/3.3.9/gnu-10.2.0
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.7/gnu-10.2.0
+require hdf/5-1.10.6/gnu-10.2.0
+require udunits/2.2.28/gnu-10.2.0
+require netcdf/4.8.1/gnu-10.2.0
+require pcre2/10.37/gnu-10.2.0
+
+# Not doing Jags or ROOT initially.
+# require jags/4.2.0/gnu.4.9.2-openblas
+# require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+#
+# And for doing the MPI support:
+# 
+# require mpi/openmpi/4.0.5/gnu-10.2.0
+
+# temp_dir=`mktemp -d -p /dev/shm`
+temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+
+if [[ $LOCAL_ARCHIVE ]]
+then
+    cp $SRC_ARCHIVE .
+else
+    wget $SRC_ARCHIVE
+fi
+
+CHECKSUM=`md5sum R-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf R-${VERSION}.tar.gz
+   cd R-${VERSION}
+   ./configure -C --prefix=${INSTALL_PREFIX} --with-recommended-packages --with-x \
+      --with-readline=yes --enable-R-shlib \
+      --with-blas="-L/shared/ucl/apps/openblas/0.3.7-serial/gnu-9.2.0/lib -lopenblas" \
+      --enable-BLAS-shlib 2>&1 | 
+   tee configure-command-OpenBLAS_log
+
+   make 2>&1 | tee make-OpenBLAS_log
+   make check 2>&1 | tee make-check-OpenBLAS_log
+   make pdf  2>&1 | tee make-pdf_log
+   make install 2>&1 | tee make-install_log
+   make install-pdf 2>&1 | tee make-install-pdf_log
+
+   # Build standalone libRmath library
+
+   cd src/nmath/standalone
+   make 2>&1 | tee make-libRmath_log
+   make install 2>&1 | tee make-libRmath-install_log
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_PREFIX/lib64
+   make test 2>&1 | tee make-test_log
+   ./test 2>&1 | tee -a make-test_log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
