@@ -4,18 +4,18 @@ set -o errexit
 
 
 package_name="castep"
-package_version="19.1.1"
+package_version="20.1"
 # Optional: 
 package_variant=""
 package_description="CASTEP is a program that uses density functional theory to calculate the properties of materials from first principles."
 
 source includes/source_includes.sh
 
-package_file="castep-19.1.1_e1fe0d666396.tar.gz"
+package_file="castep-20.1.tar.xz"
 
 # CASTEP is on Bitbucket, which produces pretty unhelpful download bundles.
 # This is the commit the version tag is against.
-package_internal_tag="e1fe0d666396"
+#package_internal_tag="e1fe0d666396"
 
 module purge
 require gcc-libs
@@ -32,7 +32,7 @@ build_opt_level="fast"
 cd "$build_dir"
 
 cp "/shared/ucl/apps/pkg-store/$package_file" ./
-manifest sha256:ca5c357f6108cff758184e74667a549a0e4d18d5658adc33ebd0ec140383b6ee "$package_file"
+#manifest sha256:ca5c357f6108cff758184e74667a549a0e4d18d5658adc33ebd0ec140383b6ee "$package_file"
 
 tar -xf "$package_file"
 
