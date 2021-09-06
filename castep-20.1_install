@@ -23,7 +23,7 @@ require compilers/intel
 require mpi/intel
 
 # The CASTEP tests are about 2GB so we build in /dev/shm instead of /tmp (the default)
-make_build_env "castep" "/dev/shm"
+make_build_env "castep" 
 
 # We've had problems in the past where "fast" builds didn't pass on Legion --
 #  you might need to cluster-check and downgrade to "intermediate" if that happens
@@ -37,7 +37,7 @@ cp "/shared/ucl/apps/pkg-store/$package_file" ./
 tar -xf "$package_file"
 
 
-cd "/dev/shm/castep-build*"
+cd "castep-build*"
 
 # The utilities install target assumes that the c2x makefile has an install target
 # 
