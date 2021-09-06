@@ -15,7 +15,7 @@ package_file="castep-20.1.tar.xz"
 
 # CASTEP is on Bitbucket, which produces pretty unhelpful download bundles.
 # This is the commit the version tag is against.
-#package_internal_tag="e1fe0d666396"
+package_internal_tag="9NXMjH3JFV"
 
 module purge
 require gcc-libs
@@ -37,7 +37,7 @@ cp "/shared/ucl/apps/pkg-store/$package_file" ./
 tar -xf "$package_file"
 
 
-cd "castep-castep-${package_internal_tag}"
+cd "castep-build-${package_internal_tag}"
 
 # The utilities install target assumes that the c2x makefile has an install target
 # 
