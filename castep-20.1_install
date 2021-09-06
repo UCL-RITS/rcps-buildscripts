@@ -37,7 +37,7 @@ cp "/shared/ucl/apps/pkg-store/$package_file" ./
 tar -xf "$package_file"
 
 
-cd "castep-build-${package_internal_tag}"
+cd "castep-build*"
 
 # The utilities install target assumes that the c2x makefile has an install target
 # 
