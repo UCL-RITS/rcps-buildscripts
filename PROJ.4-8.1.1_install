@@ -38,9 +38,9 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require rcps-core/1.0.0
 require beta-modules
-require gcc-libs/9.2.0
-require compilers/gnu/9.2.0
-require sqlite/3.31.1/gnu-9.2.0
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require sqlite/3.36.0/gnu-10.2.0
 # require gmt/recommended
 
 temp_dir=`mktemp -d -p /dev/shm`
