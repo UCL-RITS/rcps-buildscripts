@@ -26,7 +26,7 @@ HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.10.6/serial/gnu-10.2.0/}
 LINK_PROJ=${LINK_PROJ:-yes}
 WITH_HDF5=${WITH_HDF5:-yes}
 PROJ=${PROJ:-/shared/ucl/apps/PROJ.4/8.1.1/lib}
-SQLITE3=${SQLITE3:-/shared/ucl/apps/SQLite/3360000/lib}
+SQLITE3=${SQLITE3:-/shared/ucl/apps/SQLite/3360000}
 
 set -e
 
