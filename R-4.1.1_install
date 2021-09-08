@@ -91,7 +91,7 @@ then
    cd R-${VERSION}
    ./configure -C --prefix=${INSTALL_PREFIX} --with-recommended-packages --with-x \
       --with-readline=yes --enable-R-shlib \
-      --with-blas="-L/shared/ucl/apps/openblas/0.3.7-serial/gnu-9.2.0/lib -lopenblas" \
+      --with-blas="-L /shared/ucl/apps/openblas/0.3.13-serial/gnu-10.2.0/lib -lopenblas" \
       --enable-BLAS-shlib 2>&1 | 
    tee configure-command-OpenBLAS_log
 
