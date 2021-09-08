@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Python for GNU 10.2.0
+#
+
+package_name="python"
+package_version="3.9.6"
+MD5=${MD5:-ecc29a7688f86e550d29dba2ee66cf80}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.python.org/ftp/python/${package_version}/Python-${package_version}.tar.xz}
+
+set -e
+
+source includes/source_includes.sh
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+
+make_build_env
+
+export PATH="$install_prefix/bin:$PATH"
+export LD_LIBRARY_PATH="$install_prefix/lib:$LD_LIBRARY_PATH"
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+
+manifest \
+    "md5:$MD5" "Python-${package_version}.tar.xz" 
+
+tar -xf "Python-${package_version}.tar.xz"
+
+cd "Python-${package_version}"
+./configure --prefix="$install_prefix" \
+            --enable-shared \
+            --with-threads \
+            --enable-ipv6 \
+            --with-ensurepip
+
+make -l "$(nproc)" -j && make install
+pip3 install --upgrade pip
+pip3 install virtualenv
+
