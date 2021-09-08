@@ -45,6 +45,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 require beta-modules
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
+
+# Use serial OoenBLAS again?
 require openblas/0.3.13-native-threads/gnu-10.2.0
 require java/1.8.0_92
 require fftw/3.3.9/gnu-10.2.0
