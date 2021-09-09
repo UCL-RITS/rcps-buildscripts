@@ -53,6 +53,9 @@ GSHHG_VERSION=${GSHHG_VERSION:-2.3.7}
 GSHHG_MD5=${GSHHG_MD5:-8ee2653f9daf84d49fefbf990bbfa1e7}
 GSHHG_ARCHIVE=${GSHHG_ARCHIVE:-https://github.com/GenericMappingTools/gshhg-gmt/releases/download/${GSHHG_VERSION}/gshhg-gmt-${GSHHG_VERSION}.tar.gz}
 
+# Need to set location of geos-config manually
+GEOS_CONFIG_LOC=/shared/ucl/apps/geos/3.9.1/gnu-10.2.0/bin/geos-config
+
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
@@ -85,7 +88,7 @@ then
   cd cmake
   cp ConfigUserTemplate.cmake ConfigUser.cmake
   cd ../build
-  cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.8/gnu-9.2.0 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP=TRUE ..
+  cmake -Wno-dev -DGEOS_CONFIG=${GEOS_CONFIG_LOC} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.8/gnu-9.2.0 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP=TRUE ..
 
   make 
   make install
