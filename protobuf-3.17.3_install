@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Google Protocol Buffers
+#
+# Version: 3.17.3
+# For R 4.0.2 December 2020
+# Updated to v3.17.3 for R 4.1.1 September 2021
+
+set -e
+
+VERSION=${VERSION:-3.17.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/protobuf/${VERSION}/${COMPILER_TAG}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/google/protobuf.git}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# Use the same environment used for building R 4.1.1 ie GNU 10.2.0
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require python3/3.9-gnu-10.2.0
+
+mkdir -p /dev/shm/protobuf
+
+temp_dir=`mktemp -d -p /dev/shm/protobuf`
+
+cd $temp_dir
+
+git clone $SRC_ARCHIVE
+
+cd protobuf
+
+git checkout v${VERSION}
+
+# Install C++ version
+
+./autogen.sh
+./configure --prefix=${INSTALL_PREFIX}
+make | tee make_log
+make check | tee make-check_log
+make install | tee make-install_log
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+export LD_LIBARAY_PATH=$INSTALL_PREFIX/lib:$LD_LIBRARY_PREFIX
+
+# Install python 3 version
+cd python
+export PYTHONPATH=${INSTALL_PREFIX}/lib/python3.6/site-packages/:${PYTHONPATH}
+mkdir -p ${INSTALL_PREFIX}/lib/python3.6/site-packages
+python3 setup.py install --prefix=${INSTALL_PREFIX}
+

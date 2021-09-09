@@ -4,6 +4,7 @@
 # Installing ATLAS Ancient DNA Analysis
 #
 # by Brian Alston April 2021
+# Updated with a bug fix suggested by the developers August 2021.
 
 
 set -e
@@ -31,6 +32,10 @@ cd $temp_dir
 
 git clone --depth 1 $SRC_ARCHIVE
 cd atlas
+
+# Implement bug fix suggested by developers.
+sed -i.bak '1520s/alignmentParser.bamHeader.ReadGroups.Add(readGroupTruncated)/alignmentParser.readGroups.addTruncatedOrMergedRG(alignmentParser.bamHeader, vec[0], readGroupTruncated)/' TGenome.cpp
+
 make
 
 # No make install so:
