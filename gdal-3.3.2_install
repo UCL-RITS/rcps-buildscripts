@@ -37,7 +37,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
 require perl/5.22.0
-require python/3.9.6
+require python3/3.9-gnu-10.2.0
 # require proj.4/7.0.0/gnu-9.2.0
 require libtool/2.4.6
 require hdf/5-1.10.6/gnu-10.2.0
