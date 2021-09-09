@@ -9,25 +9,45 @@
 # updated for RStudio IDE February 2021
 #
 
+package_name="RStudio-IDE"
+package_version="1.4.1106"
+package_description="RStudio is an integrated development environment (IDE) for R"
 
-VERSION=${VERSION:-1.4.1106}
 PARTCODE=${PARTCODE:-f1ac345}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/RStudio/IDE}
 SHA256=${SHA256:-b52d4bb51350d89bb15bf214642d690c0a64f346874afa8ffef86eca8dc1b13e}
-SRC_ARCHIVE=${SRC_ARCHIVE:- https://download1.rstudio.org/desktop/centos7/x86_64/rstudio-${VERSION}-x86_64-fedora.tar.gz}
-LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-rstudio-${VERSION}-x86_64-fedora.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://download1.rstudio.org/desktop/centos7/x86_64/rstudio-${package_version}-x86_64-fedora.tar.gz}
+LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-rstudio-${package_version}-x86_64-fedora.tar.gz}
 
-export PATH=$INSTALL_PREFIX/bin:$PATH
+source includes/source_includes.sh
+module purge
+require gcc-libs
+require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+require xorg-utils/X11R7.7
+require qt/5.12.1/gnu-4.9.2
+require perl/5.22.0
+require python/2.7.9
+require postgresql/9.5.3/gnu-4.9.2
+require openblas/0.2.14/gnu-4.9.2
+require java/1.8.0_92
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require fftw/3.3.6-pl2/gnu-4.9.2 
+require ghostscript/9.19/gnu-4.9.2 
+require texinfo/6.6/gnu-4.9.2 
+require texlive/2019 
+require gsl/2.4/gnu-4.9.2 
+require hdf/5-1.8.15/gnu-4.9.2 
+require netcdf/4.3.3.1/gnu-4.9.2 
+require jags/4.2.0/gnu.4.9.2-openblas 
+require r/3.6.0-openblas/gnu-4.9.2
+require mesa/6.5/gnu-4.9.2
 
-dirname=$(dirname $0 2>/dev/null || pwd)
-INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
-source ${INCLUDES_DIR}/module_maker_inc.sh
-source ${INCLUDES_DIR}/require_inc.sh
+make_build_env --tmp-root=/dev/shm
+set -e
 
-temp_dir=`mktemp -d -p /dev/shm`
-# temp_dir='/home/ccspapp/Software/R'
-echo "Building in $temp_dir ..."
-cd $temp_dir
+echo "Building in $build_dir ..."
+cd $build_dir
 
 wget -O $LOCAL_ARCHIVE $SRC_ARCHIVE
 
@@ -35,11 +55,17 @@ CHECKSUM=`sha256sum $LOCAL_ARCHIVE | awk '{print $1}'`
 
 if [[ "$SHA256" == "$CHECKSUM" ]]
 then
-    mkdir -p $INSTALL_PREFIX
-    cd $INSTALL_PREFIX
-    tar -xvf ${temp_dir}/${LOCAL_ARCHIVE}
+    mkdir -p $install_prefix
+    cd $install_prefix
+    tar -xvf ${build_dir}/${LOCAL_ARCHIVE}
 else
    echo "***** Hash mismatch,"
    echo "	Expected: $SHA256"
    echo "	Got:      $CHECKSUM"
 fi
+
+make_module_v2 \
+    -e PATH:"$install_prefix/rstudio-$package_version/bin" \
+    -e LD_LIBRARY_PATH:"$install_prefix/rstudio-$package_version/lib" \
+    -c RStudio-IDE
+post_build_report
