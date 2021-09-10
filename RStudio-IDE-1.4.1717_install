@@ -3,45 +3,25 @@
 ###############################################
 # Install RStudio IDE for use with r/recommended etc
 #
-# RStudio 1.4.1106 binary install
+# RStudio 1.4.1717 binary install
 #
 # by Brian Alston, July 2019
 # updated for RStudio IDE February 2021
+# updated by Tuomas Koskela September 2021
 #
 
 package_name="RStudio-IDE"
-package_version="1.4.1106"
+package_version="1.4.1717"
 package_description="RStudio is an integrated development environment (IDE) for R"
 
 PARTCODE=${PARTCODE:-f1ac345}
-SHA256=${SHA256:-b52d4bb51350d89bb15bf214642d690c0a64f346874afa8ffef86eca8dc1b13e}
+SHA256=${SHA256:-4c05ddca999abc83578d072ec4ebb9851634b8136e8e2f2edeeda141b5061153}
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://download1.rstudio.org/desktop/centos7/x86_64/rstudio-${package_version}-x86_64-fedora.tar.gz}
 LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-rstudio-${package_version}-x86_64-fedora.tar.gz}
 
 source includes/source_includes.sh
 module purge
 require gcc-libs
-require compilers/gnu/4.9.2
-require bison/3.0.4/gnu-4.9.2
-require gperf/3.0.4/gnu-4.9.2
-require xorg-utils/X11R7.7
-require qt/5.12.1/gnu-4.9.2
-require perl/5.22.0
-require python/2.7.9
-require postgresql/9.5.3/gnu-4.9.2
-require openblas/0.2.14/gnu-4.9.2
-require java/1.8.0_92
-require mpi/openmpi/3.1.4/gnu-4.9.2
-require fftw/3.3.6-pl2/gnu-4.9.2 
-require ghostscript/9.19/gnu-4.9.2 
-require texinfo/6.6/gnu-4.9.2 
-require texlive/2019 
-require gsl/2.4/gnu-4.9.2 
-require hdf/5-1.8.15/gnu-4.9.2 
-require netcdf/4.3.3.1/gnu-4.9.2 
-require jags/4.2.0/gnu.4.9.2-openblas 
-require r/3.6.0-openblas/gnu-4.9.2
-require mesa/6.5/gnu-4.9.2
 
 make_build_env --tmp-root=/dev/shm
 set -e
@@ -67,5 +47,8 @@ fi
 make_module_v2 \
     -e PATH:"$install_prefix/rstudio-$package_version/bin" \
     -e LD_LIBRARY_PATH:"$install_prefix/rstudio-$package_version/lib" \
-    -c RStudio-IDE
+    -r qt/5.12.1/gnu-4.9.2 \
+    -r r/3.6.0-openblas/gnu-4.9.2 \
+    -r postgresql/9.5.3/gnu-4.9.2 \
+    -r mesa/10.6.9/gnu-4.9.2
 post_build_report
