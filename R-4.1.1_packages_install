@@ -165,11 +165,11 @@ R --no-save < $R_input
 
 # R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/ridge_2.1-3.tar.gz
 
-R_input=${LOCALDIR}/R_packages_UCL_5_3.6.3.R
+R_input=${LOCALDIR}/R_packages_UCL_5_4.1.1.R
 R --no-save < $R_input
 
 # Now to install Bioconductor.
 
-R_input=${LOCALDIR}/Bioconductor_UCL_1_3.6.3.R
+R_input=${LOCALDIR}/Bioconductor_UCL_1_4.1.1.R
 R --no-save < $R_input
 
