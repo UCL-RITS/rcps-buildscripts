@@ -67,7 +67,7 @@ require proj.4/8.1.1/gnu-10.2.0
 require gdal/3.3.2/gnu-10.2.0
 require geos/3.9.1/gnu-10.2.0
 require gmt/6.2.0/gnu-10.2.0
-require v8/5.6
+require v8/3.15
 require protobuf/3.17.3/gnu-10.2.0
 require jq/1.5/gnu-4.9.2
 require plink/1.90b3.40

@@ -55,12 +55,13 @@ install.packages ("proto", lib=mainLib, repos=repros);
 install.packages ("ggplot2", lib=mainLib, repos=repros);
 install.packages ("devtools", lib=mainLib, repos=repros);
 
-# Install sf from GitHub repository
+# Install sf from GitHub repository - Not for R 4.1.1
 # Updated for R 4.1.1 - needs location of new PROJ
 
-sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/8.1.1/lib --with-proj-share=/shared/ucl/apps/PROJ.4/8.1.1/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
-devtools::install_github("r-spatial/sf", configure.args=sfconf);
+#sfconf <- '--with-proj-api=yes --with-proj-lib=/shared/ucl/apps/PROJ.4/8.1.1/lib --with-proj-share=/shared/ucl/apps/PROJ.4/8.1.1/share/proj PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -DHAVE_PROJ_H"';
+# devtools::install_github("r-spatial/sf", configure.args=sfconf);
 
+install.packages ("sf", lib=mainLib, repos=repros);
 
 install.packages ("adegenet", lib=mainLib, repos=repros);
 install.packages ("pegas", lib=mainLib, repos=repros);
