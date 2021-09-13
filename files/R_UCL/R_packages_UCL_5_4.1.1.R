@@ -156,13 +156,15 @@ install.packages("Rcpp", lib=mainLib, repos=repros);
 install.packages("jsonlite", lib=mainLib, repos=repros);
 install.packages("curl", lib=mainLib, repos=repros);
 
-# Updated for R 4.1.1 to use V8 5.6
-v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/5.6/v8/include LIB_DIR=/shared/ucl/apps/v8/5.6/v8/out.gn/ucl_rcas';
+# Updated for R 4.1.1 MUST use 3.15 version of V8 otherwise build fails!
+v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
 install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
+
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/include --with-udunits2-lib=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
-lwgeomconf <- 'CFLAGS="${CFLAGS} --with-proj-lib=/shared/ucl/apps/PROJ.4/8.1.1/lib --with-proj-share=/shared/ucl/apps/PROJ.4/8.1.1/share/proj -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
-install.packages ("lwgeom", lib=mainLib, repos=repros, configure.vars=lwgeomconf);
+# lwgeomconf <- 'CFLAGS="${CFLAGS} --with-proj-lib=/shared/ucl/apps/PROJ.4/8.1.1/lib --with-proj-share=/shared/ucl/apps/PROJ.4/8.1.1/share/proj -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1" PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=1"';
+# install.packages ("lwgeom", lib=mainLib, repos=repros, configure.vars=lwgeomconf);
+install.packages ("lwgeom", lib=mainLib, repos=repros);
 install.packages ("classInt", lib=mainLib, repos=repros);
 install.packages ("tmap", lib=mainLib, repos=repros);
 
