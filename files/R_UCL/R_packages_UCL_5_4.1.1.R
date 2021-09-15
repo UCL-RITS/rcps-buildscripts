@@ -235,6 +235,8 @@ install.packages ("dplyr", lib=mainLib, repos=repros);
 install.packages ("docopt", lib=mainLib, repos=repros);
 install.packages ("MendelianRandomization", lib=mainLib, repos=repros);
 
+# Some historic datasets - useful for examples - September 2021
+install.packages ("HistData", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
