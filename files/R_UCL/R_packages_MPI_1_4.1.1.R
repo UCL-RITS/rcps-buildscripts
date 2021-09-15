@@ -10,6 +10,7 @@
 # Updated April 2020 for R 3.6.3  and GNU 9.2.0
 # Updated September 2021 for R 4.1.1 and GNU 10.2.0 - now using
 #         mpi/openmpi/4.0.5/gnu-10.2.0
+#         Also doMPI has been added - more up to date than snow
 # 
 #=====================================================================
 #  R_packages_MPI_1
@@ -25,6 +26,7 @@ dbLib;
 repros;
 
 install.packages ("Rmpi", lib=mainLib, repos=repros, configure.args="--with-Rmpi-include=/shared/ucl/apps/openmpi/4.0.5/gnu-10.2.0/include --with-Rmpi-libpath=/shared/ucl/apps/openmpi/4.0.5/gnu-10.2.0/lib --with-Rmpi-type=OPENMPI");
+install.packages ("doMPI", lib=mainLib, repos=repros);
 install.packages ("snow", lib=mainLib, repos=repros);
 
 
