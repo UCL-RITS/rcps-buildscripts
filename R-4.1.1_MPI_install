@@ -120,6 +120,6 @@ export OMPI_MCA_btl=vader,self
 # 
 # Do this for all packages that fail with abover error.
 
-R_input=${LOCALDIR}/R_packages_MPI_1_3.6.3.R
+R_input=${LOCALDIR}/R_packages_MPI_1_4.1.1.R
 R --no-save < $R_input
 
