@@ -15,7 +15,7 @@ pwd
 
 wget https://download.octeract.com/${package_name}-${package_version}-Linux.sh
 
-bash /tmp/${package_name}-${package_version}-Linux.sh
+bash ${package_name}-${package_version}-Linux.sh
 
 rm octeract-engine-3.5.0-Linux.sh
 
