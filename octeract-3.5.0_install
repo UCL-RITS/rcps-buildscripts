@@ -9,7 +9,7 @@ require beta-modules
 require gcc-libs/7.3.0
 require python3
 
-cd /tmp/
+cd /shared/ucl/apps
 
 pwd
 
@@ -17,6 +17,5 @@ wget https://download.octeract.com/${package_name}-${package_version}-Linux.sh
 
 bash /tmp/${package_name}-${package_version}-Linux.sh
 
-rm  /tmp/${package_name}-${package_version}-Linux.sh
-mv -f /tmp/${package_name}-${package_version} /share/apps/ucl/
+rm octeract-engine-3.5.0-Linux.sh
 
