@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+package_name="octeract-engine"
+package_version="3.5.0"
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/7.3.0
+require python3
+
+cd /tmp/
+
+pwd
+
+wget https://download.octeract.com/${package_name}-${package_version}-Linux.sh
+
+bash /tmp/${package_name}-${package_version}-Linux.sh
+
+rm  /tmp/${package_name}-${package_version}-Linux.sh
+mv -f /tmp/${package_name}-${package_version} /share/apps/ucl/
+
