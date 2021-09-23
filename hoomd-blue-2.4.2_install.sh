@@ -50,7 +50,7 @@ cd hoomd-build
 export SOFTWARE_ROOT=$INSTALL_PREFIX
 cmake ../ -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/lib/python -DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native -DENABLE_MPI=ON -DENABLE_GPU=ON
 make
-make test
+#make test
 make install
 
 rm -rf $temp_dir
