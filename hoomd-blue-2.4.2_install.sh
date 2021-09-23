@@ -27,9 +27,9 @@ SHA512=${SHA512:-bc24a4a50d079287c2c59a730a35d14f855761e55a2847fee5cf9f1cf35512d
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v${VERSION}.tar.gz}
 
 
-mkdir -p /dev/shm/$(whoami)/${NAME}
+mkdir -p /dev/shm/${NAME}
 
-temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+temp_dir=$(mktemp -d -p /dev/shm/${NAME})
 
 cd $temp_dir
 
