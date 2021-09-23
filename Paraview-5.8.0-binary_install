@@ -9,8 +9,8 @@
 NAME=${NAME:-paraview}
 VERSION=${VERSION:-5.8.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-SHA=${SHA:-ee05d4443f20494b70979ce06f83667be45ffe2dff154c34dc4280d13b83a54f}
-ARCHIVE_NAME=${ARCHIVE_NAME:-ParaView-${VERSION}-Qt5-OpenGL2-MPI-Linux-64bit.tar.gz}
+#SHA=${SHA:-ee05d4443f20494b70979ce06f83667be45ffe2dff154c34dc4280d13b83a54f}
+ARCHIVE_NAME=${ARCHIVE_NAME:-ParaView-${VERSION}-MPI-Linux-Python3.7-64bit.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-"http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.3&type=binary&os=linux64&downloadFile=${ARCHIVE_NAME}"}
 OPTIONS=${OPTIONS:-""}
 
