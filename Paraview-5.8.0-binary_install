@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Paraview binaries 
+# 
+# 
+# 
+
+NAME=${NAME:-paraview}
+VERSION=${VERSION:-5.8.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA=${SHA:-ee05d4443f20494b70979ce06f83667be45ffe2dff154c34dc4280d13b83a54f}
+ARCHIVE_NAME=${ARCHIVE_NAME:-ParaView-${VERSION}-Qt5-OpenGL2-MPI-Linux-64bit.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-"http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.3&type=binary&os=linux64&downloadFile=${ARCHIVE_NAME}"}
+OPTIONS=${OPTIONS:-""}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget "$SRC_ARCHIVE" -O $ARCHIVE_NAME
+archive=$ARCHIVE_NAME
+
+CHECKSUM=`sha256sum $archive| awk '{print $1}'`
+
+if [ "$SHA" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xvf $temp_dir/$archive
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA"
+  echo "Got: $CHECKSUM"
+fi
