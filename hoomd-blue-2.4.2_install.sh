@@ -13,6 +13,7 @@ require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require mpi/openmpi/3.1.1/gnu-4.9.2
 require python3/recommended
+require cuda/9.0.176-patch4/gnu-4.9.2
 require cmake/3.7.2
 
 NAME=${NAME:-hoomd-blue}
@@ -47,7 +48,7 @@ cd hoomd-v${VERSION}
 mkdir hoomd-build
 cd hoomd-build
 export SOFTWARE_ROOT=$INSTALL_PREFIX
-cmake ../ -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/lib/python -DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native -DENABLE_MPI=ON
+cmake ../ -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/lib/python -DCMAKE_CXX_FLAGS=-march=native -DCMAKE_C_FLAGS=-march=native -DENABLE_MPI=ON -DENABLE_GPU=ON
 make
 make test
 make install
