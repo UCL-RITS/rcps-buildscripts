@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ANSYS 2021 R2
+#
+# September 2021
+
+NAME=${NAME:-ANSYS}
+VERSION=${VERSION:-2021.R2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/ANSYS/installers/${VERSION}}
+ELECTRONICS=${ELECTRONICS:-ELECTRONICS_2021R2_LINX64.tgz}
+FLUIDSTRUCTURES=${FLUIDSTRUCTURES:-FLUIDSTRUCTURES_2021R2_LINX64.tgz}
+PREPPOST=${PREPPOST:-PREPPOST_2021R2_LINX64.tgz}
+# LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
+
+set -e
+
+# Needs approx 60 GB to unpack so using ~/Scratch
+
+archive_dir=~/Scratch/Software/ANSYS/installers/$VERSION
+mkdir -p $archive_dir
+cd $archive_dir
+
+echo "Unpacking archives into $archive_dir ..."
+mkdir ELECTRONICS
+cd ELECTRONICS
+tar -xvf ${SRC_ARCHIVE}/${ELECTRONICS}
+cd ..
+mkdir FLUIDSTRUCTURES
+cd FLUIDSTRUCTURES
+tar -xvf ${SRC_ARCHIVE}/${FLUIDSTRUCTURES}
+cd ..
+mkdir PREPPOST
+cd PREPPOST
+tar -xvf ${SRC_ARCHIVE}/${PREPPOST}
+cd ..
+echo "Archives unpacked."
+
+mkdir -p ${INSTALL_PREFIX}/ucl/bin
+echo ""
+echo "Now run the following three GUI installers:"
+echo ""
+echo "`pwd`/FLUIDSTRUCTURES/INSTALL"
+echo "`pwd`/PREPPOST/INSTALL"
+echo "`pwd`/ELECTRONICS/Electronics_212_linx64/install"
+echo ""
+echo "Use: $INSTALL_PREFIX as the install location for FLUIDSTRUCTURES and PREPPOST."
+echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
+echo ""
+`pwd`/FLUIDSTRUCTURES/INSTALL
+`pwd`/PREPPOST/INSTALL
+`pwd`/ELECTRONICS/Electronics_212_linx64/install
+
+echo ""
+echo "Installing UCL GE support scripts ..."
+cp files/ANSYS/cfxnodes ${INSTALL_PREFIX}/ucl/bin/cfxnodes
+echo "Finished."
