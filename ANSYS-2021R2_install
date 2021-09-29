@@ -4,6 +4,9 @@
 # Installing ANSYS 2021 R2
 #
 # September 2021
+#
+# Didn't work first time - I think the GUI installers need to be
+# started from the dirtectories they are in.
 
 NAME=${NAME:-ANSYS}
 VERSION=${VERSION:-2021.R2}
@@ -12,6 +15,7 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/ANSYS/installers/${VERSION}}
 ELECTRONICS=${ELECTRONICS:-ELECTRONICS_2021R2_LINX64.tgz}
 FLUIDSTRUCTURES=${FLUIDSTRUCTURES:-FLUIDSTRUCTURES_2021R2_LINX64.tgz}
 PREPPOST=${PREPPOST:-PREPPOST_2021R2_LINX64.tgz}
+CFXNODES=${CFXNODES:-/shared/ucl/apps/build_scripts/files/ANSYS/cfxnodes}
 # LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
 
 set -e
@@ -48,11 +52,17 @@ echo ""
 echo "Use: $INSTALL_PREFIX as the install location for FLUIDSTRUCTURES and PREPPOST."
 echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
 echo ""
-`pwd`/FLUIDSTRUCTURES/INSTALL
-`pwd`/PREPPOST/INSTALL
-`pwd`/ELECTRONICS/Electronics_212_linx64/install
+echo "FLUIDSTRUCTURES ..."
+cd FLUIDSTRUCTURES
+./INSTALL
+echo "PREPPOST ..."
+cd ../PREPPOST
+./INSTALL
+echo "ELECTRONICS ..."
+cd ../ELECTRONICS/Electronics_212_linx64
+./install
 
 echo ""
 echo "Installing UCL GE support scripts ..."
-cp files/ANSYS/cfxnodes ${INSTALL_PREFIX}/ucl/bin/cfxnodes
+cp $CFXNODES ${INSTALL_PREFIX}/ucl/bin/cfxnodes
 echo "Finished."
