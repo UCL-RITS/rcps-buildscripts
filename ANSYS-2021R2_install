@@ -27,15 +27,15 @@ mkdir -p $archive_dir
 cd $archive_dir
 
 echo "Unpacking archives into $archive_dir ..."
-mkdir ELECTRONICS
+mkdir -p ELECTRONICS
 cd ELECTRONICS
 tar -xvf ${SRC_ARCHIVE}/${ELECTRONICS}
 cd ..
-mkdir FLUIDSTRUCTURES
+mkdir -p FLUIDSTRUCTURES
 cd FLUIDSTRUCTURES
 tar -xvf ${SRC_ARCHIVE}/${FLUIDSTRUCTURES}
 cd ..
-mkdir PREPPOST
+mkdir -p PREPPOST
 cd PREPPOST
 tar -xvf ${SRC_ARCHIVE}/${PREPPOST}
 cd ..
