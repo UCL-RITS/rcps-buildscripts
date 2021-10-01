@@ -27,5 +27,6 @@ echo "Building in $temp_dir ..."
 cd $temp_dir
 wget $SRC_ARCHIVE
 
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 tar -xvf ${temp_dir}/sod-${VERSION}.tgz
