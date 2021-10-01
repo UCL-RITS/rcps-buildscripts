@@ -7,7 +7,7 @@
 #
 # Using Ian's require function to load modules
 #
-# 
+# Needs Java eg module load java/openjdk-8/8u212/openj9
 
 VERSION=${VERSION:-3.2.10}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/SOD/${VERSION}}
