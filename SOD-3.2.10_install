@@ -10,7 +10,7 @@
 # Needs Java eg module load java/openjdk-8/8u212/openj9
 
 VERSION=${VERSION:-3.2.10}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/SOD/${VERSION}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/sod/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.seis.sc.edu/downloads/sod/${VERSION}/sod-${VERSION}.tgz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
