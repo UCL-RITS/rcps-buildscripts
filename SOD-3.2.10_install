@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing SOD seismology app for Earth Sciences Teaching on Aristotle
+#
+# by Brian Alston, October 2021
+#
+# Using Ian's require function to load modules
+#
+# 
+
+VERSION=${VERSION:-3.2.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/SOD/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.seis.sc.edu/downloads/sod/${VERSION}/sod-${VERSION}.tgz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+echo "Building in $temp_dir ..."
+cd $temp_dir
+wget $SRC_ARCHIVE
+
+cd $INSTALL_PREFIX
+tar -xvf ${temp_dir}/sod-${VERSION}.tgz
