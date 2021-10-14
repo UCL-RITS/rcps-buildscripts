@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing STAR-CD
+#
+# Updated for version 2021.1 Oct 2021
+
+package_name="STAR-CD"
+package_version="2021.1-436004"
+package_description="Adds STAR-CD 2021.1-436004 to your environment. STAR-CD is a code for performing CFD simulations. It is designed for modelling fluid flow, heat transfer, mass transfer and chemical reactions."
+build=${build:-202104290129}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/STAR-CD/installers/${package_name}_${package_version}_${build}-Linux_x86_64.tar}
+LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
+GROUP=${GROUP:-legstarc}
+ICE_VER=${ICE_VER:-4.36.001}
+ICE_ARCH=${ICE_ARCH:-linux64_2.6-x86-glibc_2.5.0-gcc_4.4.3-ifort_11.0}
+
+source includes/source_includes.sh
+module purge
+module load gcc-libs
+
+make_build_env --tmp-root=/dev/shm/
+
+set -e
+
+archive=$(basename "${SRC_ARCHIVE}")
+
+cd "$build_dir"
+tar -xf $SRC_ARCHIVE
+
+# pick components and answer questions interactively - choose A for all.
+sh setup
+
+# ICE fix
+cd $install_prefix/ICE/$ICE_VER
+chmod -R a+rwx $ICE_ARCH
+
+# set permissions to restricted group only
+cd $install_prefix
+chgrp -R $GROUP $install_prefix
+chmod o-rx $install_prefix
+
+# Add HPC_SCRATCH and change STARFLAGS in etc/software.ini
+sed -i.bak '/default                     STARFLAGS=/a default                     HPC_SCRATCH=$TMPDIR' $install_prefix/etc/software.ini
+sed -i -e "s|STARFLAGS=|STARFLAGS=-nodefile \$TMPDIR/machines -scratch=\$TMPDIR|" $install_prefix/etc/software.ini
+
+make_module_v2 
+post_build_report
