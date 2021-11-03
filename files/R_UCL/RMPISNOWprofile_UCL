@@ -1,0 +1,47 @@
+library(Rmpi)
+library(snow)
+
+# Updated for R 4.1.1 and OpenMPI 4 by Barnabas Harris, Institute of Archaeology UCL
+
+assign(".MPIrun", function() {
+  if (mpi.comm.rank(0) > 0){
+    sys.load.image(".RData",TRUE)
+    .First.sys()
+    sink(file="/dev/null")
+    slaveLoop(makeMPImaster())
+    mpi.quit()
+  }
+  else {
+    makeMPIcluster()
+    .Last <<- function(){
+      cl <- getMPIcluster()
+      if (! is.null(cl))
+        stopCluster(cl)
+      mpi.quit()
+    }
+  }
+}, envir = globalenv())
+
+.MPIrun()
+
+#.MPIrun <- function() 
+#{
+#    if (mpi.comm.rank(0) > 0){
+#        sys.load.image(".RData",TRUE)
+#        .First.sys()
+#	sink(file="/dev/null")
+#        slaveLoop(makeMPImaster())
+#        mpi.quit()
+#    }
+#    else {
+#        makeMPIcluster()
+#        .Last <<- function(){
+#            cl <- getMPIcluster()
+#            if (! is.null(cl))
+#                stopCluster(cl)
+#            mpi.quit()
+#        }
+#    }
+#}
+#
+#.MPIrun()

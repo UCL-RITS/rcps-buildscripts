@@ -29,6 +29,9 @@
 # Updated September 2020 to set currect value for R_LIBS_SITE - WILL NEED TO CHANGE FOR EACH
 # NEW R VERSION!
 # Updated September 2021 for R 4.1.1 - now using mpi/openmpi/4.0.5/gnu-10.2.0
+# Updated November 2021 for fix problems with snow using OpenMPI 4
+
+# NOTE: The Rmpi package is not fixed by the November 2021 update.
 
 #
 # Using Ian's require function to load modules
@@ -117,9 +120,14 @@ export OMPI_MCA_btl=vader,self
 # 
 # cd ..
 # tar cvzf adapt_1.0-4-ucl.tar.gz adapt
-# 
+#  
 # Do this for all packages that fail with abover error.
 
 R_input=${LOCALDIR}/R_packages_MPI_1_4.1.1.R
 R --no-save < $R_input
 
+# Updates are needed to the RMPISNOW script to work with OpenMPI 4.
+
+cd ${INSTALL_PREFIX}/lib64/R/library/snow
+cp RMPISNOWprofile RMPISNOWprofile_dist
+cp ${LOCALDIR}/RMPISNOWprofile_UCL RMPISNOWprofile
