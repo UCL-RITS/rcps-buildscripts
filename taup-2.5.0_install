@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TauP
+#
+# by Manesh Mistry, 2021
+#
+
+APPNAME=${APPNAME:-taup}
+VERSION=${VERSION:-2.5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+MD5=${MD5:-5e95bd2d138ca06f7d8a6c4aee641ffb}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.seis.sc.edu/downloads/TauP/TauP-${VERSION}.tgz}
+
+set -e
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum TauP-${VERSION}.tgz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -zxvf $temp_dir/TauP-${VERSION}.tgz
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
