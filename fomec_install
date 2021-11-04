@@ -8,8 +8,6 @@
 
 APPNAME=${APPNAME:-fomec}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://ds.iris.edu/pub/programs/$APPNAME/${APPNAME}.tgz}
-
 set -e
 
 mkdir -p /dev/shm/$APPNAME
@@ -17,7 +15,7 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+wget http://ds.iris.edu/pub/programs/fomec/fomec.tgz
 
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
