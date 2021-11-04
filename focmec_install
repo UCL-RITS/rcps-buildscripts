@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing Fomec
+# Installing Focmec
 #
 # by Manesh Mistry, 2021
 #
 
-APPNAME=${APPNAME:-fomec}
+APPNAME=${APPNAME:-focmec}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME}
 set -e
 
@@ -15,7 +15,7 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget http://ds.iris.edu/pub/programs/fomec/fomec.tgz
+wget http://ds.iris.edu/pub/programs/fovmec/focmec.tgz
 
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
