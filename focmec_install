@@ -7,24 +7,17 @@
 #
 
 APPNAME=${APPNAME:-focmec}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/focmec}
 set -e
 
 mkdir -p /dev/shm/$APPNAME
-temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
-
-cd $temp_dir
 
 wget http://ds.iris.edu/pub/programs/focmec/focmec.tgz
 
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
-tar -zxvf $temp_dir/${APPNAME}.tgz
-cd $temp_dir/$APPNAME/src
 pwd
-
-
-cd $INSTALL_PREFIX
-Http://ds.iris.edu/pub/programs/fomec/fomec.tgz
-
+tar -zxvf ${APPNAME}.tgz
+cd focmec/src
+pwd
 ./build_package 
