@@ -15,7 +15,7 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget http://ds.iris.edu/pub/programs/fovmec/focmec.tgz
+wget http://ds.iris.edu/pub/programs/focmec/focmec.tgz
 
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
