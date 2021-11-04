@@ -22,4 +22,9 @@ cd $INSTALL_PREFIX
 tar -zxvf $temp_dir/${APPNAME}.tgz
 cd $temp_dir/$APPNAME/src
 pwd
+
+
+cd $INSTALL_PREFIX
+Http://ds.iris.edu/pub/programs/fomec/fomec.tgz
+
 ./build_package 
