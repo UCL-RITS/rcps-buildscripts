@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing GRASS GIS using GNU 10.2.0 so that
+# it can work with R 4.1.1
+#
+# by Brian Alston / Manesh Mistry, November 2021
+#
+# Using Ian's require function to load modules
+#
+ 
+
+VERSION=${VERSION:-8.0.dev}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/GRASS/GRASS-${VERSION}}
+MD5=${MD5:-c278cfeb85b1564540ab214e45fe68d9}
+# Slight change in location for R from 4.x
+SRC_ARCHIVE=${SRC_ARCHIVE:- http://www.stats.bris.ac.uk/R/src/base/R-4/R-${VERSION}.tar.gz}
+# LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
+# SRC_ARCHIVE=${SRC_ARCHIVE:- /home/ccaabaa/Software/R//R-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+# dirname=$(dirname $0 2>/dev/null || pwd)
+dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require bison/3.0.4/gnu-4.9.2
+require flex/2.5.39
+require sqlite/3.36.0/gnu-10.2.0
+require perl/5.22.0
+require openblas/0.3.13-serial/gnu-10.2.0
+require python3/3.9-gnu-10.2.0
+require fftw/3.3.9/gnu-10.2.0
+require libtool/2.4.6
+require hdf/5-1.10.6/gnu-10.2.0
+require netcdf/4.8.1/gnu-10.2.0
+require proj.4/8.1.1/gnu-10.2.0
+require gdal/3.3.2/gnu-10.2.0
+require geos/3.9.1/gnu-10.2.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+MASTER_FOLDER=$temp_dir/GRASS
+mkdir -p $MASTER_FOLDER
+
+# Where the built GRASS and ZSTD library are installed.
+ZSTD_LIBRARY=$INSTALL_PREFIX/zstd_gnu-10.2.0
+GRASS_DIR=$INSTALL_PREFIX/grass_gnu-10.2.0
+mkdir -p $ZSTD_LIBRARY
+mkdir -p $GRASS_DIR
+
+# Installing the zstd compression library
+
+rm -rf zstd
+git clone https://github.com/facebook/zstd.git
+cd zstd/
+make ; make install prefix=$ZSTD_LIBRARY
+export PATH=$ZSTD_LIBRARY_DIR/bin:$PATH
+export LD_LIBRARY_PATH=$ZSTD_LIBRARY/lib:$LD_LIBRARY_PATH
+# export LDFLAGS="$LDFLAGS /shared/ucl/apps/bison/3.0.4/gnu-4.9.2/lib/liby.a"
+
+cd $MASTER_FOLDER
+
+# Installing GRASS 8
+
+rm -rf grass_master
+git clone https://github.com/OSGeo/grass.git grass_master
+cd $MASTER_FOLDER/grass_master
+pwd
+./configure --prefix=$INSTALL_PREFIX/ --with-zstd-includes=$ZSTD_LIBRARY/include \
+  --with-zstd-libs=$ZSTD_LIBRARY/lib --with-geos=/shared/ucl/apps/geos/3.9.1/gnu-10.2.0/bin/geos-config \
+  --with-netcdf=/shared/ucl/apps/NetCDF/4.8.1-gnu-10.2.0/bin/nc-config --with-blas --with-pthread
+make ; make install
