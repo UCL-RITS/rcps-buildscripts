@@ -8,7 +8,8 @@
 
 APPNAME=${APPNAME:-gcapjoint}
 #INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/focmec}
-#set -e
+set -e
+source includes/source_includes.sh
 module load beta-modules
 module load gcc-libs/7.3.0
 module load xorg-utils/X11R7.7
