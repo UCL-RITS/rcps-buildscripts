@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gcapjoint1.0
+#
+# by Manesh Mistry, 2021
+#
+
+APPNAME=${APPNAME:-gcapjoint}
+#INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/focmec}
+#set -e
+module load beta-modules
+module load gcc-libs/7.3.0
+module load xorg-utils/X11R7.7
+module load matlab/full/r2019b/9.7
+module load curl/7.47.1/gnu-4.9.2
+module load sac/102.0
+module load compilers/gnu/7.3.0
+module list
+
+mkdir -p /dev/shm/$APPNAME
+
+git clone https://github.com/bqpseismology/gCAPjoint.git
+
+cd /dev/shm/$APPNAME/gCAPjoint
+pwd
+tar -zxvf gCAPjoint1.0.tar.gz
+cd gCAPjoint1.0
+pwd
+./configure linux
+./Install 
