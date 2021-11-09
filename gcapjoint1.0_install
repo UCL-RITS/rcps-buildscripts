@@ -27,5 +27,6 @@ pwd
 tar -zxvf gCAPjoint1.0.tar.gz
 cd gCAPjoint1.0
 pwd
+chmod 777 configure
 ./configure linux
 ./Install 
