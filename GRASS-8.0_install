@@ -77,7 +77,10 @@ rm -rf grass_master
 git clone https://github.com/OSGeo/grass.git grass_master
 cd $MASTER_FOLDER/grass_master
 pwd
-./configure --prefix=$GRASS_DIR/ --with-zstd-includes=$ZSTD_LIBRARY/include \
+
+# iclass_signatures.c fails to compile. Suggested fix is to set CFLAGS like this:
+
+CFLAGS=-std=gnu99 ./configure --prefix=$GRASS_DIR/ --with-zstd-includes=$ZSTD_LIBRARY/include \
   --with-zstd-libs=$ZSTD_LIBRARY/lib --with-geos=/shared/ucl/apps/geos/3.9.1/gnu-10.2.0/bin/geos-config \
   --with-netcdf=/shared/ucl/apps/NetCDF/4.8.1-gnu-10.2.0/bin/nc-config --with-blas --with-pthread
 make ; make install
