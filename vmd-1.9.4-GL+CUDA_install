@@ -1,0 +1,37 @@
+#!/bin/bash
+
+###############################################
+# Installing VMD Visual Molecular Dynamics
+#
+# 1.9.4 GL+CUDA November 2021
+# NOTE: Only GL+CUDA versions available for 1.9.4
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require  perl/5.22.0
+
+APPNAME=${APPNAME:-vmd}
+TODAY=${TODAY:-`date +%F`}
+VERSION=${VERSION:-1.9.4}
+VARIANT=${VARIANT:-GL+CUDA}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION-$VARIANT}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/$APPNAME/source/vmd-1.9.4a55.bin.LINUXAMD64-CUDA102-OptiX650-OSPRay185.opengl.tar.gz}
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+mkdir -p build
+cd build
+rm -rf *
+
+tar -xvf $SRC_ARCHIVE
+
+export VMDINSTALLBINDIR="$INSTALL_PREFIX/bin"
+export VMDINSTALLLIBRARYDIR="$INSTALL_PREFIX/lib"
+
+./configure
+cd src
+make install
+
+
