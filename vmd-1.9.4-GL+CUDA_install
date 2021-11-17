@@ -14,7 +14,7 @@ require  perl/5.22.0
 
 APPNAME=${APPNAME:-vmd}
 TODAY=${TODAY:-`date +%F`}
-VERSION=${VERSION:-1.9.4}
+VERSION=${VERSION:-1.9.4a55}
 VARIANT=${VARIANT:-GL+CUDA}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION-$VARIANT}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/$APPNAME/source/vmd-1.9.4a55.bin.LINUXAMD64-CUDA102-OptiX650-OSPRay185-RTXRTRT.opengl.tar.gz}
@@ -30,6 +30,7 @@ tar -xvf $SRC_ARCHIVE
 export VMDINSTALLBINDIR="$INSTALL_PREFIX/bin"
 export VMDINSTALLLIBRARYDIR="$INSTALL_PREFIX/lib"
 
+cd vmd-$VERSION
 ./configure
 cd src
 make install
