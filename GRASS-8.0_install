@@ -78,7 +78,8 @@ git clone https://github.com/OSGeo/grass.git grass_master
 cd $MASTER_FOLDER/grass_master
 pwd
 
-# iclass_signatures.c fails to compile. Suggested fix is to set CFLAGS like this:
+# iclass_signatures.c fails to compile. Suggested fix is to set CFLAGS like this which seems to fix
+# the problem.
 
 CFLAGS=-std=gnu99 ./configure --prefix=$GRASS_DIR/ --with-zstd-includes=$ZSTD_LIBRARY/include \
   --with-zstd-libs=$ZSTD_LIBRARY/lib --with-geos=/shared/ucl/apps/geos/3.9.1/gnu-10.2.0/bin/geos-config \
