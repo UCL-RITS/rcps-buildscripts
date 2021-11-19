@@ -1,0 +1,68 @@
+#!/bin/bash
+
+package_name="spaceranger"
+package_version="1.3.1"
+package_description="Space Ranger is a set of analysis pipelines that process Visium spatial RNA-seq output and brightfield and fluorescence microscope images."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+# This is pretty much just a package untar
+# And there's some extra stuff that isn't version-dependent
+# So we're going to skip most of the normal make_build_env route
+
+apps_dir="${apps_dir:-/shared/ucl/apps}"
+spaceranger_base="$apps_dir/spaceranger"
+mkdir -p "$spaceranger_base"
+
+cd "$spaceranger_base"
+
+# We can't even grab the package from the source because you need an auth token
+
+# This is convention in the tarball -- if that changes, this will have to as well
+install_path="$spaceranger_base/spaceranger-${package_version}"
+tar -xf /shared/ucl/apps/pkg-store/spaceranger-${package_version}.tar.gz
+
+# We *could* grab the reference genomes but they're 10GB so let's not
+
+mkdir -p "$spaceranger_base/references"
+cd "$spaceranger_base/references"
+
+tar -xf /shared/ucl/apps/pkg-store/spaceranger-reference-datasets/refdata-gex-GRCh38-2020-A.tar.gz
+tar -xf /shared/ucl/apps/pkg-store/spaceranger-reference-datasets/refdata-gex-mm10-2020-A.tar.gz
+
+# copy in our configured version of the automatic job submission template
+cp /shared/ucl/apps/pkg-store/spaceranger-extra-files/sge.template "$install_path/external/martian/jobmanagers/"
+
+make_module \
+    -d \
+    -c "${package_name}" \
+    -o "$install_path/.tcl_env_modules.generated/spaceranger/${package_version}" \
+    -e PATH:"$install_path/bin" \
+    -v UCLRC_SPACERANGER_REFS_DIR="${spaceranger_base}/references" \
+    -w "Adds Space Ranger ${package_version} to your environment. $package_description"
+
+    build_size="$(du -hs "$install_path" | cut -f 1 -d $'\t')"
+    # If -o pipefail is set, this line will exit with status 141, because SIGPIPE kills the find
+    #  So we catch it and test for it
+    exec_list="$(find "$install_path" -type f -perm /u+x | head -n 10 || [[ "${PIPESTATUS[0]}" -eq 141 ]])"
+    printf "
+    ==========================
+    =   Post Install Info    =
+    ==========================
+
+    Unpacked in:              %s
+    Modules were put in:      %s
+    Package size:             %sB
+
+    -- First execs (max 10) --
+%s
+
+    ==========================\n" \
+    "$install_path" "$install_path/.tcl_env_modules.generated/spaceranger/${package_version}" "$build_size" "$exec_list"
+
