@@ -34,6 +34,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require beta-modules
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
+require curl/7.47.1/gnu-4.9.2
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
