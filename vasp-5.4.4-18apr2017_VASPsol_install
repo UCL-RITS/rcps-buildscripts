@@ -8,7 +8,7 @@
 set -e
 
 package_name="vasp"
-package_version="18apr2017_VASPsol"
+package_version="5.4.4-18apr2017_VASPsol"
 
 for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
 
