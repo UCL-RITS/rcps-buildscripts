@@ -21,7 +21,7 @@ _env_setup() {
     make_build_env
 
     package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store}"
-    package_file="vasp-${package_version}.tgz"
+    package_file="vasp-${package_version}.tar.gz"
     unpack_dir="vasp.${package_version%-*}"
 
     vasp_access_group=legvasp
