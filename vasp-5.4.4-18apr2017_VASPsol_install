@@ -15,7 +15,7 @@ for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 _env_setup() {
     module purge
     require  beta-modules
-    require  gcc-libs/7.3.0
+    require  gcc-libs/10.2.0
     require  compilers/intel/2017/update1
     require  mpi/intel/2017/update1/intel
 
