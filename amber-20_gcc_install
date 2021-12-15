@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing AMBER
+#
+
+# You need to purchase a copy of AMBER and put the tar file somehwere.  You 
+# should also download the corresponding AmberTools packages.
+# Compiles using -xHost.
+
+set -e
+
+VERSION=${VERSION:-20}
+TOOLS_VERSION=${TOOLS_VERSION:-21}
+PARALLEL=${PARALLEL:-""}
+# ^-- useful options are mpi, openmp, cuda, and potentially cudampi
+ABNAME=${ABNAME:-amber-${VERSION}${PARALLEL}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/amber-gcc/amber-${VERSION}${PARALLEL}}
+#export AMBERHOME=${INSTALL_PREFIX}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2}
+TOOLS_SRC_ARCHIVE=${TOOLS_SRC_ARCHIVE:-/shared/ucl/apps/amber/source/AmberTools${TOOLS_VERSION}.tar.bz2}
+CMAKE_RC_FLAGS=${CMAKE_RC_FLAGS:-""}
+
+# module prereqs for building
+source includes/source_includes.sh
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require cmake/3.21.1
+require python/3.8.6
+require openblas/0.3.13-serial/gnu-10.2.0
+require flex/2.5.39
+require bison/3.0.4/gnu-4.9.2
+
+if [[ "$PARALLEL" == *"openmp"* ]]; then
+  $CMAKE_RC_FLAGS+=" -DOPENMP=TRUE"
+else
+  $CMAKE_RC_FLAGS+=" -DOPENMP=FALSE"
+fi
+
+if [[ "$PARALLEL" == *"mpi" ]]; then
+  require mpi/openmpi/4.0.5/gnu-10.2.0
+  $CMAKE_RC_FLAGS+=" -DMPI=TRUE"
+else
+  $CMAKE_RC_FLAGS+=" -DMPI=FALSE"
+fi
+
+if [[ "$PARALLEL" == "cuda"* ]]; then
+  require cuda/11.3.1/gnu-10.2.0
+  $CMAKE_RC_FLAGS+=" -DCUDA=TRUE"
+else
+  $CMAKE_RC_FLAGS+=" -DCUDA=FALSE"
+fi
+
+# Give Amber its own numpy, scipy, matplotlib (so we can use an openblas
+# built with gnu-10.2.0 and not get libgfortran version incompatibilities).
+# Current versions at time of install, specified so we know which ones we got.
+mkdir -p "/shared/ucl/apps/amber/support/${VERSION}"
+pip install --no-cache-dir --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" numpy==1.21.4
+pip install --no-cache-dir --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" scipy=1.7.3
+pip install --no-cache-dir --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" matplotlib=3.5.1
+
+# Install a suitable MPI4PY for MMPBSA
+if [[ "$PARALLEL" == *"mpi" ]]; then
+  pip install --no-cache-dir --install-option="--prefix=/shared/ucl/apps/amber/support/${VERSION}" mpi4py=3.1.3
+fi
+
+mkdir -p "$INSTALL_PREFIX"
+
+mkdir -p /dev/shm/amber
+temp_dir=`mktemp -d -p /dev/shm/amber`
+
+cd "$temp_dir"
+
+tar jxf "$SRC_ARCHIVE"
+tar jxf "$TOOLS_SRC_ARCHIVE"
+
+#mv amber${VERSION}_src ${ABNAME}
+
+#ln -fsT `pwd`/${ABNAME} $AMBERHOME
+export AMBERHOME="$temp_dir/amber${VERSION}_src"
+cd "$AMBERHOME/build"
+
+# Do a serial pre-install as the parallel versions lack some stuff.
+# Setting -DCOMPILER=MANUAL makes it use CC, CXX, FC
+
+# We need to run cmake twice as it updates and patches in the first one
+# (and there were readline errors we need to not exit on)
+set +e
+cmake $AMBERHOME \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+  -DCOMPILER=MANUAL \
+  -DINSTALL_TESTS=FALSE \
+  -DDOWNLOAD_MINICONDA=FALSE \ 
+  -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
+  -DOPENMP=FALSE -DMPI=FALSE -DCUDA=FALSE \
+  2>&1 | tee cmake.log
+set -e
+
+cmake $AMBERHOME \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+  -DCOMPILER=MANUAL \
+  -DINSTALL_TESTS=FALSE \
+  -DDOWNLOAD_MINICONDA=FALSE \
+  -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
+  -DOPENMP=FALSE -DMPI=FALSE -DCUDA=FALSE \
+  2>&1 | tee --append cmake.log
+
+make install
+make clean
+
+# make openmp, mpi and/or cuda version
+if [[ "$PARALLEL" == *"openmp"* ]]; then
+  cmake $AMBERHOME \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DCOMPILER=MANUAL \
+    -DMPI=FALSE -DCUDA=TRUE -DINSTALL_TESTS=FALSE \
+    -DDOWNLOAD_MINICONDA=FALSE \
+    -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
+    ${CMAKE_RC_FLAGS}
+    2>&1 | tee cmake_parallel.log
+
+#cmake $AMBERHOME \
+#  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+#  -DCOMPILER=MANUAL \
+#  -DMPI=FALSE -DCUDA=TRUE -DINSTALL_TESTS=FALSE \
+#  -DDOWNLOAD_MINICONDA=FALSE \
+#  -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
+#  ${CMAKE_RC_FLAGS}
+#  2>&1 | tee --append cmake_parallel.log
+
+  make install
+fi
+
+# run the tests from the source directory (did not install them all)
+# amber.sh will change AMBERHOME to the install location
+source "$INSTALL_PREFIX/amber.sh"
+cd ../test
+make test.serial 2>&1 | tee test-serial.log
+if [[ "$PARALLEL" == "mpi" ]]; then
+  DO_PARALLEL=4 make test.parallel 2>&1 | tee test-parallel.log
+elif [[ "$PARALLEL" == "cuda" ]]; then
+  make test.cuda.serial 2>&1 | tee test-cuda-serial.log
+elif [[ "$PARALLEL" == "cudampi" ]]; then
+  DO_PARALLEL=4 make test.cuda.parallel 2>&1 | tee test-cuda-parallel.log
+fi
+
+# keep the logs
+mv ../build/cmake.log "$INSTALL_PREFIX"
+mv test*.log "$INSTALL_PREFIX"
+
