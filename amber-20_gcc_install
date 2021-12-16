@@ -135,13 +135,14 @@ cd ../test
 make test.serial 2>&1 | tee test-serial.log
 if [[ "$PARALLEL" == "mpi" ]]; then
   DO_PARALLEL=4 make test.parallel 2>&1 | tee test-parallel.log
-elif [[ "$PARALLEL" == "cuda" ]]; then
-  make test.cuda.serial 2>&1 | tee test-cuda-serial.log
-elif [[ "$PARALLEL" == "cudampi" ]]; then
-  DO_PARALLEL=4 make test.cuda.parallel 2>&1 | tee test-cuda-parallel.log
+# These need to be done in a job on a GPU node
+#elif [[ "$PARALLEL" == "cuda" ]]; then
+#  make test.cuda.serial 2>&1 | tee test-cuda-serial.log
+#elif [[ "$PARALLEL" == "cudampi" ]]; then
+#  DO_PARALLEL=4 make test.cuda.parallel 2>&1 | tee test-cuda-parallel.log
 fi
 
 # keep the logs
-mv ../build/cmake.log "$INSTALL_PREFIX"
+mv ../build/cmake*.log "$INSTALL_PREFIX"
 mv test*.log "$INSTALL_PREFIX"
 
