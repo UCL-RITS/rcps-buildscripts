@@ -16,7 +16,6 @@ PARALLEL=${PARALLEL:-""}
 # ^-- useful options are mpi, openmp, cuda, and potentially cudampi
 ABNAME=${ABNAME:-amber-${VERSION}${PARALLEL}}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/amber-gcc/amber-${VERSION}${PARALLEL}}
-#export AMBERHOME=${INSTALL_PREFIX}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2}
 TOOLS_SRC_ARCHIVE=${TOOLS_SRC_ARCHIVE:-/shared/ucl/apps/amber/source/AmberTools${TOOLS_VERSION}.tar.bz2}
 CMAKE_RC_FLAGS=${CMAKE_RC_FLAGS:-""}
@@ -96,7 +95,7 @@ cmake $AMBERHOME \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
   -DCOMPILER=MANUAL \
   -DINSTALL_TESTS=FALSE \
-  -DDOWNLOAD_MINICONDA=FALSE \ 
+  -DDOWNLOAD_MINICONDA=FALSE \
   -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
   -DOPENMP=FALSE -DMPI=FALSE -DCUDA=FALSE \
   2>&1 | tee cmake.log
