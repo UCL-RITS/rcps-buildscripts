@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+package_name="go"
+package_version="1.17.6"
+package_description="Go is an open-source, compiled, statically-typed language with garbage collection, limited structural typing, memory safety features and CSP-style concurrent programming features added."
+
+src_url="https://storage.googleapis.com/golang/go${package_version}.linux-amd64.tar.gz"
+actual_file_name=go${package_version}.linux-amd64.tar.gz
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$src_url"
+manifest sha256:231654bbf2dab3d86c1619ce799e77b03d96f9b50770297c8f4dff8836fc8ca2 go1.17.6.linux-amd64.tar.gz \
+
+
+
+tar -xf "$actual_file_name"
+
+mkdir -p "${install_prefix%/*}"
+mv go "${install_prefix}"
+echo "Installed to: $install_prefix"
+
+package_label="compilers/$package_label"
+make_module_v2 -v GOROOT="$install_prefix" -C -c compilers/go
+  
+chmod a+rx "$module_dir"
+
+post_build_report
