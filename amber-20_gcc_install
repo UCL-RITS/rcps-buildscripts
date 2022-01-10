@@ -121,7 +121,7 @@ if [ ! -z "$PARALLEL" ]; then
     -DMPI=FALSE -DCUDA=TRUE -DINSTALL_TESTS=FALSE \
     -DDOWNLOAD_MINICONDA=FALSE \
     -DPYTHON_EXECUTABLE=/shared/ucl/apps/python/3.8.6/gnu-4.9.2/bin/python3.8 \
-    ${CMAKE_RC_FLAGS}
+    ${CMAKE_RC_FLAGS} \
     2>&1 | tee cmake_parallel.log
 
   make install
