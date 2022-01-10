@@ -25,7 +25,7 @@ _env_setup() {
     package_file="vasp-${package_version}.tar.gz"
     unpack_dir="vasp.${package_version%-*}"
 
-    vasp_access_group=legvasp
+    vasp_access_group=legvasp5
 }
 
 
