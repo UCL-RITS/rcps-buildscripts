@@ -20,6 +20,8 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/amber/source/Amber${VERSION}.tar.bz2
 TOOLS_SRC_ARCHIVE=${TOOLS_SRC_ARCHIVE:-/shared/ucl/apps/amber/source/AmberTools${TOOLS_VERSION}.tar.bz2}
 CMAKE_RC_FLAGS=${CMAKE_RC_FLAGS:-""}
 
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
 # module prereqs for building
 source includes/source_includes.sh
 
