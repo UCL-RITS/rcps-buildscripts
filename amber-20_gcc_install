@@ -40,6 +40,14 @@ else
 fi
 
 if [[ "$PARALLEL" == *"mpi" ]]; then
+    # On Myriad, build with UCX
+    if [ $cluster == "myriad" ]
+    then
+        require numactl/2.0.12
+        require binutils/2.36.1/gnu-10.2.0
+        require ucx/1.9.0/gnu-10.2.0
+    fi
+
   require mpi/openmpi/4.0.5/gnu-10.2.0
   CMAKE_RC_FLAGS+=" -DMPI=TRUE"
 else
