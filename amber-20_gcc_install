@@ -144,8 +144,10 @@ cd ../test
 make test.serial 2>&1 | tee test-serial.log
 if [[ "$PARALLEL" == "mpi" ]]; then
   # some of the MPI tests only work with certain numbers of processes.
-  DO_PARALLEL='mpirun -np 2' make test.parallel 2>&1 | tee test-parallel.log
-  DO_PARALLEL='mpirun -np 4' make test.parallel.4proc 2>&1 | tee test-parallel-4proc.log
+  # parallel logs and diffs get saved in AMBERHOME/logs
+  DO_PARALLEL='mpirun -np 2' make test.parallel
+  DO_PARALLEL='mpirun -np 4' make test.parallel.4proc 
+
 # These need to be done in a job on a GPU node
 #elif [[ "$PARALLEL" == "cuda" ]]; then
 #  make test.cuda.serial 2>&1 | tee test-cuda-serial.log
