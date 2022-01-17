@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+###############################################
+
+set -e
+
+package_name="gromacs"
+package_version="2021.5"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require cmake
+require python3
+require compilers/gnu/10.2.0
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+manifest md5:a58ff0662eae5818bddfa740a6c35b2e  ${tarfile}
+
+tar -xf "$tarfile"
+
+cd "${package_name}-${package_version}"
+
+mkdir build
+cd build
+
+echo "Building and installing full, serial, single precision GROMACS with gmx view"
+cmake .. \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DREGRESSIONTEST_DOWNLOAD=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+
+#    -DGMX_X11=ON \
+rm -rf *
+ 
+echo "Building and installing full, serial, double precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=ON \
+    -DGMX_FFT_LIBRARY=fftpack \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+  
+  # MPI builds
+  if [ "$cluster" == "Myriad" ]
+  then
+      require numactl/2.0.12
+      require binutils/2.36.1/gnu-10.2.0
+      require ucx/1.9.0/gnu-10.2.0
+  fi
+  require mpi/openmpi/4.0.5/gnu-10.2.0
+
+echo "Building and installing mdrun-only, MPI, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=OFF \
+    -DGMX_MPI=ON \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+echo "Building and installing mdrun-only, MPI, double precision GROMACS"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=ON \
+    -DGMX_MPI=ON \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_mpi_d \
+    -DGMX_LIBS_SUFFIX=_mpi_d \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+

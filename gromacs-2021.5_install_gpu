@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+###############################################
+
+set -e
+
+package_name="gromacs"
+package_version="2021.5"
+package_variant="gpu"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles. This version is built for GPU."
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require cmake
+require python3
+require compilers/gnu/10.2.0
+require cuda/11.3.1/gnu-10.2.0
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+manifest md5:a58ff0662eae5818bddfa740a6c35b2e  ${tarfile}
+
+tar -xf "$tarfile"
+
+cd "${package_name}-${package_version}"
+
+mkdir build
+cd build
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require cmake
+require python3
+require compilers/gnu/10.2.0
+require mpi/openmpi/3.1.4/gnu-7.3.0
+require cuda/11.3.1/gnu-10.2.0
+INSTALL_PREFIX=${install_prefix}/gpu
+
+echo "Building and installing full, GPU, single precision GROMACS with gmx view"
+cmake .. \
+    -DGMX_GPU=ON \
+    -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
+    -DGMX_CUDA_TARGET_SM="60;70;80" \
+    -DGMX_FFT_LIBRARY=fftw3 \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_cuda \
+    -DGMX_LIBS_SUFFIX=_cuda \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+  
+# MPI builds
+if [ "$cluster" == "Myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+require mpi/openmpi/4.0.5/gnu-10.2.0
+
+echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=ON \
+    -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
+    -DGMX_CUDA_TARGET_SM="60;70;80" \
+    -DGMX_MPI=on \
+    -DGMX_BUILD_MDRUN_ONLY=ON \
+    -DGMX_FFT_LIBRARY=fftw3 \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_cuda_mpi \
+    -DGMX_LIBS_SUFFIX=_cuda_mpi \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
