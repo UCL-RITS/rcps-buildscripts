@@ -37,15 +37,7 @@ cd "${package_name}-${package_version}"
 mkdir build
 cd build
 
-module purge
-require beta-modules
-require gcc-libs/10.2.0
-require cmake
-require python3
-require compilers/gnu/10.2.0
-require mpi/openmpi/3.1.4/gnu-7.3.0
-require cuda/11.3.1/gnu-10.2.0
-INSTALL_PREFIX=${install_prefix}/gpu
+#INSTALL_PREFIX=${install_prefix}/gpu
 
 echo "Building and installing full, GPU, single precision GROMACS with gmx view"
 cmake .. \
