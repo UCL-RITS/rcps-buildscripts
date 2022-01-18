@@ -26,7 +26,7 @@ cd "$build_dir"
 wget "$SRC_ARCHIVE"
 tarfile=$(basename "${SRC_ARCHIVE}")
 
-manifest md5:a58ff0662eae5818bddfa740a6c35b2e  ${tarfile}
+manifest sha1:2e392764083df4439be17b4060ec7141dfc7190a  ${tarfile}
 
 tar -xf "$tarfile"
 
