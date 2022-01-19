@@ -8,7 +8,7 @@
 set -e
 
 package_name="vasp"
-package_version="6.1.2-01dec2020"
+package_version="6.2.10-19Jan2022"
 package_variant="gpu"
 
 for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
@@ -17,16 +17,16 @@ _env_setup() {
     module purge
     require  gcc-libs/4.9.2
     require  compilers/nvidia/hpc-sdk/22.1
-    require  fftw-3.3.8/nvidia-2022-22.1
+    require  fftw-3.3.10/nvidia-22.1
 
     vasp_access_group=legvasp6
 
     make_build_env
 
-    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20201201/6x}"
-    package_file="vasp.6.1.2_patched.tgz"
-    unpack_dir="vasp.6.1.2_patched"
-    ucl_makefile="/shared/ucl/apps/build_scripts/files/vasp-6.1.2_makefile.include.nvhpc"
+    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20220119}"
+    package_file="vasp.6.2.1.tgz"
+    unpack_dir="vasp.6.2.1"
+    ucl_makefile="/shared/ucl/apps/build_scripts/files/vasp-6.2.1_makefile.include.nvhpc"
 
 }
 
