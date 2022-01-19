@@ -1,0 +1,72 @@
+# Precompiler options
+CPP_OPTIONS= -DHOST=\"LinuxPGI\" \
+             -DMPI -DMPI_BLOCK=8000 -DMPI_INPLACE -Duse_collective \
+             -DscaLAPACK \
+             -DCACHE_SIZE=4000 \
+             -Davoidalloc \
+             -Dvasp6 \
+             -Duse_bse_te \
+             -Dtbdyn \
+             -Dqd_emulate \
+             -Dfock_dblbuf \
+             -D_OPENACC \
+             -DUSENCCL -DUSENCCLP2P
+
+CPP        = nvfortran -Mpreprocess -Mfree -Mextend -E $(CPP_OPTIONS) $*$(FUFFIX)  > $*$(SUFFIX)
+
+NVROOT     =$(shell which nvfortran | awk -F /compilers/bin/nvfortran '{ print $$1 }')
+
+FC         = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.5
+FCL        = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.5 -L/shared/ucl/apps/gcc/4.9.2/lib64 -L$(NVROOT/)compilers/lib -c++libs
+
+FREE       = -Mfree
+
+FFLAGS     = -Mbackslash -Mlarge_arrays
+
+OFLAG      = -fast
+
+DEBUG      = -Mfree -O0 -traceback
+
+# Use NV HPC-SDK provided BLAS and LAPACK libraries
+BLAS       = -lblas
+LAPACK     = -llapack
+
+BLACS      =
+SCALAPACK  = -Mscalapack
+
+CUDA       = -cudalib=cublas,cusolver,cufft,nccl -cuda
+
+LLIBS      = $(SCALAPACK) $(LAPACK) $(BLAS) $(CUDA)
+
+# Software emulation of quadruple precsion
+QD         ?= $(NVROOT)/compilers/extras/qd
+LLIBS      += -L$(QD)/lib -lqdmod -lqd
+INCS       += -I$(QD)/include/qd
+
+# Use the FFTs from fftw
+FFTW       ?= /shared/ucl/apps/fftw/3.3.10/nvidia-2022-22.1
+LLIBS      += -L$(FFTW)/lib -lfftw3
+INCS       += -I$(FFTW)/include
+
+OBJECTS    = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
+
+# Redefine the standard list of O1 and O2 objects
+SOURCE_O1  := pade_fit.o
+SOURCE_O2  := pead.o
+
+# For what used to be vasp.5.lib
+CPP_LIB    = $(CPP)
+FC_LIB     = nvfortran
+CC_LIB     = nvc
+CFLAGS_LIB = -O
+FFLAGS_LIB = -O1 -Mfixed
+FREE_LIB   = $(FREE)
+
+OBJECTS_LIB= linpack_double.o getshmem.o
+
+# For the parser library
+CXX_PARS   = nvc++ --no_warnings
+
+# Normally no need to change this
+SRCDIR     = ../../src
+BINDIR     = ../../bin
