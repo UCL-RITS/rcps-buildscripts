@@ -17,7 +17,7 @@ _env_setup() {
     module purge
     require  gcc-libs/4.9.2
     require  compilers/nvidia/hpc-sdk/22.1
-    require  fftw-3.3.10/nvidia-22.1
+    require  fftw/3.3.10/nvidia-22.1
 
     vasp_access_group=legvasp6
 
