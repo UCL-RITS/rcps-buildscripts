@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FFTW
+# 
+# Builds serial, OpenMP, threaded at various precisions
+# Updated April 2020 to use GNU 9.2.0 for R 3.6.3
+# Updated September 2021 to use GNU 10.2.0 for R 4.1.1
+# Version 3.3.10 for Nvidia in Jan 2022
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/nvidia/hpc-sdk/22.1
+
+VERSION=${VERSION:-3.3.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/fftw/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-2d34b5ccac7b08740dbdacc6ebe451d8a34cf9d9bfec85a5e776e87adf94abfd803c222412d8e10fbaa4ed46f504aa87180396af1b108666cde4314a55610b40}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://www.fftw.org/fftw-${VERSION}.tar.gz}
+COMMON_FLAGS=${COMMON_FLAGS:-"--enable-shared --enable-threads --enable-openmp"}
+
+export FFLAGS="-Mpreprocess -Mbackslash -O2"
+export CFLAGS="-O2"
+export CPPFLAGS="-O2"
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha512sum fftw-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA512" == "$CHECKSUM" ]
+then
+# Single precision
+  mkdir single
+  cd single
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS $SSE_FLAG --enable-float 
+  make && make install
+
+  cd ../..
+
+# Double precision
+  mkdir double
+  cd double
+  tar -zxvf ../fftw-${VERSION}.tar.gz
+
+  cd fftw-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS $SSE_FLAG
+  make && make install
+
+  cd ../..
+
+# Long-double precision
+# Don't build long and quad if using SSE2
+  if [ "$LEGION_SSE" != "yes" ]
+  then
+    mkdir long-double
+    cd long-double
+    tar -zxvf ../fftw-${VERSION}.tar.gz
+
+    cd fftw-${VERSION}
+    ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-long-double
+    make && make install
+
+    cd ../..
+  fi
+
+# Quad precision __float128
+# only works with GCC
+  if [ ${COMPILER_TAG:0:3} == "gnu" ] && [ "$LEGION_SSE" != "yes" ]
+  then
+    mkdir quad
+    cd quad
+    tar -zxvf ../fftw-${VERSION}.tar.gz
+
+    cd fftw-${VERSION}
+    ./configure --prefix=$INSTALL_PREFIX $COMMON_FLAGS --enable-quad-precision
+    make && make install
+  fi
+  
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA512"
+  echo "Got: $CHECKSUM"
+fi
