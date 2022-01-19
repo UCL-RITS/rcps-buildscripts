@@ -8,7 +8,7 @@
 set -e
 
 package_name="vasp"
-package_version="6.2.10-19Jan2022"
+package_version="6.2.1-19Jan2022"
 package_variant="gpu"
 
 for i in ${includes_dir:-$(dirname $0 2>/dev/null)/includes}/{module_maker,require,tools}_inc.sh; do . $i; done
