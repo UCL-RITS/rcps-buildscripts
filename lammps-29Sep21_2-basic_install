@@ -48,8 +48,8 @@ cd lammps-stable_${VERSION}
 mkdir -p build
 cd build
 
-# Configure for standard build and build
+# Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/most.cmake -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 make
 make install
