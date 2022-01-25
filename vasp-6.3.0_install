@@ -22,7 +22,7 @@ _env_setup() {
 
     make_build_env
 
-    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-202201224}"
+    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20220124}"
     package_file="vasp.6.3.0.tgz"
     unpack_dir="vasp.6.3.0"
 
