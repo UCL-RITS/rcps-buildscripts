@@ -9,6 +9,8 @@ package_version="2021.5"
 package_variant="gpu"
 package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles. This version is built for GPU."
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+#TESTONLY=${TESTONLY:-no}
+TEST_ARCHIVE=${TEST_ARCHIVE:-https://ftp.gromacs.org/regressiontests/regressiontests-$package_version.tar.gz}
 
 cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
@@ -27,10 +29,13 @@ cd "$build_dir"
 
 wget "$SRC_ARCHIVE"
 tarfile=$(basename "${SRC_ARCHIVE}")
+test_tarfile=$(basename "${TEST_ARCHIVE}")
 
 manifest sha1:2e392764083df4439be17b4060ec7141dfc7190a  ${tarfile}
+manifest sha1:2f9de96a9b1ed32b74cf4d0d779b522a27040402  ${test_tarfile}
 
 tar -xf "$tarfile"
+tar -xf "$test_tarfile"
 
 cd "${package_name}-${package_version}"
 
@@ -39,11 +44,12 @@ cd build
 
 #INSTALL_PREFIX=${install_prefix}/gpu
 
+# For target SM, see https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#gpu-feature-list
 echo "Building and installing full, GPU, single precision GROMACS with gmx view"
 cmake .. \
     -DGMX_GPU=CUDA \
     -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
-    -DGMX_CUDA_TARGET_SM="60;70;80" \
+    -DGMX_CUDA_TARGET_SM="60;61;62;70;72;80;86" \
     -DGMX_FFT_LIBRARY=fftw3 \
     -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
@@ -65,20 +71,38 @@ then
 fi
 require mpi/openmpi/4.0.5/gnu-10.2.0
 
+# full gmx cuda mpi build for testing
+echo "Building and installing full, MPI GPU, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=CUDA \
+    -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
+    -DGMX_CUDA_TARGET_SM="60;61;62;70;72;80;86" \
+    -DGMX_MPI=ON \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DGMX_X11=ON \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DGMX_DEFAULT_SUFFIX=OFF \
+    -DGMX_BINARY_SUFFIX=_mpi_cuda \
+    -DGMX_LIBS_SUFFIX=_mpi_cuda \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf  *
+
 echo "Building and installing mdrun-only, MPI GPU, single precision GROMACS"
 cmake .. \
     -DGMX_GPU=CUDA \
     -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
-    -DGMX_CUDA_TARGET_SM="60;70;80" \
-    -DGMX_MPI=on \
+    -DGMX_CUDA_TARGET_SM="60;61;62;70;72;80;86" \
+    -DGMX_MPI=ON \
     -DGMX_BUILD_MDRUN_ONLY=ON \
     -DGMX_FFT_LIBRARY=fftw3 \
     -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
     -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
     -DGMX_DEFAULT_SUFFIX=OFF \
-    -DGMX_BINARY_SUFFIX=_cuda_mpi \
-    -DGMX_LIBS_SUFFIX=_cuda_mpi \
+    -DGMX_BINARY_SUFFIX=_mpi_cuda \
+    -DGMX_LIBS_SUFFIX=_mpi_cuda \
     $CMAKE_FLAGS
 make
 make install
