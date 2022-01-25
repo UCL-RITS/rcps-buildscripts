@@ -25,6 +25,7 @@ _env_setup() {
     package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20220124}"
     package_file="vasp.6.3.0.tgz"
     unpack_dir="vasp.6.3.0"
+    ucl_makefile="/shared/ucl/apps/build_scripts/files/vasp-6.3.0_makefile.include.intel"
 
 
 }
@@ -40,7 +41,7 @@ _file_setup() {
 
 _pre_build() {
   cd "$unpack_dir"
-  cp arch/makefile.include.linux_intel ./makefile.include
+  cp $ucl_makefile ./makefile.include
   cd ..
 }
 
