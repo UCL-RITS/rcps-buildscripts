@@ -62,7 +62,7 @@ make install
 rm -rf *
   
 # MPI builds
-if [ "$cluster" == "Myriad" ]
+if [ "$cluster" == "myriad" ]
 then
     require numactl/2.0.12
     require binutils/2.36.1/gnu-10.2.0

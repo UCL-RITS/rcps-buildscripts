@@ -61,14 +61,14 @@ make
 make install
 rm -rf *
   
-  # MPI builds
-  if [ "$cluster" == "Myriad" ]
-  then
-      require numactl/2.0.12
-      require binutils/2.36.1/gnu-10.2.0
-      require ucx/1.9.0/gnu-10.2.0
-  fi
-  require mpi/openmpi/4.0.5/gnu-10.2.0
+# MPI builds
+if [ "$cluster" == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+require mpi/openmpi/4.0.5/gnu-10.2.0
 
 echo "Building and installing mdrun-only, MPI, single precision GROMACS"
 cmake .. \
