@@ -7,7 +7,7 @@
 # Updated January 2022 for LAMMPS 29th September 2021 Update 2
 #
 # Note: Install documentation now recommends CMAKE
-#       Using Nvidia HPC SDK module: compilers/nvidia/hpc-sdk/22.1
+#       Using Nvidia HPC SDK module: compilers/nvidia/hpc-sdk/22.1 and gcc-libs/10.2.0
 #
 # This is a work in progress script!
 
@@ -30,9 +30,10 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
+require gcc-libs/10.2.0
 require compilers/nvidia/hpc-sdk/22.1
 require cmake/3.21.1
-require python3/recommended
+require python3/3.9-gnu-10.2.0
 
 # Not using /dev/shm while sorting out how to build and what options to use.
 
