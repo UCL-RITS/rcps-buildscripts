@@ -59,7 +59,7 @@ if [ "$BUILD_UNIT_TESTS" == "yes" ]
 then
     cmake -D ENABLE_TESTING=on .
     echo ""
-    echo "NOTE: unit tests need to be run from build directory: `pwd` using the ctest command."
+    echo "NOTE: unit tests need to be run from build directory: `pwd` using the ctest command from CMAKE."
     echo ""
 fi
 
