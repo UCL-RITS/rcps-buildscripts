@@ -52,7 +52,7 @@ cmake .. \
     -DGMX_FFT_LIBRARY=fftw3 \
     -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
     -DGMX_DEFAULT_SUFFIX=OFF \
     -DGMX_BINARY_SUFFIX=_cuda \
     -DGMX_LIBS_SUFFIX=_cuda \
@@ -79,7 +79,7 @@ cmake .. \
     -DGMX_MPI=ON \
     -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
     -DGMX_DEFAULT_SUFFIX=OFF \
     -DGMX_BINARY_SUFFIX=_mpi_cuda \
     -DGMX_LIBS_SUFFIX=_mpi_cuda \
@@ -98,7 +98,7 @@ cmake .. \
     -DGMX_FFT_LIBRARY=fftw3 \
     -DGMX_BUILD_OWN_FFTW=ON \
     -DGMX_X11=ON \
-    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
     -DGMX_DEFAULT_SUFFIX=OFF \
     -DGMX_BINARY_SUFFIX=_mpi_cuda \
     -DGMX_LIBS_SUFFIX=_mpi_cuda \
