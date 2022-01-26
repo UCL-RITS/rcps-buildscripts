@@ -28,6 +28,7 @@ make_build_env ""
 cd "$build_dir"
 
 wget "$SRC_ARCHIVE"
+wget "$TEST_ARCHIVE"
 tarfile=$(basename "${SRC_ARCHIVE}")
 test_tarfile=$(basename "${TEST_ARCHIVE}")
 
@@ -41,8 +42,6 @@ cd "${package_name}-${package_version}"
 
 mkdir build
 cd build
-
-#INSTALL_PREFIX=${install_prefix}/gpu
 
 # For target SM, see https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#gpu-feature-list
 echo "Building and installing full, GPU, single precision GROMACS with gmx view"
