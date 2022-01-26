@@ -10,7 +10,7 @@ package_variant="gpu"
 package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles. This version is built for GPU."
 SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
 #TESTONLY=${TESTONLY:-no}
-TEST_ARCHIVE=${TEST_ARCHIVE:-https://ftp.gromacs.org/regressiontests/regressiontests-$package_version.tar.gz}
+TEST_ARCHIVE=${TEST_ARCHIVE:-ftp://ftp.gromacs.org/regressiontests/regressiontests-$package_version.tar.gz}
 
 cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
