@@ -7,13 +7,13 @@
 # Updated January 2022 for LAMMPS 29th September 2021 Update 2
 #
 # Note: Install documentation now recommends CMAKE
-#       Using Nvidia HPC SDK module: compilers/nvidia/hpc-sdk/22.1
+#       Using GNU 10.2.0, OpenMPI and cuda/11.3.1/gnu-10.2.0
 #
 # This is a work in progress script!
 
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-gpumixed}
-COMPILER_TAG=${COMPILER_TAG:-nvidia-2022-22.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 VERSION=${VERSION:-29Sep2021_update2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
@@ -30,9 +30,15 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require compilers/nvidia/hpc-sdk/22.1
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require numactl/2.0.12
+require binutils/2.36.1/gnu-10.2.0
+require ucx/1.9.0/gnu-10.2.0
+require mpi/openmpi/4.0.5/gnu-10.2.0
 require cmake/3.21.1
-require python3/recommended
+require python3/3.9-gnu-10.2.0
+require cuda/11.3.1/gnu-10.2.0
 
 # Not using /dev/shm while sorting out how to build and what options to use.
 
@@ -51,7 +57,7 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/most.cmake -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building LAMMPS unit tests if requested.
 
