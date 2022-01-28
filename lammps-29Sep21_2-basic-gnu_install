@@ -13,9 +13,9 @@
 
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-basic}
-COMPILER_TAG=${COMPILER_TAG:- gnu-10.2.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 VERSION=${VERSION:-29Sep2021_update2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/${COMPILER_TAG}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
 BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
 
