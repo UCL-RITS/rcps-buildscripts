@@ -64,7 +64,7 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D GPU=yes -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D GPU=on -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building LAMMPS unit tests if requested.
 
