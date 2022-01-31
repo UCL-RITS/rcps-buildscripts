@@ -30,7 +30,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-cluster=`$WHEREAMI`
+cluster=$WHEREAMI
 
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0 
