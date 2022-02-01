@@ -15,7 +15,8 @@ NAME=${NAME:-lammps}
 TYPE=${TYPE:-gpumixed}
 COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 VERSION=${VERSION:-29Sep2021_update2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/
+		 
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
 BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
 
@@ -64,7 +65,15 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D GPU=on -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake  -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+
+# Add GPU CUDA support
+
+echo "Adding GPU support ..."
+echo ""
+cmake -D PKG_GPU=on -D GPU_API=cuda -D GPU_PREC=mixed -D GPU_ARCH=sm_80 .
+echo ""
+echo "Done."
 
 # Add building LAMMPS unit tests if requested.
 
