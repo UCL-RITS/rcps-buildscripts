@@ -48,6 +48,7 @@ cp ./*.jar ${INSTALL_PREFIX}/libexec
 cp *.1 ${INSTALL_PREFIX}/share/man/man1
 
 sed -i.bak "s|PREFIX|${INSTALL_PREFIX}|g" clojure
+sed -i.bak "s|BINDIR|${INSTALL_PREFIX}/bin|g" clj
 
 cp clojure ${INSTALL_PREFIX}/bin
 cp clj ${INSTALL_PREFIX}/bin
