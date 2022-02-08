@@ -63,7 +63,7 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building LAMMPS unit tests if requested.
 
