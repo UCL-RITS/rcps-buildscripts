@@ -11,12 +11,15 @@
 #
 # This is a special version of the build script for building on Aristotle where the nodes
 # only support AVX and not AVX2 even!
+#
+# Version working from any directory.
 
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-basic-aristotle}
 COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 VERSION=${VERSION:-29Sep2021_update2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/${COMPILER_TAG}}
+# INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccaabaa/apps/lammps/${VERSION}/${TYPE}/${COMPILER_TAG}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
 BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
 
@@ -24,9 +27,10 @@ WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
 set -e
 
-export PATH=$INSTALL_PREFIX/bin:$PATH
+export PATH=$INSTALL_PREFIX/bin:$PATH:/home/ccaabaa/bin
 
-dirname=$(dirname $0 2>/dev/null || pwd)
+#dirname=$(dirname $0 2>/dev/null || pwd)
+dirname=/shared/ucl/apps/build_scripts
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
@@ -45,7 +49,7 @@ fi
 
 require mpi/openmpi/4.0.5/gnu-10.2.0
 require cmake/3.21.1
-require python3/3.9-gnu-10.2.0
+require python3/3.9-gnu-10.2.0-aristotle
 
 # Not using /dev/shm while sorting out how to build and what options to use.
 
@@ -64,7 +68,7 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=aristotle -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building LAMMPS unit tests if requested.
 
@@ -78,4 +82,6 @@ fi
 
 # Build and install
 make
-make install
+
+# Don't do the make install as we need to build on Aristotle and ccspapp cannot write to /shared/ucl/apps
+# make install
