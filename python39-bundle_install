@@ -74,6 +74,7 @@ do
    fi
 done
 IFS="$old_IFS"
+pip3 install --upgrade setuptools virtualenv pip
 
 pip3 freeze > requirements.txt
 

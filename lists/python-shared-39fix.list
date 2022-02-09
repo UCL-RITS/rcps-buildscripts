@@ -31,7 +31,9 @@ appdirs
 rply
 astor
 clint
+setuptools==57.0.0
 hy
+setuptools
 qutip
 xlsxwriter
 xlutils
