@@ -20,4 +20,6 @@ module purge
 require gcc-libs/4.9.2
 require python/3.8.6
 
+rm -rf $INSTALL_PREFIX
+
 pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
