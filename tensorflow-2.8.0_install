@@ -16,6 +16,6 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 require gcc-libs/4.9.2
-require python/3.6.3
+require python/3.8.6
 
 pip3 install --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
