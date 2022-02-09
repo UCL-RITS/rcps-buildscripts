@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set \
+    -o pipefail \
+    -o nounset \
+    -o errexit
+
+package_name=nano
+package_version=6.1
+package_description="The nano text editor."
+
+source includes/source_includes.sh
+
+module purge
+
+# We want automatic file detection but we don't want a separate module for libmagic,
+#  so we want to build that statically. Unfortunately this also means we have to build
+#  libz statically, since the system version is dynamic-only.
+
+make_build_env ""
+
+cd "$build_dir"
+
+# Certs on Myriad are... too old. :(
+wget --no-check-certificate https://nano-editor.org/dist/v6/nano-6.1.tar.xz
+curl -O ftp://ftp.astron.com/pub/file/file-5.41.tar.gz
+wget https://www.zlib.net/zlib-1.2.11.tar.xz
+
+manifest \
+    sha256:3d57ec893fbfded12665b7f0d563d74431fc43abeaccacedea23b66af704db40  nano-6.1.tar.xz \
+    sha256:13e532c7b364f7d57e23dfeea3147103150cb90593a57af86c10e4f6e411603f  file-5.41.tar.gz \
+    sha256:4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066  zlib-1.2.11.tar.xz
+
+for f in *.gz *.xz; do
+    tar -xf "$f"
+done
+
+export TMP_PREFIX="$build_dir/tmp-prefix"
+
+cd zlib-1.2.11
+./configure --prefix="$TMP_PREFIX" --static
+make
+make install
+
+export LD_LIBRARY_PATH="$TMP_PREFIX/lib:${LD_LIBRARY_PATH:-}"
+export LIBRARY_PATH="$TMP_PREFIX/lib:${LIBRARY_PATH:-}"
+export CPATH="$TMP_PREFIX/include:${CPATH:-}"
+export INCLUDE_PATH="$TMP_PREFIX/include:${INCLUDE_PATH:-}"
+export LDFLAGS="-lz"
+# If you don't add -lz as LDFLAGS here, configure doesn't pick up libmagic
+#  because it doesn't know it needs it to be able to link successfully
+
+cd "$build_dir"
+cd file-5.41
+./configure --prefix="$TMP_PREFIX" --disable-shared --enable-static CFLAGS=-std=c99
+make
+make install
+
+cd "$build_dir"
+cd nano-6.1
+./configure --prefix="$install_prefix"
+make
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
