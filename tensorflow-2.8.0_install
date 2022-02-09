@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2022
+#
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-2.8.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+PACKAGE_NAME=${NAME}
+
+set -e
+
+require gcc-libs/4.9.2
+require python/3.6.3
+
+pip3 install --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
