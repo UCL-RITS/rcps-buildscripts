@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing mysql-connector-python
+#
+# 
+#
+
+NAME=${NAME:-mysql-connector-python}
+VERSION=${VERSION:-8.0.28}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA512=${SHA512:-eb913e3676e51f6cb554c4536b5c5ab625c467da6585ef26402e402a5bf375b949613ee83762e213e45d9260c62dae614da2d0192850bc4f48fdeeab158ad0b5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://cdn.mysql.com/Downloads/Connector-Python/${NAME}-${VERSION}.tar.gz}
+
+set -e
+
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require python/3.9.10
+
+mkdir -p /dev/shm/${NAME}
+temp_dir=`mktemp -d -p /dev/shm/${NAME}`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha512sum $archive| awk '{print $1}'`
+
+if [ "$SHA512" == "$CHECKSUM" ]
+then
+  tar xvf $archive
+  cd ${NAME}-${VERSION}
+  python3 setup.py install --prefix=$INSTALL_PREFIX
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA512"
+  echo "Got: $CHECKSUM"
+fi
