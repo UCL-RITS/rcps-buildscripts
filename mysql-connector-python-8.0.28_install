@@ -9,8 +9,8 @@
 NAME=${NAME:-mysql-connector-python}
 VERSION=${VERSION:-8.0.28}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-SHA512=${SHA512:-eb913e3676e51f6cb554c4536b5c5ab625c467da6585ef26402e402a5bf375b949613ee83762e213e45d9260c62dae614da2d0192850bc4f48fdeeab158ad0b5}
-SRC_ARCHIVE=${SRC_ARCHIVE:-http://cdn.mysql.com/Downloads/Connector-Python/${NAME}-${VERSION}.tar.gz}
+SHA512=${SHA512:-72ae35a3dfaa2f0f5e8c555879be846af8b909c940825f0976d9ccdb33618f7ad862433fc395858006287251dcee18ee334a24c8228c5232815b261e250a4fc5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://cdn.mysql.com/Downloads/Connector-Python/${NAME}-${VERSION}-src.tar.gz}
 
 set -e
 
@@ -33,7 +33,7 @@ CHECKSUM=`sha512sum $archive| awk '{print $1}'`
 if [ "$SHA512" == "$CHECKSUM" ]
 then
   tar xvf $archive
-  cd ${NAME}-${VERSION}
+  cd ${NAME}-${VERSION}-src
   python3 setup.py install --prefix=$INSTALL_PREFIX
 
 else
