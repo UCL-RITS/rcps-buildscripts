@@ -24,7 +24,7 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 require compilers/gnu/4.9.2
 require python/3.9.10
-#require openblas/0.3.7-serial/gnu-4.9.2
+require openblas/0.3.7-serial/gnu-4.9.2
 
 NP_OPENBLAS=/shared/ucl/apps/openblas/0.3.7-serial/gnu-4.9.2/lib/libopenblas.so
 export LAPACK=${NP_OPENBLAS}
@@ -74,6 +74,8 @@ do
    fi
 done
 IFS="$old_IFS"
+
+# Some packages will downgrade these.
 pip3 install --upgrade setuptools virtualenv pip
 
 pip3 freeze > requirements.txt
