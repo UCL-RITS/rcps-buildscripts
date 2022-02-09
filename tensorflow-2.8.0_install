@@ -18,4 +18,4 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 require gcc-libs/4.9.2
 require python/3.8.6
 
-pip3 install --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
+pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
