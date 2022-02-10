@@ -66,5 +66,5 @@ cd ../ELECTRONICS/Electronics_212_linx64
 echo ""
 echo "Installing UCL GE support scripts ..."
 cp $CFXNODES ${INSTALL_PREFIX}/ucl/bin/cfxnodes
-cp $CFXNODES_CS ${INSTALL_PREFIX}/ucl/bin/cfxnodes_cs${INSTALL_PREFIX}/ucl/bin/cfxnodes
+cp $CFXNODES_CS ${INSTALL_PREFIX}/ucl/bin/cfxnodes_cs
 echo "Finished."
