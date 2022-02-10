@@ -1,0 +1,14 @@
+#!/bin/bash
+# script to read a PBS_NODEFILE (whose name is supplied as the first argument),
+# and produce on standard output an equivalent CFX -par-dist node string.
+#
+#                                                 H.T. 27/11/2009
+#
+# Version using colons as the seperator instead of * - for ANSYS Mech etc. Feb 2022
+
+if [ -f "$1" ] ; then
+  uniq -c $1 | awk 'BEGIN { cfxnodes = "" }
+                    cfxnodes != "" { cfxnodes = cfxnodes "," }
+                    {  cfxnodes = cfxnodes $2 ":" $1 }
+                    END { print cfxnodes }' ;
+fi
