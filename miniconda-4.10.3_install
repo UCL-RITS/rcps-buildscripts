@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing miniconda
+#
+# by Owain Kenway, 2022
+#
+set -e
+
+#ln -fs /shared/ucl/apps/build_scripts/includes .
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+NAME=${NAME:-miniconda}
+VERSION=${VERSION:-4.10.3}
+#INSTALL_PREFIX=${INSTALL_PREFIX:-$HOME/Applications/$NAME/$VERSION}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-1ea2f885b4dbc3098662845560bc64271eb17085387a70c2ba3f29fff6f8d52f}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://repo.anaconda.com/miniconda/Miniconda3-py39_${VERSION}-Linux-x86_64.sh}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+bash Miniconda3-py39_${VERSION}-Linux-x86_64.sh -b -p ${INSTALL_PREFIX} -f
+
+rm -rf $temp_dir
