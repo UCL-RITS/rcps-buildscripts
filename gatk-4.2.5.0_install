@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing gatk BSD three clause version.
+#
+# by Owain Kenway, 2018
+# Updated August 2021 for version 4.2.1.0
+# Updated to support extra tools, version 4.2.5.0 Feb 2022
+
+set -e
+
+
+#ln -fs /shared/ucl/apps/build_scripts/includes .
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/miniconda3/4.10.3
+require java/temurin-8
+
+APPNAME=${APPNAME:-gatk}
+VERSION=${VERSION:-4.2.5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${APPNAME}-bsd/${VERSION}}
+#INSTALL_PREFIX=${INSTALL_PREFIX:-${HOME}/Applications/${APPNAME}-bsd/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/broadinstitute/gatk/releases/download/${VERSION}/gatk-${VERSION}.zip}
+SHA256=${SHA256:-203f17868f0a73a8322d2f8bd568b9f7b4bb81e36d37db5b6a142d8050ef049f}
+
+rm -rf ${INSTALL_PREFIX}
+
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+unzip $archive
+
+cd ${INSTALL_PREFIX}/gatk-${VERSION}
+#sed -i.bak 's|name: gatk|#name: gatk|g' gatkcondaenv.yml
+
+conda env create -p ${INSTALL_PREFIX}/gatk-${VERSION}/conda -f ${INSTALL_PREFIX}/gatk-${VERSION}/gatkcondaenv.yml
