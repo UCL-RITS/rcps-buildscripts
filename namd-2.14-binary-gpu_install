@@ -13,6 +13,8 @@ package_description="NAMD is a parallel molecular dynamics code designed for hig
 
 source includes/source_includes.sh
 
+module purge
+
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_Linux-x86_64-multicore-CUDA.tar.gz}
 
 make_build_env ""
