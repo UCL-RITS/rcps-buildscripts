@@ -24,7 +24,7 @@ tar zxvf "$SRC_ARCHIVE"
 make_module_v2 \
     -d \
     -r gcc-libs \
-    -e PATH:"$install_prefix" 
+    -e PATH:"$install_prefix"/NAMD_${package_version}_Linux-x86_64-multicore-CUDA 
 chmod -R +rX "$module_dir"
 cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
 
