@@ -9,7 +9,7 @@
 package_name="namd"
 package_version="2.14"
 package_variant="binary-gpu"
-package_description="NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems."
+package_description="NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. This is NAMD's Linux-x86_64-multicore-CUDA binary."
 
 source includes/source_includes.sh
 
