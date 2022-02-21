@@ -32,6 +32,9 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_So
 CHARMVER=${CHARMVER:-6.10.2}
 CHARMARC=${CHARMARC:-"ofi-linux-x86_64"}
 
+charmrun_dir="/shared/ucl/apps/namd/ucl-charmrun-wrapper"
+charmwrapper="/shared/ucl/apps/build_scripts/namd-patches/charmrun"
+
 make_build_env --tmp-root="/dev/shm"
 
 mkdir -p "$install_prefix"
@@ -83,3 +86,16 @@ do
   echo "Installing $a"
   cp $a ${install_prefix}/${NANAME}/bin
 done
+
+# Check if charmrun-wrapper exists, copy it in if not
+if [ ! -d "$charmrun_dir" ]
+then
+  echo "$charmrun_dir does not exist, creating directory."
+  mkdir -p "$charmrun_dir"
+fi
+if [ ! -e "$charmrun_dir/charmrun" ]
+then
+  echo "$charmrun_dir/charmrun does not exist, copying in from $charmwrapper"
+  cp "$charmwrapper" "$charmrun_dir/"
+fi
+
