@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NAMD
+#
+# You need to register and download a copy of NAMD and put the tar file 
+# somewhere.
+# This ofi-smp version is for OmniPath clusters.
+
+# Need to use the following modules:
+
+set -e
+
+package_name="namd"
+package_version="2.14"
+package_variant="ofi-smp"
+package_description="NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. This is the ofi-smp version and can be launched with charmrun."
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+
+module purge
+require beta-modules
+require gcc-libs/4.9.2
+require compilers/intel/2019/update5
+#require mpi/intel/2019/update5/intel
+
+NANAME=${NANAME:-NAMD_${package_version}_Source}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_Source.tar.gz}
+
+CHARMVER=${CHARMVER:-6.10.2}
+CHARMARC=${CHARMARC:-"ofi-linux-x86_64"}
+
+make_build_env --tmp-root="/dev/shm"
+
+mkdir -p "$install_prefix"
+
+cd "$build_dir"
+
+tar zxvf "$SRC_ARCHIVE"
+
+ln -fsT `pwd`/${NANAME} "${install_prefix}/${NANAME}"
+
+cd "${install_prefix}/${NANAME}"
+
+# Fix for charm not being able to find f90
+mkdir uclbuildsupport
+ln -s `which $FC` uclbuildsupport/f90
+ln -s `which $FC` uclbuildsupport/f77
+ln -s `which $FC` uclbuildsupport/g77
+
+export PATH=`pwd`/uclbuildsupport:$PATH
+
+tar xvf charm-${CHARMVER}.tar
+
+cd charm-${CHARMVER}
+./build charm++ ${CHARMARC} iccstatic ifort smp --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
+
+cd ..
+
+cd arch
+cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
+patch < Linux-x86_64.tcl.patch
+patch < Linux-x86_64.fftw.patch
+cp /shared/ucl/apps/build_scripts/namd-patches/Linux-x86_64.fftw3 .
+
+cp Linux-x86_64-icc.arch Linux-x86_64-ofi-smp-icc.arch
+sed -i.bak 's|multicore-linux-x86_64-iccstatic|ofi-linux-x86_64-ifort-smp-iccstatic|g' Linux-x86_64-ofi-smp-icc.arch
+sed -i.bak 's|-axAVX|-xCORE-AVX512 -qopt-zmm-usage=high|g' Linux-x86_64-ofi-smp-icc.arch
+
+cd ..
+./config Linux-x86_64-ofi-smp-icc --with-fftw3 --charm-arch ${CHARMARC}-ifort-smp-iccstatic 
+
+cd Linux-x86_64-ofi-smp-icc
+make
+
+cd ${build_dir}/${NANAME}/Linux-x86_64-ofi-smp-icc
+rm ${install_prefix}/${NANAME}
+mkdir -p ${install_prefix}/${NANAME}/bin
+for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
+do
+  echo "Installing $a"
+  cp $a ${install_prefix}/${NANAME}/bin
+done
