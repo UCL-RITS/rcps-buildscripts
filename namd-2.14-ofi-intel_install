@@ -26,8 +26,8 @@ require gcc-libs/4.9.2
 require compilers/intel/2019/update5
 #require mpi/intel/2019/update5/intel
 
-NANAME=${NANAME:-NAMD_${VERSION}_Source}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${VERSION}_Source.tar.gz}
+NANAME=${NANAME:-NAMD_${package_version}_Source}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_Source.tar.gz}
 
 CHARMVER=${CHARMVER:-6.10.2}
 CHARMARC=${CHARMARC:-"ofi-linux-x86_64"}
@@ -75,11 +75,11 @@ cd ..
 cd Linux-x86_64-ofi-icc
 make
 
-cd ${temp_dir}/${NANAME}/Linux-x86_64-ofi-icc
-rm ${INSTALL_PREFIX}/${NANAME}
-mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
+cd ${build_dir}/${NANAME}/Linux-x86_64-ofi-icc
+rm ${install_prefix}/${NANAME}
+mkdir -p ${install_prefix}/${NANAME}/bin
 for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
 do
   echo "Installing $a"
-  cp $a ${INSTALL_PREFIX}/${NANAME}/bin
+  cp $a ${install_prefix}/${NANAME}/bin
 done
