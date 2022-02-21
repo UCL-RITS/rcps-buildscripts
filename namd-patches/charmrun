@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This wrapper gives charmrun necessary options to run jobs.
+
+LAUNCHER=$CHARM_RUN
+
+# This is for the mpirun-based charmrun
+if [[ "$CHARMRUN_VERSION" == 'charmrun-mpirun' ]]
+then
+  # This was launched as a -pe mpi job
+  if [ -e "$TMPDIR/machines" ]
+  then
+    # Make a unique machinefile
+    sort -u "$TMPDIR/machines" > "$TMPDIR/machines.unique"
+
+    $LAUNCHER ++nodelist "$TMPDIR/machines.unique" "$@"
+
+  # Otherwise this is running on one node, no machinefile needed.
+  else 
+    $LAUNCHER "$@"
+  fi
+fi
+
+
