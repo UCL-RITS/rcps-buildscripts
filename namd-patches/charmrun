@@ -13,7 +13,7 @@ then
     # Make a unique machinefile
     sort -u "$TMPDIR/machines" > "$TMPDIR/machines.unique"
 
-    $LAUNCHER ++nodelist "$TMPDIR/machines.unique" "$@"
+    $LAUNCHER -machinefile "$TMPDIR/machines.unique" "$@"
 
   # Otherwise this is running on one node, no machinefile needed.
   else 
