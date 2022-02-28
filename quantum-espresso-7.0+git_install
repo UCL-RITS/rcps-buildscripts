@@ -10,6 +10,7 @@ module purge
 module load gcc-libs
 module load compilers/gnu/4.9.2
 module load mpi/intel/2018
+module load mpi/openmpi/3.1.4/gnu-4.9.2
 module load fftw/3.3.8-ompi/gnu-4.9.2
 
 NAME=${NAME:-quantum-espresso}
