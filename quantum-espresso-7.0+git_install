@@ -8,7 +8,7 @@ set -o errexit -o nounset
 source includes/source_includes.sh
 module purge
 module load gcc-libs
-module load compilers/intel/2018
+module load compilers/gnu/4.9.2
 module load mpi/intel/2018
 module load fftw/3.3.8-ompi/gnu-4.9.2
 
