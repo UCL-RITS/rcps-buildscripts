@@ -18,7 +18,7 @@ VARIANT=${VARIANT:-}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${NAME}/${VERSION}${VARIANT:+-${VARIANT}}/${COMPILER_TAG}"}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
 #BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
-COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
+#COMPILE_FLAGS=${COMPILE_FLAGS:-"-fp-model precise"}
 RUN_TESTS=${RUN_TESTS:-"yes"}
 
 # make install doesn't work with make links, so build in place
@@ -35,7 +35,7 @@ cd "$archive"
 # Should probably add this to the MKL module but it needs to be set either way
 #export CPATH=$MKLROOT/include/fftw:$CPATH
 
-./configure FFLAGS="${COMPILE_FLAGS}" --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
+./configure --enable-parallel --with-scalapack=intel FFT_LIBS=-lfftw3xf_intel
   
 # want and couple not compilable with 6.2.1
 # west no longer compilable post-6.1
