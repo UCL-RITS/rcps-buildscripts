@@ -146,3 +146,10 @@ rm -rf *
 
 
 fi
+
+# Bug pre-2021.5: LYSN is missing from residuetypes.dat
+# Get the one from 2021.5 - is the only difference.
+cd $install_prefix/share/gromacs/top
+mv residuetypes.dat residuetypes.dat.orig
+wget https://gitlab.com/gromacs/gromacs/-/raw/v2021.5/share/top/residuetypes.dat
+
