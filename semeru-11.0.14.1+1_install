@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing IBM Semeru
+#
+# by Owain Kenway, 2022
+#
+set -e
+
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+NAME=${NAME:-semeru}
+VERSION=${VERSION:-11.0.14.1_1}
+OPENJ9_VERSION=${OPENJ9_VERSION:-0.30.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SHA256=${SHA256:-25f3a8475b1f0b0ef54ff0247c7839fa4d6e7363adc2956d383a981aaa491b70}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/ibmruntimes/semeru11-binaries/releases/download/jdk-11.0.14.1%2B1_openj9-0.30.1/ibm-semeru-open-jdk_x64_linux_${VERSION}_openj9-${OPENJ9_VERSION}.tar.gz}
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+tar -xvf $archive
