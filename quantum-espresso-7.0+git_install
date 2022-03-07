@@ -7,11 +7,11 @@ set -o errexit -o nounset
 # module prereqs for building
 source includes/source_includes.sh
 module purge
-module load gcc-libs
-module load compilers/gnu/4.9.2
-module load mpi/openmpi/3.1.4/gnu-4.9.2
-module load fftw/3.3.8-ompi/gnu-4.9.2
-module load openblas/0.2.14/gnu-4.9.2
+module load beta-modules
+module load gcc-libs/9.2.0
+module load compilers/gnu/9.2.0
+module load mpi/openmpi/3.1.5/gnu-9.2.0
+module load fftw/3.3.8/gnu-9.2.0
 
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-7.0}
