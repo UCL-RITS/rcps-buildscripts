@@ -24,7 +24,7 @@ tar -jxvf eigen-${VERSION}.tar.bz2
 
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../eigen-${version}
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../eigen-${VERSION}
 make
 make DESTDIR="" install
 
