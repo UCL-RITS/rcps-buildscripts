@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+APPNAME=${APPNAME:-eigen}
+VERSION=${VERSION:-3.3.9}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-516322dc3d98f7f6d20f11050da43084f68e6c71}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://gitlab.com/libeigen/eigen/-/archive/${VERSION}/eigen-${VERSION}.tar.bz2}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum ${VERSION}.tar.bz2| awk '{print $1}'`
+
+tar -jxvf eigen-${version}.tar.bz2
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../eigen-${version}
+make
+make DESTDIR="" install
+
+# Fix for cufflinks.
+cd $INSTALL_PREFIX
+mkdir cufflinks
+cd cufflinks
+ln -s $INSTALL_PREFIX/include/eigen3 ./include
+
