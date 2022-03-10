@@ -18,9 +18,9 @@ cd $temp_dir
 
 wget $SRC_ARCHIVE
 
-CHECKSUM=`sha1sum ${VERSION}.tar.bz2| awk '{print $1}'`
+CHECKSUM=`sha1sum eigen-${VERSION}.tar.bz2| awk '{print $1}'`
 
-tar -jxvf eigen-${version}.tar.bz2
+tar -jxvf eigen-${VERSION}.tar.bz2
 
 mkdir build
 cd build
