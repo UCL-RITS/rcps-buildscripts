@@ -49,8 +49,9 @@ git checkout v${VERSION}
 # fp-model precise required to make the tests pass
 IFCORE="-lifcore"
 ISTRICT="-fp-model precise"
-#IOPTS="-vec -axSSE4.2,AVX"
-IOPTS="-axSSE4.2,AVX,CORE-AVX512 -finline -funroll-loops -vec"
+#IOPTS="-axSSE4.2,AVX,CORE-AVX512 -finline -funroll-loops -vec"
+# Small numerical differences in regtests if we use AVX512 (or AVX2)
+IOPTS="-axSSE4.2,AVX -finline -funroll-loops -vec"
 
 if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
 then
