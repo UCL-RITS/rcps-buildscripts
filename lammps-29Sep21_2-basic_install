@@ -9,7 +9,6 @@
 NAME=${NAME:-lammps}
 TYPE=${TYPE:-basic}
 VERSION=${VERSION:-29Sep2021_update2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
 BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
 
@@ -26,6 +25,8 @@ require mpi/intel/2019/update6/intel
 require cmake/3.21.1
 require python/3.9.10
 require eigen/3.3.9
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 cluster=$WHEREAMI
