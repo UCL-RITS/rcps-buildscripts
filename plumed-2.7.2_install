@@ -6,7 +6,7 @@
 #  Uses libmatheval
 #   which requires flex (else you get an undefined symbol yywrap error)
 #
-#  To build with gcc 10 run with GCC=yes ./plumed-2.5.2_install
+#  To build with gcc 10 run with GCC=yes ./plumed-2.7.2_install
 
 NAME=${NAME:-plumed}
 VERSION=${VERSION:-2.7.2}
