@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+# Note: LAMMPS will try to use Eigen 3.4.0 and that results in C++ template errors
+# with every combination of Intel compiler and gcc-libs we have.
+# Eigen 3.3.9 is fine.
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-basic}
+VERSION=${VERSION:-29Sep2021_update2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
+BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+source includes/source_includes.sh
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/intel/2020/release
+require mpi/intel/2019/update6/intel
+require cmake/3.21.1
+require python3/3.9-gnu-10.2.0
+require eigen/3.3.9
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+cluster=$WHEREAMI
+
+mkdir -p /dev/shm/$(whoami)/$NAME
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tar -xvf stable_${VERSION}.tar.gz
+cd lammps-stable_${VERSION}
+mkdir -p build
+cd build
+
+# Configure for standard build plus shared libraries and build
+cmake -C ../cmake/presets/most.cmake \
+      -DBUILD_SHARED_LIBS=yes -DLAMMPS_MACHINE=mpi \
+      -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+      -D DOWNLOAD_EIGEN3=OFF \
+      ../cmake
+
+# Add building LAMMPS unit tests if requested.
+if [ "$BUILD_UNIT_TESTS" == "yes" ]
+then
+    cmake -D ENABLE_TESTING=on .
+    echo ""
+    echo "NOTE: unit tests need to be run from build directory: `pwd` using the ctest command from CMAKE."
+    echo ""
+fi
+
+# Build and install
+VERBOSE=1 make
+make install
+
+# Make default binary symlink
+cd $INSTALL_PREFIX/lammps/bin
+ln -s lmp_${cluster} lmp_default
+
+#rm -Rf $temp_dir
+
