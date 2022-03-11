@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+###############################################
+# GROMACS 2021.3 fails to build its CPU detection program during config if 
+# we use Intel 2020 with gcc-10 (and it needs a new enough Intel and newer libstdc++).
+# So building with gcc-10 toolchain.
+# Letting it build its own FFTW with SIMD support.
+
+set -e
+
+package_name="gromacs"
+package_version="2021.3"
+package_variant="plumed"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles. This version patched with plumed 2.7.2 (with libmatheval)."
+SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.gromacs.org/pub/gromacs/gromacs-$package_version.tar.gz}
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require cmake
+require compilers/gnu/10.2.0
+# On Myriad, requires UCX
+if [ $cluster == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require openblas/0.3.13-serial/gnu-10.2.0
+require python3/3.9-gnu-10.2.0
+require libmatheval/1.1.11
+require flex/2.5.39
+require plumed/2.7.2/gnu-10.2.0
+
+# Check if PLUMED_KERNEL is empty or unset, returns error if it is
+: "${PLUMED_KERNEL:?"parameter null or not set, need to load a plumed module"}"
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget "$SRC_ARCHIVE"
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+manifest sha1:645f186b8d4b999be78b8b0726f1908251ca43f4  ${tarfile}
+
+tar -xf "$tarfile"
+
+cd "${package_name}-${package_version}"
+
+echo "Running PLUMED's interactive patch tool"
+plumed patch -p -e gromacs-${package_version} --shared
+
+mkdir build
+cd build
+
+# Only build the MPI versions of GROMACS with PLUMED
+# need to tell it to build shared libs or it won't since it didn't do a serial build first
+
+echo "Building and installing MPI, double precision GROMACS"
+cmake .. \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=ON \
+    -DGMX_MPI=ON \
+    -DGMX_BUILD_MDRUN_ONLY=OFF \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    -DBUILD_SHARED_LIBS=ON \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
+# PLUMED 2 always uses double precision, even if GROMACS is running in single
+echo "Building and installing MPI, single precision GROMACS"
+cmake .. \
+    -DGMX_GPU=OFF \
+    -DGMX_DOUBLE=OFF \
+    -DGMX_MPI=ON \
+    -DGMX_BUILD_MDRUN_ONLY=OFF \
+    -DGMX_BUILD_OWN_FFTW=ON \
+    -DCMAKE_INSTALL_PREFIX=$install_prefix \
+    -DBUILD_SHARED_LIBS=ON \
+    $CMAKE_FLAGS
+make
+make install
+rm -rf *
+
