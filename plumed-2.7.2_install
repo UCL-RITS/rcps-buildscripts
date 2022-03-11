@@ -6,7 +6,7 @@
 #  Uses libmatheval
 #   which requires flex (else you get an undefined symbol yywrap error)
 #
-#  To build with gcc run with GCC=yes ./plumed-2.5.2_install
+#  To build with gcc 10 run with GCC=yes ./plumed-2.5.2_install
 
 NAME=${NAME:-plumed}
 VERSION=${VERSION:-2.7.2}
@@ -19,17 +19,20 @@ set -e
 # require modules for building
 source includes/source_includes.sh
 module purge
-module load gcc-libs
-module load git/2.32.0
 
 if [ "$GCC" == "no" ]
 then
+  module load gcc-libs
+  module load git/2.32.0
   module load compilers/intel/2020/release
   module load mpi/intel/2019/update6/intel
 else
-  module load compilers/gnu/4.9.2
-  module load mpi/openmpi/3.1.1/gnu-4.9.2
-  module load openblas/0.2.14/gnu-4.9.2
+  module load beta-modules
+  module load gcc-libs/10.2.0
+  module load git/2.32.0
+  module load compilers/gnu/10.2.0
+  module load mpi/openmpi/4.0.5/gnu-10.2.0
+  module load openblas/0.3.13-serial/gnu-10.2.0
 fi
 
 module load flex
@@ -53,7 +56,7 @@ ISTRICT="-fp-model precise"
 # Small numerical differences in regtests if we use AVX512 (or AVX2)
 IOPTS="-axSSE4.2,AVX -finline -funroll-loops -vec"
 
-if [ "$COMPILER_TAG" == "gnu-4.9.2" ]
+if [ "$COMPILER_TAG" == "gnu-10.2.0" ]
 then
   IFCORE=""
   ISTRICT=""
