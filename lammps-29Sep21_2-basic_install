@@ -20,12 +20,11 @@ set -e
 source includes/source_includes.sh
 
 module purge
-require beta-modules
-require gcc-libs/10.2.0
+require gcc-libs/4.9.2
 require compilers/intel/2020/release
 require mpi/intel/2019/update6/intel
 require cmake/3.21.1
-require python3/3.9-gnu-10.2.0
+require python/3.9.10
 require eigen/3.3.9
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
