@@ -44,9 +44,11 @@ cd build
 
 # Configure for standard build plus shared libraries and build
 cmake -C ../cmake/presets/most.cmake \
-      -DBUILD_SHARED_LIBS=yes -DLAMMPS_MACHINE=mpi \
+      -DBUILD_SHARED_LIBS=yes \
+      -DLAMMPS_MACHINE=mpi \
+      -DFFT=MKL \
       -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
-      -D DOWNLOAD_EIGEN3=OFF \
+      -DDOWNLOAD_EIGEN3=OFF \
       ../cmake
 
 # Add building LAMMPS unit tests if requested.
