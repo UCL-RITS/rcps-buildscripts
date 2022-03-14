@@ -65,5 +65,5 @@ export boost_version=boost_1_62_0
 
 foamSystemCheck
 
-cd $INSTALL_PREFIX/OpenFOAM-v1906
+cd $INSTALL_PREFIX/OpenFOAM-v2112
 ./Allwmake
