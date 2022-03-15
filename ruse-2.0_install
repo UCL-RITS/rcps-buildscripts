@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name="ruse"
+package_version="2.0"
+package_description="Ruse is a command-line utility that periodically measures the resource use of a process and its subprocesses."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O ruse-2.0.tar.gz https://github.com/JanneM/Ruse/releases/download/v2.0/ruse-2.0.tar.gz
+
+manifest \
+	sha256:37fc4a7ea17919c2c73e6ee1be7ff1dd706ff32bf1de66781fd288812894cdd3 ruse-2.0.tar.gz
+	
+
+tar -xf ruse-2.0.tar.gz
+
+cd ruse-2.0
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
