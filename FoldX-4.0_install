@@ -62,4 +62,5 @@ ln -s $binary foldx
 cd ..
 chgrp -R $APP_GROUP `basename $INSTALL_PREFIX`
 chmod -R o-rwx `basename $INSTALL_PREFIX`
+cd $INSTALL_PREFIX
 ls -l
