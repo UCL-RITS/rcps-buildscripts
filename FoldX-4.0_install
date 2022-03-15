@@ -55,10 +55,10 @@ tar -xvf $SRC_ARCHIVE
 
 binary=`ls foldx*`
 ln -s $binary foldx
-ls -l
 
 # Convert to reserved app.
 
 cd ..
 chgrp -R $APP_GROUP `basename $INSTALL_PREFIX`
 chmod -R o-rwx `basename $INSTALL_PREFIX`
+ls -l
