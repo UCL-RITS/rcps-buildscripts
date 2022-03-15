@@ -50,6 +50,13 @@ mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 tar -xvf $SRC_ARCHIVE
 
+# The binary incudes the license expiry date in the name. Set up a link to keep the same name as
+# before.
+
+binary=`ls foldx*`
+ln -s $binary foldx
+ls -l
+
 # Convert to reserved app.
 
 cd ..
