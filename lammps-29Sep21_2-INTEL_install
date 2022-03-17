@@ -69,5 +69,9 @@ make install
 cd $INSTALL_PREFIX/bin
 ln -s lmp_mpi lmp_default
 
+# make a symlink to liblammps.so so Python etc can find that
+cd $INSTALL_PREFIX/lib64
+ln -s liblammps_mpi.so liblammps.so
+
 #rm -Rf $temp_dir
 
