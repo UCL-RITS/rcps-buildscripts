@@ -22,6 +22,7 @@ set -e
 source includes/source_includes.sh
 
 module purge
+require beta-modules
 require gcc-libs/4.9.2
 require compilers/intel/2020/release
 require mpi/intel/2019/update6/intel
@@ -36,8 +37,8 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 cluster=$WHEREAMI
 
 # We are on a compute node, put it in Scratch
-mkdir -p ~/${NAME}/${VERSION}/${TYPE}
-temp_dir=$(mktemp -d -p ~/${NAME}/${VERSION}/${TYPE})
+mkdir -p ~/Scratch/${NAME}/${VERSION}/${TYPE}
+temp_dir=$(mktemp -d -p ~/Scratch/${NAME}/${VERSION}/${TYPE})
 
 cd $temp_dir
 
