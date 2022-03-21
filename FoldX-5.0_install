@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FoldX 5.0 as a reserved application.
+# 
+# by Brian Alston March 2022
+#
+# Updated for version 5.0 late March 2022
+
+# Install archive downloaded from:
+# https://foldxsuite.crg.eu/ license portal and copied to:
+#
+#     ~ccspap2/Software/FoldX
+#
+# on Myriad only.
+
+NAME=${NAME:-FoldX}
+VERSION=${VERSION:-v5.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspap2/Software/FoldX/foldx5Linux64.tar_.gz}
+APP_GROUP=${APP_GROUP:-legfldx}
+
+set -e
+
+if [ ! -f $SRC_ARCHIVE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find FoldX installer archive"
+    echo ""
+    echo "You need to download the FoldX installer archive from:"
+    echo "https://foldxsuite.crg.eu/ license portal -"
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE" 
+    echo "variable appropriately."
+    echo ""
+    exit 1
+fi
+
+# Check we are using the correct userid
+
+if [ "$USER" != "ccspap2" ]
+then
+    echo ""
+    echo "*** ERROR: must install using the ccspap2 account."
+    echo ""
+    exit 1
+fi
+  
+# Binary install
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+/bin/rm -rf *
+tar -xvf $SRC_ARCHIVE
+
+# The binary incudes the license expiry date in the name. Set up a link to keep the same name as
+# before.
+
+binary=`ls foldx*`
+ln -s $binary foldx
+
+# Convert to reserved app.
+
+cd ..
+chgrp -R $APP_GROUP `basename $INSTALL_PREFIX`
+chmod -R o-rwx `basename $INSTALL_PREFIX`
+cd $INSTALL_PREFIX
+ls -l
