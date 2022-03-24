@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MultiNest 3.10b
+#
+# by Brian Alston March 2022
+#
+# Note: MuiltiNest is built to be compatible with our mpi4py build
+
+APPNAME=${APPNAME:-MultiNest}
+VERSION=${VERSION:-3.10b}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-6aff8b25210582583f7044ac3c68c073}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/JohannesBuchner/${APPNAME}/archive/refs/tags/v${VERSION}.tar.gz}
+
+set -e
+
+# load modules for building - using the same compilers and MPI as mpi4py/3.0.2/gnu-4.9.2
+
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.4/gnu-4.9.2
+require openblas/0.3.7-serial/gnu-4.9.2
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum v${VERSION}.tar.gz | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -zxvf v${VERSION}.tar.gz
+  cd ${APPNAME}-${VERSION}/build
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ..
+  make
+  make install
+  
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
