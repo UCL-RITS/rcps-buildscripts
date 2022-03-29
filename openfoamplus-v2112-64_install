@@ -11,14 +11,15 @@ source includes/source_includes.sh
 
 module purge
 require beta-modules
-require gcc-libs/7.3.0
-require compilers/gnu/7.3.0
-require mpi/openmpi/3.1.4/gnu-7.3.0
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require fftw/3.3.9/gnu-10.2.0
 require flex/2.5.39
 
 NAME=${NAME:-openfoamplus}
 VERSION=${VERSION:-v2112}
-COMPILER_TAG=${COMPILER_TAG:-gnu-7.3.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/${VERSION}_64/$COMPILER_TAG}
 MD5=${MD5:-b6553cfbb6c398e8fe50c96e9e456968}
 TPMD5=${TPMD5:-a129907a5ebb88c83580536ce666dbce}
