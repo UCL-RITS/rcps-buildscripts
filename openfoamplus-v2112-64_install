@@ -4,12 +4,14 @@
 # March 2022
 
 set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
 
 dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 cluster=$WHEREAMI
 
 # Switching to GNU 10.2.0 toolchain and adding FFTW
