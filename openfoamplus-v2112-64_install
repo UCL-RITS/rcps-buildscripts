@@ -32,6 +32,7 @@ fi
 require mpi/openmpi/4.0.5/gnu-10.2.0
 require fftw/3.3.9/gnu-10.2.0
 require flex/2.5.39
+require cmake/3.21.1
 
 NAME=${NAME:-openfoamplus}
 VERSION=${VERSION:-v2112}
