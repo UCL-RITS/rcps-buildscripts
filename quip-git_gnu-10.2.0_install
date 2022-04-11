@@ -68,6 +68,7 @@ make install
 # Need to manually put stuff in the right place.
 cp build/${QUIP_ARCH}/*.a  ${INSTALL_PREFIX}/lib
 cp build/${QUIP_ARCH}/*.mod  ${INSTALL_PREFIX}/include
+cp -r share ${INSTALL_PREFIX}/
 
 echo "Install complete: ${INSTALL_PREFIX}"
 

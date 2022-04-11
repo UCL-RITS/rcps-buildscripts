@@ -51,6 +51,10 @@ require mpi/openmpi/4.0.5/gnu-10.2.0
 require cmake/3.21.1
 require python3/3.9-gnu-10.2.0
 
+# For QUIP
+require openblas/0.3.13-serial/gnu-10.2.0
+require quip/c6359e1/gnu-10.2.0
+
 # Not using /dev/shm while sorting out how to build and what options to use.
 
 # mkdir -p /dev/shm/$(whoami)/$NAME
@@ -70,9 +74,9 @@ cd build
 
 cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
-# Add building ML-QUIP package.
+# Add building ML-QUIP package with existing module.
 
-cmake -D DOWNLOAD_QUIP=yes -D PKG_ML-QUIP=yes .
+cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=no .
 
 # Add building LAMMPS unit tests if requested.
 
