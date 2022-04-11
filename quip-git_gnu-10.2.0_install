@@ -24,7 +24,7 @@ cluster=$WHEREAMI
 
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
-require openblas/0.3.13-native-threads/gnu-10.2.0
+require openblas/0.3.13-serial/gnu-10.2.0
 require python3/3.9-gnu-10.2.0
 
 if [ "$cluster" == "myriad" ]
