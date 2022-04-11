@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing quip from git
+#
+# by Owain Kenway, 2017 
+# Updated April 2022 for GNU 10.2.0 for LAMMPS
+
+APPNAME=${APPNAME:-quip}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/libAtoms/QUIP.git}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+cluster=$WHEREAMI
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require openblas/0.3.13-native-threads/gnu-10.2.0
+require python3/3.9-gnu-10.2.0
+
+if [ "$cluster" == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+
+require mpi/openmpi/4.0.5/gnu-10.2.0
+
+# mkdir -p /dev/shm/$APPNAME
+# temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+temp_dir=~/Software/QUIP/
+mkdir -p $temp_dir
+cd $temp_dir
+
+git clone --recursive $SRC_ARCHIVE
+cd QUIP
+
+VERSION=${VERSION:-`git rev-parse --short HEAD`}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/${COMPILER_TAG}}
+
+mkdir -p ${INSTALL_PREFIX}/lib
+mkdir -p ${INSTALL_PREFIX}/include
+mkdir -p ${INSTALL_PREFIX}/structures
+mkdir -p ${INSTALL_PREFIX}/bin
+
+export QUIP_INSTALLDIR=${INSTALL_PREFIX}/bin
+export QUIP_STRUCT_DIR=${INSTALL_PREFIX}/structures
+export QUIP_ARCH=linux_x86_64_gfortran_openmpi
+
+# make config
+mkdir -p build/${QUIP_ARCH}
+cp /shared/ucl/apps/build_scripts/files/QUIP/Makefile.inc build/${QUIP_ARCH}/Makefile.inc
+cd build/${QUIP_ARCH}
+
+make
+make libquip
+make install
+
+# Need to manually put stuff in the right place.
+cp build/${QUIP_ARCH}/*.a  ${INSTALL_PREFIX}/lib
+cp build/${QUIP_ARCH}/*.mod  ${INSTALL_PREFIX}/include
+
+echo "Install complete: ${INSTALL_PREFIX}"
+
+
+
+
