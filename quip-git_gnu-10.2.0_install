@@ -60,7 +60,6 @@ export QUIP_ARCH=linux_x86_64_gfortran_openmpi
 # make config
 mkdir -p build/${QUIP_ARCH}
 cp /shared/ucl/apps/build_scripts/files/QUIP/Makefile.inc build/${QUIP_ARCH}/Makefile.inc
-cd build/${QUIP_ARCH}
 
 make
 make libquip
