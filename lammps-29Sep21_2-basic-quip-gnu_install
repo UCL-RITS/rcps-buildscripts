@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing LAMMPS
+# Installing LAMMPS including the ML-QUIP package
 #
 # by Owain Kenway, 2018
 # Updated January 2022 for LAMMPS 29th September 2021 Update 2
@@ -14,7 +14,7 @@
 # This is a work in progress script!
 
 NAME=${NAME:-lammps}
-TYPE=${TYPE:-basic+fftw}
+TYPE=${TYPE:-basic+quip}
 COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 VERSION=${VERSION:-29Sep2021_update2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/${COMPILER_TAG}}
@@ -70,9 +70,9 @@ cd lammps-stable_${VERSION}
 mkdir -p build
 cd build
 
-# Configure for standard build plus shared libraries and build
+# Configure for standard build without shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=no -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building ML-QUIP package with existing module.
 
