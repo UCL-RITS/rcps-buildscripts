@@ -72,7 +72,7 @@ cd build
 
 # Configure for standard build without shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=no -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building ML-QUIP package with existing module.
 
