@@ -14,7 +14,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 cluster=$WHEREAMI
 
-# Switching to GNU 10.2.0 toolchain and adding FFTW
+# Problems using the GNU 10.2.0 toolchain and OpenMPI 4.0.5 not linking correctly.
+# Using GNU 7.3.0 again after building FFTW.
 
 module purge
 require beta-modules
