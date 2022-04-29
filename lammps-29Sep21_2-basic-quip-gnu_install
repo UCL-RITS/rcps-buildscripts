@@ -53,7 +53,7 @@ require python3/3.9-gnu-10.2.0
 
 # For QUIP
 require openblas/0.3.13-serial/gnu-10.2.0
-require quip/c6359e1/gnu-10.2.0
+# require quip/c6359e1/gnu-10.2.0
 
 # Not using /dev/shm while sorting out how to build and what options to use.
 
@@ -72,11 +72,11 @@ cd build
 
 # Configure for standard build without shared libraries and build
 
-cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=no -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
 # Add building ML-QUIP package with existing module.
 
-cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=no .
+cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=yes .
 
 # Add building LAMMPS unit tests if requested.
 
