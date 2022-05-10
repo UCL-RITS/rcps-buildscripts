@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Paraview binaries 
+# 
+# Updated for version 5.10.1 May 2022
+# 
+
+NAME=${NAME:-paraview}
+VERSION=${VERSION:-5.10.1}
+COMPILER_TAG=binary
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-fa3068b69021cb6af30558c0a3784a97}
+ARCHIVE_NAME=${ARCHIVE_NAME:-ParaView-${VERSION}-MPI-Linux-Python3.9-x86_64.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-"http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.10&type=binary&os=linux64&downloadFile=${ARCHIVE_NAME}"}
+OPTIONS=${OPTIONS:-""}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+
+cd $temp_dir
+
+wget --no-check-certificate "$SRC_ARCHIVE" -O $ARCHIVE_NAME
+archive=$ARCHIVE_NAME
+
+CHECKSUM=`md5sum $archive | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+    mkdir -p $INSTALL_PREFIX
+    cd $INSTALL_PREFIX
+    tar -xvf $temp_dir/$archive
+
+else
+    echo "Hash mismatch."
+    echo "Expected: $SHA"
+    echo "Got: $CHECKSUM"
+fi
