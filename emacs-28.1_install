@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="emacs"
+package_version="28.1"
+package_description=""
+
+set -o errexit -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget http://ftpmirror.gnu.org/emacs/emacs-28.1.tar.xz
+manifest sha256:28b1b3d099037a088f0a4ca251d7e7262eab5ea1677aabffa6c4426961ad75e1  emacs-28.1.tar.xz
+
+tar -xf emacs-28.1.tar.xz
+cd emacs-28.1
+
+# We don't have the libgif library installed
+./configure \
+    --prefix="$install_prefix" \
+    --with-gif=no
+make
+
+## Release tarballs do not include tests >:(
+# make check
+
+make install
+
+make_module_v2
+
+chmod -R +rX "$module_dir"
+
+post_build_report
