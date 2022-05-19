@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing 
+#
+# by Owain Kenway, 2018
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+module purge
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+require mpi/openmpi/3.1.5/gnu-9.2.0
+require cmake
+
+NAME=${NAME:-chapel}
+VERSION=${VERSION:-1.26.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+#INSTALL_PREFIX=${INSTALL_PREFIX:-$HOME/Applications/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-e10ca1857e5764dc08b62c310b9e113d}
+SHA1=${SHA1:-c023c4238a6b09c7ebb53736f8fa0343f8b59a8c}
+SHA256=${SHA256:-ba396b581f0a17f8da3f365a3f8b079b8d2e229a393fbd1756966b0019931ece}
+SHA512=${SHA512:-192495d1dd70ab8e5588cb3b73fb40a188d65ec0c42b8fb820f07544e2611833683f66e33b268cb5e2fd56ca91cfe4f1a1b673341530543f5a751c967bf545d5}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/chapel-lang/chapel/releases/download/${VERSION}/chapel-${VERSION}.tar.gz}
+
+
+rm -rf ${INSTALL_PREFIX}
+
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+md5sum -c <<< "$MD5 $archive"
+sha1sum -c <<< "$SHA1 $archive"
+sha256sum -c <<< "$SHA256 $archive"
+sha512sum -c <<< "$SHA512 $archive"
+
+tar -xvf $archive
+
+cd ${NAME}-${VERSION}
+
+source util/setchplenv.bash
+
+arch=smp
+export CHPL_LLVM=none
+
+echo "Detecting location"
+location=$(whereami)
+
+case $location in
+myriad)
+export CHPL_COMM='gasnet'
+export CHPL_LAUNCHER='smp'
+export CHPL_COMM_SUBSTRATE='smp'
+export CHPL_TARGET_CPU='native'
+export CHPL_GASNET_SEGMENT='fast'
+;;
+kathleen | young | thomas | michael)
+export MPI_DIR=$MPI_HOME
+export CHPL_COMM='gasnet'
+export CHPL_LAUNCHER='gasnetrun_ofi'
+export CHPL_COMM_SUBSTRATE='ofi'
+export CHPL_GASNET_SEGMENT='everything'
+export CHPL_TARGET_CPU='native'
+;;
+esac
+
+make 
+chpl -o hello examples/hello.chpl
+./hello -nl 1
+
+
