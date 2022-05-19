@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing PyTorch
+#
+# by Owain Kenway, 2022
+# Updated May 2022 for PyTorch 1.11.0
+#
+# Note: GPU build will need to be done on a GPU node.
+set -e
+
+#ln -fs /shared/ucl/apps/build_scripts/includes .
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+# module purge
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require python/3.9.6-gnu-10.2.0
+
+
+NAME=${NAME:-pytorch}
+VERSION=${VERSION:-1.11.0}
+TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.12.0}
+TORCHAUDIO_VERSION=${TORCHAUDIO_VERSION:-0.11.0}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:--extra-index-url https://download.pytorch.org/whl/cpu}
+TYPE=${TYPE:-cpu}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/python3.9.6/$TYPE}
+#INSTALL_PREFIX=${INSTALL_PREFIX:-$HOME/Applications/$NAME/$VERSION/python3.7.4/$TYPE}
+
+buildext="+cpu"
+
+if [ "$TYPE" == "cuda" ]
+then
+  require cuda/11.3.1/gnu-10.2.0
+  require cudnn/8.2.1.32/cuda-11.3
+  SRC_ARCHIVE="--extra-index-url https://download.pytorch.org/whl/cu113"
+  buildext=""
+fi
+
+rm -rf ${INSTALL_PREFIX}
+
+virtualenv ${INSTALL_PREFIX}
+source ${INSTALL_PREFIX}/bin/activate
+
+pip3 install --no-cache-dir future numpy pyyaml setuptools six 
+
+echo
+echo ">>> pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} torchaudio==${TORCHAUDIO_VERSION}${buildext}  $SRC_ARCHIVE"
+echo
+
+pip3 install torch==${VERSION}${buildext} torchvision==${TORCHVISION_VERSION}${buildext} torchaudio==${TORCHAUDIO_VERSION}${buildext} $SRC_ARCHIVE
+
+# De-venv it.
+pip3 uninstall -y pip 
+rm -rf ${INSTALL_PREFIX}/bin/pip*
+rm -rf ${INSTALL_PREFIX}/bin/python*
+rm -rf ${INSTALL_PREFIX}/bin/activate*
+rm -rf ${INSTALL_PREFIX}/bin/easy_install*
+
+
