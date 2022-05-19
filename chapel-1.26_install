@@ -17,6 +17,8 @@ require binutils/2.29.1/gnu-4.9.2
 require ucx/1.8.0/gnu-4.9.2
 require mpi/openmpi/3.1.6/gnu-4.9.2
 require cmake
+require userscripts/1.4.0
+require python/3.9.10
 
 NAME=${NAME:-chapel}
 VERSION=${VERSION:-1.26.0}
