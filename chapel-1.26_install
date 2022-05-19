@@ -10,9 +10,9 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 module purge
-require gcc-libs/9.2.0
-require compilers/gnu/9.2.0
-require mpi/openmpi/3.1.5/gnu-9.2.0
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require mpi/openmpi/3.1.6/gnu-4.9.2
 require cmake
 
 NAME=${NAME:-chapel}
