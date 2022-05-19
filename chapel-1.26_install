@@ -10,10 +10,10 @@ set -e
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 module purge
+require gcc-libs/4.9.2
 require numactl/2.0.12
 require binutils/2.29.1/gnu-4.9.2
 require ucx/1.8.0/gnu-4.9.2
-require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require mpi/openmpi/3.1.6/gnu-4.9.2
 require cmake
