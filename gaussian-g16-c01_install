@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+package_name=gaussian
+package_version=g16-c01
+package_description="Gaussian 16 is an application for electronic structure and molecular modelling."
+
+set -o errexit \
+    -o nounset 
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs
+module load compilers/pgi/2018.10
+
+mkdir -p /dev/shm/gaussian
+make_build_env --tmp-root="/dev/shm/gaussian"
+
+gaussian_tar="/shared/ucl/apps/Gaussian/sources/g16-c01/tar/wkssrc.tbz"
+linda_tar="/shared/ucl/apps/gaussian/sources/linda-9.2/tar/linda9.2_linux64bit.tbz"
+
+gview_dir="/shared/ucl/apps/gaussian/gaussview/gv6"
+
+gaussian_group="${GROUP:-legg16}"
+
+mkdir "$build_dir/g16root"
+export g16root="$build_dir/g16root"
+# ^-- This variable is used by various Gaussian scripts both during the installation
+#      and at runtime. Gaussian *wants* to build in-place in the destination directory
+#      but we don't want it to, and Linda bakes these paths into a few scripts, so we
+#      have to set this variable to the build directory here, to the installation directory
+#      at run-time, and do some replacement in the Linda scripts below.
+
+cd "$g16root"
+tar -xf "$gaussian_tar"
+chgrp -R "$gaussian_group" g16
+
+# These ancient arch detection scripts just won't work properly on our systems,
+#  so we're blowing them away and replacing them with with something
+#  good enough for our purposes
+cat >"$g16root/g16/bsd/gau-hname" <<EOF
+#!/bin/tcsh
+echo em64t
+EOF
+cat >"$g16root/g16/bsd/gau-machine" <<EOF
+#!/bin/tcsh
+echo em64t
+EOF
+chmod +x "$g16root/g16/bsd/gau-machine"
+
+cd "$g16root/g16"
+
+
+# This is the part that is written to only work with csh-compatibles, because
+#  there are a few variables the build needs and which are only set by the csh
+#  version of the Gaussian environment setup script (g16.login).
+# tcsh options:
+#  -e   exit on error
+#  -x   echo command before execution
+#  -b   stop processing args 
+# For the Gaussian 16 installation reference doc, see: https://gaussian.com/g16/g16src_install.pdf
+tcsh -x -e -b <<EOF
+source "$g16root/g16/bsd/g16.login"
+bsd/bldg16 all
+tar -xf "$linda_tar"
+bsd/fixlinda
+source "$g16root/g16/bsd/g16.login"
+mg linda
+EOF
+
+cp -r "$g16root/g16" "$install_prefix"
+ln -s "$gview_dir" "$install_prefix/g16/gv"
+
+# Making this obsolete using default routing, see GAUSS_WDEF
+# Linda job setup
+cp /shared/ucl/apps/build_scripts/files/gaussian_linda.perl "$install_prefix/linda.perl"
+cd "$install_prefix"
+
+# Linda stores paths in some of its scripts during installation and this
+#  attempts to replace the build directory with the installation directory so we
+#  don't have to compile everything in-place
+for a in clc c++lc flc LindaLauncher ntsnet pmbuild vntsnet
+do
+  echo "Fixing Linda path in ${a} ..."
+  sed --in-place=.bak 's|^LINDA_PATH=.*$|LINDA_PATH='"$install_prefix"'/g16/linda9.2/linux64bit/|' "g16/linda9.2/linux64bit/bin/$a"
+done
+
+chgrp -R "$gaussian_group" "$install_prefix"
+chmod -R o-rwx "$install_prefix"
+chmod -R u+rw  "$install_prefix"
+# ^-- some of the Gaussian 16 files (third-party libs) come write-protected by default, but there's no reason for it and it's sometimes annoying
+
+
+post_build_report
+echo ""
+echo "The modules we use for Gaussian are complicated enough that we can't generate them"
+echo " with one of the module makers and they are not included them in the install script."
+echo ""
+echo "Install of Gaussian $package_version complete in $install_prefix"
