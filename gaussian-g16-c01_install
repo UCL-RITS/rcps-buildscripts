@@ -14,7 +14,7 @@ module load gcc-libs
 module load compilers/pgi/2018.10
 
 mkdir -p /dev/shm/gaussian
-make_build_env --tmp-root="/dev/shm/gaussian"
+make_build_env --tmp-root="/dev/shm"
 
 gaussian_tar="/shared/ucl/apps/Gaussian/sources/g16-c01/tar/wkssrc.tbz"
 linda_tar="/shared/ucl/apps/gaussian/sources/linda-9.2/tar/linda9.2_linux64bit.tbz"
