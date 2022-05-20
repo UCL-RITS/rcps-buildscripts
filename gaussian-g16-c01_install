@@ -68,7 +68,8 @@ source "$g16root/g16/bsd/g16.login"
 mg linda
 EOF
 
-cp -r "$g16root/g16" "$install_prefix"
+mkdir -p "$install_prefix"
+cp -r "$g16root/g16" "$install_prefix/"
 ln -s "$gview_dir" "$install_prefix/g16/gv"
 
 # Making this obsolete using default routing, see GAUSS_WDEF
