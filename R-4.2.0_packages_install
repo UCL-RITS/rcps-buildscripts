@@ -144,7 +144,7 @@ mkdir -p $RLIB_DB
 # 
 # Do this for all packages that fail with abover error.
 
-R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/adapt_1.0-4-ucl.tar.gz
+# R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/adapt_1.0-4-ucl.tar.gz
 
 R_input=${LOCALDIR}/R_packages_UCL_1.R
 R --no-save < $R_input
