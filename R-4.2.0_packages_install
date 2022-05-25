@@ -144,6 +144,7 @@ mkdir -p $RLIB_DB
 # 
 # Do this for all packages that fail with abover error.
 
+# Removed for R 4.2.0 as fails to compile.
 # R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/adapt_1.0-4-ucl.tar.gz
 
 R_input=${LOCALDIR}/R_packages_UCL_1.R
@@ -151,7 +152,8 @@ R --no-save < $R_input
 
 # No longer on CRAN current - July 2013
 
-R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/Design_2.3-0-ucl.tar.gz
+# Removed for R 4.2.0 as fails to compile.
+# R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/Design_2.3-0-ucl.tar.gz
 
 # So build of RCurl picks up currect version of libcurl
 
