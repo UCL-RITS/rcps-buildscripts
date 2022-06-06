@@ -1,0 +1,40 @@
+#!/bin/bash
+
+package_name="glew"
+package_version="2.1.0"
+package_description="%desc%"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs
+module load compilers/gnu
+module load cmake
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO  https://downloads.sourceforge.net/project/glew/glew/2.1.0/glew-2.1.0.tgz
+
+manifest \
+	sha256:04de91e7e6763039bc11940095cd9c7f880baba82196a7765f727ac05a993c95 glew-2.1.0.tgz
+	
+
+tar -xf glew-2.1.0.tgz
+
+cd glew-2.1.0
+cd build
+cmake \
+    -D CMAKE_INSTALL_PREFIX="$install_prefix" \
+    ./cmake
+make all
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
