@@ -2,7 +2,7 @@
 
 package_name="glew"
 package_version="2.1.0"
-package_description="%desc%"
+package_description="Adds GLEW -- The OpenGL Extension Wrangler Library -- 2.1.0 to your environment."
 
 set -o errexit \
     -o nounset \
