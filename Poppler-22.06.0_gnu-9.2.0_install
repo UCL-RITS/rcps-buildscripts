@@ -31,8 +31,8 @@ temp_dir=`mktemp -d -p /dev/shm`
 echo "Building in $temp_dir ..."
 cd $temp_dir
 
-wget $SRC_ARCHIVE
-wget $PDATA_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
+wget --no-check-certificate $PDATA_ARCHIVE
 
 CHECKSUM=`md5sum poppler-${VERSION}.tar.xz | awk '{print $1}'`
 
