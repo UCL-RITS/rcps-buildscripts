@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Poppler 22.06.0 using GNU 9.2.0 for R 4.0.2
+#
+# by Brian Alston, June 2022
+#
+
+set -e
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
+VERSION=${VERSION:-22.06.0}
+PDATA_VERSION=$PDATA_VERSION:-0.4.11}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Poppler/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-cc4ea2ffeb482f8e05612a113fbf5328}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://poppler.freedesktop.org/poppler-${VERSION}.tar.xz}
+PDATA_ARCHIVE=${PDATA_ARCHIVE:-https://poppler.freedesktop.org/poppler-data-${PDATA_VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/9.2.0
+require compilers/gnu/9.2.0
+
+temp_dir=`mktemp -d -p /dev/shm`
+echo "Building in $temp_dir ..."
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+wget $PDATA_ARCHIVE
+
+CHECKSUM=`md5sum poppler-${VERSION}.tar.xz | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+    tar -xvf poppler-${VERSION}.tar.xz
+    cd poppler-${VERSION}
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+    make
+    make install
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
