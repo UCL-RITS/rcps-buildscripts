@@ -42,7 +42,7 @@ then
     cd poppler-${VERSION}
     mkdir build
     cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+    cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DENABLE_QT5=OFF -DENABLE_QT6=OFF
     make
     make install
 else
