@@ -118,7 +118,14 @@ read -p "Press [Enter] key to start ..."
 cd $temp_dir
 mkdir -p $RLIB_DB
 
-export OMPI_MCA_btl=vader,self
+# export OMPI_MCA_btl=vader,self
+export OMPI_MCA_btl=tcp,vader,self
+
+if [ "$cluster" == "kathleen" ]
+then
+    export OMPI_MCA_mtl=^psm2
+fi
+
 
 # Note: some old packages need to be installed from local files that have had minor updates applied eg:
 #
