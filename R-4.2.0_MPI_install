@@ -124,6 +124,7 @@ export OMPI_MCA_btl=tcp,vader,self
 if [ "$cluster" == "kathleen" ]
 then
     export OMPI_MCA_mtl=^psm2
+    export OMPI_MCA_pml=ob1 
 fi
 
 
