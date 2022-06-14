@@ -7,6 +7,7 @@
 #
 # Updated August 2019 for version 6.0.0
 # Updated January 2022 for version 7.2.0
+# Updated June 2022 to install MATLAB runtime needed for this version.
 
 # Install archive downloaded from:
 # https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-centos7_x86_64-7.2.0.tar.gz
@@ -47,6 +48,11 @@ tar -xvf $SRC_ARCHIVE
 cd ${NAME}
 cp $LICENSE_FILE .license
 chmod a+r .license
+
+# Install MATLAB R2014b runtime. Needed by some FreeSurfer scripts
+cd bin
+./fs_install_mcr R2014b
+
 
 # The release notes for 6.0.0 and later do not mention needing the Matlab patch so commented out.
 
