@@ -1,0 +1,44 @@
+#!/bin/bash
+
+package_name="p7zip"
+package_version="16.02"
+package_description="%desc%"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sL -o "p7zip_${package_version}_src_all.tar.bz2" "https://downloads.sourceforge.net/project/p7zip/p7zip/$package_version/p7zip_${package_version}_src_all.tar.bz2"
+
+manifest \
+	sha256:5eb20ac0e2944f6cb9c2d51dd6c4518941c185347d4089ea89087ffdd6e2341f p7zip_16.02_src_all.tar.bz2
+
+tar -xf "p7zip_${package_version}_src_all.tar.bz2"
+
+cd p7zip_16.02
+if [[ "$(uname -p)" == "amd64" ]]; then
+    cp makefile.linux_amd64 makefile.machine
+else
+    cp makefile.linux_any_cpu makefile.machine
+fi
+make all3
+make test
+make test_7z
+make test_7zr
+mkdir -p "$install_prefix"
+# set install location
+sed -i.bak -e "s|DEST_HOME=/usr/local|DEST_HOME=$install_prefix|" install.sh
+./install.sh
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
