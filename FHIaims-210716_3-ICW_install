@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing FHI-aims Release 210716_3
+#
+# For Imperial College Wolpert Group on Young - lgfhaimw
+#
+# by Brian Alston, June 2022.
+#
+# Note: needs to be installed using ccspap2
+
+NAME=${NAME:-fhi-aims}
+COMPILER_TAG=${COMPILER_TAG:-intel-2018}
+VERSION=${VERSION:-210716_3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/FHI-aims/${VERSION}/${COMPILER_TAG}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/FHI-aims/install-archives/${NAME}.${VERSION}.tgz}
+APP_GROUP=${APP_GROUP:-lgfhaimw}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+cluster=$WHEREAMI
+
+if [ "$cluster" != "young" ]
+then
+    echo ""
+    echo "Not on Young - aborted."
+    echo ""
+    echo "Script for installing FHI-aims on Young only for Imperial College Wolpert group"
+    echo ""
+    exit 1
+fi
+
+if [ ! -f $SRC_ARCHIVE ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find FHI-aims install archive"
+    echo ""
+    echo "You need to download the FHI-aims installer from the the FHI-aims members area. You"
+    echo "MUST have a valid FHI-aims license to be able to do this."
+    echo ""
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE variable appropriately."
+    echo ""
+    exit 1
+fi
+
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require cmake/3.21.1
+
+# Build in place
+
+mkdir -p ${INSTALL_PREFIX}
+cd ${INSTALL_PREFIX}
+tar -xvf ${SRC_ARCHIVE}
+cd ${NAME}.${VERSION}
+
+# remove previous build directory if it exists.
+/bin/rm -rf build
+mkdir -p build
+cd build
+
+# Copy template CMAKE config file to build dir. and update for UCL
+cp ../initial_cache.example.cmake .
+sed -i.bak "/^set(CMAKE_Fortran_COMPILER/s|mpif90|/shared/ucl/apps/intel/2018.Update3/impi/2018.3.222/intel64/bin/mpif90|" initial_cache.example.cmake
+sed -i.bak2 "/^set(LIB_PATHS/s|/opt/intel/mkl/lib/intel64|/shared/ucl/apps/intel/2018.Update3/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64|" initial_cache.example.cmake
+
+# Configure for standard build
+cmake -C initial_cache.example.cmake ..
+
+# Build and install
+make
+mkdir -p ../bin
+cp aims.${VERSION}.scalapack.mpi.x ../bin/
+
+# Set ownership and access permissions to reseved application group only.
+
+cd ${INSTALL_PREFIX}/..
+chgrp -R ${APP_GROUP} ${COMPILER_TAG}
+chmod -R o-rwx ${COMPILER_TAG}
