@@ -10,9 +10,13 @@
 # Note: needs to be installed using ccspap2
 
 NAME=${NAME:-fhi-aims}
+
+# Aimsclub research group name 
+ACG=${ACG:-ic-wg}
+
 COMPILER_TAG=${COMPILER_TAG:-intel-2018}
 VERSION=${VERSION:-210716_3}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/FHI-aims/${VERSION}/${COMPILER_TAG}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/FHI-aims/${ACG}/${VERSION}/${COMPILER_TAG}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/FHI-aims/install-archives/${NAME}.${VERSION}.tgz}
 APP_GROUP=${APP_GROUP:-lgfhaimw}
 
