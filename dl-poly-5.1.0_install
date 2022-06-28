@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# Updated June 2022 for DL-POLY 5.1.0
+
 package_name="dl-poly"
-package_version="5.0.0"
+package_version="5.1.0"
 package_description="DL_POLY is a general-purpose classical molecular dynamics (MD) simulation software package."
 
 set -o errexit \
@@ -25,15 +27,9 @@ require python
 make_build_env ""
 
 cd "$build_dir"
-wget -O dl-poly-5.0.0.tar.gz https://gitlab.com/ccp5/dl-poly/-/archive/5.0.0/dl-poly-5.0.0.tar.gz
+git clone https://gitlab.com/ccp5/dl-poly.git
+cd dl-poly	
 
-manifest \
-	sha256:00aeffd94a991b36d41bd629d5cb8f4e7796d2c07759e6d94687c4eae7d731ac dl-poly-5.0.0.tar.gz
-	
-
-tar -xf dl-poly-5.0.0.tar.gz
-
-cd dl-poly-5.0.0
 mkdir this-build
 cd this-build
 
