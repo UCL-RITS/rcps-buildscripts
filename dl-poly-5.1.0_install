@@ -17,9 +17,12 @@ require gcc-libs
 require cmake
 require git
 
-# Current defaults, 2021-03-15
-require compilers/intel/2018/update3
-require mpi/intel/2018/update3/intel
+# Current defaults, 2021-03-15 test 29 fails so using more recent Intel Compilers
+# require compilers/intel/2018/update3
+# require mpi/intel/2018/update3/intel
+
+require compilers/intel/2019/update5
+require mpi/intel/2019/update6/intel
 
 # Needs python 3 at build time, for tests, not for runtime
 require python
