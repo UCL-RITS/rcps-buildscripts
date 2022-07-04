@@ -85,11 +85,11 @@ cd ..
 cd Linux-x86_64-icc
 make
 
-cd ${temp_dir}/${NANAME}/Linux-x86_64-icc
-rm ${INSTALL_PREFIX}/${NANAME}
-mkdir -p ${INSTALL_PREFIX}/${NANAME}/bin
+cd ${build_dir}/${NANAME}/Linux-x86_64-icc
+rm ${install_prefix}/${NANAME}
+mkdir -p ${install_prefix}/${NANAME}/bin
 for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
 do
   echo "Installing $a"
-  cp $a ${INSTALL_PREFIX}/${NANAME}/bin
+  cp $a ${install_prefix}/${NANAME}/bin
 done
