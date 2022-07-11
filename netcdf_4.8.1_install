@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing NetCDF 4.8.1 with GCC 
+# Installing NetCDF 4.8.1 with GCC or Intel
 #
 # by Brian Alston, 2015
 # Updated April 2020 for 4.7.4 and GNU 9.2.0
 # Updated September 2021 for 4.8.1 and GNU 10.2.0
-#	also archive download location has changed. 
+#	also archive download location has changed.
+# Updated July 2022 to built Intel version when required.
 #
-# Will need modules: gcc-libs/10.2.0, compilers/gnu/10.2.0 and hdf/5-1.10.6/gnu-10.2.0
+# Will need modules: gcc-libs/10.2.0, compilers/gnu/10.2.0 and hdf/5-1.10.6/gnu-10.2.0 for GNU version.
+# Default Intel Compilers, MPI and hdf/5-1.10.2-impi/intel-2018 for Intel build.
 
 VERSION=${VERSION:-4.8.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-${COMPILER_TAG} }
@@ -44,18 +46,20 @@ wget $SRC_ARCHIVE
 CHECKSUM=`md5sum netcdf-c-${VERSION}.tar.gz| awk '{print $1}'`
 
 HDF_TAG=$COMPILER_TAG
+HDF_VER=5-1.10.6
 
 if [[ "${COMPILER_TAG:0:5}" == "intel" ]]
 then
-   HDF_TAG="Intel_2015"
+    HDF_TAG="impi/intel_2018"
+    HDF_VER=5-1.10.2
 fi
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
    tar xvzf netcdf-c-${VERSION}.tar.gz
    cd netcdf-c-${VERSION}
-   export CPPFLAGS=-I/shared/ucl/apps/HDF/5-1.10.6/${HDF_TAG}/include
-   export LDFLAGS=-L/shared/ucl/apps/HDF/5-1.10.6/${HDF_TAG}/lib
+   export CPPFLAGS=-I/shared/ucl/apps/HDF/${HDF_VER}/${HDF_TAG}/include
+   export LDFLAGS=-L/shared/ucl/apps/HDF/${HDF_VER}/${HDF_TAG}/lib
 
    ./configure --prefix=${INSTALL_PREFIX} ${NETCDF_OPTIONS}
    make
