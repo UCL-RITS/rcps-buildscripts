@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ABINIT Version 9.6.2 using Intel Compilers and MPI.
+#
+# by Brian Alston, July 2022.
+#
+
+
+NAME=${NAME:-abinit}
+
+COMPILER_TAG=${COMPILER_TAG:-intel-2018}
+VERSION=${VERSION:-9.6.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ABINIT/${VERSION}/${COMPILER_TAG}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.abinit.org/sites/default/files/packages/${NAME}-${VERSION}.tar.gz}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+cluster=$WHEREAMI
+
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require fftw/3.3.8-impi/intel-2018
+require hdf/5-1.10.2-impi/intel-2018
+require netcdf/4.9.0/intel-2018-update3
+require netcdf-fortran/4.5.4/intel-2018-update3
+require libxc/4.2.3/intel-2018
+require python3/recommended
+
+# Build in Scratch as we need the log output from make to run some of the tests.
+
+cd ~/Scratch
+mkdir -p ${NAME}_build
+cd ${NAME}_build
+wget ${SRC_ARCHIVE}
+tar -xvf ${NAME}-${VERSION}.tar.gz
+cd ${NAME}-${VERSION}
+
+# remove previous build directory if it exists.
+/bin/rm -rf build
+mkdir -p build
+cd build
+../configure FC=mpiifort F90=mpiifort --prefix=${INSTALL_PREFIX} --with-netcdf="`nc-config --prefix`" --with-netcdf-fortran="`nf-config --prefix`" 2>&1 | tee configure-log
+
+# Build and install
+make 2>&1 | tee make-log
+make install
+
+
+
