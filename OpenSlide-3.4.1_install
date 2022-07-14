@@ -33,6 +33,7 @@ CHECKSUM=`md5sum ${APPNAME}-${VERSION}.tar.gz | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM"  ]]
 then
+    cd ${APPNAME}-${VERSION}
     ./configure --prefix=${INSTALL_PREFIX}
     make 
     make install
