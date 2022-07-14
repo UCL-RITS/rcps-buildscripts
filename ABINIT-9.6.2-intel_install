@@ -55,5 +55,9 @@ cd build
 make 2>&1 | tee make-log
 make install
 
+# Copy source tree as it contains examples and tutorials.
+
+cd ../..
+cp -r ${NAME}-${VERSION} ${INSTALL_PREFIX}/
 
 
