@@ -14,10 +14,10 @@ require rcps-core/1.0.0
 require compilers/gnu/4.9.2
 require openjpeg/2.4.0/gnu-4.9.2
 
-APPNAME=${APPNAME:-OpenSlide}
+APPNAME=${APPNAME:-openslide}
 VERSION=${VERSION:-3.4.1}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/v$VERSION/$COMPILER_TAG}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/OpenSlide/v$VERSION/$COMPILER_TAG}
 MD5=${MD5:-88cfe1e9133e206c4e88402b7d19df31}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/openslide/openslide/releases/download/v${VERSION}/openslide-${VERSION}.tar.gz}
 
