@@ -41,6 +41,7 @@ require python3/recommended
 cd ~/Scratch
 mkdir -p ${NAME}_build
 cd ${NAME}_build
+/bin/rm -f ${NAME}-${VERSION}.tar.gz
 wget ${SRC_ARCHIVE}
 tar -xvf ${NAME}-${VERSION}.tar.gz
 cd ${NAME}-${VERSION}
