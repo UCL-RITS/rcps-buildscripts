@@ -1,0 +1,93 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail \
+    -o noclobber
+
+package_name="COMSOL"
+package_version="6.0"
+package_description="COMSOL is a general-purpose macroscopic physics simulation package."
+
+source includes/source_includes.sh
+module purge
+
+# No GUI parts please
+unset DISPLAY
+
+licence_server="${COMSOL_LM_SERVER?must be set to a licence server}"
+licence_name="ChemEng"
+licence_org="University College London"
+licence_type="mph"
+
+comsol_group="lgcomsol"
+
+installer_zip_path="/shared/ucl/apps/Comsol/Installers/COMSOL60_lnx.zip"
+
+make_build_env --tmp-root="/dev/shm"
+
+cd "$build_dir"
+
+manifest sha256:627a4084ca3e6f2800054b45fc8da9c9d5174aa147cdc2b6bf5bf96c5e6c934f "$installer_zip_path"
+
+unzip "$installer_zip_path"
+
+installer_zip_base="$(basename $installer_zip_path)"
+installer_zip_base="${installer_zip_base%.zip}"
+
+cd "$installer_zip_base"
+
+# There are no regional scopes in the file, so we can just cram all our settings in at the bottom.
+echo "In $(pwd), inserting values into setupconfig.ini ..."
+grep -v \
+    -e '^installdir = ' \
+    -e '^showgui = ' \
+    -e '^agree = ' \
+    -e '^license = ' \
+    -e '^name = ' \
+    -e '^company = ' \
+    -e '^lictype = ' \
+    -e '^startmenushortcuts = ' \
+    -e '^desktopshortcuts = ' \
+    -e '^linuxlauncher = ' \
+    -e '^symlinks = ' \
+    -e '^fileassoc = ' \
+    -e '^firewall = ' \
+    setupconfig.ini \
+    >setupconfig.ini.ucl
+printf '%s\n' \
+    "" \
+    "# UCL Settings" \
+    "installdir = $install_prefix" \
+    "showgui = 0" \
+    "agree = 1" \
+    "license = $licence_server" \
+    "name = $licence_name" \
+    "company = $licence_org" \
+    "lictype = $licence_type" \
+    "startmenushortcuts = 0" \
+    "desktopshortcuts = 0" \
+    "linuxlauncher = 0" \
+    "symlinks = 0" \
+    "fileassoc = 0" \
+    "firewall = 0" \
+    >>setupconfig.ini.ucl
+echo "Done."
+
+./setup -s setupconfig.ini.ucl
+
+chgrp -R "$comsol_group" "$install_prefix"
+chmod -R o-rx "$install_prefix"
+cd "$install_prefix"
+
+make_module_v2 \
+    -v LM_LICENSE_FILE="$licence_server" \
+    -v FLROOT="$install_prefix" \
+    -v I_MPI_FABRICS=shm:tcp \
+    -v I_MPI_FALLBACK=1 \
+    -g "$comsol_group"
+
+post_build_report
+
+echo "Note that module files will need altering to handle setting I_MPI_FABRICS per-cluster. This is not currently automated."
+
