@@ -15,12 +15,17 @@ module purge
 # No GUI parts please
 unset DISPLAY
 
-licence_server="${COMSOL_LM_SERVER?must be set to a licence server}"
+comsol_group="lgcomsol"
+
 licence_name="ChemEng"
 licence_org="University College London"
 licence_type="mph"
 
-comsol_group="lgcomsol"
+if [[ -z "$COMSOL_LM_SERVER" ]]; then
+    licence_server="$(cat "/shared/ucl/apps/pkg-store/${comsol_group}_comsol-${package_version}_licence.txt")"
+else
+    licence_server="$COMSOL_LM_SERVER"
+fi
 
 installer_zip_path="/shared/ucl/apps/Comsol/Installers/COMSOL60_lnx.zip"
 
