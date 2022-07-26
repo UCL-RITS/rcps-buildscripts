@@ -21,7 +21,7 @@ licence_name="ChemEng"
 licence_org="University College London"
 licence_type="mph"
 
-if [[ -z "$COMSOL_LM_SERVER" ]]; then
+if [[ -z "${COMSOL_LM_SERVER:-}" ]]; then
     licence_server="$(cat "/shared/ucl/apps/pkg-store/${comsol_group}_comsol-${package_version}_licence.txt")"
 else
     licence_server="$COMSOL_LM_SERVER"
