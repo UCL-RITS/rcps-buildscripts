@@ -27,7 +27,7 @@ else
     licence_server="$COMSOL_LM_SERVER"
 fi
 
-installer_zip_path="/shared/ucl/apps/pkg-store/COMSOL6.0_lnx.zip"
+installer_zip_path="/shared/ucl/apps/pkg-store/COMSOL60_lnx.zip"
 
 make_build_env --tmp-root="/dev/shm"
 
