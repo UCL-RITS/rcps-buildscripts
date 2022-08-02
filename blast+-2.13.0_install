@@ -13,6 +13,17 @@ MD5=${MD5:-0542f0e7b148d02db0854965e78e36c4}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/${VERSION}/ncbi-blast-${VERSION}+-src.tar.gz}
 
 set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+# dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/7.3.0
+require compilers/gnu/7.3.0
 
 temp_dir=`mktemp -d -p /dev/shm`
 
