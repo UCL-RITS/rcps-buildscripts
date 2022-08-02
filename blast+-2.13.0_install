@@ -6,12 +6,6 @@
 # by Heather Kelly, 2015
 # Updated for version 2.13.0 August 2022
 
-NAME=${NAME:-blast+}
-VERSION=${VERSION:-2.13.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-0542f0e7b148d02db0854965e78e36c4}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/${VERSION}/ncbi-blast-${VERSION}+-src.tar.gz}
-
 set -e
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -24,6 +18,12 @@ source ${INCLUDES_DIR}/require_inc.sh
 require beta-modules
 require gcc-libs/7.3.0
 require compilers/gnu/7.3.0
+
+NAME=${NAME:-blast+}
+VERSION=${VERSION:-2.13.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-0542f0e7b148d02db0854965e78e36c4}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/${VERSION}/ncbi-blast-${VERSION}+-src.tar.gz}
 
 temp_dir=`mktemp -d -p /dev/shm`
 
