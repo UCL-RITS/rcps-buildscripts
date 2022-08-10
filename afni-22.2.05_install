@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing AFNI
+# This doesn't seem to have version numbers.  Which is upsetting.
+# VERSION is the date I downloaded it.
+#
+# Now has version numbering. Current version is 22.2.05
+
+# by Owain Kenway, 2015 
+# Updated August 2022 for version 22.2.05
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+# dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs
+require compilers/gnu/4.9.2
+
+APPNAME=${APPNAME:-afni}
+VERSION=${VERSION:-20181011}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-af31c3d3ef2a1c9b60e80ff056dcd615}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://afni.nimh.nih.gov/pub/dist/tgz/afni_src.tgz}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum afni_src.tgz| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf afni_src.tgz
+
+  cd afni_src
+  cp Makefile.linux_openmp_64 Makefile
+
+  # The Makefile still needs editing for UCL so ...
+  
+  # This refers to a directory on the developer's machine.
+  sed -i 's|USE_LOCAL_X_TREE = 1||' Makefile
+
+  # This sets the install directory
+  sed -i 's|INSTALLDIR = ./linux_openmp_64|INSTALLDIR = '$INSTALL_PREFIX'|' Makefile
+
+  # This selects the C compiler we've chosen through modules.
+  sed -i 's|/usr/bin/gcc|'$CC'|' Makefile
+
+  # THis option is no longer supported by GCC.
+  sed -i 's|'$CC' -V 34|'$CC'|' Makefile
+
+  # These two lines refer to specific library locations on the dev's machine.
+  sed -i 's|LGIFTI    = /usr/lib64/libexpat.a|LGIFTI    = -lexpat|' Makefile
+  sed -i 's|XLIBS = $(XROOT)/lib64/libXm.a|XLIBS = -lXm|' Makefile
+
+# This is the equivalent of make install.
+  make vastness
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
