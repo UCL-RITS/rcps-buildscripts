@@ -21,6 +21,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs
 require compilers/gnu/4.9.2
+require gsl/2.4/gnu-4.9.2
 
 APPNAME=${APPNAME:-afni}
 VERSION=${VERSION:-22.2.05}
