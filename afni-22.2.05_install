@@ -64,8 +64,9 @@ then
   sed -i 's|LGIFTI    = /usr/lib64/libexpat.a|LGIFTI    = -lexpat|' Makefile
   sed -i 's|XLIBS = $(XROOT)/lib64/libXm.a|XLIBS = -lXm|' Makefile
 
-  # Need to remove this inculde directory as not correct on the clusters
+  # Need to remove this inculde directory as not correct on the clusters and fix location of libgts.a
   sed -i 's|./configure --includedir /usr/include/netpbm ;|./configure ;|' SUMA/SUMA_Makefile_NoDev
+  sed -i 's|SUMA/libgts.a|SUMA/gts/src/.libs/libgts.a|' Makefile.INCLUDE
 
 # This is the equivalent of make install.
   make vastness
