@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CDO 2.0.6
+#
+# by Brian Alston August 2022
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+# dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require hdf/5-1.10.6/gnu-10.2.0
+require netcdf/4.8.1/gnu-10.2.0
+
+NAME=${NAME:-CDO}
+VERSION=${VERSION:-2.0.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-ef120dea9032b1be80a4cfa201958c3b910107205beb6674195675f1ee8ed402}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://code.mpimet.mpg.de/attachments/download/27276/cdo-${VERSION}.tar.gz}
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tarfile=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`sha256sum $tarfile| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -xvf $tarfile
+
+  cd cdo-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --with-netcdf=/shared/ucl/apps/NetCDF/4.8.1-gnu-10.2.0 \
+	      --with-hdf5=/shared/ucl/apps/HDF/5-1.10.6/serial/gnu-10.2.0
+  make 2>&1 | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
