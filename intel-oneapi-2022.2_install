@@ -57,7 +57,6 @@ export cprefix=$install_prefix
 make_module -p "$install_prefix" \
             -c compilers/"$package_name" \
             -o "$module_dir/compilers/$package_label" \
-#            -v INTEL_LICENSE_FILE="$intel_license" \
             -v CC=icc \
             -v CXX=icpc \
             -v CXXCPP="\"icpc -E\"" \
