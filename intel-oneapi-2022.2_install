@@ -85,7 +85,7 @@ make_module -p "$install_prefix" \
             -v IPPCP_TARGET_ARCH="intel64" \
             -v VT_ROOT="$cprefix/itac/$mpi_package_version" \
             -v VT_MPI="impi4" \
-            -v VT_ADD_LIBS="-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread" \
+            -v VT_ADD_LIBS="\"-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread\"" \
             -v VTUNE_PROFILER_2022_DIR="$cprefix/vtune/$vtune_version" \
             -v VTUNE_PROFILER_DIR="$cprefix/vtune/$vtune_version" \
             -v ONEAPI_ROOT="$cprefix" \
