@@ -8,7 +8,7 @@
 # Now has version numbering. Current version is 22.2.05
 
 # by Owain Kenway, 2015 
-# Updated August 2022 for version 22.2.05
+# Updated August 2022 for version 22.2.05 source archive in pkg-store
 
 set -e
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -18,7 +18,7 @@ dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
-
+afni_src.tgz
 require gcc-libs
 require compilers/gnu/4.9.2
 require gsl/2.4/gnu-4.9.2
@@ -28,14 +28,14 @@ VERSION=${VERSION:-22.2.05}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-af31c3d3ef2a1c9b60e80ff056dcd615}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://afni.nimh.nih.gov/pub/dist/tgz/afni_src.tgz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/afni-${VERSION}.tgz}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+cp $SRC_ARCHIVE afni_src.tgz
 
 CHECKSUM=`md5sum afni_src.tgz| awk '{print $1}'`
 
