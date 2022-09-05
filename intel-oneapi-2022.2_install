@@ -185,7 +185,7 @@ make_module -d \
             -e LIBRARY_PATH:"${mprefix}/libfabric/lib" \
             -w "[Intel MPI/${mpi_package_version}] This is Intel's MPI implementation, version ${mpi_package_version}, which is bundled with compiler package version ${package_version}."
 
-cat >>"${module_dir}/${mpi_package_label}" <<'EOF'
+cat >>"${module_dir}/mpi/${mpi_package_label}" <<'EOF'
 
 # Check to see whether this is running in a scheduled environment (NHOSTS>1) and
 # if not, set shared memory only.
