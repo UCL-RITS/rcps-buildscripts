@@ -5,10 +5,12 @@
 #                                                 H.T. 27/11/2009
 #
 # Version using colons as the seperator instead of * - for ANSYS Mech etc. Feb 2022
+# Updated September 2022 to fix bug with mulit-node jobs (one part was still using , as the
+# seperator).
 
 if [ -f "$1" ] ; then
   uniq -c $1 | awk 'BEGIN { cfxnodes = "" }
-                    cfxnodes != "" { cfxnodes = cfxnodes "," }
+                    cfxnodes != "" { cfxnodes = cfxnodes ":" }
                     {  cfxnodes = cfxnodes $2 ":" $1 }
                     END { print cfxnodes }' ;
 fi
