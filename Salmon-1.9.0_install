@@ -5,21 +5,19 @@
 #
 # by Brian Alston September 2022
 #
-# Salmon 1.9.0 compiled with GNU 10.2.0 to be compatible with R 4.2.0
+# Salmon 1.9.0 pre compiled binary installer
 #
-# Building from source uses CMAKE
+# Building from source using CMAKE with GNU 10.2.0 cause internal compiler errors so
+# using binary version instead.
 
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
-require gcc-libs/10.2.0
-require compilers/gnu/10.2.0
-require cmake
 
 NAME=${NAME:-salmon}
 VERSION=${VERSION:-1.9.0}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-8bdb73fbda5209953d6c480a67f52a9f}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/COMBINE-lab/salmon/archive/refs/tags/v${VERSION}.tar.gz}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+MD5=${MD5:-ebb8718d4a70616dfa2ed221ff6a5067}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/COMBINE-lab/salmon/releases/download/v${VERSION}/salmon-${VERSION}_linux_x86_64.tar.gz}
 
 set -e
 
@@ -34,16 +32,8 @@ CHECKSUM=`md5sum $archive| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
-  tar -xvf $archive
-  cd ${NAME}-${VERSION}
-
-  mkdir build
-  cd build
-
-  cmake -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -D FETCH_BOOST=TRUE ..
-  make 2>&1 | tee make.log
-  make install prefix=$INSTALL_PREFIX
-
+    cd $INSTALL_PREFIX
+    tar -xvf $temp_dir/$archive
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
