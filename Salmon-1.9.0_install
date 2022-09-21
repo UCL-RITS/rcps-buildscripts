@@ -32,6 +32,7 @@ CHECKSUM=`md5sum $archive| awk '{print $1}'`
 
 if [ "$MD5" == "$CHECKSUM" ]
 then
+    mkdir -p $INSTALL_PREFIX
     cd $INSTALL_PREFIX
     tar -xvf $temp_dir/$archive
 else
