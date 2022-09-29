@@ -9,7 +9,7 @@
 
 VERSION=${VERSION:-12.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Knitro}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Knitro/installers/knitro-$VERSION-z-Linux-64.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Knitro/installers/knitro-$VERSION-Linux-64.tar.gz}
 MD5_SRC=${MD5_SRC:-1851546d806446514bd9e04ffba7cc75}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
