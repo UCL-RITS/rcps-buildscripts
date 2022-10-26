@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+YEAR=${YEAR:-2022}
+RELEASE=${RELEASE:-22.9}
+RELEASE_=$(echo $RELEASE | sed 's|\.||g')
+NAME=${NAME:-nvhpc}
+VERSION=${VERSION:-${YEAR}_${RELEASE_}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-aebfeb826ace3dabf9699f72390ca0340f8789a8ef6fe4032e3c7b794f073ea3}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://developer.download.nvidia.com/hpc-sdk/${RELEASE}/${NAME}_${VERSION}_Linux_x86_64_cuda_multi.tar.gz}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+
+tar -xvf $archive
+
+export NVHPC_INSTALL_DIR=${INSTALL_PREFIX}
+export NVHPC_SILENT=true
+
+echo $NVHPC_INSTALL_DIR
+
+cd ${NAME}_${VERSION}_Linux_x86_64_cuda_multi
+./install
+
+rm -rf $temp_dir
