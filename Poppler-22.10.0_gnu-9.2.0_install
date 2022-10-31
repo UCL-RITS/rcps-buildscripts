@@ -8,13 +8,6 @@
 
 set -e
 
-COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
-VERSION=${VERSION:-22.10.0}
-PDATA_VERSION=${PDATA_VERSION:-0.4.11}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Poppler/$VERSION/$COMPILER_TAG}
-MD5=${MD5:-9f7d0b99989db6e1c78a678e7fe521c5}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://poppler.freedesktop.org/poppler-${VERSION}.tar.xz}
-PDATA_ARCHIVE=${PDATA_ARCHIVE:-https://poppler.freedesktop.org/poppler-data-${PDATA_VERSION}.tar.gz}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
@@ -27,6 +20,15 @@ require beta-modules
 require gcc-libs/9.2.0
 require compilers/gnu/9.2.0
 require boost/1.75.0/gnu-4.9.2
+
+COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
+VERSION=${VERSION:-22.10.0}
+PDATA_VERSION=${PDATA_VERSION:-0.4.11}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Poppler/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-9f7d0b99989db6e1c78a678e7fe521c5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://poppler.freedesktop.org/poppler-${VERSION}.tar.xz}
+PDATA_ARCHIVE=${PDATA_ARCHIVE:-https://poppler.freedesktop.org/poppler-data-${PDATA_VERSION}.tar.gz}
+
 
 temp_dir=`mktemp -d -p /dev/shm`
 echo "Building in $temp_dir ..."
