@@ -8,9 +8,6 @@
 
 set -e
 
-
-export PATH=$INSTALL_PREFIX/bin:$PATH
-
 dirname=$(dirname $0 2>/dev/null || pwd)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
