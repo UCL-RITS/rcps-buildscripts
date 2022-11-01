@@ -18,6 +18,7 @@ require beta-modules
 require gcc-libs/9.2.0
 require compilers/gnu/9.2.0
 require boost/1.75.0/gnu-4.9.2
+require curl/7.47.1/gnu-4.9.2
 
 COMPILER_TAG=${COMPILER_TAG:-gnu-9.2.0}
 VERSION=${VERSION:-22.10.0}
