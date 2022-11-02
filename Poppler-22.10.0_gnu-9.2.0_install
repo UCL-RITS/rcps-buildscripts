@@ -51,7 +51,7 @@ then
     cd ../qt5/src
     sed -i.dist -e '/ENABLE_NSS3/a\#include <prtypes.h>' poppler-form.cc
     cd ../../utils
-    sed -i.dist -e '/include \<ctime.h\>/a\#include <prtypes.h>' pdfsig.cc
+    sed -i.dist -e '/include \<ctime\>/a\#include <prtypes.h>' pdfsig.cc
     cd ..
     
     mkdir build
