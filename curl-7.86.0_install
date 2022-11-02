@@ -27,7 +27,7 @@ if [ "$MD5" == "$CHECKSUM" ]
 then
   tar -xvf $archive
   cd ${NAME}-${VERSION}
-  ./configure --prefix=$INSTALL_PREFIX
+  ./configure --prefix=$INSTALL_PREFIX  --with-openssl
   make
   make test
   make install
