@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing curl
+#
+# by Heather Kelly, 2016
+# Updated for 7.86.0 November 2022
+
+NAME=${NAME:-curl}
+VERSION=${VERSION:-7.86.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://curl.haxx.se/download/${NAME}-${VERSION}.tar.gz}
+MD5=${MD5:-f44246e7c13cd91f07095fe63c06353c}
+
+set -e
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget --no-check-certificate $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvf $archive
+  cd ${NAME}-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX
+  make
+  make test
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
