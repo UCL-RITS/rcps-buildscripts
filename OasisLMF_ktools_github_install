@@ -34,6 +34,7 @@ cd ${APPNAME}
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSION}
 
+rm -rf ${INSTALL_PREFIX}
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
