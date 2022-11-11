@@ -22,7 +22,7 @@ require autoconf/2.69
 require autogen/5.18.12/gnu-4.9.2
 require automake/1.16.1
 
-mkdir -p /dev/shm/$APPNAME
+mkdir -p /dev/shm/$(whoami)/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$(whoami)/${APPNAME}`
 
 cd $temp_dir
