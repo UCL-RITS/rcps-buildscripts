@@ -37,24 +37,24 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSIO
 
 rm -rf ${INSTALL_PREFIX}
 mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
+#cd $INSTALL_PREFIX
 
-mkdir build
-cd build
-git clone https://github.com/apache/arrow.git -b release-7.0.0
-mkdir -p arrow/cpp/build-release
-cd arrow/cpp/build-release
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DARROW_PARQUET=ON -DARROW_BUILD_STATIC=ON -DARROW_OPTIONAL_INSTALL=ON ..
-make -j$(nproc)
-make install
+#mkdir build
+#cd build
+#git clone https://github.com/apache/arrow.git -b release-7.0.0
+#mkdir -p arrow/cpp/build-release
+#cd arrow/cpp/build-release
+#cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DARROW_PARQUET=ON -DARROW_BUILD_STATIC=ON -DARROW_OPTIONAL_INSTALL=ON ..
+#make -j$(nproc)
+#make install
 
-export PKG_CONFIG_PATH=${INSTALL_PREFIX}/lib64/pkgconfig:${PKG_CONFIG_PATH}
+#export PKG_CONFIG_PATH=${INSTALL_PREFIX}/lib64/pkgconfig:${PKG_CONFIG_PATH}
 
-cd $temp_dir
-cd ${APPNAME}
+#cd $temp_dir
+#cd ${APPNAME}
 
 ./autogen.sh
-./configure --prefix=$INSTALL_PREFIX
+./configure --disable-parquet --prefix=$INSTALL_PREFIX
 make
 make check
 make install
