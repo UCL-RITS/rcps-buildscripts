@@ -16,6 +16,8 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
+require libbdwgc/7.4.2/gnu-4.9.2
+require guile/2.0.11/gnu-4.9.2
 require autoconf/2.69
 require autogen/5.18.12/gnu-4.9.2
 require automake/1.16.1
