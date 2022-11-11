@@ -41,7 +41,7 @@ mkdir build
 cd build
 git clone https://github.com/apache/arrow.git -b release-7.0.0
 mkdir -p arrow/cpp/build-release
-cd build/arrow/cpp/build-release
+cd arrow/cpp/build-release
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DARROW_PARQUET=ON -DARROW_BUILD_STATIC=ON -DARROW_OPTIONAL_INSTALL=ON ..
 make -j$(nproc)
 make install
