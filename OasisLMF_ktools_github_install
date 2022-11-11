@@ -23,7 +23,7 @@ require autogen/5.18.12/gnu-4.9.2
 require automake/1.16.1
 
 mkdir -p /dev/shm/$APPNAME
-temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+temp_dir=`mktemp -d -p /dev/shm/$(whoami)/${APPNAME}`
 
 cd $temp_dir
 
@@ -34,6 +34,21 @@ cd ${APPNAME}
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSION}
 
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+mkdir build_arrow
+cd build_arrow
+git clone https://github.com/apache/arrow.git -b release-7.0.0
+mkdir -p arrow/cpp/build-release
+cd build/arrow/cpp/build-release
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DARROW_PARQUET=ON -DARROW_BUILD_STATIC=ON -DARROW_OPTIONAL_INSTALL=ON ..
+make -j$(nproc)
+make install
+
+export PKG_CONFIG_PATH=${INSTALL_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
+
+cd $temp_dir
 
 ./autogen.sh
 ./configure --prefix=$INSTALL_PREFIX --disable-parquet
