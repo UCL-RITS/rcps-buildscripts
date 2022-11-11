@@ -37,8 +37,8 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSIO
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
-mkdir build_arrow
-cd build_arrow
+mkdir build
+cd build
 git clone https://github.com/apache/arrow.git -b release-7.0.0
 mkdir -p arrow/cpp/build-release
 cd build/arrow/cpp/build-release
