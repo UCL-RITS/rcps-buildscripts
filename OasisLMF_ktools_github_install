@@ -12,6 +12,14 @@ SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OasisLMF/ktools.git}
 
 set -e
 
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require autoconf/2.69
+require autogen/5.18.12/gnu-4.9.2
+require automake/1.16.1
+
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 
