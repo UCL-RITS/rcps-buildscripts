@@ -24,7 +24,7 @@ temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
 archive=$(basename "${SRC_ARCHIVE}")
 
 sha256sum -c <<< "$SHA256 $archive"
