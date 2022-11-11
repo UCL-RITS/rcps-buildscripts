@@ -50,6 +50,7 @@ make install
 export PKG_CONFIG_PATH=${INSTALL_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 
 cd $temp_dir
+cd ${APPNAME}
 
 ./autogen.sh
 ./configure --prefix=$INSTALL_PREFIX --disable-parquet
