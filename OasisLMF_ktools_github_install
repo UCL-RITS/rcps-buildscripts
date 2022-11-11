@@ -24,12 +24,13 @@ cd ${APPNAME}
 VERSION=${VERSION:-`git rev-parse --short HEAD`}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$COMPILER_TAG/$VERSION}
 
-git checkout ${VERSION}
 
 ./autogen.sh
-./configure --prefix=$INSTALL_PREFIX
+./configure --prefix=$INSTALL_PREFIX --disable-parquet
 make
 make check
 make install
+
+
 
 echo "Installed $VERSION"
