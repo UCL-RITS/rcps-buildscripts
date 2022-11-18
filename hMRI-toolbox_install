@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# This script installs the hMRI Toolbox for SPM12 spm/12/jan2020/matlab.r2019b
+# Brian Alston 2022
+
+VERSION=${VERSION:-0.4.0}
+SPM_MOD=${SPM_MOD:-spm/12/jan2020/matlab.r2019b}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/hMRI}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/hMRI-group/hMRI-toolbox/archive/refs/tags/v${VERSION}.tar.gz}
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require beta-modules
+require gcc-libs/7.3.0
+require compilers/gnu/7.3.0
+require xorg-utils/X11R7.7
+require matlab/full/r2019b/9.7
+require $SPM_MOD
+
+cd $INSTALL_PREFIX
+wget $SRC_ARCHIVE
+tar -xvf v${VERSION}.tar.gz
+mkdir -p ${SPM12DIR}/toolbox/hMRI/
+cp hMRI-Toolbox-${VERSION}/install/tbx_cfg_hmri_redirect.m ${SPM12DIR}/toolbox/hMRI/
+
