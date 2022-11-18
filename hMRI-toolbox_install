@@ -19,6 +19,7 @@ require xorg-utils/X11R7.7
 require matlab/full/r2019b/9.7
 require $SPM_MOD
 
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 wget $SRC_ARCHIVE
 tar -xvf v${VERSION}.tar.gz
