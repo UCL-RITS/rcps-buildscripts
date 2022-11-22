@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# This script installs  IDL 8.8.3 as a standalone application (without ENVI)
+# Brian Alston February 2020
+# Updated for IDL 8.8.3 November 2022
+
+# You need to download the IDL installer from the Harris Download and License Center
+# (https://harrisgeospatial.flexnetoperations.com/control/xlsv/login?nextURL=%2Fcontrol%2Fxlsv%2Fhome)
+# using a UCL site admin login.
+# Place it somewhere in your file-system and set the SRC_ARCHIVE & ENVI_INSTALLER variables
+# appropriately.
+
+VERSION=${VERSION:-8.8.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/IDL/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/IDL/installers}
+IDL_INSTALLER=${IDL_INSTALLER:-idl883-linux.tar.gz}
+ANSWER_FILE=${ANSWER_FILE:-/shared/ucl/apps/build_scripts/files/IDL-8.8.3_answer_file}
+LICENSE_FILE=${LICENSE_FILE:-/shared/ucl/apps/build_scripts/files/IDL-8.8.3_license_file}
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+startDir=`pwd`
+
+if [ ! -f $SRC_ARCHIVE/$IDL_INSTALLER ]
+then
+    echo ""
+    echo "*** ERROR: Cannot find IDL installer"
+    echo ""
+    echo "You need to download the IDL installer from the Harris Download and License Center"
+    echo " (https://harrisgeospatial.flexnetoperations.com/control/xlsv/login?nextURL=%2Fcontrol%2Fxlsv%2Fhome)"
+    echo "using a UCL site admin login."
+    echo "Place it somewhere in your file-system and set the SRC_ARCHIVE & IDL_INSTALLER variables"
+    echo "appropriately."
+    echo ""
+    exit 1
+fi 
+
+temp_dir=`mktemp -d -p /dev/shm`
+mkdir -p $temp_dir/IDL
+
+# Unpack the installer archive
+
+cd $temp_dir/IDL
+tar -xvf $SRC_ARCHIVE/$IDL_INSTALLER
+
+# Run the installer.
+
+./install.sh -s < $ANSWER_FILE
+
+# Install the UCL license file.
+
+cd $INSTALL_PREFIX/license
+cp $LICENSE_FILE o_licenseserverurl.txt
