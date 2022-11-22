@@ -66,8 +66,7 @@ _prepare_module() {
   make_module -p $install_prefix \
               -c "${package_name}" \
               -o $module_dir/$package_label \
-              -r gcc-libs/10.2.0 \
-              -r compilers/gnu/10.2.0 \
+              -r gcc-libs \
               -e PATH:$install_prefix/nsight-compute-2020.2.1 \
               -w "Adds ${package_name} ${package_version} to your environment. $package_description"
   echo "Module files put in: $module_dir" >&2
