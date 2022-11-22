@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+# CUDA Toolkit 11.1.1
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="cuda"
+package_version="11.1.1"
+driver_version=455.32.00
+
+src_urls=https://developer.download.nvidia.com/compute/cuda/${package_version}/local_installers/cuda_${package_version}_${driver_version}_linux.run
+
+
+# Optional: 
+# package_variant=""
+package_description="This is for compiling CUDA code to run on NVIDIA GPUs."
+
+actual_file_name=cuda_${package_version}_${driver_version}_linux.run
+actual_file_md5=c24e2755e3868692051a38797ce01044
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+  mkdir -p /dev/shm/cuda
+  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/cuda)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  # sha512sum -c <<<"$actual_file_sha512  $actual_file_name"
+  md5sum -c <<<"$actual_file_md5  $actual_file_name"
+
+}
+
+_setup_files() {
+  :
+}
+
+_build() {
+  rm -Rf $install_prefix
+  mkdir -p $install_prefix # amazingly the installer doesn't do this.
+  chmod +x $actual_file_name  
+  ./$actual_file_name \
+    --silent \
+    --tmpdir=$build_dir \
+   --installpath=$install_prefix \
+   --toolkit \
+   --toolkitpath=$install_prefix \
+   --samples \
+   --samplespath=$install_prefix/samples
+  echo "Installed to: $install_prefix"
+  rm -rf $build_dir
+
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/10.2.0 \
+              -r compilers/gnu/10.2.0 \
+              -e PATH:$install_prefix/nsight-compute-2020.2.1 \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
