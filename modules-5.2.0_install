@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="modules"
+package_version="5.2.0"
+package_description="The Environment Modules package provides for the dynamic modification of a user's environment via modulefiles."
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+curl -sLO -- "https://github.com/cea-hpc/modules/releases/download/v${package_version}/modules-${package_version}.tar.gz"
+manifest \
+    sha256:48f9f10864303df628a48cab17074820a6251ad8cd7d66dd62aa7798af479254  modules-5.2.0.tar.gz \
+
+tar -xf "modules-${package_version}.tar.gz"
+
+cd "modules-${package_version}"
+
+# Implicit requirements don't work well with our bundle modules
+./configure \
+    --prefix="$install_prefix" \
+    --disable-example-modulefiles \
+    --disable-implicit-requirement \
+    --with-modulepath="/shared/ucl/apps/modulefiles/core:/shared/ucl/apps/modulefiles/applications:/shared/ucl/apps/modulefiles/libraries:/shared/ucl/apps/modulefiles/compilers:/shared/ucl/apps/modulefiles/development:/shared/ucl/apps/modulefiles/bundles"
+
+make
+make install
+
+post_build_report
+
