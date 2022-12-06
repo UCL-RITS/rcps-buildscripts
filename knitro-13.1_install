@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# This script installs the Knitro solver for nonlinear optimization problems.
+# Brian Alston December 2019
+
+# Updated September 2022 for Knitro 12.4
+# Updated December 2022 for Knitro 13.1
+
+# The install archive has been supplied by the Department of Economics who own the license.
+
+VERSION=${VERSION:-13.1.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/Knitro}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/Knitro/installers/knitro-$VERSION-Linux-64.tar.gz}
+MD5_SRC=${MD5_SRC:-e215cd16bbc97a5121b6a6aae7b9bd07}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+cd $INSTALL_PREFIX
+CHECKSUM_SRC=`md5sum $SRC_ARCHIVE | awk '{print $1}'`
+
+if [ ! "$MD5_SRC" == "$CHECKSUM_SRC" ]
+then
+    echo "Install Archive Hash mismatch."
+    echo "Expected: $MD5_SRC"
+    echo "Got: $CHECKSUM_SRC"
+    exit 1
+fi
+
+tar -xvf $SRC_ARCHIVE
+
