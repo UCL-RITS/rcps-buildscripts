@@ -32,17 +32,7 @@ then
 
     # Run the installer.
    echo "Install to ${INSTALL_PREFIX}/bin"
-   ./INSTALL.sh <<EOF
-y
-${INSTALL_PREFIX}/bin
-
-
-
-
-
-
-EOF
-
+   ./INSTALL.sh 
 else
    echo "***** Hash mismatch,"
    echo "       Expected: $MD5"
