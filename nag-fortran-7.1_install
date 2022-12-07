@@ -22,7 +22,7 @@ export PATH=$INSTALL_PREFIX/bin:$PATH
 temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
-wget $SRC_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
 CHECKSUM=`md5sum ${PRODUCT}_$ARCH.tgz | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
