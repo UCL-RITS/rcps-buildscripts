@@ -34,7 +34,7 @@ then
    echo "Install to ${INSTALL_PREFIX}/bin"
    export INSTALL_TO_BINDIR=${INSTALL_PREFIX}/bin
    export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
-   export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man
+   export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man/man1
    ./INSTALLU.sh 
 else
    echo "***** Hash mismatch,"
