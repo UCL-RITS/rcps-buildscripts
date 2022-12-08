@@ -36,7 +36,10 @@ then
    # export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
    # export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man/man
    # bash -l ./INSTALLU.sh
-
+   
+   echo ""
+   echo "Install to ${INSTALL_PREFIX}/bin"
+   echo ""
    ./INSTALL.sh
 else
    echo "***** Hash mismatch,"
