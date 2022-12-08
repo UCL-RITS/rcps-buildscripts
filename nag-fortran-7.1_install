@@ -30,9 +30,12 @@ then
    tar xvzf ${PRODUCT}_$ARCH.tgz
    cd NAG_Fortran-$ARCH
 
-    # Run the installer.
+    # Run the installer using the silent version
    echo "Install to ${INSTALL_PREFIX}/bin"
-   ./INSTALL.sh 
+   export INSTALL_TO_BINDIR=${INSTALL_PREFIX}/bin
+   export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
+   export INSTALL_TO_CATMANDIR=${INSTALL_PREFIX}/man
+   ./INSTALLU.sh 
 else
    echo "***** Hash mismatch,"
    echo "       Expected: $MD5"
