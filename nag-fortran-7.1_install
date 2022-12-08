@@ -35,7 +35,7 @@ then
    export INSTALL_TO_BINDIR=${INSTALL_PREFIX}/bin
    export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
    export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man/man
-   ./INSTALLU.sh 
+   bash ./INSTALLU.sh 
 else
    echo "***** Hash mismatch,"
    echo "       Expected: $MD5"
