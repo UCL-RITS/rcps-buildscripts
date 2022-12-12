@@ -3,7 +3,7 @@
 ######################################################################
 # Installing a local copy of VASP, no patches, into the user's $HOME
 #
-# Uses Intel compiler, MKL inc FFTW wrapper, Intel MPI
+# Uses Intel 2019 compiler, MKL inc FFTW wrapper, Intel MPI
 #
 # To run:
 # cd /shared/ucl/apps/build_scripts
@@ -51,9 +51,10 @@ BUILD_DIR="${BUILD_DIR:-$(mktemp -d -p "$BUILD_BASE" -t "${NAME}-build.XXXXXXXX"
 dirname=$(dirname "$0" 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source "${INCLUDES_DIR}/require_inc.sh"
-require gcc-libs
-require compilers/intel
-require mpi/intel
+module purge
+require gcc-libs/4.9.2 
+require compilers/intel/2019/update5
+require mpi/intel/2019/update5/intel
 
 cd "$BUILD_DIR"
 
