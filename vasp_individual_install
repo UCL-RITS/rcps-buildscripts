@@ -13,6 +13,11 @@
 # cd /shared/ucl/apps/build_scripts
 # VERSION=x.x.x-date INSTALL_PREFIX=/my/install/location SRC_ARCHIVE=/my/vasp/tar ./vasp_individual_install
 #
+# In a job, when using this install, load these modules:
+# module unload -f compilers mpi
+# module load compilers/intel/2019/update5
+# module load  mpi/intel/2019/update5/intel
+#
 
 NAME="${NAME:-vasp}"
 VERSION="${VERSION:-5.4.4-18apr2017}"
