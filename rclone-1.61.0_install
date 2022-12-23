@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Updated December 2022 for version 1.61.0
+
+set \
+    -o errexit \
+    -o pipefail \
+    -o nounset
+
+package_name="rclone"
+package_version="1.61.0"
+package_description="RClone is a command-line program intended to download and upload files from and to various storage services and providers."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://github.com/rclone/rclone/releases/download/v${package_version}/rclone-v${package_version}-linux-amd64.zip
+
+manifest sha256:748696842cc0d2277c0ffed2dec5a42aa3822558465770a638e730e9a1956c7e  rclone-v1.61.0-linux-amd64.zip
+
+unzip rclone-v${package_version}-linux-amd64.zip
+
+mkdir -p "$install_prefix"/{bin,share/man/man1}
+
+cp rclone-v${package_version}-linux-amd64/rclone   "$install_prefix/bin/"
+cp rclone-v${package_version}-linux-amd64/rclone.1 "$install_prefix/share/man/man1/"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
