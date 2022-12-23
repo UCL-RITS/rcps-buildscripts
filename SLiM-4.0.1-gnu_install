@@ -9,7 +9,7 @@ NAME=${NAME:-SLiM}
 COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
 VERSION=${VERSION:-4.0.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}/${COMPILER_TAG}}
-SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/MesserLab/SLiM/releases/download/v{$VERSION}/{$NAME}.zip}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/MesserLab/SLiM/releases/download/v${VERSION}/${NAME}.zip}
 
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
@@ -33,7 +33,7 @@ temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
 cd $temp_dir
 
 wget $SRC_ARCHIVE
-unzip -x {$NAME}.zip
+unzip -x ${NAME}.zip
 mkdir -p build
 cd build
 
