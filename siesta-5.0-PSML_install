@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# SIESTA 5.0 Development Version with PSML support
+#
+# Updated from 4.0.2 to 5.0 Development January 2023
+
+NAME=${NAME:-siesta}
+VERSION=${VERSION:-5.0-Dev}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://gitlab.com/siesta-project/siesta.git}
+DOWNLOAD_DIR=${DOWNLOAD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}_dl.XXXXXXXX)}
+
+set -o errexit -o nounset
+
+# module prereqs for building
+for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+module purge
+require gcc-libs
+require cmake
+require compilers/intel/2018/update3
+require mpi/intel/2018/update3/intel
+require hdf/5-1.10.2-impi/intel-2018
+require netcdf/4.9.0/intel-2018-update3
+require netcdf-fortran/4.5.4/intel-2018-update3
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+
+cd "$DOWNLOAD_DIR"
+git clone "$SRC_ARCHIVE"
+echo "Downloaded to: $DOWNLOAD_DIR"
+
+dir=siesta
+cd $dir
+git submodule update --init --recursive
+
+mkdir -p "$INSTALL_PREFIX"
+mkdir -p _build
+
+echo "Configuring ..."
+echo ""
+cmake -S. -B_build -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DSCALAPACK_LIBRARY_DIR=${MKLROOT}/lib/intel64 -DSCALAPACK_LIBRARY="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core"
+
+echo ""
+echo "Building ..."
+echo ""
+cmake --build _build -v
+
+echo ""
+echo "Installing to $INSTALL_PREFIX ..."
+echo ""
+
+cmake --install _build -v
+
+echo "Installed to: $INSTALL_PREFIX"
+
