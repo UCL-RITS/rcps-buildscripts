@@ -8,6 +8,7 @@
 # need re-building for GNU 9.2.0
 # Update August 2021 - to add additional packages needed for IHI teaching apps
 # Update September 2021 - for R 4.1.1
+# Updated January 2023 - to add nlmixr2 for R 4.2.0
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -237,6 +238,10 @@ install.packages ("MendelianRandomization", lib=mainLib, repos=repros);
 
 # Some historic datasets - useful for examples - September 2021
 install.packages ("HistData", lib=mainLib, repos=repros);
+
+# for CHLD0085 - January 2023
+install.packages ("nlmixr2", lib=mainLib, repos=repros);
+
 
 # End of R_packages_UCL_5
 
