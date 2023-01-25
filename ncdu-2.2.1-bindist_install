@@ -1,0 +1,32 @@
+#!/bin/bash
+
+package_name="ncdu"
+package_version="2.2.1-linux-x86_64"
+package_description="Ncdu is a disk usage analyzer with an ncurses interface."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sL -o ncdu-2.2.1-linux-x86_64.tar.gz https://dev.yorhel.nl/download/ncdu-2.2.1-linux-x86_64.tar.gz
+
+manifest \
+	sha256:0915f329c86d4722b8a89f0165a437c546ca32f4f7f4e700a567ee786d52cded ncdu-2.2.1-linux-x86_64.tar.gz
+	
+
+tar -xf ncdu-2.2.1-linux-x86_64.tar.gz
+
+mkdir -p "$install_prefix/bin"
+cp ncdu "$install_prefix/bin/"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
