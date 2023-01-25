@@ -1,8 +1,9 @@
 #!/bin/bash
 
 package_name="ncdu"
-package_version="2.2.1-linux-x86_64"
+package_version="2.2.1"
 package_description="Ncdu is a disk usage analyzer with an ncurses interface."
+package_variant="bindist"
 
 set -o errexit \
     -o nounset \
