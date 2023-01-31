@@ -29,6 +29,7 @@ then
   tar -zxvf screen-${VERSION}.tar.gz
 
   cd screen-${VERSION}
+  NOCONFIGURE=1 ./autogen.sh
   ./configure --prefix=$INSTALL_PREFIX --enable-colors256
   make && make install
   mkdir -p $INSTALL_PREFIX/etc
