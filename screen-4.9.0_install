@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing screen 
+#
+# by Owain Kenway, 2021
+#
+
+
+VERSION=${VERSION:-4.8.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/screen/$VERSION}
+SHA256=${SHA256:-f9335281bb4d1538ed078df78a20c2f39d3af9a4e91c57d084271e0289c730f4}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://ftp.gnu.org/gnu/screen/screen-${VERSION}.tar.gz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum screen-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  tar -zxvf screen-${VERSION}.tar.gz
+
+  cd screen-${VERSION}
+  ./configure --prefix=$INSTALL_PREFIX --enable-colors256
+  make && make install
+  mkdir -p $INSTALL_PREFIX/etc
+  cp ./etc/etcscreenrc $INSTALL_PREFIX/etc/screenrc
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
