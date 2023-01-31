@@ -20,7 +20,7 @@ temp_dir=`mktemp -d`
 
 cd $temp_dir
 
-wget --no-check-certificates $SRC_ARCHIVE # ONLY OK AS WE CHECKSUM
+wget --no-check-certificate $SRC_ARCHIVE # ONLY OK AS WE CHECKSUM
 
 CHECKSUM=`sha256sum screen-${VERSION}.tar.gz| awk '{print $1}'`
 
