@@ -11,6 +11,7 @@
 # Updated November 2020 to fix install of INLA for RedHhat 7
 # Updated August 2021 to add karyoploteR
 # Updated September 2021 for R 4.1.1
+# Updated February 2023 for R 4.2.2
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -225,11 +226,11 @@ install.packages ("PSCBS", lib=mainLib, repos=repros);
 install.packages("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/testing"), dep=TRUE);
 
 # Replace binary INLA that doesn't work on redHat 7 with one that does. NOTE: interactive will prompt
-# you to choose the correct binary.
+# you to choose the correct binary. - Updated Feb 2023
 #
 library (INLA);
 inla.binary.install();
-2
+1
 
 # End of Bioconductor_UCL_1
 
