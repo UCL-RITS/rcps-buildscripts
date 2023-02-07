@@ -72,6 +72,11 @@ then
 
 # This is the equivalent of make install.
   make vastness
+
+  # Install ANFI R packages
+  export PATH=${INSTALL_PREFIX}:$PATH
+  export AFNI_PLUGINPATH=${INSTALL_PREFIX}
+  rPkgsInstall -pkgs ALL
 else
   echo "Hash mismatch."
   echo "Expected: $MD5"
