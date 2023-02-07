@@ -22,8 +22,7 @@ source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
 require gcc-libs/10.2.0
-require compilers/gnu/10.2.0
-require gsl/2.7/gnu-10.2.0
+require r/r-4.2.0_bc-3.15
 
 APPNAME=${APPNAME:-afni}
 VERSION=${VERSION:-23.0.02}
