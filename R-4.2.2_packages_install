@@ -107,7 +107,7 @@ require plink/1.90b3.40
 
 require r/4.2.2-openblas/gnu-10.2.0
 
-export R_LIBS_SITE=/shared/ucl/apps/R/R-4.2.0-OpenBLAS/lib64/R/library:
+export R_LIBS_SITE=/shared/ucl/apps/R/R-4.2.2-OpenBLAS/lib64/R/library:
 
 
 # Set up ~/.R/Makevars for rstan which needs C++ 2014 stuff
