@@ -7,6 +7,7 @@
 # Updated January 2022 for LAMMPS 29th September 2021 Update 2
 # Updated March 2022 to use FFTW instead of KISS FFT as the FFT library.
 # Updated April 2022 to add the ML-QUIP package to the list of addon packages included.
+# Reverted Feb 2023 to remove ML-QUIP again - will now try this as a seperate build.
 #
 # Note: Install documentation now recommends CMAKE
 #       Using GNU Compilers version 10.2.0, FFTW and OpenMPI
@@ -74,9 +75,9 @@ cd build
 
 cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
 
-# Add building ML-QUIP package with existing module.
+# Add building ML-QUIP package with existing module. Not currently included
 
-cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=no .
+# cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=no .
 
 # Add building LAMMPS unit tests if requested.
 
