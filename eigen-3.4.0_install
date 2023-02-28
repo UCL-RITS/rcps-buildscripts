@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Eigen 3.4.0 built with GNU 10.2.0
+# Udated Feb 2023 for this version.
+
+APPNAME=${APPNAME:-eigen}
+VERSION=${VERSION:-3.4.0}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+SHA1=${SHA1:-3e8a1aa6ac5c7fafce69688242590fd365c1d3c5}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://gitlab.com/libeigen/eigen/-/archive/${VERSION}/eigen-${VERSION}.tar.bz2}
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0 
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum eigen-${VERSION}.tar.bz2| awk '{print $1}'`
+
+tar -jxvf eigen-${VERSION}.tar.bz2
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../eigen-${VERSION}
+make
+make DESTDIR="" install
+
+# Fix for cufflinks.
+cd $INSTALL_PREFIX
+mkdir cufflinks
+cd cufflinks
+ln -s $INSTALL_PREFIX/include/eigen3 ./include
+
