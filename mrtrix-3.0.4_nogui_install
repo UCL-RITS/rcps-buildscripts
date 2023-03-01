@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing MRtrix 3.0.4
+#
+# Configure requires X-forwarding. 
+# Once built, mrview and shview will not work over X-forwarding (OpenGL3.3).
+# Building for command-line tools only.
+# by Heather Kelly, 2015
+#
+# Updated Sept 2018 for V 3.0RC3
+# Updated Feb 2022 for V 3.0.3 (released July 2021)
+# Updated March 2023 for V 3.0.4 (released December 2022)
+#
+
+# NB: Deliberately builds without the GUI
+
+NAME=${NAME:-mrtrix}
+VERSION=${VERSION:-3.0.4}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+# INSTALL_PREFIX=${INSTALL_PREFIX:-/home/ccspapp/apps/$NAME/$VERSION/$COMPILER_TAG}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/MRtrix3/mrtrix3.git}
+
+set -e
+
+# module prereqs for building
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require python3/3.9-gnu-10.2.0
+require fftw/3.3.9/gnu-10.2.0
+require eigen/3.4.0/gnu-10.2.0
+
+# Testing to see if the command line only version will build without Qt
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+# Blerg, had to hard-core path for the installer: it doesn't search CPATH or anything
+export EIGEN_CFLAGS="-I/shared/ucl/apps/eigen/3.4.0/gnu-10.2.0/include/eigen3"
+
+
+# I'm still not sure whether it needs to be built in the directory it's going to be installed into
+#  but there's no install script
+# Playing it safe for now
+
+install_prefix="${INSTALL_PREFIX%/}"  # just in case
+mkdir -p "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"/..
+
+# v-- if you download a release archive, you can't run the tests (it uses subtree to a different repo to grab the test data)
+git clone $SRC_ARCHIVE "$INSTALL_PREFIX"
+cd "$INSTALL_PREFIX"
+./configure -nogui
+./build
+
+
+# Fix PATH here to include scripts dir, otherwise population_template test fails
+# running "population_template"... 0 of 1 passed    <-------- ERROR
+export PATH="$PATH:$(pwd)/scripts"
+
+./run_tests
+
