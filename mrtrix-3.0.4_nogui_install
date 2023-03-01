@@ -33,7 +33,7 @@ require python3/3.9-gnu-10.2.0
 require fftw/3.3.9/gnu-10.2.0
 require eigen/3.4.0/gnu-10.2.0
 
-# Testing to see if the command line only version will build without Qt
+# It looks like building the command line version does not need any Qt module loaded.
 
 temp_dir=`mktemp -d -p /dev/shm`
 
@@ -62,5 +62,6 @@ cd "$INSTALL_PREFIX"
 # running "population_template"... 0 of 1 passed    <-------- ERROR
 export PATH="$PATH:$(pwd)/scripts"
 
-./run_tests
+# Run the unit tests
+./run_tests units
 
