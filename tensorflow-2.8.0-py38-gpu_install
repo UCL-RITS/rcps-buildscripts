@@ -28,7 +28,7 @@ source ${INCLUDES_DIR}/require_inc.sh
 require gcc-libs/4.9.2
 require compilers/gnu/4.9.2
 require python/3.8.6
-require bazel/0.27.1
+require bazel/4.2.1
 require cuda/10.1.243/gnu-4.9.2
 require cudnn/7.6.5.32/cuda-10.1 
 
