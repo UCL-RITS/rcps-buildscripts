@@ -53,7 +53,7 @@ pip3 install numpy==1.16.4 keras
 export PYTHON_BIN_PATH=`which python3`
 export PYTHON_LIB_PATH=${INSTALL_PREFIX}/lib/python3.8/site-packages
 
-export TF_CUDA_PATHS=/shared/ucl/apps/cuda/10.1.243/gnu-4.9.2,/shared/ucl/apps/cudnn/7.6.5.32/10.1/cuda
+export TF_CUDA_PATHS=/shared/ucl/apps/cuda/11.3.1/gnu-10.2.0/,/shared/ucl/apps/cudnn/8.2.1.32/11.3/cuda
 
 # Checkout the version of tensorflow we want.
 git clone $SRC_ARCHIVE
