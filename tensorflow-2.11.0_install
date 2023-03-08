@@ -19,11 +19,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 require gcc-libs/4.9.2
 require python/3.9.10
 
+rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
-cd $INSTALL_PREFIX
-virtualenv tf
-source tf/bin/activate
-pip install --upgrade pip
-pip install tensorflow
 
 pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
