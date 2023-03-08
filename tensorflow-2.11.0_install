@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TensorFlow 2.11.0 CPU version
+#
+# Using Owain's video tutorial method. 
+# Brian Alston March 2023
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-2.11.0}
+VARIENT=${VARIENT:-CPU}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$VARIENT}
+PACKAGE_NAME=${NAME}
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+require python/3.9.10
+
+mkdir -p $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+virtualenv tf
+source tf/bin/activate
+pip install --upgrade pip
+pip install tensorflow
+
+pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
