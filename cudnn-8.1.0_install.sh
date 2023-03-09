@@ -10,7 +10,7 @@
 # using a Nvidia Developer login.
 
 NAME=${NAME:-cudnn}
-VERSION=${VERSION:-8.1.0}
+VERSION=${VERSION:-8.1.0.77}
 CUDA_VERSION=${CUDA_VERSION:-11.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$CUDA_VERSION}
 
