@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing TensorFlow 2.11.0 GPU version
+#
+# Using Owain's video tutorial method. 
+# Brian Alston March 2023
+
+NAME=${NAME:-tensorflow}
+VERSION=${VERSION:-2.11.0}
+VARIENT=${VARIENT:-GPU}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$VARIENT}
+PACKAGE_NAME=${NAME}
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs
+require cuda/11.2.0/gnu-10.2.0
+require cudnn/8.1.0.77/cuda-11.2
+require python/3.9.10
+
+rm -rf $INSTALL_PREFIX
+mkdir -p $INSTALL_PREFIX
+
+pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
