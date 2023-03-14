@@ -6,6 +6,9 @@
 # Using Owain's video tutorial method. 
 # Brian Alston March 2023
 
+# Testing to see if it needs GNU 10.2.0 as the first install attempt is not working with
+# default gcc-libs.
+
 NAME=${NAME:-tensorflow}
 VERSION=${VERSION:-2.11.0}
 VARIENT=${VARIENT:-GPU}
@@ -16,10 +19,10 @@ set -e
 
 for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
-require gcc-libs
+require gcc-libs/10.2.0
 require cuda/11.2.0/gnu-10.2.0
 require cudnn/8.1.0.77/cuda-11.2
-require python/3.9.10
+require python/3.9.6-gnu-10.2.0
 
 rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
