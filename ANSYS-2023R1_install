@@ -61,9 +61,11 @@ cd FLUIDSTRUCTURES
 # ./INSTALL
 echo "PREPPOST ..."
 cd ../PREPPOST
-./INSTALL
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk
 echo "ELECTRONICS ..."
-cd ../ELECTRONICS/Electronics_212_linx64
+cd ../ELECTRONICS/Electronics_231_linx64
+echo "Couldn't get silent install to work so use GUI and:"
+echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
 ./install
 
 echo ""
