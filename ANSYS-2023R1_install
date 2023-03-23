@@ -57,7 +57,7 @@ echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
 echo ""
 echo "FLUIDSTRUCTURES ..."
 cd FLUIDSTRUCTURES
-./INSTALL -nochecks -slient -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk 
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk 
 # ./INSTALL
 echo "PREPPOST ..."
 cd ../PREPPOST
