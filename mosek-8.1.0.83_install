@@ -1,0 +1,45 @@
+#!/bin/bash
+
+package_name=mosek
+package_version=8.1.0.83
+package_description="The MOSEK Optimization Suite is a software package for solving large optimization problems with many constraints and variables."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O mosektoolslinux64x86.tar.bz2 "https://download.mosek.com/stable/${package_version}/mosektoolslinux64x86.tar.bz2"
+
+manifest \
+	sha256:77f4bf21a9664308b359867cf59b24528540697598b33bb0ef0fb0d15a7ed779 mosektoolslinux64x86.tar.bz2
+	
+mkdir -p "$install_prefix"
+cd "$install_prefix"
+
+tar -xf "$build_dir/mosektoolslinux64x86.tar.bz2"
+
+make_module_v2 \
+    -r "gcc-libs" \
+    -d \
+    -v MKSHOME="$install_prefix/mosek/8" \
+    -v MOSEK_HOME="$install_prefix/mosek/8" \
+    -e PATH:"$install_prefix/mosek/8/tools/platform/linux64x86/bin" \
+    -e LIBRARY_PATH:"$install_prefix/mosek/8/tools/platform/linux64x86/bin" \
+    -e LD_LIBRARY_PATH:"$install_prefix/mosek/8/tools/platform/linux64x86/bin" \
+    -e MATLAB_PATH:"$install_prefix/mosek/8/toolbox/r2014a" \
+    -e INCLUDE_PATH:"$install_prefix/mosek/8/tools/platform/linux64x86/h" \
+    -e CLASSPATH:"$install_prefix//mosek/8/tools/platform/linux64x86/bin/mosek.jar" \
+    -e CLASSPATH:"$install_prefix//mosek/8/tools/platform/linux64x86/bin/mosekmatlab.jar" \
+    -v MOSEKLM_LICENSE_FILE=27007@lic-mosek.ucl.ac.uk
+
+
+chmod a+rX "$module_dir"
+post_build_report
+
