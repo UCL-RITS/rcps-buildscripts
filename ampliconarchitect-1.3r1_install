@@ -14,6 +14,7 @@ module purge
 
 make_build_env ""
 
+mkdir -p "$install_prefix"
 cd "$install_prefix"
 
 git clone https://github.com/virajbdeshpande/AmpliconArchitect.git
