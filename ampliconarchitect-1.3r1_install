@@ -1,0 +1,39 @@
+#!/bin/bash
+
+package_name="ampliconarchitect"
+package_version="1.3r1"
+package_description="Amplicon Architect is a tool for finding amplicons in Illumina reads."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$install_prefix"
+
+git clone https://github.com/virajbdeshpande/AmpliconArchitect.git
+
+cd AmpliconArchitect
+
+# Apparently the original author doesn't know what tags are or something
+git checkout 40da852
+
+
+make_module_v2 \
+    -r "gcc-libs/4.9.2" \
+    -r "samtools/1.11/gnu-4.9.2" \
+    -r "bcftools/1.11/gnu-4.9.2" \
+    -r "bwa/0.7.12/gnu-4.9.2" \
+    -r "mosek/8.1.0.83" \
+    -r "python3/3.9" \
+    -d \
+    -e PYTHONPATH:"$install_prefix/AmpliconArchitect/src" \
+    -e PATH:"$install_prefix/AmpliconArchitect/src"
+
+chmod a+rX "$module_dir"
+post_build_report
