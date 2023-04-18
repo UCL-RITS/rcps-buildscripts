@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing a single R additional package
+#
+# by Brian Alston, October 2016 V1.1 
+# Updated Dec 2016 to use https://cloud.r-project.org/ as defult repro.
+# Updated May 2017 to default to R 3.4.0
+# Updated March 2018 to default to R 3.4.2
+# Updated October 2018 to default to R 3.5.1
+# Updated June 2019 to defULT TO R 3.6.0
+# Updated July 2020 for R 4.0.2
+# Updated September 2020 to set currect value for R_LIBS_SITE - WILL NEED TO CHANGE FOR EACH
+# NEW R VERSION!
+# Updated December 2020 to add Protobuf (new GNU 9.2.0 version) and JQ.
+# Updated September 2021 for R 4.1.1
+# Updated May 2022 for R 4.2.0
+# Updated Feb 2023 for R 4.2.2
+# Updated April 2023 for R 4.2.3
+
+#
+# usage: R-4.2.3_single_package_install <R package name> <extra args for install.packages>
+#
+# Will need modules: r/recommended or possibly r/new
+
+set -e
+
+VERSION=${VERSION:-4.2.3}   
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
+export RLIB_DB=${RLIB_DB:-${INSTALL_PREFIX}/lib64/R/library}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+cluster=$WHEREAMI
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require openblas/0.3.13-serial/gnu-10.2.0
+require java/1.8.0_92
+require fftw/3.3.9/gnu-10.2.0
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.7/gnu-10.2.0
+require hdf/5-1.10.6/gnu-10.2.0
+require udunits/2.2.28/gnu-10.2.0
+require netcdf/4.8.1/gnu-10.2.0
+require pcre2/10.37/gnu-10.2.0
+
+if [ "$cluster" == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+
+require mpi/openmpi/4.0.5/gnu-10.2.0
+
+# Not currently installed - 15/4/2020
+# require jags/4.2.0/gnu.4.9.2-openblas
+# require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+# require glpk/4.60/gnu-4.9.2
+
+# require jags/4.3.0/gnu-10.2.0-openblas
+
+require perl/5.22.0
+require libtool/2.4.6
+require freetype/2.8.1/gnu-4.9.2
+require graphicsmagick/1.3.21
+require python3/3.9-gnu-10.2.0
+require sqlite/3.36.0/gnu-10.2.0
+require proj.4/8.1.1/gnu-10.2.0
+require gdal/3.3.2/gnu-10.2.0
+require geos/3.9.1/gnu-10.2.0
+require gmt/6.2.0/gnu-10.2.0
+require v8/3.15
+require protobuf/3.17.3/gnu-10.2.0
+require jq/1.5/gnu-4.9.2
+require plink/1.90b3.40
+
+require r/4.2.3-openblas/gnu-10.2.0
+
+export R_LIBS_SITE=/shared/ucl/apps/R/R-4.2.3-OpenBLAS/lib64/R/library:
+
+if [ $# -lt 1 ]; then
+	echo "usage: R-4.2.3_single_package_install <R package name> <extra args for install.packages>"
+	exit 1
+fi
+PACKAGE=$1
+if [ $# -eq 2 ]; then
+    EXTRAS=$2
+    echo "extra args - $EXTRAS"
+fi
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cat > R_script <<EOF
+mainLib <- Sys.getenv ("RLIB_MAIN");
+dbLib <- Sys.getenv ("RLIB_DB");
+repros <- Sys.getenv ("REPROS");
+mainLib;
+dbLib;
+repros;
+
+install.packages ("$PACKAGE", lib=mainLib, repos=repros, $EXTRAS);
+
+EOF
+
+echo "Installing $PACKAGE and dependencies ..."
+R --no-save < R_script
+echo "Done."
+
