@@ -9,7 +9,7 @@ require python/3.9.10
 require ninja
 require bison
 
-NAME=${NAME:-libxkbcommon}
+NAME=${NAME:-xkbcommon}
 VERSION=${VERSION:-1.5.0}
 #INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
