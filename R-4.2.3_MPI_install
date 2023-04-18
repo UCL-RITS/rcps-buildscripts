@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing R and Bioconductor MPI support
+# packages.
+#
+# This replaces the old ~ccaabaa/Software/R/extra-pkgs-order.txt file from
+# previous version of R on Legion etc. It will need to be updated each time
+# an extra package is added to the current R installation.
+#
+# For R 4.0.2 and later Note: R-<version>_packages_install should be run first.
+#
+# This is needed on Grace for the Rmpi package to install correctly:
+#
+# export OMPI_MCA_mtl=^psm
+#
+# by Brian Alston, June 2016
+# Updated Nov 2016 for R 3.3.2
+# Updated May 2017 for R 3.4.0
+# Updated December 2017 for R 3.4.2
+# Updated June 2018 for R 3.5.0
+# Updated June 2018 (19th) to fix MPI support - now using mpi/openmpi/3.0.0/gnu-4.9.2
+# Updated September 2018 for R 3.5.1
+#    Also for udunits 2.2.26.
+# Updated April 2019 for R 3.5.3
+# Updated July 2019 for R 3.6.0
+# Updated April 2020 for R 3.6.3
+# Updated June 2020 for R 4.0.2
+# Updated September 2020 to set currect value for R_LIBS_SITE - WILL NEED TO CHANGE FOR EACH
+# NEW R VERSION!
+# Updated September 2021 for R 4.1.1 - now using mpi/openmpi/4.0.5/gnu-10.2.0
+# Updated November 2021 for fix problems with snow using OpenMPI 4
+# Updated May 2022 for R 4.2.0
+# Updated Feb 2023 for R 4.2.2
+# Updated April 2023 for R 4.2.3
+
+# NOTE: The Rmpi package is not fixed by the November 2021 update.
+
+#
+# Using Ian's require function to load modules
+#
+# Will need modules: see list of modules below.
+
+VERSION=${VERSION:-4.2.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
+export RLIB_MAIN=${RLIB_MAIN:-${INSTALL_PREFIX}/lib64/R/library}
+export RLIB_DB=${RLIB_DB:-${INSTALL_PREFIX}/lib64/R/library}
+export REPROS=${REPROS:-https://cloud.r-project.org/}
+LOCALDIR=${LOCALDIR:-/shared/ucl/apps/build_scripts/files/R_UCL}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+cluster=$WHEREAMI
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require openblas/0.3.13-serial/gnu-10.2.0
+require java/1.8.0_92
+require fftw/3.3.9/gnu-10.2.0
+require ghostscript/9.19/gnu-4.9.2
+require texinfo/6.6/gnu-4.9.2
+require texlive/2019
+require gsl/2.7/gnu-10.2.0
+require hdf/5-1.10.6/gnu-10.2.0
+require udunits/2.2.28/gnu-10.2.0
+require netcdf/4.8.1/gnu-10.2.0
+require pcre2/10.37/gnu-10.2.0
+
+if [ "$cluster" == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+
+require mpi/openmpi/4.0.5/gnu-10.2.0
+
+# Not currently installed - 15/4/2020
+# require jags/4.2.0/gnu.4.9.2-openblas
+# require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
+# require glpk/4.60/gnu-4.9.2
+
+require perl/5.22.0
+require libtool/2.4.6
+require freetype/2.8.1/gnu-4.9.2
+require graphicsmagick/1.3.21
+require python3/3.9-gnu-10.2.0
+require sqlite/3.36.0/gnu-10.2.0
+require proj.4/8.1.1/gnu-10.2.0
+require gdal/3.3.2/gnu-10.2.0
+require geos/3.9.1/gnu-10.2.0
+require gmt/6.2.0/gnu-10.2.0
+
+# Must use version 3.15 of V8.
+require v8/3.15
+
+require protobuf/3.17.3/gnu-10.2.0
+require jq/1.5/gnu-4.9.2
+require plink/1.90b3.40
+
+require r/4.2.3-openblas/gnu-10.2.0
+
+export R_LIBS_SITE=/shared/ucl/apps/R/R-4.2.3-OpenBLAS/lib64/R/library:
+
+
+temp_dir=`mktemp -d -p /dev/shm`
+# temp_dir='/home/ccspapp/Software/R'
+echo "Building in $temp_dir ..."
+cd $temp_dir
+module list
+read -p "Press [Enter] key to start ..."
+
+cd $temp_dir
+mkdir -p $RLIB_DB
+
+# export OMPI_MCA_btl=vader,self
+export OMPI_MCA_btl=tcp,vader,self
+
+if [ "$cluster" == "kathleen" ]
+then
+    export OMPI_MCA_mtl=^psm2
+    export OMPI_MCA_pml=ob1 
+fi
+
+
+# Note: some old packages need to be installed from local files that have had minor updates applied eg:
+#
+# adapt fails to install on R > 3.0.1 with: ERROR: a 'NAMESPACE' file is required
+# 
+# tar xvzf adapt_1.0-4.tar.gz
+# cd adapt
+# Create NAMESPACE with contents:
+# 
+# exportPattern("^[^\\.]")
+# 
+# cd ..
+# tar cvzf adapt_1.0-4-ucl.tar.gz adapt
+#  
+# Do this for all packages that fail with abover error.
+
+R_input=${LOCALDIR}/R_packages_MPI_1_4.1.1.R
+R --no-save < $R_input
+
+# Updates are needed to the RMPISNOW script to work with OpenMPI 4.
+
+cd ${INSTALL_PREFIX}/lib64/R/library/snow
+cp RMPISNOWprofile RMPISNOWprofile_dist
+cp ${LOCALDIR}/RMPISNOWprofile_UCL RMPISNOWprofile
