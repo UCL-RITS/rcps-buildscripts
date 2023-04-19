@@ -71,7 +71,7 @@ require mpi/openmpi/4.0.5/gnu-10.2.0
 # require root/5.34.36/gnu-4.9.2-fftw-3.3.6-gsl-2.4
 # require glpk/4.60/gnu-4.9.2
 
-# require jags/4.3.0/gnu-10.2.0-openblas
+require jags/4.3.2/gnu-10.2.0-openblas
 
 require perl/5.22.0
 require libtool/2.4.6
