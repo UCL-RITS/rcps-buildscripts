@@ -9,6 +9,7 @@
 # Update August 2021 - to add additional packages needed for IHI teaching apps
 # Update September 2021 - for R 4.1.1
 # Updated January 2023 - to add nlmixr2 for R 4.2.0
+# Updated Aporil 2023 - to fix build of rjags
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -24,10 +25,10 @@ install.packages ("rgl", lib=mainLib, repos=repros);
 install.packages ("fastmatch", lib=mainLib, repos=repros);
 install.packages ("phangorn", lib=mainLib, repos=repros);
 
-# For JAGS - added March 2014
+# For JAGS - added March 2014 fixed April 2023
 
 install.packages ("coda", lib=mainLib, repos=repros);
-# install.packages ("rjags", lib=mainLib, repos=repros);
+install.packages ("rjags", configure.args="--enable-rpath" lib=mainLib, repos=repros);
 install.packages ("abind", lib=mainLib, repos=repros);
 install.packages ("R2WinBUGS", lib=mainLib, repos=repros);
 # install.packages ("R2jags", lib=mainLib, repos=repros);
