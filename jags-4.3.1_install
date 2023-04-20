@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing JAGS built with with GCC 10.2.0 and OpenBLAS
+#
+# by Brian Alston, 2015 (5th November)
+#
+# Now using Ian's require function to load modules
+#
+# Will need modules: rcps-core/1.0.0, 
+# alsdo needs the CppUnit module to allow make check to work
+#
+# Updated: July 2016 for JAGS 4.2.0
+# Updated: May 2021 for JAGS 4.3.0 and openblas/0.3.7-native-threads/gnu-4.9.2
+# Updated: April 2023 for JAGS 4.3.1 to work with R 4.2.3 - cannot use a more recent version
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+# require openblas/0.3.13-native-threads/gnu-10.2.0
+require openblas/0.3.13-serial/gnu-10.2.0
+require cppunit/1.15.1/gnu-10.2.0
+
+VERSION=${VERSION:-4.3.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGS/${VERSION}_OpenBLAS/${COMPILER_TAG}}
+MD5=${MD5:-3b311562c2be7965072709f488600e5a}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://downloads.sourceforge.net/project/mcmc-jags/JAGS/4.x/Source/JAGS-${VERSION}.tar.gz}
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum JAGS-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf JAGS-${VERSION}.tar.gz
+   cd JAGS-${VERSION}
+   ./configure --prefix=$INSTALL_PREFIX \
+           --with-blas="-lopenblas" \
+           --with-lapack="-lopenblas"
+   make
+   make check
+   make install
+   ( cd $INSTALL_PREFIX; ln -s lib lib64 )
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
