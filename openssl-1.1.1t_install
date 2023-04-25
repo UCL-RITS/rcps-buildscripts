@@ -1,0 +1,42 @@
+#!/bin/bash
+
+package_name="openssl"
+package_version="1.1.1t"
+package_description="OpenSSL is a widely-used toolkit for general-purpose cryptography and secure communication."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+# These are build-time dependencies only
+module load gcc-libs
+# A more up-to-date set of Perl modules than base OS is needed to run the tests
+module load perl
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO https://www.openssl.org/source/openssl-1.1.1t.tar.gz
+
+manifest \
+	sha256:8dee9b24bdb1dcbf0c3d1e9b02fb8f6bf22165e807f45adeb7c9677536859d3b openssl-1.1.1t.tar.gz
+	
+
+tar -xf openssl-1.1.1t.tar.gz
+
+cd openssl-1.1.1t
+./config \
+    --prefix="$install_prefix"
+make
+make test
+make install
+
+module purge
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
