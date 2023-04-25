@@ -11,6 +11,7 @@
 # Updated August 2022 for version 22.2.05 source archive in pkg-store
 # Updated January 2023 for version 23.0.02 built with GNU 10.2.0 so it is
 # compatible with our latest R builds.
+# Updated April 2023 to add missing atlases
 
 set -e
 export PATH=$INSTALL_PREFIX/bin:$PATH
@@ -30,6 +31,7 @@ COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
 MD5=${MD5:-5065a8802a0c8919788663c9830ca0cf}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/afni-${VERSION}.tgz}
+ATLAS_SRC_ARCHIVE=${ATLAS_SRC_ARCHIVE:-https://afni.nimh.nih.gov/pub/dist/atlases/afni_atlases_dist.tgz}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
@@ -37,6 +39,8 @@ temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
 cd $temp_dir
 
 cp $SRC_ARCHIVE afni_src.tgz
+wget $ATLAS_SRC_ARCHIVE
+ATLAS_ARCHIVE=`basename $ATLAS_SRC_ARCHIVE`
 
 CHECKSUM=`md5sum afni_src.tgz| awk '{print $1}'`
 
@@ -81,3 +85,8 @@ else
   echo "Expected: $MD5"
   echo "Got: $CHECKSUM"
 fi
+
+# Install atlases
+
+cd $INSTALL_PREFIX
+tar -xvf $temp_dir/$ATLAS_ARCHIVE
