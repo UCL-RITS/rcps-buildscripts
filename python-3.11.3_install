@@ -48,6 +48,8 @@ export LD_LIBRARY_PATH="${install_prefix}/lib:$LD_LIBRARY_PATH"
 pip3 install --upgrade pip
 pip3 install virtualenv
 
+# GCC is build-time dependency only
+module unload gcc-libs compilers
 make_module_v2 -v PYTHON_VERSION_TAG="${package_version%.*}"
 chmod a+rX "$module_dir"
 post_build_report
