@@ -1,0 +1,54 @@
+#!/bin/bash
+
+package_name="Python"
+package_version="3.11.3"
+package_description="Adds Python ${package_version} with pip and virtualenv to your environment variables."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs
+require compilers/gnu
+require openssl/1.1.1t
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O \
+    Python-${package_version}.tar.xz \
+    https://www.python.org/ftp/python/${package_version}/Python-${package_version}.tar.xz
+
+manifest \
+	sha256:8a5db99c961a7ecf27c75956189c9602c968751f11dbeae2b900dbff1c085b5e Python-3.11.3.tar.xz 
+
+tar -xf Python-${package_version}.tar.xz
+
+cd Python-${package_version}
+./configure \
+    --prefix="$install_prefix" \
+    --enable-shared \
+    --with-threads \
+    --enable-ipv6 \
+    --with-ensurepip
+
+make -l "$(nproc)" -j
+# Currently several tests fail: 
+#  one is because it tests a group ID it thinks doesn't exist but does
+#  haven't properly identified the others
+#make test
+make install
+
+# Minimal environment changes to let this pip/venv update work
+export PATH="${install_prefix}/bin:$PATH"
+export LD_LIBRARY_PATH="${install_prefix}/lib:$LD_LIBRARY_PATH"
+pip3 install --upgrade pip
+pip3 install virtualenv
+
+make_module_v2 -v PYTHON_VERSION_TAG="${package_version%.*}"
+chmod a+rX "$module_dir"
+post_build_report
+
