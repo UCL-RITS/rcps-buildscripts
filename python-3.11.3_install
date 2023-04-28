@@ -1,6 +1,6 @@
 #!/bin/bash
 
-package_name="Python"
+package_name="python"
 package_version="3.11.3"
 package_description="Adds Python ${package_version} with pip and virtualenv to your environment variables."
 
