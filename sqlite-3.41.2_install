@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="sqlite"
+package_version="3.41.2"
+package_description="SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO https://www.sqlite.org/2023/sqlite-autoconf-3410200.tar.gz
+
+manifest \
+	sha256:e98c100dd1da4e30fa460761dab7c0b91a50b785e167f8c57acc46514fae9499 sqlite-autoconf-3410200.tar.gz
+	
+
+tar -xf sqlite-autoconf-3410200.tar.gz
+
+cd sqlite-autoconf-3410200
+./configure \
+    --prefix="$install_prefix" \
+    CFLAGS="-DSQLITE_ENABLE_COLUMN_METADATA"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
