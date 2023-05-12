@@ -28,7 +28,7 @@ install.packages ("phangorn", lib=mainLib, repos=repros);
 # For JAGS - added March 2014 fixed April 2023
 
 install.packages ("coda", lib=mainLib, repos=repros);
-install.packages ("rjags", configure.args="--enable-rpath" lib=mainLib, repos=repros);
+install.packages ("rjags", configure.args="--enable-rpath", lib=mainLib, repos=repros);
 install.packages ("abind", lib=mainLib, repos=repros);
 install.packages ("R2WinBUGS", lib=mainLib, repos=repros);
 # install.packages ("R2jags", lib=mainLib, repos=repros);

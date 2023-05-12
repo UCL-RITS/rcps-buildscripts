@@ -32,6 +32,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TA
 MD5=${MD5:-5065a8802a0c8919788663c9830ca0cf}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/afni-${VERSION}.tgz}
 ATLAS_SRC_ARCHIVE=${ATLAS_SRC_ARCHIVE:-https://afni.nimh.nih.gov/pub/dist/atlases/afni_atlases_dist.tgz}
+BOOT_CAMP_ARCHIVE=${BOOT_CAMP_ARCHIVE:-https://afni.nimh.nih.gov/pub/dist/edu/data/CD.tgz}
 
 mkdir -p /dev/shm/$APPNAME
 temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
@@ -41,6 +42,8 @@ cd $temp_dir
 cp $SRC_ARCHIVE afni_src.tgz
 wget $ATLAS_SRC_ARCHIVE
 ATLAS_ARCHIVE=`basename $ATLAS_SRC_ARCHIVE`
+wget $BOOT_CAMP_ARCHIVE
+BOOT_CAMP=`basename $BOOT_CAMP_ARCHIVE`
 
 CHECKSUM=`md5sum afni_src.tgz| awk '{print $1}'`
 
@@ -86,7 +89,8 @@ else
   echo "Got: $CHECKSUM"
 fi
 
-# Install atlases
+# Install atlases and bootcamp data
 
 cd $INSTALL_PREFIX
 tar -xvf $temp_dir/$ATLAS_ARCHIVE
+tar -xvf $temp_dir/$BOOT_CAMP
