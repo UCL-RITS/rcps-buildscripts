@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+package_name="orca"
+package_version="5.0.4"
+package_description="ORCA is an ab initio, DFT, and semiempirical SCF-MO package. This installation is the official statically-linked binary distribution."
+package_variant="sbindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+
+pkg_store="/shared/ucl/apps/pkg-store"
+
+# The static binary distribution comes as three separate tar files because it's quite large.
+manifest \
+    sha256:e22ba96d302e402e7fd41e1801812702b8a1e9215b8c65dc02abc61fca028f68  "$pkg_store"/orca_5_0_4_linux_x86-64_openmpi411_part1.tar.xz \
+    sha256:a63f91fad77118fa462358e7301040f1b4b33e6a039079f9bbc785a9813d0cd3  "$pkg_store"/orca_5_0_4_linux_x86-64_openmpi411_part2.tar.xz \
+    sha256:3251574df0928ed52c875147fa87883ce90397fc9ceb7a7bbdc3656ef9fb20fe  "$pkg_store"/orca_5_0_4_linux_x86-64_openmpi411_part3.tar.xz
+
+make_build_env --tmp-root="/dev/shm"
+
+cd "$build_dir"
+
+mkdir -p "$install_prefix"
+
+package_version_label="${package_version//./_}"
+package_openmpi_version="411"
+for archive in "$pkg_store"/orca_"$package_version_label"_linux_x86-64_openmpi"$package_openmpi_version"_part?.tar.xz; do
+tar \
+    -C "$install_prefix" \
+    --strip-components=1 \
+    -xvf "$archive"
+done
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix" \
+    -v RSH_COMMAND=ssh \
+    -r mpi/openmpi/4.1.1 \
+    -g legorca
+chmod -R a+rX "$module_dir"
+chgrp -R legorca "$install_prefix"
+rm -Rf "${build_dir:?error: tried to rm blank}"
+
+post_build_report
+
