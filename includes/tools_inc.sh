@@ -53,39 +53,39 @@ add_prefix_to_env ()
     if [ -z "$1" ] || [ ! -d "$1" ]; then
         echo "Error: invalid path specified" 1>&2;
     else
-        CMAKE_PREFIX_PATH="$1:$CMAKE_PREFIX_PATH";
+        CMAKE_PREFIX_PATH="$1:${CMAKE_PREFIX_PATH:-}";
         export CMAKE_PREFIX_PATH
         if [ -d "$1/bin" ]; then
             PATH="$1/bin:$PATH";
             export PATH
         fi;
         if [ -d "$1/man" ]; then
-            MANPATH="$1/man:$MANPATH";
+            MANPATH="$1/man:${MANPATH:-}";
             export MANPATH
         fi;
         if [ -d "$1/share/man" ]; then
-            MANPATH="$1/share/man:$MANPATH";
+            MANPATH="$1/share/man:${MANPATH:-}";
             export MANPATH
         fi;
         if [ -d "$1/lib" ]; then
-            LIBRARY_PATH="$1/lib:$LIBRARY_PATH";
-            LD_LIBRARY_PATH="$1/lib:$LD_LIBRARY_PATH";
+            LIBRARY_PATH="$1/lib:${LIBRARY_PATH:-}";
+            LD_LIBRARY_PATH="$1/lib:${LD_LIBRARY_PATH:-}";
             export LIBRARY_PATH
             export LD_LIBRARY_PATH
         fi;
         if [ -d "$1/lib64" ]; then
-            LIBRARY_PATH="$1/lib64:$LIBRARY_PATH";
-            LD_LIBRARY_PATH="$1/lib64:$LD_LIBRARY_PATH";
+            LIBRARY_PATH="$1/lib64:${LIBRARY_PATH:-}";
+            LD_LIBRARY_PATH="$1/lib64:${LD_LIBRARY_PATH:-}";
             export LIBRARY_PATH
             export LD_LIBRARY_PATH
         fi;
         if [ -d "$1/lib/pkgconfig" ]; then
-            PKG_CONFIG_PATH="$1/lib/pkgconfig:$PKG_CONFIG_PATH";
+            PKG_CONFIG_PATH="$1/lib/pkgconfig:${PKG_CONFIG_PATH:-}";
             export PKG_CONFIG_PATH
         fi;
         if [ -d "$1/include" ]; then
-            CPATH="$1/include:$CPATH";
-            INCLUDE_PATH="$1/include:$INCLUDE_PATH";
+            CPATH="$1/include:${CPATH:-}";
+            INCLUDE_PATH="$1/include:${INCLUDE_PATH:-}";
             export CPATH
             export INCLUDE_PATH
         fi;
