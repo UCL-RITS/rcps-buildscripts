@@ -133,7 +133,7 @@ make_build_env () {
     # These definitions are intended to leave the function
     #  but are *not* exported because only *bash* needs them
     owd=$(pwd)                                                                    
-    build_dir="${BUILD_DIR:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-build.XXXXXXXXXX")"}"
+    build_dir="${BUILD_DIR:-"$(mktemp -d -p "$tmp_root_dir" "$prefix-build.XXXXXXXXXX")"}"
     
 
     if [[ -n "${package_name:-}" ]] && [[ -n "${package_version:-}" ]]; then
@@ -153,7 +153,7 @@ make_build_env () {
     if [[ -n "${reason_for_test_install:-}" ]]; then
         echo "Warning: default install prefix is a temporary directory because $reason_for_test_install"
         echo "         otherwise install prefix would have been $default_install_prefix"
-        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" -t "$prefix-test-prefix.XXXXXXXXXX")/$package_label"}"
+        install_prefix="${INSTALL_PREFIX:-"$(mktemp -d -p "$tmp_root_dir" "$prefix-test-prefix.XXXXXXXXXX")/$package_label"}"
         mkdir -p "$install_prefix"
     else
         install_prefix="$default_install_prefix"
