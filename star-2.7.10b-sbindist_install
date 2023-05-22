@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail \
+    -o noclobber
+
+package_name="star"
+package_version="2.7.10b"
+package_description="The Spliced Transcripts Alignment to a Reference (STAR) package for RNA sequence alignment. This installation uses the statically-linked binaries by default."
+package_variant="sbindist"
+
+package_url="https://github.com/alexdobin/STAR/archive/refs/tags/${package_version}.tar.gz"
+
+
+source includes/source_includes.sh
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO "$package_url"
+
+manifest sha256:0d1b71de6c5be1c5d90b32130d2abcd5785a4fc7c1e9bf19cc391947f2dc46e5  2.7.10b.tar.gz \
+
+mkdir -p "$install_prefix"
+tar \
+    --directory="$install_prefix" \
+    --strip-components=1 \
+    --extract \
+    --file="$package_version".tar.gz
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix/bin/Linux_x86_64_static"
+
+chmod a+rX "$module_dir"
+post_build_report
+
