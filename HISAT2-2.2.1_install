@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -l
+#!/usr/bin/env bash
 
 ###############################################
 # Installing HISAT2 2.2.1
