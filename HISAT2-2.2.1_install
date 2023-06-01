@@ -42,7 +42,7 @@ then
   unzip -x $archive
 
   cd ${APPNAME}-${VERSION}
-  gccloc=(dirname `which gcc`)
+  gccloc=$(dirname `which gcc`)
   echo $gccloc
   $gccloc/g++ -v
   echo Building ...
