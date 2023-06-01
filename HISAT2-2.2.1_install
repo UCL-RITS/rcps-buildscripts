@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -l
 
 ###############################################
 # Installing HISAT2 2.2.1
@@ -42,6 +42,10 @@ then
   unzip -x $archive
 
   cd ${APPNAME}-${VERSION}
+  gccloc=(dirname `which gcc`)
+  echo $gccloc
+  $gccloc/g++ -v
+  echo Building ...
   make
 
   # no make install so:
