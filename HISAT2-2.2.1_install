@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HISAT2 2.2.1
+#
+
+# by Brian Alston June 2023
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+# dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs
+require compilers/gnu/4.9.2
+require python3/recommended
+
+APPNAME=${APPNAME:-hisat2}
+VERSION=${VERSION:-2.2.1}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-7acec4dfd5844c4ce3e9ccd3e364a8b2}
+# No version number on the download site!
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://cloud.biohpc.swmed.edu/index.php/s/fE9QCsX3NH4QwBi/download}
+
+mkdir -p /dev/shm/$APPNAME
+temp_dir=`mktemp -d -p /dev/shm/$APPNAME`
+
+cd $temp_dir
+
+archive=${APPNAME}-${VERSION}-source.zip
+wget $SRC_ARCHIVE -O $archive
+
+CHECKSUM=`md5sum ${archive} | awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  unzip -x $archive
+
+  cd ${APPNAME}-${VERSION}
+  make
+
+  # no make install so:
+
+  mkdir -p $INSTALL_PREFIX
+  cp hisat2 hisat2-align-s hisat2-align-l hisat2-build hisat2-build-s hisat2-build-l hisat2-inspect hisat2-inspect-s hisat2-inspect-l ${INSTALL_PREFIX}/
+ 
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
