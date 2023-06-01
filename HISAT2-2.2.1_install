@@ -42,6 +42,7 @@ then
   unzip -x $archive
 
   cd ${APPNAME}-${VERSION}
+  module list
   gccloc=$(dirname `which gcc`)
   echo $gccloc
   $gccloc/g++ -v
