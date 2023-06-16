@@ -43,4 +43,4 @@ then
   cd julia-${VERSION}
   mkdir ucl-wrapper
   cp /shared/ucl/apps/build_scripts/files/julia/julia-nopkgimg.sh ucl-wrapper/julia
-if
+fi
