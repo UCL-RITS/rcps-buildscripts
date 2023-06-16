@@ -16,6 +16,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
 SHA256=${SHA256:-00c614466ef9809c2eb23480e38d196a2c577fff2730c4f83d135b913d473359}
 ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}-linux-x86_64.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://julialang-s3.julialang.org/bin/linux/x64/1.9/${ARCHIVENAME}}
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
 rm -Rf $INSTALL_PREFIX
 mkdir $INSTALL_PREFIX
@@ -36,7 +37,10 @@ fi
 
 tar -zxvf ${ARCHIVENAME}
 
-#echo "Installing UCL binary wrapper (needed for Julia >= 1.6.0"
-#cd julia-${VERSION}
-#mkdir ucl-wrapper
-#cp /shared/ucl/apps/build_scripts/files/julia/julia.sh ucl-wrapper/julia
+if [ $WHEREAMI == "kathleen" ]
+then
+  echo "Installing UCL binary wrapper (needed for kathleen's Lustre)"
+  cd julia-${VERSION}
+  mkdir ucl-wrapper
+  cp /shared/ucl/apps/build_scripts/files/julia/julia-nopkgimg.sh ucl-wrapper/julia
+if
