@@ -39,10 +39,10 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require rcps-core/1.0.0
-require cmake/3.21.1
 require beta-modules
 require gcc-libs/10.2.0
+require rcps-core/1.0.0
+require cmake/3.21.1
 require compilers/gnu/10.2.0
 require sqlite/3.36.0/gnu-10.2.0
 # require gmt/recommended
