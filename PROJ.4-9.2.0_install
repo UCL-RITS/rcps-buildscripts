@@ -68,7 +68,7 @@ then
 
    mkdir build
    cd build
-   cmake -DSQLITE3_INCLUDE_DIR= /shared/ucl/apps/SQLite/3360000/include -DSQLITE3_LIBRARY=/shared/ucl/apps/SQLite/3360000/lib/libsqlite3.so ..
+   cmake -DSQLITE3_INCLUDE_DIR=/shared/ucl/apps/SQLite/3360000/include -DSQLITE3_LIBRARY=/shared/ucl/apps/SQLite/3360000/lib/libsqlite3.so ..
    cmake --build .
    cmake --build . --target install
    
