@@ -51,7 +51,7 @@ temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
 # wget $DATA_ARCHIVE projsync is used to download data files.
 # wget $EPSG_ARCHIVE 
 
