@@ -13,7 +13,7 @@ for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,requi
 
 VERSION=${VERSION:-1.9.1}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
-SHA256=${SHA256:-cde14a58f899251f30cfced87055626f44845780659ebe8d50cbc4c67b31997}
+SHA256=${SHA256:-cde14a58f899251f30cfced87055626f44845780659ebe8d50cbc4c67b31997c}
 ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}-linux-x86_64.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://julialang-s3.julialang.org/bin/linux/x64/1.9/${ARCHIVENAME}}
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
