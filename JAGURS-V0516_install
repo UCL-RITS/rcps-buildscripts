@@ -10,10 +10,7 @@ VERSION=${VERSION:-V0516}
 COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGUURS/${VERSION}/${COMPILER_TAG}_MPI}
 MD5=${MD5:-d0e0454d87fb9cb08c1897ec34f45ea0}
-SRC_ARCHIVE=${SRC_ARCHIVE:- https://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
-
-# May no longer be needed and doesn't exist at this location anymore.
-EPSG_ARCHIVE=${EPSG_ARCHIVE:- https://github.com/jagurs-admin/jagurs/archive/refs/tags/JAGURS-D_${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/jagurs-admin/jagurs/archive/refs/tags/JAGURS-D_${VERSION}}
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
