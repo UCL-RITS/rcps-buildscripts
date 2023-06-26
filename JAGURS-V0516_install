@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing JAGURS V0516 using GNU 10.2.0
+#
+# by Brian Alston, June 2023
+#
+
+VERSION=${VERSION:-V0516}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/JAGUURS/${VERSION}/${COMPILER_TAG}_MPI}
+MD5=${MD5:-d0e0454d87fb9cb08c1897ec34f45ea0}
+SRC_ARCHIVE=${SRC_ARCHIVE:- https://download.osgeo.org/proj/proj-${VERSION}.tar.gz}
+
+# May no longer be needed and doesn't exist at this location anymore.
+EPSG_ARCHIVE=${EPSG_ARCHIVE:- https://github.com/jagurs-admin/jagurs/archive/refs/tags/JAGURS-D_${VERSION}}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+require numactl/2.0.12
+require binutils/2.36.1/gnu-10.2.0
+require ucx/1.9.0/gnu-10.2.0
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require sqlite/3.36.0/gnu-10.2.0
+require proj.4/4.9.1
+require fftw/3.3.9/gnu-10.2.0
+require hdf/5-1.10.6/gnu-10.2.0
+require netcdf/4.9.2/gnu-10.2.0
+require netcdf-fortran/4.6.1/gnu-10.2.0
+require szip/2.1
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget --no-check-certificate $SRC_ARCHIVE
+
+CHECKSUM=`md5sum JAGURS-D_${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf JAGURS-D_${VERSION}.tar.gz
+   cd jagurs-JAGURS-D_${VERSION}/src
+
+   # choose suitable Makfile, revise for UCL clusters and build.
+
+   rm -f Makefile
+   cp Makefile.gfortran Makefile
+   sed -i.bak1 '/^PROJ4_DIR/s|$(HOME)/local|/shared/ucl/apps/PROJ.4/4.9.1|' Makefile
+   sed -i.bak2 '/^FFTW3_INCLUDE_DIR/s|$(HOME)/local/include|$(FFTWINCLUDE)|' Makefile
+   sed -i.bak3 '/^NETCDF/s|$(HOME)/local|/shared/ucl/apps/NetCDF-fortran/4.6.1-gnu-10.2.0|' Makefile
+   make
+
+   # no make install taget so doing a bit of guesswork
+   
+   mkdir -p ${INSTALL_PREFIX}/bin
+   cp jagurs ${INSTALL_PREFIX}/bin
+   cd ..
+   cp -r doc ${INSTALL_PREFIX}
+   cp -r input ${INSTALL_PREFIX}
+
+   # Note: the tools need GMT module loaded to run.
+   cp -r tools ${INSTALL_PREFIX}
+   
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
