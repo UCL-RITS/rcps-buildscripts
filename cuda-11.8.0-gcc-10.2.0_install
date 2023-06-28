@@ -29,6 +29,15 @@ _env_setup() {
   owd=$(pwd)
   package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
   install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+
+  # if /tmp/cuda-installer.log exists and isn't writable by us, install will fail
+  if [ -O /tmp/cuda-installer.log ]
+  then
+    echo "Cannot continue: /tmp/cuda-installer.log exists and is not owned by the current user." 
+    echo "This location cannot be redirected."
+    exit 1
+  fi
+
   mkdir -p /dev/shm/cuda
   build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/cuda)}
   module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
