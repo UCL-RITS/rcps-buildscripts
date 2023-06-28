@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="git"
+package_version="2.41.0"
+package_description="Git is a free and open source distributed version control system."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO "https://mirrors.edge.kernel.org/pub/software/scm/git/git-${package_version}.tar.xz"
+curl -sLO "https://mirrors.edge.kernel.org/pub/software/scm/git/git-manpages-${package_version}.tar.xz"
+
+manifest \
+	sha256:e748bafd424cfe80b212cbc6f1bbccc3a47d4862fb1eb7988877750478568040 git-2.41.0.tar.xz \
+	sha256:bc7a4c944492c76fc3cd766ce22e826d0241e43792c611d4fdc068e0df545877 git-manpages-2.41.0.tar.xz 
+
+tar -xf "git-${package_version}.tar.xz"
+
+cd "git-${package_version}"
+make prefix="$install_prefix"
+make prefix="$install_prefix" install
+
+cd "$build_dir"
+mkdir "${install_prefix}/share/man"
+tar -C "${install_prefix}/share/man" -xf "git-manpages-${package_version}.tar.xz"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+

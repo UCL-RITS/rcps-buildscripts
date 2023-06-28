@@ -1,0 +1,58 @@
+#!/bin/bash
+
+package_name="git"
+package_version="2.41.0"
+package_description="Git is a free and open source distributed version control system. This installation includes git-lfs pre-configured."
+
+lfs_version="3.3.0"
+package_variant="lfs-${lfs_version}"
+
+
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+curl -sLO "https://mirrors.edge.kernel.org/pub/software/scm/git/git-${package_version}.tar.xz"
+curl -sLO "https://mirrors.edge.kernel.org/pub/software/scm/git/git-manpages-${package_version}.tar.xz"
+curl -sLO "https://github.com/git-lfs/git-lfs/releases/download/v${lfs_version}/git-lfs-linux-amd64-v${lfs_version}.tar.gz"
+
+manifest \
+	sha256:e748bafd424cfe80b212cbc6f1bbccc3a47d4862fb1eb7988877750478568040 git-2.41.0.tar.xz \
+	sha256:bc7a4c944492c76fc3cd766ce22e826d0241e43792c611d4fdc068e0df545877 git-manpages-2.41.0.tar.xz \
+    sha256:6a4e6bd7d06d5c024bc70c8ee8c9da143ffc37d2646e252a17a6126d30cdebc1 git-lfs-linux-amd64-v3.3.0.tar.gz 
+
+tar -xf "git-${package_version}.tar.xz"
+
+cd "git-${package_version}"
+make prefix="$install_prefix"
+make prefix="$install_prefix" install
+
+cd "$build_dir"
+mkdir "${install_prefix}/share/man"
+tar -C "${install_prefix}/share/man" -xf "git-manpages-${package_version}.tar.xz"
+
+cd "$build_dir"
+tar -xf "git-lfs-linux-amd64-v${lfs_version}.tar.gz"
+cd "git-lfs-${lfs_version}"
+cp "git-lfs" "${install_prefix}/bin/"
+rsync man "${install_prefix}/share/man"
+
+# We need git to run git-lfs to make this work, as far as I know,
+#  so we can configure the git-lfs integration with git
+add_prefix_to_env "$install_prefix"
+mkdir "${install_prefix}/etc"
+"${install_prefix}/bin/git" lfs install --system
+
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
