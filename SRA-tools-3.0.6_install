@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -l
+#!/usr/bin/env bash
 
 ###############################################
 # Installing SRA Tools 3.0.6 and NCBI SRA SDK
@@ -19,6 +19,8 @@ SRC_ARCHIVE_SRA=${SRC_ARCHIVE_SRA:-https://github.com/ncbi/sra-tools/archive/ref
 SRC_ARCHIVE_VDB=${SRC_ARCHIVE_VDB:-https://github.com/ncbi/ncbi-vdb/archive/refs/tags/${VERSION}.tar.gz}
 SRA_ARCHIVE=${SRA_ARCHIVE:-sra-tools-${VERSION}.tar.gz}
 VDB_ARCHIVE=${VDB_ARCHIVE:-ncbi-vdb-${VERSION}.tar.gz}
+
+set -e
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
