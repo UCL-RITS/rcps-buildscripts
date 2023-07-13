@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing SRA Tools 3.0.6 and NCBI SRA SDK
+#
+# by Brian Alston, July 2023
+#
+# Using Ian's require function to load modules
+#
+
+VERSION=${VERSION:-3.0.6}
+COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+INSTALL_PREFIX_S=${INSTALL_PREFIX_S:-/shared/ucl/apps/ncbi/sra-tools/${VERSION}/${COMPILER_TAG}}
+INSTALL_PREFIX_V=${INSTALL_PREFIX_V:-/shared/ucl/apps/ncbi/ncbi-vdb/${VERSION}/${COMPILER_TAG}}
+
+MD5_S=${MD5_S:-cad580eac44c3b593c68579871910103}
+MD5_V=${MD5_V:-7f488277ba1017d07db503acc4d0939a}
+SRC_ARCHIVE_SRA=${SRC_ARCHIVE_SRA:-https://github.com/ncbi/sra-tools/archive/refs/tags/${VERSION}.tar.gz}
+SRC_ARCHIVE_VDB=${SRC_ARCHIVE_VDB:-https://github.com/ncbi/ncbi-vdb/archive/refs/tags/${VERSION}.tar.gz}
+SRA_ARCHIVE=${SRA_ARCHIVE:-sra-tools-${VERSION}.tar.gz}
+VDB_ARCHIVE=${VDB_ARCHIVE:-ncbi-vdb-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs
+require cmake/3.21.1
+require compilers/gnu/4.9.2
+require hdf/5-1.10.5/gnu-4.9.2
+require python3/recommended
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget --no-check-certificate $SRC_ARCHIVE_SRA -O $SRA_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE_VDB -O $VDB_ARCHIVE
+
+CHECKSUM_S=`md5sum $SRA_ARCHIVE | awk '{print $1}'`
+CHECKSUM_V=`md5sum $VDB_ARCHIVE | awk '{print $1}'`
+
+if [[ "$MD5_S" == "$CHECKSUM_S" && "$MD5_V" == "$CHECKSUM_V" ]]
+then
+    tar -xvf $SRA_ARCHIVE
+    tar -xvf $VDB_ARCHIVE
+
+    cd ncbi-vdb-${VERSION}
+
+    # build uses CMAKE
+
+    ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
+    make
+    make install
+    
+    cd sra-tools-${VERSION}
+
+    # build uses CMAKE
+
+    ./configure --prefix=${INSTALL_PREFIX_S} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
+    make
+    make install
+    
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
