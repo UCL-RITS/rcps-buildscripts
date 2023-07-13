@@ -35,6 +35,9 @@ require compilers/gnu/4.9.2
 require hdf/5-1.10.5/gnu-4.9.2
 require python3/recommended
 
+# Clean files from previous build.
+/bin/rm -rf ~/ncbi-outdir/ncbi-vdb/linux/gcc/x86_64/rel/obj
+
 temp_dir=`mktemp -d -p /dev/shm`
 
 cd $temp_dir
