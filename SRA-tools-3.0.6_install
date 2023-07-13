@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -l
 
 ###############################################
 # Installing SRA Tools 3.0.6 and NCBI SRA SDK
