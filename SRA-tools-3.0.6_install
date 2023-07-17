@@ -58,7 +58,7 @@ then
     # build uses CMAKE
 
     ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
-    make
+    make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake
     make install
     
     cd sra-tools-${VERSION}
@@ -66,7 +66,7 @@ then
     # build uses CMAKE
 
     ./configure --prefix=${INSTALL_PREFIX_S} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
-    make
+    make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake
     make install
     
 else
