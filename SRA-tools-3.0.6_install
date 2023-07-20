@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing SRA Tools 3.0.6 and NCBI SRA SDK
+# Installing SRA Tools 3.0.6 and NCBI SRA SDK using GNU 10.2.0 compilers
 #
 # by Brian Alston, July 2023
 #
@@ -9,7 +9,7 @@
 #
 
 VERSION=${VERSION:-3.0.6}
-COMPILER_TAG=${COMPILER_TAG:-gnu-4.9.2}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 INSTALL_PREFIX_S=${INSTALL_PREFIX_S:-/shared/ucl/apps/ncbi/sra-tools/${VERSION}/${COMPILER_TAG}}
 INSTALL_PREFIX_V=${INSTALL_PREFIX_V:-/shared/ucl/apps/ncbi/ncbi-vdb/${VERSION}/${COMPILER_TAG}}
 
@@ -29,10 +29,13 @@ INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/module_maker_inc.sh
 source ${INCLUDES_DIR}/require_inc.sh
 
-require gcc-libs
+require gcc-libs/10.2.0
 require cmake/3.21.1
-require compilers/gnu/4.9.2
-require hdf/5-1.10.5/gnu-4.9.2
+require compilers/gnu/10.2.0
+require java/openjdk-11/11.0.1
+require bison/3.0.4/gnu-4.9.2
+require hdf/5-1.10.6/gnu-10.2.0
+require libxml2/2.9.4/gnu-4.9.2
 require python3/recommended
 
 # Clean files from previous build.
@@ -57,17 +60,25 @@ then
 
     # build uses CMAKE
 
-    ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
+    ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/HDF/5-1.10.6/gnu-10.2.0  --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
+    cd build
+    sed -i 's|-DCMAKE_C_COMPILER=$(shell which $(LD))|-DCMAKE_C_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/gcc|' Makefile.env
+    sed -i 's|-DCMAKE_CXX_COMPILER=$(shell which $(CPP))|-DCMAKE_CXX_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/g++|' Makefile.env
+    cd ..
     make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake
-    make install
+    make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake install
     
-    cd sra-tools-${VERSION}
+    cd ../sra-tools-${VERSION}
 
     # build uses CMAKE
 
-    ./configure --prefix=${INSTALL_PREFIX_S} --with-hdf5-prefix=/shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2  --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
+    ./configure --prefix=${INSTALL_PREFIX_S} --with-ncbi-vdb-prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/HDF/5-1.10.6/gnu-10.2.0  --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
+    cd build
+    sed -i 's|-DCMAKE_C_COMPILER=$(shell which $(LD))|-DCMAKE_C_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/gcc|' Makefile.env
+    sed -i 's|-DCMAKE_CXX_COMPILER=$(shell which $(CPP))|-DCMAKE_CXX_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/g++|' Makefile.env
+    cd ..
     make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake
-    make install
+    make CMAKE=/shared/ucl/apps/cmake/3.21.1/gnu-4.9.2/bin/cmake install
     
 else
    echo "***** Hash mismatch,"
