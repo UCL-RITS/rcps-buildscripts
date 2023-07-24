@@ -60,7 +60,7 @@ then
 
     # build uses CMAKE
 
-    ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/HDF/5-1.10.6/gnu-10.2.0  --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
+    ./configure --prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=$HDF5HOME --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2 
     cd build
     sed -i 's|-DCMAKE_C_COMPILER=$(shell which $(LD))|-DCMAKE_C_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/gcc|' Makefile.env
     sed -i 's|-DCMAKE_CXX_COMPILER=$(shell which $(CPP))|-DCMAKE_CXX_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/g++|' Makefile.env
@@ -72,7 +72,7 @@ then
 
     # build uses CMAKE
 
-    ./configure --prefix=${INSTALL_PREFIX_S} --with-ncbi-vdb-prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=/shared/ucl/apps/HDF/5-1.10.6/gnu-10.2.0  --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
+    ./configure --prefix=${INSTALL_PREFIX_S} --with-ncbi-vdb-prefix=${INSTALL_PREFIX_V} --with-hdf5-prefix=$HDF5HOME --with-fuse-prefix=/shared/ucl/apps/fuse/2.9.5/gnu-4.9.2 --with-xml2-prefix=/shared/ucl/apps/libxml2/2.9.4/gnu-4.9.2
     cd build
     sed -i 's|-DCMAKE_C_COMPILER=$(shell which $(LD))|-DCMAKE_C_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/gcc|' Makefile.env
     sed -i 's|-DCMAKE_CXX_COMPILER=$(shell which $(CPP))|-DCMAKE_CXX_COMPILER=/shared/ucl/apps/gcc/10.2.0-p95889/bin/g++|' Makefile.env
