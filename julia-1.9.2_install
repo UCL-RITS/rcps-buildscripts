@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing julia
+#
+# 
+#
+# Using binaries because compiling Julia on RHEL 7.x is a "castle of pain".
+
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+VERSION=${VERSION:-1.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/julia/$VERSION}
+SHA256=${SHA256:-4c2d799f442d7fe718827b19da2bacb72ea041b9ce55f24eee7b1313f57c4383}
+ARCHIVENAME=${ARCHIVENAME:-julia-${VERSION}-linux-x86_64.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://julialang-s3.julialang.org/bin/linux/x64/1.9/${ARCHIVENAME}}
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+rm -Rf $INSTALL_PREFIX
+mkdir $INSTALL_PREFIX
+cd $INSTALL_PREFIX
+
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum ${ARCHIVENAME}| awk '{print $1}'`
+
+if [ "$SHA256" != "$CHECKSUM" ]
+then
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+  exit 1
+fi
+
+tar -zxvf ${ARCHIVENAME}
+
+if [ $WHEREAMI == "kathleen" ]
+then
+  echo "Installing UCL binary wrapper (needed for kathleen's Lustre)"
+  cd julia-${VERSION}
+  mkdir ucl-wrapper
+  cp /shared/ucl/apps/build_scripts/files/julia/julia-nopkgimg.sh ucl-wrapper/julia
+fi
