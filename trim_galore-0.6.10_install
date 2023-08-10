@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Trim Galore
+#
+# Updated August 2023 for version 0.6.10
+#
+
+NAME=${NAME:-trim_galore}
+VERSION=${VERSION:-0.6.10}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
+
+# Now hosted on GitHub
+SRC_ARCHIVE=${SRC_ARCHIVE:https://github.com/FelixKrueger/TrimGalore/archive/${VERSION}.tar.gz}
+MD5=${MD5:-ce8ea65db052838656fd3d760c17d9f9}
+
+set -e
+
+mkdir -p /dev/shm/$NAME
+temp_dir=`mktemp -d -p /dev/shm/$NAME`
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+
+  # untar into install location
+  tar -xvf $temp_dir/$archive
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
+
