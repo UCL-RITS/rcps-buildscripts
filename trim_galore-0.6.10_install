@@ -11,7 +11,7 @@ VERSION=${VERSION:-0.6.10}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 
 # Now hosted on GitHub
-SRC_ARCHIVE=${SRC_ARCHIVE:https://github.com/FelixKrueger/TrimGalore/archive/${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/FelixKrueger/TrimGalore/archive/${VERSION}.tar.gz}
 MD5=${MD5:-ce8ea65db052838656fd3d760c17d9f9}
 
 set -e
