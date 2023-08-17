@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name="gftp"
+package_version="2.9.1b"
+package_description="gFTP is a file transfer client that supports a wide range of FTP-like protocols."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+dynpath64="" rpmlibdir64="" source /opt/rh/devtoolset-11/enable
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O gftp-2.9.1b.tar.xz https://github.com/masneyb/gftp/releases/download/2.9.1b/gftp-2.9.1b.tar.xz
+
+manifest \
+	sha256:79c727a0c7720e0e49dac4fc760a686d10ff78a496e1e3e644b45d3e76e1eecd gftp-2.9.1b.tar.xz
+	
+
+tar -xf gftp-2.9.1b.tar.xz
+
+cd gftp-2.9.1b
+./configure \
+    --prefix="$install_prefix"
+make
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
