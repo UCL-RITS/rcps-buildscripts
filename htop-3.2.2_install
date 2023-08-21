@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name="htop"
+package_version="3.2.2"
+package_description="htop is a cross-platform interactive process viewer."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O htop-3.2.2.tar.xz https://github.com/htop-dev/htop/releases/download/3.2.2/htop-3.2.2.tar.xz
+
+manifest \
+	sha256:bac9e9ab7198256b8802d2e3b327a54804dc2a19b77a5f103645b11c12473dc8 htop-3.2.2.tar.xz
+	
+
+tar -xf htop-3.2.2.tar.xz
+
+cd htop-3.2.2
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
