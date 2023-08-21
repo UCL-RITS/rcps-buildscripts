@@ -1,0 +1,36 @@
+#!/bin/bash
+
+package_name="cmake"
+package_version="3.27.3"
+package_description="CMake is an open-source, cross-platform family of tools designed to build, test and package software."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O cmake-3.27.3.tar.gz https://github.com/Kitware/CMake/releases/download/v3.27.3/cmake-3.27.3.tar.gz
+
+manifest \
+	sha256:66afdc0f181461b70b6fedcde9ecc4226c5cd184e7203617c83b7d8e47f49521 cmake-3.27.3.tar.gz
+	
+
+tar -xf cmake-3.27.3.tar.gz
+
+cd cmake-3.27.3
+./bootstrap \
+    --prefix="$install_prefix" \
+    --system-curl
+make -l $(nproc) -j
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
