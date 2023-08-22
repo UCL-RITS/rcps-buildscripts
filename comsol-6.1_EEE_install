@@ -5,7 +5,7 @@ set -o errexit \
     -o pipefail \
     -o noclobber
 
-package_name="COMSOL"
+package_name="comsol"
 package_version="6.1"
 package_description="COMSOL is a general-purpose macroscopic physics simulation package. Installed for EEE Dept"
 
