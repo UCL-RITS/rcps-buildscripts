@@ -68,7 +68,7 @@ temp_dir=$(mktemp -d -p ~/Software/LAMMPS)
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+wget --no-check-certificate $SRC_ARCHIVE
 tar -xvf lammps-${VERSION}.tar.gz
 cd lammps-${VERSION}
 mkdir -p build
