@@ -48,15 +48,7 @@ pip install --upgrade pip
 
 old_IFS="$IFS"
 IFS=$'\n'
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-shared.list`
-do
-   if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
-   then
-       pip install --no-cache-dir --no-binary $PIPNOBIN $entry
-   fi
-done
-
-for entry in `cat /shared/ucl/apps/build_scripts/lists/python-2.list`
+for entry in `cat /shared/ucl/apps/build_scripts/lists/python-2-2712.list`
 do
    if [[ -n "$entry" ]] && [[ ! "${entry// /}" =~ ^\# ]];
    then
