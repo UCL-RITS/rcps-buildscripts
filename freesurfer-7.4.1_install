@@ -21,7 +21,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
 MD5=${MD5:-e200a3a3326d887bace33a3c25fe5d1c}
 # SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/freesurfer-linux-centos7_x86_64-${VERSION}.tar.gz}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${VERSION}/freesurfer-linux-centos7_x86_64-${VERSION}.tar.gz}
-LICENSE_FILE=${LICENSE_FILE:-/home/ccspapp/Software/freesurfer/license-7.2.txt}
+LICENSE_FILE=${LICENSE_FILE:-/home/ccspapp/Software/freesurfer/license-7.4.1.txt}
 
 set -e
 
@@ -36,13 +36,13 @@ mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 tar -xvf $temp_dir/freesurfer-linux-centos7_x86_64-${VERSION}.tar.gz
 
-# cd ${NAME}
-# cp $LICENSE_FILE .license
-# chmod a+r .license
+cd $NAME
+cp $LICENSE_FILE license.txt
+chmod a+r license.txt
 
 # Install MATLAB R2019b runtime. Needed by some FreeSurfer scripts
 export FREESURFER_HOME=${INSTALL_PREFIX}/freesurfer
-cd freesurfer/bin
+cd bin
 ./fs_install_mcr R2019b
 
 
