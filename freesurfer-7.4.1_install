@@ -34,7 +34,7 @@ wget $SRC_ARCHIVE
 
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
-tar -xvf $tmp_dir/freesurfer-linux-centos7_x86_64-${VERSION}.tar.gz
+tar -xvf $temp_dir/freesurfer-linux-centos7_x86_64-${VERSION}.tar.gz
 
 # cd ${NAME}
 # cp $LICENSE_FILE .license
