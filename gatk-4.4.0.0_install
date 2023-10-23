@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Based on old 4.2.5.0 installer.
+
+set -o errexit -o nounset -o pipefail -o noclobber
+
+package_name="gatk"
+package_version="4.4.0.0"
+package_description="Adds GATK 4.4.0.0 to your environment. The Genome Analysis Toolkit or GATK is a software package developed at the Broad Institute to analyze high-throughput sequencing data. Website: https://www.broadinstitute.org/gatk/index.php"
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/4.9.2
+require python/miniconda3/4.10.3
+require java/temurin-17
+
+make_build_env ""
+
+cd "$build_dir"
+
+curl -sLO -- "https://github.com/broadinstitute/gatk/releases/download/${package_version}/gatk-${package_version}.zip"
+manifest \
+    sha256:444600f7b38b46ad0b3606b7d40ce921e0ff1910a50165872f1c73c7c4a1a390  gatk-4.4.0.0.zip \
+
+
+mkdir -p "$install_prefix"
+cd "$install_prefix"
+
+pkg_file="gatk-${package_version}.zip"
+unzip "$build_dir/$pkg_file"
+
+cd "$install_prefix/gatk-${package_version}"
+
+conda env create -p "$install_prefix/gatk-${package_version}/conda" -f "$install_prefix/gatk-${package_version}/gatkcondaenv.yml"
+
+make_module_v2 \
+    -d \
+    -e PATH:"$install_prefix/gatk-${package_version}" \
+    -v GATKPATH="$install_prefix/gatk-${package_version}" \
+    -v GATK_LOCAL_JAR="$install_prefix/gatk-${package_version}/gatk-package-${package_version}-local.jar" \
+    -v GATK_CONDA="$install_prefix/gatk-${package_version}/conda"
+
+# The module makers don't have a way to add extra prints on-load at the moment, so we have to do this slightly hacky approach.
+# This is the default module output file for make_module_v2
+>>"$module_dir/$package_label" \
+printf '
+lappend auto_path /shared/ucl/apps/modulelibs/UsefulModuleFunctions
+package require modulefunctions 1.0
+
+if {[modulefunctions::isModuleLoad]} {
+    puts stderr {
+      GATK: Some GATK tools require conda and associated libraries.
+      To use them run:
+         module load python/miniconda3/4.10.3 
+         source $UCL_CONDA_PATH/etc/profile.d/conda.sh 
+         conda activate $GATK_CONDA
+     }
+}
+'
+
+post_build_report
+
