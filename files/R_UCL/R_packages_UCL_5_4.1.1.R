@@ -9,7 +9,8 @@
 # Update August 2021 - to add additional packages needed for IHI teaching apps
 # Update September 2021 - for R 4.1.1
 # Updated January 2023 - to add nlmixr2 for R 4.2.0
-# Updated Aporil 2023 - to fix build of rjags
+# Updated April 2023 - to fix build of rjags
+# Updated October 2023 - to add arrow and VIM packages.
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -243,6 +244,11 @@ install.packages ("HistData", lib=mainLib, repos=repros);
 # for CHLD0085 - January 2023
 install.packages ("nlmixr2", lib=mainLib, repos=repros);
 
+# for Dongxian Guo (dongxian.guo.19@ucl.ac.uk) - October 2023
+install.packages ("arrow", lib=mainLib, repos=repros);
+
+# for POLS0010 - October 2023
+install.packages ("VIM", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
