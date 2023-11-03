@@ -46,6 +46,7 @@ then
     require ucx/1.9.0/gnu-10.2.0
 fi
 
+require fftw/3.3.9/gnu-10.2.0
 require mpi/openmpi/4.0.5/gnu-10.2.0
 require cmake/3.21.1
 require python3/3.9-gnu-10.2.0
