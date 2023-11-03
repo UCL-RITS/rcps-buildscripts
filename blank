@@ -1,70 +1,38 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -o errexit -o nounset
-for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
-
-package_name=""
-package_version=""
-src_urls=
+package_name="thing"
+package_version="1.2.3"
 # Optional: 
 # package_variant=""
 package_description="This is a thing that does stuff."
 
-actual_file_name=
-actual_file_md5=
+set -o errexit \
+    -o nounset \
+    -o pipefail
 
-require a_thing
+source includes/source_includes.sh
 
-_env_setup() {
-  owd=$(pwd)
-  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
-  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
-  build_dir=${BUILD_DIR:-$(mktemp -d -t ${package_name}-build.XXXXXXXX)}
-  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
-  basename=${basename:-$(basename -s .tar.gz $(cut -f 1 -d ' ' <<<$src_urls))}
-  cd $build_dir
-}
+module purge
 
-_fetch_files() {
-  wget ${actual_file_name:+-O $actual_file_name} $src_urls
-  md5sum -c <<<"$actual_file_md5  $actual_file_name"
-}
+make_build_env ""
 
-_setup_files() {
-  tar -xf $actual_file_name
-}
+cd "$build_dir"
+curl -sLO https://www.example.com/thing-1.2.3.tar.xz
 
-_build() {
-  cd ${basename}
-  ./configure --prefix=$install_prefix ${1:-}
-  make ${2:-}
-  make check 
-  make install
-  make distclean
-  echo "Installed to: $install_prefix"
-}
+manifest \
+	sha256:d2f881a5cc231e2f5a03e86f4584b0438f83edd7598a09d24a21bd8d003e2e01 thing-1.2.3.tar.xz
+	
 
-_prepare_module() {
-  make_module -p $install_prefix \
-              -n "${package_name}" \
-              -c "${package_name}" \
-              -o $module_dir/$package_label \
-              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
-  echo "Module files put in: $module_dir" >&2
-  chmod a+rx $module_dir
-}
+tar -xf thing-1.2.3.tar.xz
 
-_clean_up() {
-  cd $owd
-  if [ -n "$build_dir" ]; then
-    rm -Rf ${build_dir}
-  fi
-}
+cd thing-1.2.3
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
 
-_env_setup
-_fetch_files
-_setup_files
-_build
-_prepare_module
-_clean_up
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
 
