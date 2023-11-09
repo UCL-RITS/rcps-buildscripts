@@ -50,6 +50,12 @@ make install
 
 
 ## Post-build
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
+
 ## Clean up
 
 rm -rf *
