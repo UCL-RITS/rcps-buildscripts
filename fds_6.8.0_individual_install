@@ -1,0 +1,52 @@
+#!/bin/bash -l
+
+######################################################################
+# Installing a local copy of FDS into the user's home directory
+#
+# Uses Intel 2022 compiler with Intel MPI
+#
+# To run:
+# cd /shared/ucl/apps/build_scripts
+# ./fds_individual_install
+#
+# In a job, when using this install, load these modules:
+# module purge
+# module load beta-modules
+# module load gcc-libs/10.2.0
+# module load compilers/intel/2022.2
+# module load mpi/intel/2021.6.0
+#
+
+package_name="FDS"
+package_version="6.8.0"
+package_build="impi_intel_linux"
+package_install=$HOME/$package_name-$package_version
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+mkdir $package_install
+includes_dir="/shared/ucl/apps/build_scripts/includes"
+for i in $includes_dir/{require,tools}_inc.sh; do . $i; done
+
+module purge
+
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2021.6.0
+
+make_build_env ""
+install_prefix=$package_install
+
+cd $build_dir
+git clone --depth 1 --branch "$package_name-$package_version" https://github.com/firemodels/fds.git "$package_name-$package_version"
+
+cd $package_name-$package_version/Build/$package_build
+./make_fds.sh
+make VPATH="../../Source" -f ../makefile clean
+
+cp fds_$package_build $install_prefix
+
+post_build_report
