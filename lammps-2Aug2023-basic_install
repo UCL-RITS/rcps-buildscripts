@@ -20,9 +20,11 @@ set -e
 
 source includes/source_includes.sh
 
+# Switching to Intel compilers 2022.2 as 2020 compilers fail to compile googletest
+
 module purge
 require gcc-libs/4.9.2
-require compilers/intel/2020/release
+require compilers/intel/2022.2
 require mpi/intel/2019/update6/intel
 require cmake/3.21.1
 require python/3.9.10
