@@ -124,12 +124,12 @@ _build() {
 _post_build() {
   mkdir -p "$install_prefix"
   chgrp -R "$vasp_access_group" "$install_prefix"
+  chmod o-rx -R "$install_prefix"
   mkdir -p "$install_prefix/bin"
   'cp' -v "$unpack_dir"/bin/vasp* "$install_prefix/bin"
 
   'mv' vtstscripts-* vtstscripts
   'cp' -rv vtstscripts "$install_prefix"
-  chmod o-rwx -R "$install_prefix"
 }
 
 _clean_up() {
