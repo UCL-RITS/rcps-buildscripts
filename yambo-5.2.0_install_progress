@@ -59,7 +59,7 @@ _post_build() {
         -p "$install_prefix" \
         -r gcc-libs \
         -r compilers/intel/2022.2 \
-        -r mpi/intel/2021.6.0 \
+        -r mpi/intel/2021.6.0/intel \
         -c yambo 
     cd ..
 }
