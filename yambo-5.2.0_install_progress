@@ -10,8 +10,8 @@ source includes/source_includes.sh
 _env_setup() {
     module purge
     require  gcc-libs
-    require  compilers/intel/2017/update4
-    require  mpi/intel/2017/update3/intel
+    require  compilers/intel/2022.2
+    require  mpi/intel/2021.6.0/intel
 
     make_build_env ""
 
