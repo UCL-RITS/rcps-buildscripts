@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+# Note: LAMMPS will try to use Eigen 3.4.0 and that results in C++ template errors
+# with every combination of Intel compiler and gcc-libs we have.
+# Eigen 3.3.9 is fine.
+
+# Note: The GPU version needs the CUDA drivers available so must be run on a GPU node 
+# not a login node. On Myriad additionally we need one of the A100 nodes (Type L).
+
+# Updated November 2023 for LAMMPS 2nd August 2023 version and needs Intel 2022.2 compilers
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-gpumixed}
+VERSION=${VERSION:-2Aug2023}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/stable_${VERSION}.tar.gz}
+BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+source includes/source_includes.sh
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2019/update6/intel
+require cmake/3.21.1
+require python/3.9.10
+require eigen/3.3.9
+require cuda/11.3.1/gnu-10.2.0
+
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/$COMPILER_TAG}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+cluster=$WHEREAMI
+
+# We are on a compute node, put it in Scratch
+mkdir -p ~/Scratch/${NAME}/${VERSION}/${TYPE}
+temp_dir=$(mktemp -d -p ~/Scratch/${NAME}/${VERSION}/${TYPE})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+tar -xvf stable_${VERSION}.tar.gz
+cd lammps-stable_${VERSION}
+mkdir -p build
+cd build
+
+# Configure for standard build plus shared libraries and build
+cmake -C ../cmake/presets/most.cmake \
+      -DBUILD_SHARED_LIBS=yes \
+      -DLAMMPS_MACHINE=gpu \
+      -DPKG_GPU=on -DGPU_API=cuda -DGPU_PREC=mixed -DGPU_ARCH=sm_80 \
+      -DFFT=MKL \
+      -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+      -DDOWNLOAD_EIGEN3=OFF \
+      ../cmake
+
+# Add building LAMMPS unit tests if requested.
+if [ "$BUILD_UNIT_TESTS" == "yes" ]
+then
+    cmake -D ENABLE_TESTING=on .
+    echo ""
+    echo "NOTE: unit tests need to be run from build directory: `pwd` using the ctest command from CMAKE."
+    echo ""
+fi
+
+# Build and install
+VERBOSE=1 make
+make install
+
+# Make default binary symlink
+cd $INSTALL_PREFIX/bin
+ln -s lmp_gpu lmp_default
+
+# make a symlink to liblammps.so so Python etc can find that
+cd $INSTALL_PREFIX/lib64
+ln -s liblammps_gpu.so liblammps.so
+
+#rm -Rf $temp_dir
+
