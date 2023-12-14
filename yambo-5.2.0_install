@@ -42,7 +42,7 @@ _build() {
         --with-fft-libs=-mkl \
         --with-blas-libs=-mkl \
         --with-lapack-libs=-mkl \
-        --enable-netcdf-default \
+        --enable-netcdf-output \
         --prefix="$install_prefix"
     make all
     cd ..
