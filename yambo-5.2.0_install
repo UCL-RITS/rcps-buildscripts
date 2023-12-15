@@ -35,8 +35,7 @@ _pre_build() {
     cd ..
 }
 
-_build() {
-    mkdir -p "$install_prefix"	
+_build() {	
     cd "$unpack_dir"
 
     ./configure \
@@ -52,6 +51,8 @@ _build() {
 _post_build() {
     cd "$unpack_dir"
     #make install
+    mkdir -p "$install_prefix"
+    cp -r bin doc "$install_prefix"/
     make_module \
         -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
