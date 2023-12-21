@@ -31,7 +31,8 @@ temp_dir=`mktemp -d -p /dev/shm/hdf5`
 
 cd $temp_dir
 
-wget $SRC_ARCHIVE
+# wget $SRC_ARCHIVE
+wget https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_3/src/hdf5-1.12.3.tar.gz
 
 CHECKSUM=`md5sum hdf${VERSION}.tar.gz | awk '{print $1}'`
 
