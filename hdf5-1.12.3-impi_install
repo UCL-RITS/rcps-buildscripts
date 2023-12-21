@@ -6,8 +6,8 @@
 # by Owain Kenway, 2018
 # updated December 2023 for HDF5 1.12.3 and Intel compilers 2022.2 and MPI 2019 update 6
 
-VERSION=${VERSION:5-1.12.3}
-DIRNAME=${DIRNAME:5_1_12_3}
+VERSION=${VERSION:-5-1.12.3}
+DIRNAME=${DIRNAME:-5_1_12_3}
 COMPILER_TAG=${COMPILER_TAG:-intel-2022}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/impi/${COMPILER_TAG}}
 MD5=${MD5:-4da24fcd281b9eeb05dae9b258f72a72}
@@ -31,8 +31,7 @@ temp_dir=`mktemp -d -p /dev/shm/hdf5`
 
 cd $temp_dir
 
-# wget $SRC_ARCHIVE
-wget https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_3/src/hdf5-1.12.3.tar.gz
+wget $SRC_ARCHIVE
 
 CHECKSUM=`md5sum hdf${VERSION}.tar.gz | awk '{print $1}'`
 
