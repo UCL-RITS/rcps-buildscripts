@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing HDF5 1.12.3 Serial Version with currently loaded compiler
+# Installing HDF5 1.12.3 Version with MPI support
 #
 # by Owain Kenway, 2018
 # updated December 2023 for HDF5 1.12.3 and Intel compilers 2022.2 and MPI 2019 update 6
