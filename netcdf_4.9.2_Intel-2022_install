@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NetCDF 4.9.2 with Intel 2022.2 compilers and parallel HDF5
+#
+# by Brian Alston, 2015
+# Updated April 2020 for 4.7.4 and GNU 9.2.0
+# Updated September 2021 for 4.8.1 and GNU 10.2.0
+#	also archive download location has changed.
+# Updated July 2022 for 4.9.0 and to built Intel version when required.
+# Updated June 2023 for 4.9.2
+# Updated January 2024 to use Intel 2022.2 compilers and parallel HDF5
+#
+
+source includes/source_includes.sh
+
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2019/update6/intel
+require hdf/5-1.12.3-impi/intel-2022
+
+VERSION=${VERSION:-4.9.2}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF/${VERSION}-${COMPILER_TAG} }
+MD5=${MD5:-f48ee01534365006934f0c63d4055ea0}
+# SRC_ARCHIVE=${SRC_ARCHIVE:-ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://downloads.unidata.ucar.edu/netcdf-c/${VERSION}/netcdf-c-${VERSION}.tar.gz}
+	      
+NETCDF_OPTIONS=${NETCDF_OPTIONS:-"--enable-netcdf4"}
+
+# We need to support installing this into a variety of non standard locations with non-standard builds.
+SPECIAL=${SPECIAL:-NO}
+
+set -e
+
+
+if [[ "$SPECIAL" == "cesm" ]]
+then
+   YEAR=${COMPILER_TAG:6}
+   echo "DETECTED CESM BUILD $YEAR"
+   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf-${YEAR}
+fi
+
+
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum netcdf-c-${VERSION}.tar.gz| awk '{print $1}'`
+
+HDF_TAG=$COMPILER_TAG
+HDF_VER=5-1.10.6
+
+if [[ "${COMPILER_TAG:0:5}" == "intel" ]]
+then
+    HDF_TAG="impi/intel_2022"
+    HDF_VER=5-1.12.3
+fi
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf netcdf-c-${VERSION}.tar.gz
+   cd netcdf-c-${VERSION}
+   export CPPFLAGS=-I/shared/ucl/apps/HDF/${HDF_VER}/${HDF_TAG}/include
+   export LDFLAGS=-L/shared/ucl/apps/HDF/${HDF_VER}/${HDF_TAG}/lib
+
+   ./configure --prefix=${INSTALL_PREFIX} ${NETCDF_OPTIONS}
+   make
+   make check
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
