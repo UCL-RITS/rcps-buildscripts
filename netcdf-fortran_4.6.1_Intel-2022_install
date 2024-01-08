@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Fortran NetCDF 4.6.1
+#
+# by Owain Kenway, 2015 
+#
+# Updated July 2022 for 4.5.4 using NetCDF 4.9.0
+# Updated June 2023 for 4.6.1 using NetCDF 4.9.2
+# Updated January 2024 to use Intel 2022.2 compilers
+
+source includes/source_includes.sh
+
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2019/update6/intel
+require hdf/5-1.12.3-impi/intel-2022
+
+VERSION=${VERSION:-4.6.1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NetCDF-fortran/${VERSION}-${COMPILER_TAG} }
+SHA1=${SHA1:-da9df9ed26c236df074d92c633f3f2c5ea184136}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://downloads.unidata.ucar.edu/netcdf-fortran/${VERSION}/netcdf-fortran-${VERSION}.tar.gz}
+
+# We need to support installing this into a variety of non standard locations with non-standard builds.
+SPECIAL=${SPECIAL:-NO}
+
+if [[ "$SPECIAL" == "cesm" ]]
+then
+   YEAR=${COMPILER_TAG:6}
+   echo "DETECTED CESM BUILD $YEAR"
+   INSTALL_PREFIX=/shared/ucl/apps/cesm/support/netcdf-${YEAR}
+fi
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`sha1sum netcdf-fortran-${VERSION}.tar.gz| awk '{print $1}'`
+
+if [[ "$SHA1" == "$CHECKSUM" ]]
+then
+   tar xvzf netcdf-fortran-${VERSION}.tar.gz
+   cd netcdf-fortran-${VERSION}
+
+   export CPPFLAGS="-I/shared/ucl/apps/NetCDF/4.9.2-${COMPILER_TAG}/include"
+   export LDFLAGS="-L/shared/ucl/apps/NetCDF/4.9.2-${COMPILER_TAG}/lib"
+   if [[ "$SPECIAL" == "cesm" ]]
+   then
+      echo "DETECTED CESM BUILD $YEAR"
+      export CPPFLAGS="-I/shared/ucl/apps/cesm/support/netcdf-${YEAR}/include"
+      export LDFLAGS="-L/shared/ucl/apps/cesm/support/netcdf-${YEAR}lib"
+     
+   fi 
+
+   ./configure --prefix=${INSTALL_PREFIX} 
+   make
+   make install
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $SHA1"
+   echo "	Got:      $CHECKSUM"
+fi
