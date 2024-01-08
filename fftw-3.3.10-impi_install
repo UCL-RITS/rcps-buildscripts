@@ -20,8 +20,8 @@ make_build_env ""
 cd "$build_dir"
 wget http://www.fftw.org/fftw-${package_version}.tar.gz
 
-manifest md5:8ccbf6a5ea78a16dbc3e1306e234cc5c  fftw-3.3.10.tar.gz \
-          fftw-3.3.10.tar.gz
+#manifest md5:8ccbf6a5ea78a16dbc3e1306e234cc5c  fftw-3.3.10.tar.gz \
+#          fftw-3.3.10.tar.gz
 
 
 # Unpack and build
