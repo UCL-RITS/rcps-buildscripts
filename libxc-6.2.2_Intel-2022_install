@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -o errexit
+
+package_name="libxc"
+package_version="6.2.2"
+package_description="libxc is a library of routines implementing a range of exchange-correlation functionals for density-functional theory calculations."
+
+source includes/source_includes.sh
+
+#module purge
+module load gcc-libs/10.2.0
+module load compilers/intel/2022.2
+
+make_build_env ""
+
+cd "$build_dir"
+
+curl -L --verbose -O "http://www.tddft.org/programs/octopus/down.php?file=libxc/${package_version}/libxc-${package_version}.tar.gz"
+
+manifest sha256:a0f6f1bba7ba5c0c85b2bfe65aca1591025f509a7f11471b4cd651a79491b045  libxc-6.2.6.tar.gz
+
+tar -xf "libxc-${package_version}.tar.gz"
+
+cd "libxc-${package_version}"
+
+./configure \
+    --enable-shared \
+    --enable-static \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module \
+    -p "$install_prefix" \
+    -r "gcc-libs/10.2.0" \
+    -c "libxc" \
+    -r "compilers/intel/2022.2" \
+    -o "$module_dir/$package_label" \
+    -w "$package_description"
+
+chmod -R 755 "$module_dir"
