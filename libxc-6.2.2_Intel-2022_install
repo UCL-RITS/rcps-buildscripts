@@ -19,7 +19,7 @@ cd "$build_dir"
 # New location for 6.2.2
 curl -L --verbose -O "http://www.tddft.org/programs/libxc/down.php?file=${package_version}/libxc-${package_version}.tar.gz"
 
-manifest sha256:a0f6f1bba7ba5c0c85b2bfe65aca1591025f509a7f11471b4cd651a79491b045  libxc-6.2.6.tar.gz
+manifest sha256:a0f6f1bba7ba5c0c85b2bfe65aca1591025f509a7f11471b4cd651a79491b045  libxc-6.2.2.tar.gz
 
 tar -xf "libxc-${package_version}.tar.gz"
 
