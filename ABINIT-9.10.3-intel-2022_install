@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ABINIT Version 9.10.3 using Intel 2022 Compilers and MPI.
+#
+# by Brian Alston, July 2022.
+# Updated January 2024 for Version 9.10.3 using Intel 2022 Compilers and MPI
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+cluster=$WHEREAMI
+
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2019/update6/intel
+require fftw/3.3.10-impi/intel-2022
+require hdf/5-1.12.3-impi/intel-2022
+require netcdf/4.9.2/intel-2022
+require netcdf-fortran/4.6.1/intel-2022
+require libxc/6.2.2/intel-2022
+require python3/recommended
+
+NAME=${NAME:-abinit}
+
+VERSION=${VERSION:-9.10.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ABINIT/${VERSION}/${COMPILER_TAG}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.abinit.org/sites/default/files/packages/${NAME}-${VERSION}.tar.gz}
+
+
+# Build in Scratch as we need the log output from make to run some of the tests.
+
+cd ~/Scratch
+mkdir -p ${NAME}_build
+cd ${NAME}_build
+/bin/rm -f ${NAME}-${VERSION}.tar.gz
+wget ${SRC_ARCHIVE}
+tar -xvf ${NAME}-${VERSION}.tar.gz
+cd ${NAME}-${VERSION}
+
+# remove previous build directory if it exists.
+/bin/rm -rf build
+mkdir -p build
+cd build
+../configure FC=mpiifort F90=mpiifort --prefix=${INSTALL_PREFIX} --with-netcdf="`nc-config --prefix`" --with-netcdf-fortran="`nf-config --prefix`" 2>&1 | tee configure-log
+
+# Build and install
+make 2>&1 | tee make-log
+make install
+
+# Copy source tree as it contains examples and tutorials.
+
+cd ../..
+cp -r ${NAME}-${VERSION} ${INSTALL_PREFIX}/
+
+
