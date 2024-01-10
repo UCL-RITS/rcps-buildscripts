@@ -5,6 +5,7 @@
 #
 # by Brian Alston, July 2022.
 # Updated January 2024 for Version 9.10.3 using Intel 2022 Compilers and MPI
+#
 
 WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
 
@@ -50,7 +51,9 @@ cd ${NAME}-${VERSION}
 /bin/rm -rf build
 mkdir -p build
 cd build
-../configure FC=mpiifort F90=mpiifort --prefix=${INSTALL_PREFIX} --with-netcdf="`nc-config --prefix`" --with-netcdf-fortran="`nf-config --prefix`" 2>&1 | tee configure-log
+
+# Needed to add location of MPI as configure fails if not set.
+../configure FC=mpiifort F90=mpiifort --prefix=${INSTALL_PREFIX} --with-mpi=/shared/ucl/apps/intel/2020/impi/2019.6.166/intel64 --with-netcdf="`nc-config --prefix`" --with-netcdf-fortran="`nf-config --prefix`" 2>&1 | tee configure-log
 
 # Build and install
 make 2>&1 | tee make-log
