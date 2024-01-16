@@ -10,8 +10,8 @@ source includes/source_includes.sh
 _env_setup() {
     module purge
     require  gcc-libs
-    require  compilers/intel/2018/update3
-    require  mpi/intel/2018/update3/intel
+    require  compilers/intel/2022.2
+    require  mpi/intel/2019/update6/intel
 
     make_build_env ""
 
@@ -57,8 +57,8 @@ _post_build() {
         -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
         -r gcc-libs \
-        -r compilers/intel/2018/update3 \
-        -r mpi/intel/2018/update3/intel \
+        -r compilers/intel/2022.2 \
+        -r mpi/intel/2019/update6/intel \
         -c yambo 
     cd ..
 }
