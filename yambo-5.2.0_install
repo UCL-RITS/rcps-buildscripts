@@ -57,7 +57,7 @@ _post_build() {
     make_module \
         -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
-        -r beta-modules
+        -r beta-modules \
         -r gcc-libs/10.2.0 \
         -r compilers/intel/2022.2 \
         -r mpi/intel/2019/update6/intel \
