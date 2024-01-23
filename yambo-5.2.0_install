@@ -69,7 +69,6 @@ _post_build() {
         -r hdf/5-1.12.3-impi/intel-2022 \
         -r netcdf/4.9.2/intel-2022 \
         -r netcdf-fortran/4.6.1/intel-2022 \
-
         -c yambo 
     cd ..
 }
