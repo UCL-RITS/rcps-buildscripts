@@ -13,9 +13,6 @@ _env_setup() {
     require  gcc-libs/10.2.0
     require  compilers/intel/2022.2
     require  mpi/intel/2019/update6/intel
-    require  fftw/3.3.10-impi/intel-2022
-    require  hdf/5-1.12.3-impi/intel-2022
-    require  libxc/6.2.2/intel-2022
 
     make_build_env ""
 
@@ -64,9 +61,6 @@ _post_build() {
         -r gcc-libs/10.2.0 \
         -r compilers/intel/2022.2 \
         -r mpi/intel/2019/update6/intel \
-        -r fftw/3.3.10-impi/intel-2022 \
-        -r hdf/5-1.12.3-impi/intel-2022 \
-        -r libxc/6.2.2/intel-2022 \
         -c yambo 
     cd ..
 }
