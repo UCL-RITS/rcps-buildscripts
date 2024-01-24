@@ -48,10 +48,10 @@ _build() {
         --with-blas-libs=-mkl \
         --with-lapack-libs=-mkl \
         --enable-netcdf-output \
-        --with-libxc-path="/shared/ucl/apps/libxc/6.2.2/intel-2022" \
-        --with-hdf5-path=“/shared/ucl/apps/HDF/5-1.12.3/impi/intel-2022" \
-        --with-netcdf-path=“/shared/ucl/apps/NetCDF/4.9.2-intel-2022" \
-        --with-netcdff-path="/shared/ucl/apps/NetCDF-fortran/4.6.1-intel-2022" \
+        --with-libxc-path="/shared/ucl/apps/libxc/6.2.2/intel-2022/" \
+        --with-hdf5-path="/shared/ucl/apps/HDF/5-1.12.3/impi/intel-2022/" \
+        --with-netcdf-path="/shared/ucl/apps/NetCDF/4.9.2-intel-2022/" \
+        --with-netcdff-path="/shared/ucl/apps/NetCDF-fortran/4.6.1-intel-2022/" \
         --prefix="$install_prefix"
 
     make all
