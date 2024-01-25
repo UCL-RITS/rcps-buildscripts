@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing HDF5 1.12.3 Version with MPI support
+#
+# by Owain Kenway, 2018
+# updated December 2023 for HDF5 1.12.3 and Intel compilers 2022.2 and MPI 2019 update 6
+
+VERSION=${VERSION:-5-1.12.3}
+DIRNAME=${DIRNAME:-5_1_12_3}
+COMPILER_TAG=${COMPILER_TAG:-intel-2022}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/HDF/${VERSION}/impi/${COMPILER_TAG}}
+MD5=${MD5:-4da24fcd281b9eeb05dae9b258f72a72}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF${DIRNAME}/src/hdf${VERSION}.tar.gz}
+PARALLEL_SCRATCH_DIR=$HOME/Scratch
+set -e
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/intel/2019/update6/intel
+require gerun
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+mkdir -p /dev/shm/hdf5
+temp_dir=`mktemp -d -p /dev/shm/hdf5`
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum hdf${VERSION}.tar.gz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvf hdf${VERSION}.tar.gz
+   cd hdf${VERSION}
+   CC=mpicc FC=mpiifort ./configure --prefix=${INSTALL_PREFIX} --enable-fortran --enable-parallel
+   make 
+   export HDF5_PARAPREFIX=${HDF5_PARAPREFIX:-$(mktemp -d -p $PARALLEL_SCRATCH_DIR hdf5_test_files.XXXXXXXX)}
+
+   make check-s &> serial-test.log
+   make check-p RUNPARALLEL='mpirun ' HDF5_Make_Ignore="y" &> parallel-test.log
+
+   make install
+   cat serial-test.log
+   cat parallel-test.log
+
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi

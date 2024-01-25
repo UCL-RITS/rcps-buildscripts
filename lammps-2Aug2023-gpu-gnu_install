@@ -36,6 +36,8 @@ source ${INCLUDES_DIR}/require_inc.sh
 
 cluster=$WHEREAMI
 
+module purge
+require beta-modules
 require gcc-libs/10.2.0
 require compilers/gnu/10.2.0
 
