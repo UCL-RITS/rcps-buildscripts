@@ -1,0 +1,42 @@
+#!/bin/bash
+
+package_name="linaroforge"
+package_version="23.1.1"
+package_description="Linaro Forge (previously ArmForge) is a collection of parallel profiling and debugging tools for x86_64 and ARM processors."
+
+# NB: this isn't the package_variant: it doesn't get included in the module file name. (There's no reason to put it there.)
+platform_variant="linux-x86_64"
+
+licence_file_location="/shared/ucl/apps/pkg-store/armforge-cs-licence.txt"
+
+set -o errexit \
+    -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+# ARM Forge is pretty large, so put it in /dev/shm instead of /tmp
+make_build_env --tmp-root=/dev/shm
+
+
+cd "$build_dir"
+
+wget https://downloads.linaroforge.com/"$package_version"/linaro-forge-"$package_version"-"$platform_variant".tar
+
+manifest \
+    sha256:6dcd39fc582088eb4b13233ae1e9b38e12bfa07babf77d89b869473a3c2b66e6  linaro-forge-23.1.1-linux-x86_64.tar
+
+tar -xf linaro-forge-"$package_version"-"$platform_variant".tar
+cd "linaro-forge-$package_version-$platform_variant"
+./textinstall.sh  --accept-licence "$install_prefix"
+
+cp \
+    "$licence_file_location" \
+    "$install_prefix/licences/Licence.client"
+
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
