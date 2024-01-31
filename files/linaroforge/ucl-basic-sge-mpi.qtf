@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Name: UCL-Basic-SGE-MPI
+#
+# WARNING: If you install a new version of Arm Forge to the same
+#          directory as this installation, then this file will be overwritten.
+#          If you customize this script at all, please rename it.
+#
+# submit: qsub
+# display: qstat
+# job regexp: our job (\d+) 
+# cancel: qdel JOB_ID_TAG
+# 
+# WALL_CLOCK_LIMIT_TAG: {type=text,label="Wall Clock Limit", default="00:30:00",mask="09:09:09"}
+# GPU_REQUEST_TAG: {type=integer,label="Number of GPUs", default=0, mask="9"}
+# PARALLEL_ENVIRONMENT_TAG: {type=select,options=smp|mpi,label="Parallel Environment", default=mpi}
+# EXTRA_SGE_TAG: {type=text, label="Extra SGE options", default=""}
+
+## Arm Forge will generate a submission script by
+## replacing these tags:
+##        TAG NAME         |         DESCRIPTION           |        EXAMPLE
+## ---------------------------------------------------------------------------
+## PROGRAM_TAG             | target path and filename      | /users/ned/a.out
+## PROGRAM_ARGUMENTS_TAG   | arguments to target program   | -myarg myval
+## NUM_PROCS_TAG           | total number of processes     | 16
+## NUM_NODES_TAG           | number of compute nodes       | 8
+## PROCS_PER_NODE_TAG      | processes per node            | 2
+## NUM_THREADS_TAG         | OpenMP threads per process    | 4
+## DDT_DEBUGGER_ARGUMENTS_TAG | arguments to be passed to forge-backend
+## MPIRUN_TAG              | name of mpirun executable     | mpirun
+## AUTO_MPI_ARGUMENTS_TAG  | mpirun arguments              | -np 4
+## EXTRA_MPI_ARGUMENTS_TAG | extra mpirun arguments        | -x FAST=1
+
+#$ -l h_rt=WALL_CLOCK_LIMIT_TAG
+#$ -l gpu=GPU_REQUEST_TAG
+#$ -pe PARALLEL_ENVIRONMENT_TAG NUM_PROCS_TAG
+#$ EXTRA_SGE_TAG
+
+export OMP_NUM_THREADS=NUM_THREADS_TAG
+
+# These are from the template so I assume that's what it expects.
+#$ -cwd -V  
+#$ -o PROGRAM_TAG-allinea.stdout
+#$ -e PROGRAM_TAG-allinea.stderr
+
+
+## The following line will use exactly the same default settings that
+## Arm Forge uses to launch without the queue.
+
+AUTO_LAUNCH_TAG
+
+## Replace the above for more complex situations - such as for passing unusual
+## parameters to mpirun, like machine files or processes per node -- below is 
+## an example.
+##
+## if test "MPI_TAG" = "mpich 1 standard" ; then
+##    MPIRUN_TAG -tv -np NUM_PROCS_TAG PROGRAM_TAG PROGRAM_ARGUMENTS_TAG
+## else
+##   if test DEBUG_STARTER_TAG -eq 1 ; then
+##     DDT_CLIENT_TAG MPIRUN_TAG AUTO_MPI_ARGUMENTS_TAG -machinefile $PBS_NODELIST PROGRAM_TAG PROGRAM_ARGUMENTS_TAG
+##   else
+##     MPIRUN_TAG AUTO_MPI_ARGUMENTS_TAG -machinefile $PBS_NODELIST DDT_DEBUGGER_TAG PROGRAM_ARGUMENTS_TAG
+##   fi
+## fi

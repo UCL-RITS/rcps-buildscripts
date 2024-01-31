@@ -8,6 +8,7 @@ package_description="Linaro Forge (previously ArmForge) is a collection of paral
 platform_variant="linux-x86_64"
 
 licence_file_location="/shared/ucl/apps/pkg-store/armforge-cs-licence.txt"
+ucl_template="/shared/ucl/apps/build_scripts/files/linaroforge/ucl-basic-sge-mpi.qtf"
 
 set -o errexit \
     -o nounset
@@ -35,6 +36,8 @@ cp \
     "$licence_file_location" \
     "$install_prefix/licences/Licence.client"
 
+# add our basic SGE MPI template
+cp "$ucl_template" "$install_prefix/templates/"
 
 make_module_v2
 chmod a+rX "$module_dir"
