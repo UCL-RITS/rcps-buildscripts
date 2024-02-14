@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing miniconda and jupyterhub
+#
+# by Owain Kenway, 2018, David PS, 2020
+#
+set -e
+
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+require gcc-libs/4.9.2
+
+NAME=${NAME:-miniconda-jhub}
+VERSION=${VERSION:-4.8.3}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+SHA256=${SHA256:-879457af6a0bf5b34b48c12de31d4df0ee2f06a8e68768e5758c3293b2daf688}
+
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://repo.anaconda.com/miniconda/Miniconda3-py38_${VERSION}-Linux-x86_64.sh}
+
+
+mkdir -p /dev/shm/$(whoami)/${NAME}
+
+temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/${NAME})
+
+cd $temp_dir
+
+wget $SRC_ARCHIVE
+archive=$(basename "${SRC_ARCHIVE}")
+
+sha256sum -c <<< "$SHA256 $archive"
+
+bash "Miniconda3-py38_${VERSION}-Linux-x86_64.sh" -b -p ${INSTALL_PREFIX} -f
+
+
+# Basic conda installation, now to install JupyterHub
+# Load installed conda environment
+
+
+# Install jupyterhub
+oldpath=$PATH
+PATH=$INSTALL_PREFIX/bin:$PATH
+conda install -y -c conda-forge jupyterhub  # installs jupyterhub and proxy
+conda install -y jupyterlab notebook  # needed if running the notebook servers locally
+# Extensions - git for jupyterlab
+conda install -y -c conda-forge jupyterlab-git
+jupyter lab build
+
+# Extensions - VS Code via jupyter-lab
+conda install -y -c conda-forge jupyter-server-proxy jupyter-vscode-proxy # VS code interface
+jupyter labextension install @jupyterlab/server-proxy # It's not being installed from conda?
+jupyter lab build
+
+# creating it in its own environment:
+conda create -n jhubcode -c conda-forge code-server -y
+sed -i "2iCONDA_PREFIX=/shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode" /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server
+sed -i 's|node|${CONDA_PREFIX}/bin/node|' /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server
+ln -s  /shared/ucl/apps/miniconda-jhub/4.8.3/envs/jhubcode/bin/code-server /shared/ucl/apps/miniconda-jhub/4.8.3/bin/code-server
+code-server --install-extension ms-python.pythonnp
+
+# package dependencies
+packages=(
+    # Scientific stack
+    numpy numpydoc scipy pandas pandas-datareader pandasql
+    # python tooling
+    pip setuptools sphinx requests
+    # plotting
+    matplotlib bokeh plotly
+    # domain libraries
+    astropy biopython nltk proj4 scikit-image scikit-learn statsmodels sympy pytorch tensorflow pywavelets gdal
+    # Performance and distribution
+    cython dask dask-core dask-glm dask-ml numba
+    # Files and db
+    dill h5py hdf5 pytables pyyaml xarray xlsxwriter sqlalchemy sqlalchemy-utils
+    # tooling
+    flake8 isort memory_profiler python-language-server rope typing typing_extensions yapf tox
+    # testing
+    pytest pytest-arraydiff pytest-astropy pytest-asyncio pytest-cov pytest-doctestplus pytest-mock
+    pytest-pep8 pytest-runner pytest-timeout pytest-xdist mock
+    # conda related and notebooks
+    nb_conda_kernels
+    # Teaching
+    nbgrader
+)
+
+conda install -y -c conda-forge "${packages[@]}"
+
+
+PATH=$oldpath
+
+cd
+rm -rf $temp_dir
