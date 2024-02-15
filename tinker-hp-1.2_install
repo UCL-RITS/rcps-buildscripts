@@ -1,0 +1,71 @@
+#!/bin/bash
+
+package_name="tinker-hp"
+package_version="1.2"
+package_description="Tinker-HP is a CPUs and GPUs based, multi-precision, MPI massively parallel package dedicated to long polarizable molecular dynamics simulations and to polarizable QM/MM."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load \
+    gcc-libs/4.9.2 \
+    compilers/intel/2018/update3 \
+    mpi/intel/2018/update3/intel
+
+make_build_env ""
+
+cd "$build_dir"
+
+git clone \
+    --depth 1 \
+    --branch 2023.07 \
+    https://github.com/TinkerTools/tinker-hp.git \
+    checkout
+
+# Building against the vendored dependencies totally fails if you try to set the prefix,
+#  since it doesn't use the prefix path to work out where it should install them to or
+#  link against them
+# This pretty much means we have to build it in-place
+mkdir -p "$install_prefix"
+mv checkout/v1.2/* "$install_prefix/"
+
+cd "$install_prefix"
+
+automake --add-missing
+autoreconf
+
+cwd="$(pwd)"
+
+
+./configure \
+    --enable-skylake \
+    --enable-tcl \
+    --enable-fft-mkl \
+    --enable-plumed \
+    --enable-colvars \
+
+(
+cd plumed2
+# This build is a bit of a mess and we have to redo the config
+#  ourselves with a few things to get MKL and MPI to be picked up
+./configure \
+    MPICC=mpiicc \
+    MPICXX=mpiicpc \
+    CXX=mpiicpc \
+    --enable-mpi \
+    LDFLAGS=-mkl \
+    --prefix="${cwd}/plumed/Intel/"
+)
+
+make
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
+
