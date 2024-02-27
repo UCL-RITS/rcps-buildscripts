@@ -5,6 +5,8 @@
 #
 # Using Owain's video tutorial method. 
 # Brian Alston March 2023
+#
+# Updated Feb 2024 to constaing versions of numpy and urllib3
 
 NAME=${NAME:-tensorflow}
 VERSION=${VERSION:-2.11.0}
@@ -22,4 +24,5 @@ require python/3.9.10
 rm -rf $INSTALL_PREFIX
 mkdir -p $INSTALL_PREFIX
 
-pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
+# pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy ${PACKAGE_NAME}==${VERSION}
+pip3 install --no-cache-dir --target=${INSTALL_PREFIX} numpy==1.24.2 urllib3==1.26.14 ${PACKAGE_NAME}==${VERSION}
