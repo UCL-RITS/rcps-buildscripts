@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# CUDA Toolkit 11.8.0 for GNU 10.2.0
+
+set -o errexit -o nounset
+for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+
+package_name="cuda"
+package_version="12.2.2"
+driver_version=535.104.05
+
+src_urls=https://developer.download.nvidia.com/compute/cuda/${package_version}/local_installers/cuda_${package_version}_${driver_version}_linux.run
+
+
+# Optional: 
+# package_variant=""
+package_description="This is for compiling CUDA code to run on NVIDIA GPUs."
+
+actual_file_name=cuda_${package_version}_${driver_version}_linux.run
+# actual_file_sha512=e96e1389abed34b5093b3a1d4e6ae9f3d4f8406621b1475f378efae65868657efce22da03b5b4e0a548d9635e406b8690b18b17b186d03ecb3ca0703c5d5787a
+actual_file_sha512=e39e7134231b7a5132cd7bb46d26774246d83ab98b4d49a83212dc7440219ae20e4da06587c0351f525a2c847e8ad0ea06147709f243b53bd588faee4b123bb6
+
+module purge
+require beta-modules
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+
+_env_setup() {
+  owd=$(pwd)
+  package_label="${package_name}/${package_version}${package_variant:+-${package_variant}}/${COMPILER_TAG}"
+  install_prefix=${INSTALL_PREFIX:-/shared/ucl/apps/$package_label}
+
+  # if /tmp/cuda-installer.log exists and isn't writable by us, install will fail
+  if [ -O /tmp/cuda-installer.log ]
+  then
+    echo "Cannot continue: /tmp/cuda-installer.log exists and is not owned by the current user." 
+    echo "This location cannot be redirected."
+    exit 1
+  fi
+
+  mkdir -p /dev/shm/cuda
+  build_dir=${BUILD_DIR:-$(mktemp -d -p /dev/shm/cuda)}
+  module_dir=${MODULE_DIR:-$(mktemp -d -t ${package_name}-modules.XXXXXXXX)}
+  cd $build_dir
+}
+
+_fetch_files() {
+  wget ${actual_file_name:+-O $actual_file_name} $src_urls
+  # sha512sum -c <<<"$actual_file_sha512  $actual_file_name"
+  sha512sum -c <<<"$actual_file_sha512 $actual_file_name"
+
+}
+
+_setup_files() {
+  :
+}
+
+_build() {
+  rm -Rf $install_prefix
+  mkdir -p $install_prefix # amazingly the installer doesn't do this.
+  chmod +x $actual_file_name  
+  ./$actual_file_name \
+    --silent \
+    --tmpdir=$build_dir \
+   --installpath=$install_prefix \
+   --toolkit \
+   --toolkitpath=$install_prefix \
+   --samples \
+   --samplespath=$install_prefix/samples
+  echo "Installed to: $install_prefix"
+  rm -rf $build_dir
+
+}
+
+_prepare_module() {
+  make_module -p $install_prefix \
+              -c "${package_name}" \
+              -o $module_dir/$package_label \
+              -r gcc-libs/10.2.0 \
+              -r compilers/gnu/10.2.0 \
+              -e PATH:$install_prefix/nsight-compute-2022.3.0 \
+              -w "Adds ${package_name} ${package_version} to your environment. $package_description"
+  echo "Module files put in: $module_dir" >&2
+  chmod a+rx $module_dir
+}
+
+_clean_up() {
+  cd $owd
+  if [ -n "$build_dir" ]; then
+    rm -Rf ${build_dir}
+  fi
+}
+
+_env_setup
+_fetch_files
+_setup_files
+_build
+_prepare_module
+_clean_up
+
