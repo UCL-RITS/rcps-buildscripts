@@ -21,7 +21,7 @@ module load cmake/3.27.3
 
 make_build_env ""
 cd "$build_dir"
-wget https://github.com/ANTsX/ANTs/archive/refs/tags/v${package_version}.zip}
+wget "https://github.com/ANTsX/ANTs/archive/refs/tags/v${package_version}.zip"
 manifest SHA256:ca78c11c47a20ce038a440fbdc961f0396c4bf6645ed2b92068edf52e9fb1ea9  "v${package_version}.zip"
 
 unzip "v${package_version}.zip"
