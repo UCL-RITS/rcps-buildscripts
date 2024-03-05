@@ -25,13 +25,12 @@ wget "https://github.com/ANTsX/ANTs/archive/refs/tags/v${package_version}.zip"
 manifest SHA256:ca78c11c47a20ce038a440fbdc961f0396c4bf6645ed2b92068edf52e9fb1ea9  "v${package_version}.zip"
 
 unzip "v${package_version}.zip"
-mkdir -p "$INSTALL_PREFIX"
 
 # build directory must be outside source tree
 mkdir build
 cd build
 
-cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+cmake -DCMAKE_INSTALL_PREFIX="$install_prefix" \
       -DBUILD_SHARED_LIBS=ON -DBUILD_STYLE_UTILS=OFF \
       -DUSE_SYSTEM_ITK=OFF -DCMAKE_VERBOSE_MAKEFILE=ON ../"ANTs-${package_version}"
 
