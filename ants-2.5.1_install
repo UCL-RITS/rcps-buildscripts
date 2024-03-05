@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ANTs
+#
+# Builds local ITK
+
+package_name="ants"
+package_version="2.5.1"
+package_description="ANTs (Advanced Normalization Tools) computes high-dimensional mappings to capture the statistics of brain structure and function."
+
+set -o errexit -o nounset
+
+source includes/source_includes.sh
+
+module purge
+module load beta-modules
+module load gcc-libs/10.2.0
+module load compilers/gnu/10.2.0
+module load cmake/3.27.3
+
+make_build_env ""
+cd "$build_dir"
+wget https://github.com/ANTsX/ANTs/archive/refs/tags/v${package_version}.zip}
+manifest SHA256:ca78c11c47a20ce038a440fbdc961f0396c4bf6645ed2b92068edf52e9fb1ea9  "v${package_version}.zip"
+
+unzip "v${package_version}.zip"
+mkdir -p "$INSTALL_PREFIX"
+
+# build directory must be outside source tree
+mkdir build
+cd build
+
+cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+      -DBUILD_SHARED_LIBS=ON -DBUILD_STYLE_UTILS=OFF \
+      -DUSE_SYSTEM_ITK=OFF -DCMAKE_VERBOSE_MAKEFILE=ON ../"ANTs-${package_version}"
+
+make 2>&1 | tee build.log
+
+cd ANTs-build
+make install 2>&1 | tee install.log
+
+make_module_v2
+chmod -R +rX "$module_dir"
+
+post_build_report
+
