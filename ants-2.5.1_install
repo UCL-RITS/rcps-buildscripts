@@ -37,7 +37,7 @@ cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
 
 make 2>&1 | tee build.log
 
-cd ANTs-build
+cd ANTS-build
 make install 2>&1 | tee install.log
 
 make_module_v2
