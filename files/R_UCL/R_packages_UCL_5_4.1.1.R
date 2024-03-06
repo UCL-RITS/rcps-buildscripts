@@ -11,6 +11,7 @@
 # Updated January 2023 - to add nlmixr2 for R 4.2.0
 # Updated April 2023 - to fix build of rjags
 # Updated October 2023 - to add arrow and VIM packages.
+# Updated march 2024 to add quanteda.textstats and quanteda.textmodels
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -249,6 +250,10 @@ install.packages ("arrow", lib=mainLib, repos=repros);
 
 # for POLS0010 - October 2023
 install.packages ("VIM", lib=mainLib, repos=repros);
+
+# for POLS0010 - March 2024
+install.packages ("quanteda.textstats", lib=mainLib, repos=repros);
+install.packages ("quanteda.textmodels", lib=mainLib, repos=repros);
 
 # End of R_packages_UCL_5
 
