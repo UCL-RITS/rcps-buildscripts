@@ -17,7 +17,7 @@
 NAME=${NAME:-FoldX}
 VERSION=${VERSION:-v4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspap2/Software/FoldX/4.0/foldxLinux64.tar_.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspap2/Software/FoldX/4.0/foldxLinux64_0.zip}
 APP_GROUP=${APP_GROUP:-legfldx}
 
 set -e
@@ -50,7 +50,7 @@ fi
 mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 /bin/rm -rf *
-tar -xvf $SRC_ARCHIVE
+unzip -x $SRC_ARCHIVE
 
 # The binary incudes the license expiry date in the name. Set up a link to keep the same name as
 # before.
