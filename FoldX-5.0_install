@@ -6,6 +6,8 @@
 # by Brian Alston March 2022
 #
 # Updated for version 5.0 late March 2022
+# updated Mach 2024 for different directory layout in ccspap2
+
 
 # Install archive downloaded from:
 # https://foldxsuite.crg.eu/ license portal and copied to:
@@ -17,7 +19,7 @@
 NAME=${NAME:-FoldX}
 VERSION=${VERSION:-v5.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION}
-SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspap2/Software/FoldX/foldx5Linux64.tar_.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/home/ccspap2/Software/FoldX/5.0/foldx5Linux64.tar_.gz}
 APP_GROUP=${APP_GROUP:-legfldx}
 
 set -e
