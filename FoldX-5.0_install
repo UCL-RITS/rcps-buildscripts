@@ -66,4 +66,5 @@ cd ..
 chgrp -R $APP_GROUP `basename $INSTALL_PREFIX`
 chmod -R o-rwx `basename $INSTALL_PREFIX`
 cd $INSTALL_PREFIX
+chmod ug+rx $binary
 ls -l
