@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="bcftools"
+package_version="1.19"
+package_description="Tools for reading/writing BCF2/VCF/gVCF files and calling/filtering/summarising SNP and short indel sequence variants."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O bcftools-1.19.tar.bz2 https://github.com/samtools/bcftools/releases/download/1.19/bcftools-1.19.tar.bz2
+
+manifest \
+	sha256:782b5f1bc690415192231e82213b3493b047f45e630dc8ef6f154d6126ab3e68 bcftools-1.19.tar.bz2
+	
+
+tar -xf bcftools-1.19.tar.bz2
+
+cd bcftools-1.19
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2 \
+    -v BCFTOOLS_PLUGINS="$install_prefix/libexec/bcftools"
+chmod a+rX "$module_dir"
+post_build_report
+
