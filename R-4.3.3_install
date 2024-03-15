@@ -33,7 +33,7 @@
 
 VERSION=${VERSION:-4.3.3}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
-MD5=${MD5:-ebfc90b1552581f2b7c9a50f934e6bb0}
+MD5=${MD5:-4de100b35e3614c19df5e95e483cc3c3}
 # Slight change in location for R from 4.x
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://cran.r-project.org/src/base/R-4/R-${VERSION}.tar.gz}
 # LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
