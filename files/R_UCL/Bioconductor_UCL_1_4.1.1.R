@@ -12,6 +12,7 @@
 # Updated August 2021 to add karyoploteR
 # Updated September 2021 for R 4.1.1
 # Updated February 2023 for R 4.2.2
+# Updated March 2024 to add additional packages required by INLA.
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -220,6 +221,15 @@ install.packages ("PSCBS", lib=mainLib, repos=repros);
 
 # INLA - updated with extra packages and to fix binary install of INLA itself with a version that
 # will run on RedHat 7.
+# Updated March 2024 as additional R packasges needed from CRAN
+
+install.packages ("fmesher", lib=mainLib, repos=repros);
+install.packages ("Ecdat", lib=mainLib, repos=repros);
+install.packages ("HKprocess", lib=mainLib, repos=repros);
+install.packages ("mlogit", lib=mainLib, repos=repros);
+install.packages ("splancs", lib=mainLib, repos=repros);
+install.packages ("tidyterra", lib=mainLib, repos=repros);
+install.packages ("INLAspacetime", lib=mainLib, repos=repros);
 
 # install.packages ("INLA", lib=mainLib, repos=c(getOption("repros"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE);
 
