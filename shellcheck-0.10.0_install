@@ -1,0 +1,35 @@
+#!/bin/bash
+
+package_name="shellcheck"
+package_version="0.10.0"
+package_description="Shellcheck is a tool for performing static analysis of shell scripts."
+package_variant="bindist"
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz
+
+manifest \
+    sha256:6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  shellcheck-v0.10.0.linux.x86_64.tar.xz 
+
+tar -xf shellcheck-v0.10.0.linux.x86_64.tar.xz
+
+cd shellcheck-v0.10.0
+
+mkdir -p "$install_prefix/bin" "$install_prefix/doc"
+cp shellcheck "$install_prefix/bin/"
+cp LICENSE.txt README.txt "$install_prefix/doc/"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
