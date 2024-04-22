@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 #
-# Quantum ESPRESSO 7.3.1 with GPU support
+# Quantum ESPRESSO 7.3.1 with CPU and MPI
 
 set -o errexit -o nounset
 
-source includes/source_includes.sh
-
 # module prereqs for building
-
+source includes/source_includes.sh
 module unload compilers mpi gcc-libs
 module load gcc-libs/10.2.0
-
-# Need to use Nvidia SDK for GPU support
-module load compilers/nvidia/hpc-sdk/22.9
+module load compilers/gnu/10.2.0
+module load mpi/openmpi/4.0.5/gnu-10.2.0
+module load fftw/3.3.9/gnu-10.2.0
 
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-7.3.1}
-VARIANT=${VARIANT:-GPU}
+VARIANT=${VARIANT:-CPU}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/${NAME}/${VERSION}${VARIANT:+-${VARIANT}}/${COMPILER_TAG}"}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/QEF/q-e}
 #BUILD_DIR=${BUILD_DIR:-$(mktemp -d -p /dev/shm -t ${NAME}-build.XXXXXXXX)}
@@ -34,10 +32,16 @@ archive=$(basename "$SRC_ARCHIVE")
 
 cd "$archive"
 
-./configure --prefix=$INSTALL_PREFIX --with-cuda=/shared/ucl/apps/nvhpc/2022_221/Linux_x86_64/22.1/cuda  --with-cuda-runtime=11.7 --with-cuda-cc=80 --enable-openmp --with-cuda-mpi=yes 2>&1 | tee configure.log
-  
-make all gui 2>&1 | tee make.log
+# Should probably add this to the MKL module but it needs to be set either way
+#export CPATH=$MKLROOT/include/fftw:$CPATH
 
+./configure --enable-parallel --with-scalapack=intel #FFT_LIBS="/shared/ucl/apps/fftw/3.3.8-ompi/gnu-4.9.2/lib"
+  
+# want and couple not compilable with 6.2.1
+# west no longer compilable post-6.1
+make all w90 want couple gui epw d3q 2>&1 | tee make.log
+# this is necessary to not have name conflicts with WANT binaries
+make links
 if [ "$RUN_TESTS" == "yes" ]
 then
   echo "Running tests:"
@@ -47,7 +51,7 @@ fi
 # need to copy the whole PWgui directory into the install location
 #pwguidir=${BUILD_DIR}/${archive}/GUI
 #cp -r $pwguidir ${INSTALL_PREFIX}
-# ln -s "${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui" "${INSTALL_PREFIX}/${archive}/bin"
+ln -s "${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui" "${INSTALL_PREFIX}/${archive}/bin"
 
 echo "Installed to: $INSTALL_PREFIX"
 
