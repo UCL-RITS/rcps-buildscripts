@@ -11,6 +11,7 @@ module load gcc-libs/10.2.0
 module load compilers/gnu/10.2.0
 module load mpi/openmpi/4.0.5/gnu-10.2.0
 module load fftw/3.3.9/gnu-10.2.0
+module load git/2.32.0
 
 NAME=${NAME:-quantum-espresso}
 VERSION=${VERSION:-7.3.1}
@@ -39,9 +40,12 @@ cd "$archive"
   
 # want and couple not compilable with 6.2.1
 # west no longer compilable post-6.1
-make all w90 want couple gui epw d3q 2>&1 | tee make.log
+# want not compiling with 7.3.1
+# d3q not downloading wint 7.3.1
+# Wannier90 incuded in all 7.3.1
+make all couple gui epw 2>&1 | tee make.log
 # this is necessary to not have name conflicts with WANT binaries
-make links
+# make links
 if [ "$RUN_TESTS" == "yes" ]
 then
   echo "Running tests:"
@@ -51,7 +55,7 @@ fi
 # need to copy the whole PWgui directory into the install location
 #pwguidir=${BUILD_DIR}/${archive}/GUI
 #cp -r $pwguidir ${INSTALL_PREFIX}
-ln -s "${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui" "${INSTALL_PREFIX}/${archive}/bin"
+# ln -s "${INSTALL_PREFIX}/${archive}/GUI/PWgui/pwgui" "${INSTALL_PREFIX}/${archive}/bin"
 
 echo "Installed to: $INSTALL_PREFIX"
 
