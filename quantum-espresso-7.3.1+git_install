@@ -5,7 +5,7 @@
 set -o errexit -o nounset
 
 # module prereqs for building
-source includes/source_includes.sh
+# source includes/source_includes.sh
 module unload compilers mpi gcc-libs
 module load gcc-libs/10.2.0
 module load compilers/gnu/10.2.0
