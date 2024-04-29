@@ -4,8 +4,13 @@
 
 set -o errexit -o nounset
 
-# module prereqs for building
 # source includes/source_includes.sh
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+# module prereqs for building
 module unload compilers mpi gcc-libs
 module load gcc-libs/10.2.0
 module load compilers/gnu/10.2.0
