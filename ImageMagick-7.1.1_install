@@ -48,7 +48,7 @@ LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-${VERSION}-${VER_TAG}.tar.gz}
 
 
 # temp_dir=`mktemp -d -p /dev/shm`
-temp_dir='/home/ccspapp/Scratch/ImageMagick'
+temp_dir='/home/ccspapp/Scratch/ImageMagick/build'
 mkdir -p $temp_dir
 echo "Building in $temp_dir ..."
 cd $temp_dir
