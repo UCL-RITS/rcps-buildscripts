@@ -40,7 +40,7 @@ require ghostscript/9.19/gnu-4.9.2
 
 VERSION=${VERSION:-7.1.1}
 VER_TAG=${VER_TAG:-31}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ImageMagick/${VERSION}-4{VER_TAG}/${COMPILER_TAG}}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/ImageMagick/${VERSION}-${VER_TAG}/${COMPILER_TAG}}
 MD5=${MD5:-68b2390cb7d2dbb7388078ed27c2e4bb}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/ImageMagick/ImageMagick/archive/refs/tags/${VERSION}-${VER_TAG}.tar.gz}
 LOCAL_ARCHIVE=${LOCAL_ARCHIVE:-${VERSION}-${VER_TAG}.tar.gz}
