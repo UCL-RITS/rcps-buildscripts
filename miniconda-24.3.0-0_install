@@ -8,13 +8,13 @@
 
 set -e 
 
-for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
+#for i in ${includes_dir:=$(dirname $0 2>/dev/null)/includes}/{module_maker,require}_inc.sh; do . $i; done
 
 #ln -fs /shared/ucl/apps/build_scripts/includes .
 
-#source includes/source_includes.sh
-module purge
-module load gcc-libs/4.9.2
+source includes/source_includes.sh
+
+require gcc-libs/4.9.2
 
 NAME=${NAME:-miniconda}
 VERSION=${VERSION:-24.3.0-0}
