@@ -2,7 +2,7 @@
 
 # Quantum ESPRESSO 7.3.1 with CPU and MPI
 
-# set -o errexit -o nounset
+set -o errexit -o nounset
 
 # source includes/source_includes.sh
 dirname=$(dirname $0 2>/dev/null || pwd)
