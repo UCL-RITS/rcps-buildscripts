@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NAMD
+#
+# You need to register and download a copy of NAMD and put the tar file 
+# somewhere.
+# This ofi-smp-gpu version is for OmniPath clusters. (ofi and cuda requires smp)
+#
+# NAMD Version 3.06b
+
+set -e
+
+package_name="namd"
+package_version="3.06b"
+package_variant="ofi-smp-gpu"
+package_description="NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. This is the ofi-smp-gpu version and can be launched with charmrun."
+
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+source includes/source_includes.sh
+
+# gcc-libs/10.2.0 does not play well with the Intel compiler 2019 or 2020
+# for C++ templating reasons, so using gcc-libs/7.3.0.
+
+# changing to use Intel 2022 compilers and gcc-libs/10.2.0 etc for version 3.0b6
+
+module purge
+
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require cuda/12.2.2/gnu-10.2.0
+require mpi/intel/2019/update6/intel
+
+NANAME=${NANAME:-NAMD_${package_version}_Source}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_Source.tar.gz}
+
+CHARMVER=${CHARMVER:-7.0.0}
+CHARMARC=${CHARMARC:-"ofi-linux-x86_64"}
+
+make_build_env ""
+
+mkdir -p "$install_prefix"
+
+#temp_dir=`mktemp -d -p /dev/shm/namd`
+
+cd "$build_dir"
+
+tar zxvf "$SRC_ARCHIVE"
+
+ln -fsT `pwd`/${NANAME} ${install_prefix}/${NANAME}
+
+cd ${install_prefix}/${NANAME}
+
+# Fix for charm not being able to find f90
+mkdir uclbuildsupport
+ln -s `which $FC` uclbuildsupport/f90
+ln -s `which $FC` uclbuildsupport/f77
+ln -s `which $FC` uclbuildsupport/g77
+
+export PATH=`pwd`/uclbuildsupport:$PATH
+
+# Needs libmpi.so to be directly in the library path
+export LD_LIBRARY_PATH=$MPI_HOME/intel64/lib/release_mt:$LD_LIBRARY_PATH
+
+tar xvf charm-${CHARMVER}.tar
+export MPICXX=mpicxx
+
+cd charm-${CHARMVER}
+./build charm++ ${CHARMARC} iccstatic ifort smp --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
+
+cd ..
+
+# Overwrite make.charm with the real location
+#echo "CHARMBASE = ${INSTALL_PREFIX}/${NANAME}/charm-${CHARMVER}" > Make.charm
+
+cd arch
+cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
+patch < Linux-x86_64.tcl.patch
+patch < Linux-x86_64.fftw.patch
+cp /shared/ucl/apps/build_scripts/namd-patches/Linux-x86_64.fftw3 .
+
+# AMD EPYC: avx and avx2 available
+sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
+
+
+cd ..
+./config Linux-x86_64-icc --with-fftw3 --with-cuda --charm-arch ${CHARMARC}-ifort-smp-iccstatic 
+
+cd Linux-x86_64-icc
+make
+
+cd ${build_dir}/${NANAME}/Linux-x86_64-icc
+rm ${install_prefix}/${NANAME}
+mkdir -p ${install_prefix}/${NANAME}/bin
+for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
+do
+  echo "Installing $a"
+  cp $a ${install_prefix}/${NANAME}/bin
+done
