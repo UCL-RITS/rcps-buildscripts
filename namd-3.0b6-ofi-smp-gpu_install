@@ -31,6 +31,7 @@ require gcc-libs/10.2.0
 require compilers/intel/2022.2
 require cuda/12.2.2/gnu-10.2.0
 require mpi/intel/2019/update6/intel
+require cmake/3.21.1
 
 NANAME=${NANAME:-NAMD_${package_version}_Source}
 SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/pkg-store/NAMD_${package_version}_Source.tar.gz}
