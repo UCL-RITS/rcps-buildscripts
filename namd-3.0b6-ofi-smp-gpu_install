@@ -7,12 +7,12 @@
 # somewhere.
 # This ofi-smp-gpu version is for OmniPath clusters. (ofi and cuda requires smp)
 #
-# NAMD Version 3.06b
+# NAMD Version 3.0b6
 
 set -e
 
 package_name="namd"
-package_version="3.06b"
+package_version="3.0b6"
 package_variant="ofi-smp-gpu"
 package_description="NAMD is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. This is the ofi-smp-gpu version and can be launched with charmrun."
 
