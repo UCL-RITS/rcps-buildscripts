@@ -1,0 +1,37 @@
+#!/bin/bash
+
+package_name="otf2"
+package_version="3.0.3"
+package_description="The Open Trace Format 2 is a highly scalable, memory efficient event trace data format plus support library."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load compilers/intel/2022.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O otf2-3.0.3.tar.gz https://perftools.pages.jsc.fz-juelich.de/cicd/otf2/tags/otf2-3.0.3/otf2-3.0.3.tar.gz
+
+manifest \
+	sha256:18a3905f7917340387e3edc8e5766f31ab1af41f4ecc5665da6c769ca21c4ee8 otf2-3.0.3.tar.gz
+	
+
+tar -xf otf2-3.0.3.tar.gz
+
+cd otf2-3.0.3
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
