@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="opari2"
+package_version="2-2.0.8"
+package_description="OPARI2 is a source-to-source instrumentation tool for OpenMP and hybrid codes."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load compilers/intel/2022.2
+module load mpi/intel/2021.6.0/intel
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O opari2-2.0.8.tar.gz https://perftools.pages.jsc.fz-juelich.de/cicd/opari2/tags/opari2-2.0.8/opari2-2.0.8.tar.gz
+
+manifest \
+	sha256:196e59a2a625e6c795a6124c61e784bad142f9f38df0b4fa4d435ba9b9c19721 opari2-2.0.8.tar.gz
+	
+
+tar -xf opari2-2.0.8.tar.gz
+
+cd opari2-2.0.8
+./configure \
+    --prefix="$install_prefix"
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
