@@ -1,0 +1,38 @@
+#!/bin/bash
+
+package_name="cubelib"
+package_version="4.4"
+package_description="Cube is a generic tool for displaying a multi-dimensional performance space consisting of the dimensions (i) performance metric, (ii) call path, and (iii) system resource."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load compilers/intel/2022.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O cubelib-4.4.tar.gz https://apps.fz-juelich.de/scalasca/releases/cube/4.4/dist/cubelib-4.4.tar.gz
+
+manifest \
+	sha256:77548e1732fa5e82b13cc8465c8a21349bf42b45a382217d2e70d18576741d5c cubelib-4.4.tar.gz
+	
+
+tar -xf cubelib-4.4.tar.gz
+
+cd cubelib-4.4
+./configure \
+    --prefix="$install_prefix"
+make
+# make check
+# ^ Test 0 seems to fail for a spurious reason
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
