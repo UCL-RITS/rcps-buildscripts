@@ -74,7 +74,7 @@ tar xvf charm-${CHARMVER}.tar
 export MPICXX=mpicxx
 
 cd charm-v${CHARMVER}
-./build charm++ ${CHARMARC} --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
+./build charm++ ${CHARMARC} --no-build-shared --with-production -DCMK_OPTIMIZE
 
 cd ..
 
