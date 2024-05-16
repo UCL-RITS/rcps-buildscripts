@@ -74,7 +74,7 @@ tar xvf charm-${CHARMVER}.tar
 export MPICXX=mpicxx
 
 cd charm-v${CHARMVER}
-./build charm++ ${CHARMARC} gcc gfortran smp --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
+./build charm++ ${CHARMARC} --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
 
 cd ..
 
@@ -88,16 +88,16 @@ patch < Linux-x86_64.fftw.patch
 cp /shared/ucl/apps/build_scripts/namd-patches/Linux-x86_64.fftw3 .
 
 # AMD EPYC: avx and avx2 available
-sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
+# sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
 
 
 cd ..
-./config Linux-x86_64-gcc --with-fftw3 --with-cuda --charm-arch ${CHARMARC}-gfortran-smp
+./config Linux-x86_64-gcc --with-fftw3 --with-cuda --charm-arch ${CHARMARC}
 
 cd Linux-x86_64-gcc
 make
 
-cd ${build_dir}/${NANAME}/Linux-x86_64-icc
+cd ${build_dir}/${NANAME}/Linux-x86_64-gcc
 rm ${install_prefix}/${NANAME}
 mkdir -p ${install_prefix}/${NANAME}/bin
 for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
