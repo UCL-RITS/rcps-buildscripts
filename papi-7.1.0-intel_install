@@ -1,0 +1,39 @@
+#!/bin/bash
+
+package_name="papi"
+package_version="7.1.0"
+package_description="The Performance Application Programming Interface (PAPI) provides tool designers and application engineers with a consistent interface and methodology for the use of low-level performance counter hardware found across the entire compute system."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+module load compilers/intel/2022.2
+module load mpi/intel/2021.6.0/intel
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O papi-7.1.0.tar.gz http://icl.utk.edu/projects/papi/downloads/papi-7.1.0.tar.gz
+
+manifest \
+	sha256:5818afb6dba3ece57f51e65897db5062f8e3464e6ed294b654ebf34c3991bc4f papi-7.1.0.tar.gz
+	
+
+tar -xf papi-7.1.0.tar.gz
+
+cd papi-7.1.0/src
+./configure \
+    --prefix="$install_prefix" \
+    --with-static-lib=yes --with-shared-lib=yes --with-shlib
+make
+make test
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
