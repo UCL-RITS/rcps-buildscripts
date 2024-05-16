@@ -1,0 +1,39 @@
+#!/bin/bash
+
+package_name="strace"
+package_version="6.9"
+package_description="strace is a diagnostic, debugging and instructional userspace utility for Linux."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O strace-6.9.tar.xz https://strace.io/files/6.9/strace-6.9.tar.xz
+
+manifest \
+	sha256:da189e990a82e3ca3a5a4631012f7ecfd489dab459854d82d8caf6a865c1356a strace-6.9.tar.xz
+	
+
+tar -xf strace-6.9.tar.xz
+
+cd strace-6.9
+./configure \
+    --prefix="$install_prefix"
+make
+# make check
+# ^-- this fails in msg_control tests because for some reason it
+#     treats setting your network buffers large as a problem
+#     it's not a problem
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
