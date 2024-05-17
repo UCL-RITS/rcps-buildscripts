@@ -95,9 +95,9 @@ sed -i -e '/FFTDIR=/s:$(HOME)/fftw3:/shared/ucl/apps/fftw/3.3.9/gnu-10.2.0:' Lin
 # sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
 
 cd ..
-./config Linux-x86_64-gcc --with-fftw3 --with-cuda --charm-arch ${CHARMARC}
+./config Linux-x86_64-g++ --with-fftw3 --with-cuda --charm-arch ${CHARMARC}
 
-cd Linux-x86_64-gcc
+cd Linux-x86_64-g++
 make
 
 cd ${build_dir}/${NANAME}/Linux-x86_64-gcc
