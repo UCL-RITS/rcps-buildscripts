@@ -100,10 +100,10 @@ cd ..
 cd Linux-x86_64-g++
 make
 
-cd ${build_dir}/${NANAME}/Linux-x86_64-gcc
+cd ${build_dir}/${NANAME}/Linux-x86_64-g++
 rm ${install_prefix}/${NANAME}
 mkdir -p ${install_prefix}/${NANAME}/bin
-for a in charmrun flipbinpdb flipdcd namd2 psfgen sortreplicas
+for a in charmrun flipbinpdb flipdcd namd3 psfgen sortreplicas
 do
   echo "Installing $a"
   cp $a ${install_prefix}/${NANAME}/bin
