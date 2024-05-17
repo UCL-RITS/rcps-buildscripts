@@ -1,0 +1,41 @@
+#!/bin/bash
+
+package_name="cubew"
+package_version="4.8.2"
+package_description="CubeW is a high performance C writer library for the Cube4 data format."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+require compilers/intel/2022.2
+
+make_build_env ""
+
+cd "$build_dir"
+wget -O cubew-4.8.2.tar.gz https://apps.fz-juelich.de/scalasca/releases/cube/4.8/dist/cubew-4.8.2.tar.gz
+
+manifest \
+	sha256:4f3bcf0622c2429b8972b5eb3f14d79ec89b8161e3c1cc5862ceda417d7975d2 cubew-4.8.2.tar.gz
+	
+
+tar -xf cubew-4.8.2.tar.gz
+
+cd cubew-4.8.2
+./configure \
+    --with-advanced-memory \
+    --prefix="$install_prefix"
+    # These two vv cause the tests to fail, and I think they're only for debugging the library itself
+    #--with-memory-tracing \
+    #--with-memory-tracking \
+make
+make check
+make install
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
