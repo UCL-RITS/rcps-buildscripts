@@ -183,6 +183,7 @@ function post_build_report() {
     # If -o pipefail is set, this line will exit with status 141, because SIGPIPE kills the find
     #  So we catch it and test for it
     exec_list="$(find "$install_prefix" -type f -perm /u+x | head -n 10 || [[ "${PIPESTATUS[0]}" -eq 141 ]])"
+    lib_dirs="$(uses_libs_from "$install_prefix")"
     printf "
     ==========================
     =    Post Build Info     =
@@ -197,10 +198,29 @@ function post_build_report() {
     -- First execs (max 10) --
 %s
 
+    -- Uses libs from --
+%s
+
     ==========================\n" \
-    "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list"
+    "$package_label" "$build_dir" "$module_dir" "$install_prefix" "$build_size" "$exec_list" "$lib_dirs"
 
 
+}
+
+function uses_libs_from() {
+    find "$@" -executable -type f -print0 \
+        | xargs --null file \
+        | grep -e 'ELF ..-bit LSB' \
+        | grep 'dynamically linked' \
+        | awk '{print $1}' \
+        | sed -e 's/:$//' \
+        | xargs -I file ldd file \
+        | sed -e 's/(0x[0-9a-f]*)//' \
+        | sed -e 's/^.*=> *//' \
+        | grep / \
+        | xargs --no-run-if-empty dirname \
+        | sort -u \
+        || echo "(none)"
 }
 
 function github_download() {
