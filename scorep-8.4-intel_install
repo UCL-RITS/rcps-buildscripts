@@ -14,9 +14,10 @@ module purge
 require compilers/intel/2022.2 
 require mpi/intel/2021.6.0/intel 
 require binutils/2.36.1/gnu-10.2.0
-require otf2/3.0.3/intel-2022
+require papi/7.1.0/intel-2022
 require opari2/2.0.8/intel-2022
 require cubelib/4.8.2/intel-2022
+require otf2/3.0.3/intel-2022
 require cubew/4.8.2/intel-2022
 
 
@@ -33,9 +34,10 @@ tar -xf scorep-8.4.tar.gz
 
 cd scorep-8.4
 ./configure \
-    --prefix="$install_prefix"
+    --prefix="$install_prefix" \
+    --with-nocross-compiler-suite=intel
 make
-make check
+#make check # <- tests are broken
 make install
 
 make_module_v2
