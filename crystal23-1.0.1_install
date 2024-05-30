@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+# CRYSTAL23 Version 1.0.1
+#
+# May 2024
+
+set -o errexit -o nounset -o pipefail
+
+package_name="crystal23"
+package_version="1.0.1"
+package_description="The CRYSTAL program computes the electronic structure of periodic systems within Hartree Fock, density functional or various hybrid approximations."
+
+source includes/source_includes.sh
+
+module purge
+require gcc-libs/10.2.0
+require compilers/intel/2022.2
+require mpi/openmpi/4.1.1/intel-2022
+
+[[ -r "/shared/ucl/apps/pkg-store/CRYSTAL23/utils23.tar.gz" ]] \
+    || (echo "Cannot install: you do not have access to the CRYSTAL23 installation files."; exit 1)
+
+make_build_env ""
+
+cd "$build_dir"
+
+# The MPP distribution includes the other versions as well.
+cp \
+    /shared/ucl/apps/pkg-store/CRYSTAL23/documentation23.tar.gz \
+    /shared/ucl/apps/pkg-store/CRYSTAL23/utils23.tar.gz \
+    /shared/ucl/apps/pkg-store/CRYSTAL23/crystal23_v1_0_1_Linux-ifort21.4_Pdistrib.tar.gz \
+    ./
+
+# tar -xf crystal17_v1_0_2_Linux-ifort17_emt64_MPPdistrib.tar.gz
+tar -xvf crystal23_v1_0_1_Linux-ifort21.4_Pdistrib.tar.gz
+
+cd build
+
+make dirs
+
+# We change the F90FLAGS here because it's old and uses -xssse3 by default
+make \
+    sequential
+make \
+    F90=mpif90 \
+    LD=mpif90 \
+    PLD=mpif90 \
+    parallel
+	
+# For the MPP build we need to tell it how to link against Scalapack&BLACS
+# For CRYSTAL23 only availabe as a 1000 euro add on
+# make \
+    # F90FLAGS="-O3 -align -cxxlib -xHost" \
+    # F90=mpif90 \
+    # LD=mpif90 \
+    # PLD=mpif90 \
+    # MPPLIB=-mkl=cluster \
+    # MPP
+
+mkdir -p "$install_prefix"
+cp -r ../bin "$install_prefix/"
+
+mkdir -p "$install_prefix/utils23"
+cd "$install_prefix"
+tar -xvf "$build_dir/utils23.tar.gz"
+
+cd "$build_dir"
+wget http://www.crystal.unito.it/test_cases/inputs_wf.tar.gz
+cd "$install_prefix"
+tar -xvf "$build_dir/inputs_wf.tar.gz"
+
+mkdir -p "$install_prefix/docs"
+cd "$install_prefix/docs"
+tar -xvf "$build_dir/documentation23.tar.gz"
+
+
+# These labels are arbitrary random nonsense from the .bashrc file.
+#  I'm guessing a bit as to what bit of what string goes where.
+# The SCRDIR needs to be set to TMPDIR if it exists or XDG_RUNTIME_DIR or /tmp
+#  but I'm not sure how to do that in a one-liner I could pass through here.
+# (I've added an issue to make a way to do this to make_module_v2, so maybe it'll be possible in future. -- 2019-12-18)
+make_module_v2 \
+    -v CRY23_ROOT="$install_prefix" \
+    -v CRY23_BIN="bin" \
+    -v CRY23_ARCH="Linux-ifort_i64" \
+    -v VERSION="v1.0.1-UCL-ARC" \
+    -v CRY23_SCRDIR='$env(TMPDIR)' \
+    -v CRY23_EXEDIR="$install_prefix/bin/Linux-ifort_i64/v1.0.1" \
+    -v CRY23_UTILS="$install_prefix/utils23" \
+    -v CRY23_TEST="$install_prefix/test_cases/inputs" \
+    -e PATH:"$install_prefix/bin/Linux-ifort17_XE_emt64" \
+    -e PATH:"$install_prefix/utils17" \
+    -e PATH:"$install_prefix/crgra2006"
+
+chgrp -R legcryst "$install_prefix"
+
+post_build_report
