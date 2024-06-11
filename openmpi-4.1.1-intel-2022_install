@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# OpenMPI 4.1.1 built with Intel 2022 compilers
+# OpenMPI 4.1.1 built with Intel 2022 compilersq
 
 set -e
 
@@ -87,7 +87,7 @@ _post_build() {
         -v "MPI_HOME=${install_prefix}" \
         -v "MPI_RUN=${install_prefix}/bin/mpirun" \
         -v "GERUN_LAUNCHER=openmpi-sge" \
-        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp3+/bin" \
+        -e "PATH:/shared/ucl/apps/openmpi/ucl-wrapper-omp4.1/bin" \
     chmod -R a+rX "${module_dir}"
     echo "Modules in: ${module_dir}"
     cd "$owd"

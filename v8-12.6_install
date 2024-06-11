@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing v8 from git
+#
+# by Owain Kenway, 2017 
+#
+# Updated June 2024 for V8 12.6
+
+APPNAME=${APPNAME:-v8}
+VERSION=${VERSION:-12.6}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/$VERSION}
+
+set -e
+
+# module dependencies:
+dirname=$(dirname $0 2>/dev/null)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/require_inc.sh
+
+# trying the same compilers etc as v 5.6 build
+require compilers/gnu/4.9.2
+require python/2.7.12
+require depot_tools
+
+mkdir -p $INSTALL_PREFIX
+
+cd $INSTALL_PREFIX
+
+# Get the source code
+fetch v8
+cd v8
+
+# Set our version appropriately
+git checkout -b $VERSION -t branch-heads/$VERSION
+
+# Pull dependencies
+gclient sync 
+
+# Generate build info
+#tools/dev/v8gen.py x64.release # The instructions say to do this but it doesn't build libraries
+gn gen out.gn/ucl_rcas -vv --fail-on-unused-args --args='is_clang=false is_debug=false is_official_build=true use_sysroot=false is_component_build=true v8_enable_i18n_support=true v8_use_external_startup_data=false'
+
+
+# Do the build
+ninja -C out.gn/ucl_rcas
+
+# Fix permissions
+chmod 755 $INSTALL_PREFIX/v8/out.gn
+chmod 755 $INSTALL_PREFIX/v8/out.gn/ucl_rcas

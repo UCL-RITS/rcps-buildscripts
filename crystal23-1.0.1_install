@@ -93,5 +93,6 @@ make_module_v2 \
     -e PATH:"$install_prefix/crgra2006"
 
 chgrp -R legcryst "$install_prefix"
+chmod -R go-rwx "$install_prefix"
 
 post_build_report
