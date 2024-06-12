@@ -3,7 +3,7 @@
 ###############################################
 # Installing base R plus recommended packages using GCC + OpenBLAS
 #
-# R 4.3.3
+# R 4.4.0
 #
 # by Brian Alston, June 2020
 #
@@ -22,6 +22,7 @@
 # January 2023 updated for R 4.2.2
 # April 2023 updated for R 4.2.3
 # March 2024 updated for R 4.3.3
+# June 2024 updated for R 4.4.0
 #
 # Using Ian's require function to load modules
 #
@@ -31,9 +32,9 @@
 #
 # 
 
-VERSION=${VERSION:-4.3.3}
+VERSION=${VERSION:-4.4.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
-MD5=${MD5:-4de100b35e3614c19df5e95e483cc3c3}
+MD5=${MD5:-400b43da0c2e67e62ec9f90d509a9e10}
 # Slight change in location for R from 4.x
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://cran.r-project.org/src/base/R-4/R-${VERSION}.tar.gz}
 # LOCAL_ARCHIVE=${LOCAL_ARCHIVE:- 1}
