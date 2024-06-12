@@ -18,14 +18,29 @@ dirname=$(dirname $0 2>/dev/null)
 INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
 source ${INCLUDES_DIR}/require_inc.sh
 
-# trying the same compilers etc as v 5.6 build
-require compilers/gnu/4.9.2
-require python/2.7.12
-require depot_tools
+# trying the same compilers etc as v 5.6 build - did not work!
+#require compilers/gnu/4.9.2
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+
+# Need new depot_tools and Python3?
+# require python/2.7.12
+# require depot_tools
+require beta-modules
+require python3/3.9-gnu-10.2.0
 
 mkdir -p $INSTALL_PREFIX
 
 cd $INSTALL_PREFIX
+
+# Get depot_tools
+
+mkdir depot_tools
+cd depot_tools
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+cd ..
+export PATH=$INSTALL_PREFIX/depot_tools/depot_tools:$PATH
 
 # Get the source code
 fetch v8
