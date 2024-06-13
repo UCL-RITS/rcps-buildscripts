@@ -1,0 +1,36 @@
+# A gerun-inspired wrapper for running spark jobs on UCL Clusters
+# Mostly based on a script by Jonathan Dursi
+# from this post: http://www.dursi.ca/spark-in-hpc-clusters/
+
+# Make a per-job output directory
+OUTPUT_DIR="$(pwd)/run.${JOB_ID}"
+mkdir -p "$OUTPUT_DIR"
+
+# Get our list of allocated nodes and how many
+nodes=($( sort -u <"$TMPDIR/machines" | sed -e 's/$/.data.legion.ucl.ac.uk/' ))
+nnodes=${#nodes[@]}  
+last=$(( nnodes - 1 ))
+
+export SPARK_LOCAL_DIRS="$TMPDIR"
+
+ssh "${nodes[0]}" "module load java; cd ${SPARK_HOME}; ./sbin/start-master.sh"  
+sparkmaster="spark://${nodes[0]}:7077"
+
+# Start the spark workers on all nodes
+for i in $( seq 0 $last )  
+do  
+    ssh "${nodes[$i]}" "cd ${SPARK_HOME}; module load java; export SPARK_LOCAL_DIRS=\"$TMPDIR\"; nohup spark-class org.apache.spark.deploy.worker.Worker ${sparkmaster} &> ${OUTPUT_DIR}/nohup-${nodes[$i]}.out" &
+done
+
+# Submit the script to the Spark cluster
+
+spark-submit --master "${sparkmaster}" "$@"
+
+# Stop the Spark master and kill all the Spark processes to clean up
+for i in $( seq 0 $last )  
+do  
+    ssh "${nodes[$i]}" "module load java; cd ${SPARK_HOME}; ./sbin/stop-slaves.sh" &
+done  
+
+ssh "${nodes[0]}" "module load java; cd ${SPARK_HOME}; ./sbin/stop-master.sh" &
+wait
