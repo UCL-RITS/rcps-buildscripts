@@ -12,6 +12,7 @@
 # Updated April 2023 - to fix build of rjags
 # Updated October 2023 - to add arrow and VIM packages.
 # Updated march 2024 to add quanteda.textstats and quanteda.textmodels
+# Updated June 2024 to try and resolve the V8 problem
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -161,8 +162,12 @@ install.packages("jsonlite", lib=mainLib, repos=repros);
 install.packages("curl", lib=mainLib, repos=repros);
 
 # Updated for R 4.1.1 MUST use 3.15 version of V8 otherwise build fails!
-v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
-install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
+# v8conf <- 'INCLUDE_DIR=/shared/ucl/apps/v8/3.15/v8/include LIB_DIR=/shared/ucl/apps/v8/3.15/v8/out/x64.release/lib.target';
+# install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
+#
+# Updated for R 4.4.0 to use static V8
+Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1);
+install.packages ("V8", lib=mainLib, repos=repros);
 
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/include --with-udunits2-lib=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
