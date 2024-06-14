@@ -16,17 +16,19 @@ module purge
 
 make_build_env ""
 
+install_prefix=/shared/ucl/apps/${package_name}/${package_version}
+
 /shared/ucl/apps/pkg-store/MICRESS-7.201-linux-installer.run \
-    --mode unattended \    
-    --prefix /shared/ucl/apps/${package_name}/${package_version} \
+    --mode "unattended" \
     --installDesktopShortcuts 0 \
-    --mic_license 27009@mech-lic1
+    --mic_license "27009@mech-lic1" \
+    --prefix "${install_prefix}"
 
 # This is necessary because the version of this library that ships
 # with MICRESS interferes with TQ. This solution was advised by
 # MICRESS support.
-mv /shared/ucl/apps/${package_name}/${package_version}/Bin/libm.so.6 \
-    /shared/ucl/apps/${package_name}/${package_version}/Bin/libm.so.6.bak
+mv ${install_prefix}/Bin/libm.so.6 \
+    ${install_prefix}/Bin/libm.so.6.bak
 
 make_module_v2
 chmod a+rX "$module_dir"
