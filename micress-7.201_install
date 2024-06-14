@@ -1,0 +1,33 @@
+#!/bin/bash
+
+package_name="micress"
+package_version="7.201"
+# Optional: 
+# package_variant=""
+package_description="Adds MICRESS 7.201 to your environment. MICRESS is a software enabling the calculation of microstructure formation in time and space during phase transformations."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+/shared/ucl/apps/pkg-store/MICRESS-7.201-linux-installer.run \
+    --mode unattended \    
+    --prefix /shared/ucl/apps/${package_name}/${package_version} \
+    --installDesktopShortcuts 0 \
+    --mic_license 27009@mech-lic1
+
+# This is necessary because the version of this library that ships
+# with MICRESS interferes with TQ. This solution was advised by
+# MICRESS support.
+mv /shared/ucl/apps/${package_name}/${package_version}/Bin/libm.so.6 \
+    /shared/ucl/apps/${package_name}/${package_version}/Bin/libm.so.6.bak
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
