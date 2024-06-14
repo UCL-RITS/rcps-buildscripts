@@ -75,6 +75,7 @@ require hdf/5-1.10.6/gnu-10.2.0
 require udunits/2.2.28/gnu-10.2.0
 require netcdf/4.8.1/gnu-10.2.0
 require pcre2/10.37/gnu-10.2.0
+require curl/7.86.0/gnu-4.9.2
 
 if [ "$cluster" == "myriad" ]
 then
@@ -164,10 +165,11 @@ R --no-save < $R_input
 # R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/Design_2.3-0-ucl.tar.gz
 
 # So build of RCurl picks up currect version of libcurl
+# updated to 7.86.0 June 2024
 
-export PATH=/shared/ucl/apps/curl/7.47.1/gnu-4.9.2/bin/:$PATH
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH\:/shared/ucl/apps/curl/7.47.1/gnu-4.9.2/lib
-export PKG_LIBS="-L/shared/ucl/apps/curl/7.47.1/gnu-4.9.2/lib"
+export PATH=/shared/ucl/apps/curl/7.86.0/gnu-4.9.2/bin/:$PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH\:/shared/ucl/apps/curl/7.86.0/gnu-4.9.2/lib
+export PKG_LIBS="-L/shared/ucl/apps/curl/7.86.0/gnu-4.9.2/lib"
 
 export DOWNLOAD_STATIC_LIBV8=1
 
