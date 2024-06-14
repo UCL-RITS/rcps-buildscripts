@@ -33,3 +33,8 @@ mv ${install_prefix}/Bin/libm.so.6 \
 make_module_v2
 chmod a+rX "$module_dir"
 post_build_report
+
+# Run an example (sans TQ) as follows:
+# $ ./Bin/MICRESS_noTQ.sh ./Examples/Benchmark/B001_1D_ConstantDrivingForce.dri
+# An example with TQ:
+# $ ./Bin/MICRESS_TQ.sh ./Examples/Training/T00_02_Binary_E_Globulitic_2D_TQ.dri 
