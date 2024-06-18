@@ -21,6 +21,7 @@ cd "$build_dir"
 wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.2.0.82_cuda11-archive.tar.xz
 manifest sha256:99dcb3fa2bf7eed7f35b0f8e58e7d1f04d9a52e01e382efc1de16fed230d3b26 cudnn-linux-x86_64-9.2.0.82_cuda11-archive.tar.xz
 
+mkdir "$install_prefix"
 cd "$install_prefix"
 # don't need to keep the long top directory name
 tar --strip-components=1 -xvf "$build_dir/cudnn-linux-x86_64-9.2.0.82_cuda11-archive.tar.xz"
