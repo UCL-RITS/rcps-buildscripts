@@ -4,7 +4,7 @@ group="lgmicres"
 package_name="micress"
 package_version="7.201"
 mic_license="27009@mech-lic1"
-tc_license="mech-lic1"
+tc_license="@mech-lic1"
 package_description="Adds MICRESS 7.201 to your environment. MICRESS is a software enabling the calculation of microstructure formation in time and space during phase transformations."
 
 set -o errexit \
