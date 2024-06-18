@@ -14,6 +14,10 @@ set -o errexit \
 source includes/source_includes.sh
 
 module purge
+require compilers/intel/2016.0.109
+module load numactl/2.0.12
+module load binutils/2.36.1/gnu-10.2.0
+module load ucx/1.9.0/gnu-10.2.0
 
 make_build_env ""
 
