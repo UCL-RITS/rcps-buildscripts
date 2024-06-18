@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing ANSYS 2024 R1
+#
+# September 2021
+#
+# Didn't work first time - I think the GUI installers need to be
+# started from the dirtectories they are in.
+#
+# Updated March 2023 for ANSYS 2023 R1
+# Updated June 2024 for ANSYS 2024 R1
+
+NAME=${NAME:-ANSYS}
+VERSION=${VERSION:-2024.R1}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/${NAME}/${VERSION}}
+SRC_ARCHIVE=${SRC_ARCHIVE:-/shared/ucl/apps/ANSYS/installers/${VERSION}}
+ELECTRONICS=${ELECTRONICS:-ELECTRONICS_2024R1_LINX64.tgz}
+ELECTRONICS_ADD=${ELECTRONICS_ADD:-ELECTRONICS_2024R1.1_LINX64.tgz}
+FLUIDSTRUCTURES=${FLUIDSTRUCTURES:-FLUIDSTRUCTURES_2024R1_LINX64.tgz}
+PREPPOST=${PREPPOST:-PREPPOST_2024R1_LINX64.tgz}
+CFXNODES=${CFXNODES:-/shared/ucl/apps/build_scripts/files/ANSYS/cfxnodes}
+CFXNODES_CS=${CFXNODES_CS:-/shared/ucl/apps/build_scripts/files/ANSYS/cfxnodes_cs}
+# LICSERV=${LICSERV:-1999@ntsrv1.meng.ucl.ac.uk}
+
+set -e
+
+# Needs approx 60 GB to unpack so using ~/Scratch
+
+archive_dir=~/Scratch/Software/ANSYS/installers/$VERSION
+mkdir -p $archive_dir
+cd $archive_dir
+
+echo "Unpacking archives into $archive_dir ..."
+mkdir -p ELECTRONICS
+cd ELECTRONICS
+tar -xvf ${SRC_ARCHIVE}/${ELECTRONICS}
+tar -xvf ${SRC_ARCHIVE}/${ELECTRONICS_ADD}
+cd ..
+mkdir -p FLUIDSTRUCTURES
+cd FLUIDSTRUCTURES
+tar -xvf ${SRC_ARCHIVE}/${FLUIDSTRUCTURES}
+cd ..
+mkdir -p PREPPOST
+cd PREPPOST
+tar -xvf ${SRC_ARCHIVE}/${PREPPOST}
+cd ..
+echo "Archives unpacked."
+
+mkdir -p ${INSTALL_PREFIX}/ucl/bin
+echo ""
+echo "The first two installers run sliently:"
+echo ""
+echo "`pwd`/FLUIDSTRUCTURES/INSTALL"
+echo "`pwd`/PREPPOST/INSTALL"
+echo ""
+echo "FLUIDSTRUCTURES ..."
+cd FLUIDSTRUCTURES
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk 
+# ./INSTALL
+echo "PREPPOST ..."
+cd ../PREPPOST
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk
+
+echo ""
+echo "The two electronics installers have to be run in GUI mode:"
+echo ""
+echo "`pwd`/ELECTRONICS/Electronics_241_linx64/install"
+echo ""
+echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
+
+echo "ELECTRONICS ..."
+cd ../ELECTRONICS/Electronics_241_linx64
+echo "Couldn't get silent install to work so use GUI and:"
+echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
+./install
+
+echo ""
+echo "Need to add installing the update patch here"
+
+echo ""
+echo "Installing UCL GE support scripts ..."
+cp $CFXNODES ${INSTALL_PREFIX}/ucl/bin/cfxnodes
+cp $CFXNODES_CS ${INSTALL_PREFIX}/ucl/bin/cfxnodes_cs
+echo "Finished."
