@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Nvidia cuDNN library
+#
+
+package_name="cudnn"
+package_version="9.2.0"
+package_variant="cuda-12"
+package_description="The NVIDIA CUDA® Deep Neural Network library (cuDNN) is a GPU-accelerated library of primitives for deep neural networks. This version is for CUDA 12."
+
+set -o errexit -o nounset
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.2.0.82_cuda12-archive.tar.xz
+manifest sha256:1362b4d437e37e92c9814c3b4065db5106c2e03268e22275a5869e968cee7aa8 cudnn-linux-x86_64-9.2.0.82_cuda12-archive.tar.xz
+
+cd "$install_prefix"
+# don't need to keep the long top directory name
+tar --strip-components=1 -xvf "$build_dir/cudnn-linux-x86_64-9.2.0.82_cuda12-archive.tar.xz"
+
+make_module_v2
+chmod a+rX "$module_dir"
+post_build_report
+
