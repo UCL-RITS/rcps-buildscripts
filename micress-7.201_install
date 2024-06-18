@@ -1,0 +1,44 @@
+#!/bin/bash
+
+group="lgmicres"
+package_name="micress"
+package_version="7.201"
+mic_license="27009@mech-lic1"
+tc_license="mech-lic1"
+package_description="Adds MICRESS 7.201 to your environment. MICRESS is a software enabling the calculation of microstructure formation in time and space during phase transformations."
+
+set -o errexit \
+    -o nounset \
+    -o pipefail
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+install_prefix=/shared/ucl/apps/${package_name}/${package_version}
+
+/shared/ucl/apps/pkg-store/MICRESS-7.201-linux-installer.run \
+    --mode "unattended" \
+    --installDesktopShortcuts 0 \
+    --mic_license "${mic_license}" \
+    --tc_license "${tc_license}" \
+    --prefix "${install_prefix}"
+
+# This is necessary because the version of this library that ships
+# with MICRESS interferes with TQ. This solution was advised by
+# MICRESS support.
+mv ${install_prefix}/Bin/libm.so.6 \
+    ${install_prefix}/Bin/libm.so.6.bak
+
+make_module_v2
+chmod a+rX "$module_dir"
+chgrp -R $group $install_prefix
+chmod -R o-rwx $install_prefix
+post_build_report
+
+# Run an example (sans TQ) as follows:
+# $ ./Bin/MICRESS_noTQ.sh ./Examples/Benchmark/B001_1D_ConstantDrivingForce.dri
+# An example with TQ:
+# $ ./Bin/MICRESS_TQ.sh ./Examples/Training/T00_02_Binary_E_Globulitic_2D_TQ.dri 
