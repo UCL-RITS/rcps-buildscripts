@@ -62,7 +62,7 @@ cd ..
 
 # Alter rungms in temp_dir
 sed -i -e "s|set TARGET=sockets|set TARGET=mpi|" rungms
-sed -i -e "s|set SCR=/scr/\$USER|set SCR=/tmp/\$USER|" rungms
+sed -i -e "s|set SCR=/scr/\$USER|set SCR=\$GAMESS_SCR|" rungms
 sed -i -e "s|set USERSCR=/u1/\$USER/scr|set USERSCR=\$GAMESS_USERSCR|" rungms
 sed -i -e "s|set GMSPATH=/u1/mike/gamess|set GMSPATH=$INSTALL_PREFIX|" rungms
 sed -i -e "s|set DDI_MPI_ROOT=/shared/intel/impi/4.1.0.024/intel64|set DDI_MPI_ROOT=\$I_MPI_ROOT/intel64|" rungms
@@ -72,6 +72,7 @@ sed -i -e "s|#--setenv I_MPI_FABRICS tmi|setenv I_MPI_FABRICS tmi|" rungms
 sed -i -e "s|#--setenv I_MPI_TMI_LIBRARY libtmi.so|setenv I_MPI_TMI_LIBRARY libtmi.so|" rungms
 sed -i -e "s|#--setenv I_MPI_TMI_PROVIDER psm|setenv I_MPI_TMI_PROVIDER psm|" rungms
 sed -i -e "s|setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:\$LD_LIBRARY_PATH|#setenv LD_LIBRARY_PATH /shared/intel/composer_xe_2013.1.117/compiler/lib/intel64:\$LD_LIBRARY_PATH|" rungms
+sed -i -e "s|   set SCR=$TMPDIR|   #set SCR=$TMPDIR|" rungms
 
 # Manually install
 cp gamess.00.x $INSTALL_PREFIX
