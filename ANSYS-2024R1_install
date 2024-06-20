@@ -76,7 +76,9 @@ echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
 ./install
 
 echo ""
-echo "Need to add installing the update patch here"
+echo "added installing the update patch here"
+cd ../Electronics_24.1.1_linx64
+./install_patch.bash --install_dir $INSTALL_PREFIX/AnsysEM
 
 echo ""
 echo "Installing UCL GE support scripts ..."
