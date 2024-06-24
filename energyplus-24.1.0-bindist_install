@@ -17,7 +17,7 @@ make_build_env ""
 
 cd "$build_dir"
 
-package_basename="EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64.tar.gz"
+package_basename="EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64"
 
 curl -sLO "https://github.com/NREL/EnergyPlus/releases/download/v24.1.0/EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64.tar.gz"
 
