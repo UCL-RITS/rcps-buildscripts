@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset \
+    -o pipefail 
+
+package_name="energyplus"
+package_version="24.1.0"
+package_variant="bindist"
+package_description="EnergyPlus™ is a whole building energy simulation program that engineers, architects, and researchers use to model both energy consumption—for heating, cooling, ventilation, lighting and plug and process loads—and water use in buildings."
+
+source includes/source_includes.sh
+
+module purge
+
+make_build_env ""
+
+cd "$build_dir"
+
+package_basename="EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64.tar.gz"
+
+curl -sLO "https://github.com/NREL/EnergyPlus/releases/download/v24.1.0/EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64.tar.gz"
+
+manifest \
+    sha256:7cbf7fe15e4fd42bfdc0765dabc2e484a17bba764d20578c64345ab61ab40770 EnergyPlus-24.1.0-9d7789a3ac-Linux-CentOS7.9.2009-x86_64.tar.gz \
+
+tar -xf "$package_basename.tar.gz"
+
+mkdir -p "$install_prefix"
+
+mv "$package_basename"/* "$install_prefix"
+
+make_module_v2 \
+    -d \
+    -v ENERGYPLUS_DIR="$install_prefix" \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix"
+
+chmod -R a+rX "$module_dir"
+cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+post_build_report
+
