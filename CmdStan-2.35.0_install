@@ -23,6 +23,7 @@ ARCHIVE=${ARCHIVE:-cmdstan-${VERSION}.tar.gz}
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
 echo "Building in $INSTALL_PREFIX ..."
+mkdir -p $INSTALL_PREFIX
 cd $INSTALL_PREFIX
 
 wget $SRC_ARCHIVE
