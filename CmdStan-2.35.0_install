@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing CmdStan 2.35.0 so that it can be used with R 4.4.0
+#
+# by Brian Alston, June 2024
+#
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0
+
+VERSION=${VERSION:-2.35.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/CmdStan/${VERSION}/${COMPILER_TAG}}
+MD5=${MD5:-4c0597a4b630e2561a69041ed43108c4}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/stan-dev/cmdstan/releases/download/v${VERSION}/cmdstan-${VERSION}.tar.gz}
+ARCHIVE=${ARCHIVE:-cmdstan-${VERSION}.tar.gz}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+echo "Building in $INSTALL_PREFIX ..."
+cd $INSTALL_PREFIX
+
+wget $SRC_ARCHIVE
+
+CHECKSUM=`md5sum ${ARCHIVE} | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar -xvf ${ARCHIVE}
+   cd cmdstan-${VERSION}
+   make build
+   
+else
+   echo "***** Hash mismatch,"
+   echo "	Expected: $MD5"
+   echo "	Got:      $CHECKSUM"
+fi
