@@ -260,6 +260,10 @@ install.packages ("VIM", lib=mainLib, repos=repros);
 install.packages ("quanteda.textstats", lib=mainLib, repos=repros);
 install.packages ("quanteda.textmodels", lib=mainLib, repos=repros);
 
+# for jose.arciniegas@ucl.ac.uk - June 2024
+# not on CRAN details here https://mc-stan.org/cmdstanr/
+install.packages ("cmdstanr", repos = "https://stan-dev.r-universe.dev");
+
 # End of R_packages_UCL_5
 
 # install.packages ("XXX", lib=mainLib, repos=repros);

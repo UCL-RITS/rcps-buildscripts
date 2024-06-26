@@ -37,6 +37,7 @@
 # Updated April 2023 for R 4.2.3
 # Updated march 2024 for R 4.3.3
 # Updated June 2024 for R 4.4.0
+# module cmdstan/2.35.0/gnu-10.2.0 added to allow CmdStanR package to be installed June 2024
 #
 # Using Ian's require function to load modules
 #
@@ -112,6 +113,7 @@ require gmt/6.2.0/gnu-10.2.0
 require protobuf/3.17.3/gnu-10.2.0
 require jq/1.5/gnu-4.9.2
 require plink/1.90b3.40
+require cmdstan/2.35.0/gnu-10.2.0
 
 require r/4.4.0-openblas/gnu-10.2.0
 
