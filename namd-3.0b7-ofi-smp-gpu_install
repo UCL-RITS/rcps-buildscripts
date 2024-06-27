@@ -91,7 +91,7 @@ sed -i -e '/FFTDIR=/s:$(HOME)/fftw3:/shared/ucl/apps/fftw/3.3.9/gnu-10.2.0:' Lin
 
 cd ..
  
-./config Linux-x86_64-g++ --with-fftw3 --with-cuda --charm-arch ${CHARMARC}
+./config Linux-x86_64-g++ --with-fftw3 --with-cuda --charm-arch ${CHARMARC}-smp
 cd Linux-x86_64-g++
 make
 
