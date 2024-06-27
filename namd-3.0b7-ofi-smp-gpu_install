@@ -23,14 +23,15 @@ source includes/source_includes.sh
 # gcc-libs/10.2.0 does not play well with the Intel compiler 2019 or 2020
 # for C++ templating reasons, so using gcc-libs/7.3.0.
 
-# changing to use Intel 2022 compilers and gcc-libs/10.2.0 etc for version 3.0b6
+# changing to use GNU 10.2.0 compilers, fftw and gcc-libs/10.2.0 etc for version 3.0b6
 
 module purge
 
 require gcc-libs/10.2.0
-require compilers/intel/2022.2
+require compilers/gnu/10.2.0
 require cuda/11.8.0/gnu-10.2.0
-require mpi/intel/2019/update6/intel
+require fftw/3.3.9/gnu-10.2.0
+require mpi/openmpi/4.0.5/gnu-10.2.0
 require cmake/3.21.1
 
 NANAME=${NANAME:-NAMD_${package_version}_Source}
@@ -68,7 +69,7 @@ tar xvf charm-${CHARMVER}.tar
 export MPICXX=mpicxx
 
 cd charm-v${CHARMVER}
-./build charm++ ${CHARMARC} iccstatic ifort smp --no-build-shared --with-production -xHost -DCMK_OPTIMIZE
+./build charm++ ${CHARMARC} --no-build-shared --with-production -DCMK_OPTIMIZE
 
 cd ..
 
@@ -86,12 +87,12 @@ sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.a
 
 
 cd ..
-./config Linux-x86_64-icc --with-fftw3 --with-cuda --charm-arch ${CHARMARC}-ifort-smp-iccstatic 
-
-cd Linux-x86_64-icc
+ 
+./config Linux-x86_64-g++ --with-fftw3 --with-cuda --charm-arch ${CHARMARC}
+cd Linux-x86_64-g++
 make
 
-cd ${build_dir}/${NANAME}/Linux-x86_64-icc
+cd ${build_dir}/${NANAME}/Linux-x86_64-g++
 rm ${install_prefix}/${NANAME}
 mkdir -p ${install_prefix}/${NANAME}/bin
 for a in charmrun flipbinpdb flipdcd namd3 psfgen sortreplicas
