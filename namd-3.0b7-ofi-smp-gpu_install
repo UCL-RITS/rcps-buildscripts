@@ -76,14 +76,17 @@ cd ..
 # Overwrite make.charm with the real location
 #echo "CHARMBASE = ${INSTALL_PREFIX}/${NANAME}/charm-${CHARMVER}" > Make.charm
 
+# Patches for UCL clusters
+#
 cd arch
 cp /shared/ucl/apps/build_scripts/namd-patches/*.patch .
+sed -i -e '/-TCLDIR/s/8.5.9/8.6.13/' -e '/-TCLLIB/s/8.5/8.6/' Linux-x86_64.tcl.patch
 patch < Linux-x86_64.tcl.patch
-patch < Linux-x86_64.fftw.patch
-cp /shared/ucl/apps/build_scripts/namd-patches/Linux-x86_64.fftw3 .
+patch < Linux-x86_64.fftw-gnu.patch
+sed -i -e '/FFTDIR=/s:$(HOME)/fftw3:/shared/ucl/apps/fftw/3.3.9/gnu-10.2.0:' Linux-x86_64.fftw3
 
 # AMD EPYC: avx and avx2 available
-sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
+# sed -i.bak 's|-axAVX|-march=core-avx2 -qopt-zmm-usage=high|g' Linux-x86_64-icc.arch
 
 
 cd ..
