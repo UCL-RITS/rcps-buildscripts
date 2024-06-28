@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -o errexit \
+    -o nounset
+
+package_name="energyplus"
+package_version="9.4.0"
+package_variant=""
+package_description="EnergyPlus™ is a whole building energy simulation program that engineers, architects, and researchers use to model both energy consumption—for heating, cooling, ventilation, lighting and plug and process loads—and water use in buildings."
+
+source includes/source_includes.sh
+
+module purge
+module load gcc-libs/7.3.0
+module load compilers/gnu/7.3.0
+module load cmake/3.21.1
+module load python3/3.9
+
+make_build_env ""
+
+cd "$build_dir"
+
+wget https://github.com/NREL/EnergyPlus/archive/refs/tags/v9.4.0.tar.gz
+
+manifest \
+    sha256:5f235688e0e1de45ff5db28859d26b9d5883d95f2c2ed1fa2408d8662f1b462a  v9.4.0.tar.gz
+
+tar -xf "v${package_version}.tar.gz"
+
+mkdir -p "$install_prefix"
+
+cd "EnergyPlus-${package_version}"
+mkdir build
+cd build
+cmake -DBUILD_FORTRAN=ON -DPYTHON_EXECUTABLE=$(which python) -DCMAKE_INSTALL_PREFIX="$install_prefix" ..
+
+make
+make install
+
+make_module_v2 \
+    -d \
+    -r "gcc-libs/7.3.0" \
+    -v ENERGYPLUS_DIR="$install_prefix" \
+    -e PATH:"$install_prefix" \
+    -e LD_LIBRARY_PATH:"$install_prefix"
+
+chmod -R a+rX "$module_dir"
+cp -r "$module_dir" "$install_prefix/.tcl_env_modules.generated"
+post_build_report
+
