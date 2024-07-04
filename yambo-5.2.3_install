@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="yambo"
+package_version="5.2.3"
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require  beta-modules
+    require  gcc-libs/10.2.0
+    require  compilers/intel/2022.2
+    require  mpi/intel/2019/update6/intel
+    require  libxc/6.2.2/intel-2022
+    require  hdf/5-1.12.3-impi/intel-2022
+    require  netcdf/4.9.2/intel-2022
+    require  netcdf-fortran/4.6.1/intel-2022
+
+    make_build_env ""
+    
+    package_url="https://github.com/yambo-code/yambo/archive/refs/tags/${package_version}.tar.gz"
+    package_file="${package_version}.tar.gz"
+    unpack_dir="yambo-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+
+    tar -xf "$package_file"
+}
+
+_pre_build() {
+    cd "$unpack_dir"
+    # Nothing here.
+    cd ..
+}
+_build() {      
+    cd "$unpack_dir"
+    echo "Building..."
+    echo "$unpack_dir"
+
+    ./configure \
+        --with-fft-libs=-mkl \
+        --with-blas-libs=-mkl \
+        --with-lapack-libs=-mkl \
+        --enable-netcdf-v3 \
+        --enable-hdf5-par-io \
+        --enable-hdf5-p2y-support \
+        --with-libxc-path="/shared/ucl/apps/libxc/6.2.2/intel-2022/" \
+        --with-hdf5-path="/shared/ucl/apps/HDF/5-1.12.3/impi/intel-2022/" \
+        --with-netcdf-path="/shared/ucl/apps/NetCDF/4.9.2-intel-2022/" \
+        --with-netcdff-path="/shared/ucl/apps/NetCDF-fortran/4.6.1-intel-2022/" \
+        --prefix="$install_prefix"
+    make all
+    cd ..
+}
+
+_post_build() {
+    cd "$unpack_dir"
+    echo "Post-building..."
+    echo "$unpack_dir"
+    #make install
+    mkdir -p "$install_prefix"
+    cp -r bin doc "$install_prefix"/
+    make_module \
+        -o "${module_dir}/${package_label}" \
+        -p "$install_prefix" \
+        -r beta-modules \
+        -r gcc-libs/10.2.0 \
+        -r compilers/intel/2022.2 \
+        -r mpi/intel/2019/update6/intel \
+        -r libxc/6.2.2/intel-2022 \
+        -r hdf/5-1.12.3-impi/intel-2022 \
+        -r netcdf/4.9.2/intel-2022 \
+        -r netcdf-fortran/4.6.1/intel-2022 \
+        -c yambo 
+    cd ..
+}
+
+_clean_up() {
+    #rm -Rf ${temp_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
+
+_env_setup
+_file_setup
+_pre_build
+_build
+_post_build
+_clean_up
