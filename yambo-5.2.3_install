@@ -42,7 +42,6 @@ _pre_build() {
 _build() {      
     cd "$unpack_dir"
     echo "Building..."
-    echo "$unpack_dir"
 
     ./configure \
         --with-fft-libs=-mkl \
@@ -56,17 +55,17 @@ _build() {
         --with-netcdf-path="/shared/ucl/apps/NetCDF/4.9.2-intel-2022/" \
         --with-netcdff-path="/shared/ucl/apps/NetCDF-fortran/4.6.1-intel-2022/" \
         --prefix="$install_prefix"
+    mkdir -p "$install_prefix"
     make all
     cd ..
 }
 
 _post_build() {
-    cd "$unpack_dir"
+    #cd "$unpack_dir"
     echo "Post-building..."
-    echo "$unpack_dir"
     #make install
-    mkdir -p "$install_prefix"
-    cp -r bin doc "$install_prefix"/
+    #mkdir -p "$install_prefix"
+    #cp -r bin doc "$install_prefix"/
     make_module \
         -o "${module_dir}/${package_label}" \
         -p "$install_prefix" \
