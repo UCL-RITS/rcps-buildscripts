@@ -14,7 +14,7 @@ module purge
 module load gcc-libs/7.3.0
 module load compilers/gnu/7.3.0
 module load cmake/3.21.1
-module load python3/3.9
+module load python3/3.8
 
 make_build_env ""
 
@@ -32,7 +32,7 @@ mkdir -p "$install_prefix"
 cd "EnergyPlus-${package_version}"
 mkdir build
 cd build
-cmake -DBUILD_FORTRAN=ON -DPYTHON_EXECUTABLE=$(which python) -DCMAKE_INSTALL_PREFIX="$install_prefix" ..
+cmake -DBUILD_FORTRAN=ON -DPYTHON_EXECUTABLE=$(which python) -DLINK_WITH_PYTHON=ON -DCMAKE_INSTALL_PREFIX="$install_prefix" ..
 
 make
 make install
