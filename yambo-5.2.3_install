@@ -61,7 +61,7 @@ _build() {
 }
 
 _post_build() {
-    #cd "$unpack_dir"
+    cd "$unpack_dir"
     echo "Post-building..."
     cp -r doc "$install_prefix"/
     make_module \
