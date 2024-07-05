@@ -9,7 +9,7 @@ source includes/source_includes.sh
 
 _env_setup() {
     module purge
-    require  gcc-libs
+    require  gcc-libs/4.9.2
     require  compilers/intel/2017/update4
     require  mpi/intel/2017/update3/intel
 
