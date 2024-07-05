@@ -15,7 +15,7 @@ _env_setup() {
 
     make_build_env ""
 
-    package_url="https://github.com/yambo-code/yambo/archive/${package_version}.tar.gz"
+    package_url="https://github.com/yambo-code/yambo/archive/refs/tags/${package_version}.tar.gz"
     package_file="${package_version}.tar.gz"
     unpack_dir="yambo-${package_version}"
 }
