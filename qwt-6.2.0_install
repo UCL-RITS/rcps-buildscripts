@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing Qwt - Qt Widgets for Technical Applications 
+#
+# by Brian Alston, February 2019
+# Updated to use Qt 5.12.1 March 2019
+# Updated for v 6.2.0 by CDK Harris, July 2024
+#
+
+NAME=${NAME:-qwt}
+VERSION=${VERSION:-6.2.0}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$NAME/$VERSION/$COMPILER_TAG}
+MD5=${MD5:-00c94f0af8b29d4785cec47351127c00}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://sourceforge.net/projects/qwt/files/qwt/${VERSION}/qwt-${VERSION}.tar.bz2/download}
+
+set -e
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+dirname=$(dirname $0 2>/dev/null || pwd)
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+
+source ${INCLUDES_DIR}/require_inc.sh
+require gcc-libs/4.9.2
+require compilers/gnu/4.9.2
+require bison/3.0.4/gnu-4.9.2
+require gperf/3.0.4/gnu-4.9.2
+require qt/5.12.1/gnu-4.9.2
+
+temp_dir=`mktemp -d -p /dev/shm`
+cd $temp_dir
+
+archive=qwt-${VERSION}.tar.bz2
+wget $SRC_ARCHIVE -O $archive
+CHECKSUM=`md5sum $archive| awk '{print $1}'`
+
+if [ "$MD5" == "$CHECKSUM" ]
+then
+  tar -xvjf $archive
+  cd qwt-$VERSION
+
+  # Stop make trying to install in /usr/local
+
+  sed -i.bak -e "s|/usr/local/|$INSTALL_PREFIX/|" qwtconfig.pri
+  
+  /shared/ucl/apps/qt/5.4.2/gnu-4.9.2/bin/qmake qwt.pro
+  make | tee make.log
+  make install
+
+else
+  echo "Hash mismatch."
+  echo "Expected: $MD5"
+  echo "Got: $CHECKSUM"
+fi
