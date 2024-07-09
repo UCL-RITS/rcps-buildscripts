@@ -18,7 +18,7 @@ _env_setup() {
     require  netcdf/4.9.2/intel-2022
     require  netcdf-fortran/4.6.1/intel-2022
 
-    make_build_env ""
+    make_build_env --tmp-root=/dev/shm
     
     package_url="https://github.com/yambo-code/yambo/archive/refs/tags/${package_version}.tar.gz"
     package_file="${package_version}.tar.gz"
