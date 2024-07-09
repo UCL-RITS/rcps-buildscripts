@@ -18,8 +18,8 @@ SUPPORT_PREFIX=${SUPPORT_PREFIX:-${install_prefix}/support}
 
 source includes/source_includes.sh
 module purge
-require gcc-libs/4.9.2
-require compilers/gnu/4.9.2
+require gcc-libs/7.3.0
+require compilers/gnu/7.3.0
 require bison/3.0.4/gnu-4.9.2
 require gperf/3.0.4/gnu-4.9.2
 
@@ -48,7 +48,7 @@ then
   cd $build_dir
   tar -xvf $archive
   cd ${package_name}-everywhere-src-${package_version}
-  ./configure -prefix $install_prefix -opensource -confirm-license -verbose -qt-xcb -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
+  ./configure -prefix $install_prefix -opensource -confirm-license -verbose -L $SUPPORT_PREFIX/lib 2>&1 | tee config.log
   gmake -j 4 2>&1 | tee make.log
   gmake install
 
