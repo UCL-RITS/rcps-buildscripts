@@ -59,7 +59,7 @@ _build() {
         require mpi/openmpi/4.0.5/gnu-10.2.0
 
         if [ "$cluster" == "young" ]; then
-            # Witg A100 GPU support
+            # With A100 GPU support
             require cuda/12.2.2/gnu-10.2.0
 
             echo "Building and installing GROMACS with MPI & GPU support (single precision)"
@@ -80,6 +80,9 @@ _build() {
             -DCMAKE_INSTALL_PREFIX=$install_prefix \
             $CMAKE_FLAGS
         fi
+        make -j8
+        make install
+        rm -rf *
     fi
 }
 
