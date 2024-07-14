@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+set -e
+
+package_name="gromacs"
+package_version="2024.2"
+package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
+
+source includes/source_includes.sh
+
+_env_setup() {
+    module purge
+    require gcc-libs/10.2.0
+    require cmake
+    require python3/3.9-gnu-10.2.0
+    require compilers/gnu/10.2.0
+
+    make_build_env --tmp-root=/dev/shm
+    
+    package_url="https://ftp.gromacs.org/pub/gromacs/${package_name}-${package_version}.tar.gz"
+    unpack_dir="${package_name}-${package_version}"
+}
+
+
+_file_setup() {
+    cd "$build_dir"
+
+    wget "$package_url"
+    tarfile=$(basename "$package_url")
+    echo "Verifying checksum..."
+    manifest md5:b1caec2a81e221d68b3a58c53f1add40 ${tarfile}
+
+}
+
+_pre_build() {
+    echo "Unpacking..."
+    tar -xf "$tarfile"
+}
+
+_build() {      
+    cd "$unpack_dir"
+    # thread-MPI support
+    if [ "$cluster" == "myriad" ]; then
+        require cuda/12.2.2/gnu-10.2.0
+        
+        echo "Building and installing GROMACS with GPU support (single precision)"
+        cmake .. \
+        -DGMX_GPU=CUDA \
+        -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
+        -DGMX_CUDA_TARGET_SM="60;61;62;70;72;80;86" \
+        -DGMX_BUILD_OWN_FFTW=ON \
+        -DCMAKE_INSTALL_PREFIX=$install_prefix \
+        $CMAKE_FLAGS
+        make -j8
+        make install
+        rm -rf *
+    else
+        # MPI support
+        require mpi/openmpi/4.0.5/gnu-10.2.0
+
+        if [ "$cluster" == "young" ]; then
+            # Witg A100 GPU support
+            require cuda/12.2.2/gnu-10.2.0
+
+            echo "Building and installing GROMACS with MPI & GPU support (single precision)"
+            cmake .. \
+            -DGMX_GPU=CUDA \
+            -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
+            -DGMX_CUDA_TARGET_SM="80;86" \
+            -DGMX_MPI=ON \
+            -DGMX_BUILD_OWN_FFTW=ON \
+            -DCMAKE_INSTALL_PREFIX=$install_prefix \
+            $CMAKE_FLAGS
+        else
+            # Without GPU support
+            echo "Building and installing GROMACS with MPI support (single precision)"
+            cmake .. \
+            -DGMX_MPI=ON \
+            -DGMX_BUILD_OWN_FFTW=ON \
+            -DCMAKE_INSTALL_PREFIX=$install_prefix \
+            $CMAKE_FLAGS
+        fi
+    fi
+}
+
+_post_build() {
+    make_module_v2
+    chmod a+rX "$module_dir"
+    post_build_report
+}
+
+_clean_up() {
+    rm -Rf ${build_dir:-ERROR_TEMP_DIR_NOT_SET}
+    :
+}
