@@ -50,6 +50,7 @@ _build() {
         -DGMX_GPU=CUDA \
         -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
         -DGMX_CUDA_TARGET_SM="60;61;62;70;72;80;86" \
+        -DREGRESSIONTEST_DOWNLOAD=ON \
         -DGMX_BUILD_OWN_FFTW=ON \
         -DCMAKE_INSTALL_PREFIX=$install_prefix \
         $CMAKE_FLAGS
@@ -69,6 +70,7 @@ _build() {
             -DGMX_GPU=CUDA \
             -DCUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH \
             -DGMX_CUDA_TARGET_SM="80;86" \
+            -DGMX_SIMD=AVX2_256 \
             -DGMX_MPI=ON \
             -DGMX_BUILD_OWN_FFTW=ON \
             -DCMAKE_INSTALL_PREFIX=$install_prefix \
