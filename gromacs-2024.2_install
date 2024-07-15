@@ -5,7 +5,7 @@ set -e
 package_name="gromacs"
 package_version="2024.2"
 package_description="GROMACS is a package for performing molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."
-
+cluster=${cluster:-$(/shared/ucl/apps/cluster-bin/whereami)}
 source includes/source_includes.sh
 
 _env_setup() {
@@ -39,6 +39,8 @@ _pre_build() {
 
 _build() {      
     cd "$unpack_dir"
+    mkdir build
+    cd build
     # thread-MPI support
     if [ "$cluster" == "myriad" ]; then
         require cuda/12.2.2/gnu-10.2.0
