@@ -18,8 +18,8 @@ mpi_package_version="2021.13"
 dpl_version="2022.6"
 vtune_version="2024.2"
 
-basekit=wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/9a98af19-1c68-46ce-9fdd-e249240c7c42/l_BaseKit_p_2024.2.0.634.sh
-hpckit=wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d4e49548-1492-45c9-b678-8268cb0f1b05/l_HPCKit_p_2024.2.0.635.sh
+basekit=https://registrationcenter-download.intel.com/akdlm/IRC_NAS/9a98af19-1c68-46ce-9fdd-e249240c7c42/l_BaseKit_p_2024.2.0.634.sh
+hpckit=https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d4e49548-1492-45c9-b678-8268cb0f1b05/l_HPCKit_p_2024.2.0.635.sh
 
 # need a minimum of gcc-7.3.0 and some compilation options will require gcc >= 8.1
 module purge
