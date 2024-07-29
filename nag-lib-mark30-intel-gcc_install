@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# This script installs the NAG Library Mark 30 for Intel and GCC Compilers.
+# Brian Alston September 2019
+
+# Notes: 1) unified NAG library including Fortran and C/C++ bindings
+#        2) needs compilers/intel/2022.2 or compilers/gnu/10.2.0
+
+# Based on nag-fl-mark26-intel_install
+# Updated July 2024 for NAG Mark 30
+
+
+VERSION=${VERSION:-30}
+PRODUCT=${PRODUCT:-nll6i301nl}
+DOC=${DOC:-mk${VERSION}_doc}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-library}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://support.nag.com/downloads/impl/$PRODUCT.tgz}
+DOC_ARCHIVE=${DOC_ARCHIVE:-https://support.nag.com/numeric/nl/nagdoc_30.1/nagdoc_30.1.zip}
+MD5_SRC=${MD5_SRC:-bd2d586887fc094aa4316fbf549a2a97}
+MD5_DOC=${MD5_DOC:-bbb73dda2e611949d8f321ae036c8d74}
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget $SRC_ARCHIVE
+wget $DOC_ARCHIVE
+CHECKSUM_SRC=`md5sum $PRODUCT.tgz | awk '{print $1}'`
+CHECKSUM_DOC=`md5sum nagdoc_30.1.zip | awk '{print $1}'`
+
+if [ ! "$MD5_SRC" == "$CHECKSUM_SRC" ]
+then
+    echo "Install Archive Hash mismatch."
+    echo "Expected: $MD5_SRC"
+    echo "Got: $CHECKSUM_SRC"
+    exit 1
+fi
+if [ ! "$MD5_DOC" == "$CHECKSUM_DOC" ]
+then
+    echo "Documentation Archive Hash mismatch."
+    echo "Expected: $MD5_DOC"
+    echo "Got: $CHECKSUM_DOC"
+    exit 1
+fi
+
+tar -xvf $PRODUCT.tgz
+cd $PRODUCT
+
+./install.sh -accept -installdir=$INSTALL_PREFIX 
+
+cd $INSTALL_PREFIX/$PRODUCT
+mkdir -p doc 
+cd doc 
+unzip -x $temp_dir/nagdoc_30.1.zip
+
+
