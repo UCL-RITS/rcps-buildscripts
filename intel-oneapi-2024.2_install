@@ -171,13 +171,14 @@ make_module -d \
             -v I_MPI_F90="ifort" \
             -v I_MPI_F77="ifort" \
             -v CCL_ROOT="$cprefix/ccl/$mpi_package_version" \
-            -e CLASSPATH:"${mprefix}/lib/mpi.jar" \
+            -e CLASSPATH:"${mprefix}/share/java/mpi.jar" \
             -e PATH:"${mprefix}/bin" \
             -e LD_LIBRARY_PATH:"${mprefix}/lib" \
             -e LIBRARY_PATH:"${mprefix}/lib" \
             -e CPATH:"${mprefix}/include" \
-            -e MANPATH:"${mprefix}/man" \
+            -e MANPATH:"${mprefix}/share/man" \
             -e CMAKE_PREFIX_PATH:"$mprefix" \
+            -e PKG_CONFIG_PATH:"${mprefix}/lib/pkgconfig"
             -v FI_PROVIDER_PATH="${mprefix}/libfabric/lib/prov:/usr/lib64/libfabric" \
             -e PATH:"${mprefix}/libfabric/bin" \
             -e LD_LIBRARY_PATH:"${mprefix}/libfabric/lib" \
