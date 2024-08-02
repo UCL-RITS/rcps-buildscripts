@@ -15,6 +15,7 @@ package_version="2024.2"
 package_description="Intel's suite of compilers, performance libraries, frameworks, and analysis and debug tools. Contains the Intel oneAPI Base Toolkit 2024.2.0.634 and Intel oneAPI HPC Toolkit 2024.2.0.635. Intel compiler version is 2024.2 and corresponding Intel MPI version is 2021.13"
 numeric_version="2024.2"
 mpi_package_version="2021.13"
+dal_version="2024.5"
 dpl_version="2022.6"
 vtune_version="2024.2"
 
@@ -65,94 +66,98 @@ make_module -p "$install_prefix" \
             -v COMPILER_TAG=intel-2024 \
             -v BLAS_TAG=mkl \
             -v CMPLR_ROOT="$cprefix/compiler/$numeric_version" \
-            -v TBBROOT="$cprefix/tbb/$mpi_package_version" \
-            -v CLCK_ROOT="$cprefix/clck/$mpi_package_version" \
-            -v INTELFPGAOCLSDKROOT="$cprefix/compiler/$numeric_version/lib/oclfpga" \
-            -v INTEL_LICENSE_FILE="$cprefix/clck/$mpi_package_version/licensing:\$::env(HOME)/intel/licenses" \
-            -v INTEL_PYTHONHOME="$cprefix/debugger/$mpi_package_version/dep" \
-            -v DPL_ROOT="$cprefix/dpl/$dpl_version" \
-            -v MKLROOT="$cprefix/mkl/$numeric_version" \
-            -v DAL_MAJOR_BINARY=1 \
-            -v DAL_MINOR_BINARY=1 \
-            -v DALROOT="$cprefix/dal/$mpi_package_version" \
-            -v DAALROOT="$cprefix/dal/$mpi_package_version" \
-            -v DPCT_BUNDLE_ROOT="$cprefix/dpcpp-ct/$numeric_version" \
-            -v INSPECTOR_2022_DIR="$cprefix/inspector/$numeric_version" \
-            -v IPPROOT="$cprefix/ipp/$mpi_package_version" \
-            -v IPP_TARGET_ARCH="intel64" \
-            -v IPPCRYPTOROOT="$cprefix/ippcp/$mpi_package_version" \
-            -v IPPCP_TARGET_ARCH="intel64" \
-            -v VT_ROOT="$cprefix/itac/$mpi_package_version" \
-            -v VT_MPI="impi4" \
-            -v VT_ADD_LIBS="\"-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread\"" \
-            -v VTUNE_PROFILER_2022_DIR="$cprefix/vtune/$vtune_version" \
-            -v VTUNE_PROFILER_DIR="$cprefix/vtune/$vtune_version" \
+#            -v TBBROOT="$cprefix/tbb/$mpi_package_version" \
+#            -v CLCK_ROOT="$cprefix/clck/$mpi_package_version" \
+#            -v INTELFPGAOCLSDKROOT="$cprefix/compiler/$numeric_version/lib/oclfpga" \
+#            -v INTEL_LICENSE_FILE="$cprefix/clck/$mpi_package_version/licensing:\$::env(HOME)/intel/licenses" \
+#            -v INTEL_PYTHONHOME="$cprefix/debugger/$mpi_package_version/dep" \
+#            -v DPL_ROOT="$cprefix/dpl/$dpl_version" \
+#            -v MKLROOT="$cprefix/mkl/$numeric_version" \
+            -v ADVISOR_2024_DIR="$cprefix/advisor/$numeric_version" \
+            -v APM="$cprefix/advisor/$numeric_version/perfmodels" \
+            -v DAL_MAJOR_BINARY=2 \
+            -v DAL_MINOR_BINARY=0 \
+            -v DALROOT="$cprefix/dal/$dal_version" \
+#            -v DPCT_BUNDLE_ROOT="$cprefix/dpcpp-ct/$numeric_version" \
+#            -v INSPECTOR_2022_DIR="$cprefix/inspector/$numeric_version" \
+#            -v IPPROOT="$cprefix/ipp/$mpi_package_version" \
+#            -v IPP_TARGET_ARCH="intel64" \
+#            -v IPPCRYPTOROOT="$cprefix/ippcp/$mpi_package_version" \
+#            -v IPPCP_TARGET_ARCH="intel64" \
+#            -v VT_ROOT="$cprefix/itac/$mpi_package_version" \
+#            -v VT_MPI="impi4" \
+#            -v VT_ADD_LIBS="\"-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread\"" \
+#            -v VTUNE_PROFILER_2022_DIR="$cprefix/vtune/$vtune_version" \
+#            -v VTUNE_PROFILER_DIR="$cprefix/vtune/$vtune_version" \
             -v ONEAPI_ROOT="$cprefix" \
-            -e VT_LIB_DIR:"$cprefix/itac/$mpi_package_version/lib" \
-            -e VT_SLIB_DIR:"$cprefix/itac/$mpi_package_version/slib" \
-            -e PATH:"$cprefix/clck/$mpi_package_version/bin/intel64" \
-            -e PATH:"$cprefix/compiler/$numeric_version/lib/oclfpga/bin" \
-            -e PATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/bin" \
-            -e PATH:"$cprefix/compiler/$numeric_version/linux/bin" \
-            -e PATH:"$cprefix/compiler/$numeric_version/linux/bin/intel64" \
-            -e PATH:"$cprefix/dev-utilities/$mpi_package_version/bin" \
-            -e PATH:"$cprefix/dpcpp-ct/$numeric_version/bin" \
-            -e PATH:"$cprefix/inspector/$numeric_version/bin64" \
-            -e PATH:"$cprefix/itac/$mpi_package_version/bin" \
-            -e PATH:"$cprefix/vpl/$numeric_version/bin" \
-            -e PATH:"$cprefix/vtune/$vtune_version/bin64" \
-            -e LIBRARY_PATH:"$cprefix/clck/$mpi_package_version/lib/intel64" \
-            -e LIBRARY_PATH:"$cprefix/tbb/$mpi_package_version/lib/intel64/gcc4.8" \
-            -e LIBRARY_PATH:"$cprefix/compiler/$numeric_version/linux/lib" \
-            -e LIBRARY_PATH:"$cprefix/mkl/$numeric_version/lib/intel64" \
-            -e LIBRARY_PATH:"$cprefix/dal/$mpi_package_version/lib/intel64" \
-            -e LIBRARY_PATH:"$cprefix/ipp/$mpi_package_version/lib/intel64" \
-            -e LIBRARY_PATH:"$cprefix/ippcp/$mpi_package_version/lib/intel64" \
-            -e LIBRARY_PATH:"$cprefix/vpl/$numeric_version/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/tbb/$mpi_package_version/lib/intel64/gcc4.8" \
-            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/linux/compiler/lib/intel64_lin" \
-            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/linux/lib/x64" \
-            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/linux/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/lib/oclfpga/host/linux64/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/dep/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/libipt/intel64/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/lib" \
-            -e LD_LIBRARY_PATH:"$cprefix/mkl/$numeric_version/lib/intel64" \
-            -e LD_LIBRARY_PATH:"$cprefix/dal/$mpi_package_version/lib/intel64" \
-            -e LD_LIBRARY_PATH:"$cprefix/ipp/$mpi_package_version/lib/intel64" \
-            -e LD_LIBRARY_PATH:"$cprefix/ippcp/$mpi_package_version/lib/intel64" \
-            -e LD_LIBRARY_PATH:"$cprefix/itac/$mpi_package_version/slib" \
-            -e LD_LIBRARY_PATH:"$cprefix/vpl/$numeric_version/lib" \
-            -e CPLUS_INCLUDE_PATH:"$cprefix/clck/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/tbb/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/dpl/$dpl_version/linux/include" \
-            -e CPATH:"$cprefix/mkl/$numeric_version/include" \
-            -e CPATH:"$cprefix/dal/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/dev-utilities/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/dpcpp-ct/$numeric_version/include" \
-            -e CPATH:"$cprefix/ipp/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/ippcp/$mpi_package_version/include" \
-            -e CPATH:"$cprefix/vpl/$numeric_version/include" \
-            -e NLSPATH:"$cprefix/compiler/$numeric_version/linux/compiler/lib/intel64_lin/locale/%l_%t/%N" \
-            -e NLSPATH:"$cprefix/mkl/$numeric_version/lib/intel64/locale/%l_%t/%N" \
-            -e CLASSPATH:"$cprefix/dal/$mpi_package_version/lib/onedal.jar" \
-            -e OCL_ICD_FILENAMES:"libalteracl.so" \
-            -e OCL_ICD_FILENAMES:"libintelocl_emu.so" \
-            -a OCL_ICD_FILENAMES:"$cprefix/compiler/$numeric_version/linux/lib/x64/libintelocl.so" \
-            -e CMAKE_PREFIX_PATH:"$cprefix/tbb/$mpi_package_version" \
-            -e CMAKE_PREFIX_PATH:"$cprefix/compiler/$numeric_version/linux/IntelDPCPP" \
-            -e CMAKE_PREFIX_PATH:"$cprefix/dal/$mpi_package_version" \
-            -e CMAKE_PREFIX_PATH:"$cprefix/vpl/$numeric_version" \
-            -e MANPATH:"$cprefix/clck/$mpi_package_version/man" \
-            -e MANPATH:"$cprefix/debugger/$mpi_package_version/documentation/man" \
-            -a MANPATH:"$cprefix/compiler/$numeric_version/documentation/en/man/common" \
-            -e MANPATH:"$cprefix/itac/$mpi_package_version/man" \
-            -e GDB_INFO:"$cprefix/debugger/$mpi_package_version/documentation/info/" \
-            -e INFOPATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/lib" \
-            -e DIAGUTIL_PATH:"$cprefix/compiler/$numeric_version/sys_check/sys_check.sh" \
-            -e PKG_CONFIG_PATH:"$cprefix/mkl/$numeric_version/lib/pkgconfig" \
-            -e PKG_CONFIG_PATH:"$cprefix/dal/$mpi_package_version/lib/pkgconfig" \
-            -e PKG_CONFIG_PATH:"$cprefix/vpl/$numeric_version/lib/pkgconfig" \
+#            -e VT_LIB_DIR:"$cprefix/itac/$mpi_package_version/lib" \
+#            -e VT_SLIB_DIR:"$cprefix/itac/$mpi_package_version/slib" \
+#            -e PATH:"$cprefix/clck/$mpi_package_version/bin/intel64" \
+#            -e PATH:"$cprefix/compiler/$numeric_version/lib/oclfpga/bin" \
+#            -e PATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/bin" \
+            -e PATH:"$cprefix/compiler/$numeric_version/bin" \
+            -e PATH:"$cprefix/advisor/$numeric_version/bin64" \
+#            -e PATH:"$cprefix/dev-utilities/$mpi_package_version/bin" \
+#            -e PATH:"$cprefix/dpcpp-ct/$numeric_version/bin" \
+#            -e PATH:"$cprefix/inspector/$numeric_version/bin64" \
+#            -e PATH:"$cprefix/itac/$mpi_package_version/bin" \
+#            -e PATH:"$cprefix/vpl/$numeric_version/bin" \
+#            -e PATH:"$cprefix/vtune/$vtune_version/bin64" \
+#            -e LIBRARY_PATH:"$cprefix/clck/$mpi_package_version/lib/intel64" \
+#            -e LIBRARY_PATH:"$cprefix/tbb/$mpi_package_version/lib/intel64/gcc4.8" \
+#            -e LIBRARY_PATH:"$cprefix/compiler/$numeric_version/linux/lib" \
+#            -e LIBRARY_PATH:"$cprefix/mkl/$numeric_version/lib/intel64" \
+            -e LIBRARY_PATH:"$cprefix/dal/$dal_version/lib" \
+#            -e LIBRARY_PATH:"$cprefix/ipp/$mpi_package_version/lib/intel64" \
+#            -e LIBRARY_PATH:"$cprefix/ippcp/$mpi_package_version/lib/intel64" \
+#            -e LIBRARY_PATH:"$cprefix/vpl/$numeric_version/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/tbb/$mpi_package_version/lib/intel64/gcc4.8" \
+            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/lib" \
+            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/opt/compiler/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/compiler/$numeric_version/lib/oclfpga/host/linux64/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/dep/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/libipt/intel64/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/mkl/$numeric_version/lib/intel64" \
+            -e LD_LIBRARY_PATH:"$cprefix/dal/$dal_version/lib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/ipp/$mpi_package_version/lib/intel64" \
+#            -e LD_LIBRARY_PATH:"$cprefix/ippcp/$mpi_package_version/lib/intel64" \
+#            -e LD_LIBRARY_PATH:"$cprefix/itac/$mpi_package_version/slib" \
+#            -e LD_LIBRARY_PATH:"$cprefix/vpl/$numeric_version/lib" \
+#            -e CPLUS_INCLUDE_PATH:"$cprefix/clck/$mpi_package_version/include" \
+#            -e CPATH:"$cprefix/tbb/$mpi_package_version/include" \
+#            -e CPATH:"$cprefix/dpl/$dpl_version/linux/include" \
+#            -e CPATH:"$cprefix/mkl/$numeric_version/include" \
+            -e CPATH:"$cprefix/dal/$dal_version/include/dal" \
+#            -e CPATH:"$cprefix/dev-utilities/$mpi_package_version/include" \
+#            -e CPATH:"$cprefix/dpcpp-ct/$numeric_version/include" \
+#            -e CPATH:"$cprefix/ipp/$mpi_package_version/include" \
+#            -e CPATH:"$cprefix/ippcp/$mpi_package_version/include" \
+#            -e CPATH:"$cprefix/vpl/$numeric_version/include" \
+            -e NLSPATH:"$cprefix/compiler/$numeric_version/lib/compiler/locale/%l_%t/%N" \
+#            -e NLSPATH:"$cprefix/mkl/$numeric_version/lib/intel64/locale/%l_%t/%N" \
+#            -e CLASSPATH:"$cprefix/dal/$mpi_package_version/lib/onedal.jar" \
+#            -e OCL_ICD_FILENAMES:"libalteracl.so" \
+#            -e OCL_ICD_FILENAMES:"libintelocl_emu.so" \
+            -a OCL_ICD_FILENAMES:"$cprefix/compiler/$numeric_version/lib/libintelocl.so" \
+            -e CMAKE_PREFIX_PATH:"$cprefix/compiler/$numeric_version" \
+#            -e CMAKE_PREFIX_PATH:"$cprefix/tbb/$mpi_package_version" \
+#            -e CMAKE_PREFIX_PATH:"$cprefix/compiler/$numeric_version/linux/IntelDPCPP" \
+            -e CMAKE_PREFIX_PATH:"$cprefix/dal/$dal_version" \
+#            -e CMAKE_PREFIX_PATH:"$cprefix/vpl/$numeric_version" \
+#            -e MANPATH:"$cprefix/clck/$mpi_package_version/man" \
+#            -e MANPATH:"$cprefix/debugger/$mpi_package_version/documentation/man" \
+            -e MANPATH:"$cprefix/compiler/$numeric_version/share/man" \
+#            -e MANPATH:"$cprefix/itac/$mpi_package_version/man" \
+#            -e GDB_INFO:"$cprefix/debugger/$mpi_package_version/documentation/info/" \
+#            -e INFOPATH:"$cprefix/debugger/$mpi_package_version/gdb/intel64/lib" \
+            -e DIAGUTIL_PATH:"$cprefix/compiler/$numeric_version/etc/compiler/sys_check/sys_check.sh" \
+#            -e PYTHONPATH:"$cprefix/advisor/$numeric_version/pythonapi" \
+             -e PKG_CONFIG_PATH:$cprefix/compiler/$numeric_version/lib/pkgconfig" \
+#            -e PKG_CONFIG_PATH:"$cprefix/mkl/$numeric_version/lib/pkgconfig" \
+            -e PKG_CONFIG_PATH:"$cprefix/advisor/$numeric_version/include/pkgconfig/lib64" \
+            -e PKG_CONFIG_PATH:"$cprefix/dal/$dal_version/lib/pkgconfig" \
+#            -e PKG_CONFIG_PATH:"$cprefix/vpl/$numeric_version/lib/pkgconfig" \
             -r gcc-libs/10.2.0 \
             -d \
             -w "[$package_name/$package_version] $package_description"
@@ -171,14 +176,19 @@ make_module -d \
             -v I_MPI_F90="ifort" \
             -v I_MPI_F77="ifort" \
             -v CCL_ROOT="$cprefix/ccl/$mpi_package_version" \
+            -v CCL_CONFIGURATION="cpu_gpu_dpcpp" \
             -e CLASSPATH:"${mprefix}/share/java/mpi.jar" \
             -e PATH:"${mprefix}/bin" \
             -e LD_LIBRARY_PATH:"${mprefix}/lib" \
+            -e LD_LIBRARY_PATH:"${cprefix}/ccl/${mpi_package_version}/lib" \
             -e LIBRARY_PATH:"${mprefix}/lib" \
+            -e LIBRARY_PATH:"${cprefix}/ccl/${mpi_package_version}/lib" \
             -e CPATH:"${mprefix}/include" \
+            -e CPATH:"${cprefix}/ccl/${mpi_package_version}/include" \
             -e MANPATH:"${mprefix}/share/man" \
             -e CMAKE_PREFIX_PATH:"$mprefix" \
             -e PKG_CONFIG_PATH:"${mprefix}/lib/pkgconfig"
+            -e PKG_CONFIG_PATH:"${cprefix}/ccl/${mpi_package_version}/lib/pkgconfig" \
             -v FI_PROVIDER_PATH="${mprefix}/libfabric/lib/prov:/usr/lib64/libfabric" \
             -e PATH:"${mprefix}/libfabric/bin" \
             -e LD_LIBRARY_PATH:"${mprefix}/libfabric/lib" \
