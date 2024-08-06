@@ -4,6 +4,8 @@
 # Using silent installation.
 # Also installs the MKL interfaces so don't need to run intel-compilers-interfaces_install. 
 
+# Requires GLIBC 2.18 for clang-based compilers and has no icc, icpc. Only ifort.
+
 set -e
 
 rm -Rf ~/intel
@@ -58,9 +60,9 @@ export cprefix=$install_prefix
 make_module -p "$install_prefix" \
             -c compilers/"$package_name" \
             -o "$module_dir/compilers/$package_label" \
-            -v CC=icc \
-            -v CXX=icpc \
-            -v CXXCPP="\"icpc -E\"" \
+            -v CC=icx \
+            -v CXX=icpx \
+#            -v CXXCPP="\"icpx -E\"" \
             -v F77=ifort \
             -v F90=ifort \
             -v FC=ifort \
