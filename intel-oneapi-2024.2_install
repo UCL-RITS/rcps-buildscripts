@@ -171,7 +171,7 @@ make_module -d \
             -e CPATH:"${cprefix}/ccl/${mpi_package_version}/include" \
             -e MANPATH:"${mprefix}/share/man" \
             -e CMAKE_PREFIX_PATH:"$mprefix" \
-            -e PKG_CONFIG_PATH:"${mprefix}/lib/pkgconfig"
+            -e PKG_CONFIG_PATH:"${mprefix}/lib/pkgconfig" \
             -e PKG_CONFIG_PATH:"${cprefix}/ccl/${mpi_package_version}/lib/pkgconfig" \
             -v FI_PROVIDER_PATH="${mprefix}/libfabric/lib/prov:/usr/lib64/libfabric" \
             -e PATH:"${mprefix}/libfabric/bin" \
