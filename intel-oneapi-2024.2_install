@@ -150,7 +150,7 @@ make_module -p "$install_prefix" \
 # MPI module
 mprefix="$cprefix/mpi/$mpi_package_version"
 make_module -d \
-            -c mpi/"$package_name" \
+            -c mpi \
             -o "${module_dir}/mpi/${mpi_package_label}" \
             -v GERUN_LAUNCHER=intel \
             -v MPI_HOME="$mprefix" \
