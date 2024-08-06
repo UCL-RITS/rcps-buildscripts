@@ -95,7 +95,7 @@ make_module -p "$install_prefix" \
             -e LIBRARY_PATH:"$cprefix/mkl/$numeric_version/lib" \
             -e LIBRARY_PATH:"$cprefix/dal/$dal_version/lib" \
             -e LIBRARY_PATH:"$cprefix/dnnl/$numeric_version/lib" \
-            -e LIBRARY_PATH="$cprefix/dpl/$dpl_version/lib" \
+            -e LIBRARY_PATH:"$cprefix/dpl/$dpl_version/lib" \
             -e LIBRARY_PATH:"$cprefix/ipp/$ipp_version/lib" \
             -e LIBRARY_PATH:"$cprefix/ippcp/$ipp_version/lib" \
             -e LD_LIBRARY_PATH:"$cprefix/tbb/$mpi_package_version/lib/intel64/gcc4.8" \
