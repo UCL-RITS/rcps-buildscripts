@@ -13,7 +13,7 @@ VERSION=${VERSION:-7.2}
 # BUILD=${BUILD:-7114}
 PRODUCT=${PRODUCT:-npl6a72na}
 ARCH=${ARCH:-amd64}
-INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-compiler/${VERSION}}NPL6A72NA
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-compiler/${VERSION}}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.nag.co.uk/downloads/impl/${PRODUCT}_$ARCH.tgz}
 MD5=${MD5:-abc4bb5fb9235871cad833cb10714b49}
 
