@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# This script installs NAG Fortran Compiler 7.2
+# Brian Alston April 2016
+# Based on spm12_install by Owain Kenway
+
+# Updated July 2020 for 7.0
+# Updated December 2022 for 7.1
+# Updated August 2024 for 7.2
+
+
+VERSION=${VERSION:-7.2}
+# BUILD=${BUILD:-7114}
+PRODUCT=${PRODUCT:-npl6a72na}
+ARCH=${ARCH:-amd64}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/NAG/fortran-compiler/${VERSION}}NPL6A72NA
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://www.nag.co.uk/downloads/impl/${PRODUCT}_$ARCH.tgz}
+MD5=${MD5:-abc4bb5fb9235871cad833cb10714b49}
+
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+temp_dir=`mktemp -d -p /dev/shm`
+
+cd $temp_dir
+wget --no-check-certificate $SRC_ARCHIVE
+CHECKSUM=`md5sum ${PRODUCT}_$ARCH.tgz | awk '{print $1}'`
+
+if [[ "$MD5" == "$CHECKSUM" ]]
+then
+   tar xvzf ${PRODUCT}_$ARCH.tgz
+   cd NAG_Fortran-$ARCH
+
+    # Run the installer using the silent version
+   # echo "Install to ${INSTALL_PREFIX}/bin"
+   # export INSTALL_TO_BINDIR=${INSTALL_PREFIX}/bin
+   # export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
+   # export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man/man
+   # bash -l ./INSTALLU.sh
+   
+   echo ""
+   echo "Install to ${INSTALL_PREFIX}/bin"
+   echo ""
+   ./INSTALL.sh
+   echo ""
+   echo "Finished"
+else
+   echo "***** Hash mismatch,"
+   echo "       Expected: $MD5"
+   echo "       Got:      $CHECKSUM"
+fi
+
+
