@@ -36,7 +36,8 @@ then
    export INSTALL_TO_BINDIR=${INSTALL_PREFIX}/bin
    export INSTALL_TO_LIBDIR=${INSTALL_PREFIX}/lib/NAG_Fortran
    export INSTALL_TO_MANDIR=${INSTALL_PREFIX}/man/man
-   mkdir -p ${INSTALL_PREFIX}/man
+   mkdir -p ${INSTALL_PREFIX}/man/man1
+   mkdir -p ${INSTALL_PREFIX}/man/man3
    chmod -R a+rx ${INSTALL_PREFIX}
    bash -l ./INSTALLU.sh
    
