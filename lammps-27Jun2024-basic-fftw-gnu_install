@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing LAMMPS
+#
+# by Owain Kenway, 2018
+# Updated January 2022 for LAMMPS 29th September 2021 Update 2
+# Updated March 2022 to use FFTW instead of KISS FFT as the FFT library.
+# Updated April 2022 to add the ML-QUIP package to the list of addon packages included.
+# Reverted Feb 2023 to remove ML-QUIP again - will now try this as a seperate build.
+# Updated April 2023 for LAMMPS 28th March 2023
+# Updated September 2023 for LAMMPS 2nd August 2023
+# Updated August 2024 for LAPPMS 27th June 2024
+#
+# Note: Install documentation now recommends CMAKE
+#       Using GNU Compilers version 10.2.0, FFTW and OpenMPI
+#
+# This is a work in progress script!
+
+NAME=${NAME:-lammps}
+TYPE=${TYPE:-basic+fftw}
+COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
+VERSION=${VERSION:-27Jun2024}
+INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/lammps/${VERSION}/${TYPE}/${COMPILER_TAG}}
+# SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/lammps/lammps/archive/refs/tags/patch_${VERSION}.tar.gz}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://download.lammps.org/tars/lammps-${VERSION}.tar.gz}
+BUILD_UNIT_TESTS=${BUILD_UNIT_TESTS:-no}
+
+WHEREAMI=${WHEREAMI:-$(/shared/ucl/apps/cluster-bin/whereami)}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+# dirname=$(dirname $0 2>/dev/null || pwd)
+dirname=/shared/ucl/apps/build_scripts
+INCLUDES_DIR=${INCLUDES_DIR:-${dirname}/includes}
+source ${INCLUDES_DIR}/module_maker_inc.sh
+source ${INCLUDES_DIR}/require_inc.sh
+
+cluster=$WHEREAMI
+
+require gcc-libs/10.2.0
+require compilers/gnu/10.2.0 
+
+if [ "$cluster" == "myriad" ]
+then
+    require numactl/2.0.12
+    require binutils/2.36.1/gnu-10.2.0
+    require ucx/1.9.0/gnu-10.2.0
+fi
+
+# Should just need to add fftw module for the cmake build process to pick up.
+require fftw/3.3.9/gnu-10.2.0
+
+require mpi/openmpi/4.0.5/gnu-10.2.0
+require cmake/3.21.1
+require python3/3.9-gnu-10.2.0
+
+# For QUIP
+# require openblas/0.3.13-serial/gnu-10.2.0
+# require quip/c6359e1/gnu-10.2.0
+
+# Not using /dev/shm while sorting out how to build and what options to use.
+
+# mkdir -p /dev/shm/$(whoami)/$NAME
+mkdir -p ~/Software/LAMMPS
+# temp_dir=$(mktemp -d -p /dev/shm/$(whoami)/$NAME)
+temp_dir=$(mktemp -d -p ~/Software/LAMMPS)
+
+cd $temp_dir
+
+wget --no-check-certificate $SRC_ARCHIVE
+tar -xvf lammps-${VERSION}.tar.gz
+cd lammps-${VERSION}
+mkdir -p build
+cd build
+
+# Configure for standard build plus shared libraries and build
+
+cmake -C ../cmake/presets/gcc.cmake -C ../cmake/presets/most.cmake -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi -D CMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} ../cmake
+
+# Add building ML-QUIP package with existing module. Not currently included
+
+# cmake -D PKG_ML-QUIP=yes -D DOWNLOAD_QUIP=no .
+
+# Add building LAMMPS unit tests if requested.
+
+if [ "$BUILD_UNIT_TESTS" == "yes" ]
+then
+    cmake -D ENABLE_TESTING=on .
+    echo ""
+    echo "NOTE: unit tests need to be run from build directory: `pwd` using the ctest command from CMAKE."
+    echo ""
+fi
+
+# Build and install
+VERBOSE=1 make
+make install
