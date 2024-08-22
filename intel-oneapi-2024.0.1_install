@@ -66,7 +66,7 @@ make_module -p "$install_prefix" \
             -o "$module_dir/compilers/$package_label" \
             -v CC=icx \
             -v CXX=icpx \
-#            -v CXXCPP="\"icpx -E\"" \
+            -v CXXCPP="\"icpx -E\"" \
             -v F77=ifort \
             -v F90=ifort \
             -v FC=ifort \
