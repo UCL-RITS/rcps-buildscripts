@@ -161,8 +161,8 @@ make_module -d \
             -v GERUN_LAUNCHER=intel \
             -v MPI_HOME="$mprefix" \
             -v I_MPI_ROOT="$mprefix" \
-            -v I_MPI_CC="icc" \
-            -v I_MPI_CXX="icpc" \
+            -v I_MPI_CC="icx" \
+            -v I_MPI_CXX="icpx" \
             -v I_MPI_F90="ifort" \
             -v I_MPI_F77="ifort" \
             -v CCL_ROOT="$cprefix/ccl/$mpi_package_version" \
