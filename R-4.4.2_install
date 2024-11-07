@@ -3,7 +3,7 @@
 ###############################################
 # Installing base R plus recommended packages using GCC + OpenBLAS
 #
-# R 4.4.2 beta releases
+# R 4.4.2 release
 #
 # by Brian Alston, June 2020
 #
@@ -25,6 +25,7 @@
 # June 2024 updated for R 4.4.0
 # October 2024 updated for R 4.4.1 and using Java 21 and then updated for
 # R 4.4.2 beta releases
+# November 2024 updated for R 4.4.2 release (31-10-2024)
 #
 # Using Ian's require function to load modules
 #
@@ -34,9 +35,9 @@
 #
 # 
 
-VERSION=${VERSION:-4.4.2_beta1}
+VERSION=${VERSION:-4.4.2}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/R/R-${VERSION}-OpenBLAS}
-MD5=${MD5:-6cef6658b20bf1cc15ae8af8b94566b1}
+MD5=${MD5:-543fe0323713f3f8844fff7c97d2b1c9}
 # Slight change in location for R from 4.x
 SRC_ARCHIVE=${SRC_ARCHIVE:- https://cran.r-project.org/src/base/R-4/R-${VERSION}.tar.gz}
 BETA_ARCHIVE=${BETA_ARCHIVE:- https://cran.r-project.org/src/base-prerelease/R-beta_2024-10-20_r87250.tar.gz}
@@ -84,19 +85,19 @@ if [[ $LOCAL_ARCHIVE ]]
 then
     cp $SRC_ARCHIVE .
 else
-    # wget $SRC_ARCHIVE
-    wget $BETA_ARCHIVE
+    wget $SRC_ARCHIVE
+    # wget $BETA_ARCHIVE
 fi
 
-# CHECKSUM=`md5sum R-${VERSION}.tar.gz| awk '{print $1}'`
-CHECKSUM=`md5sum R-beta_2024-10-20_r87250.tar.gz  | awk '{print $1}'`
+CHECKSUM=`md5sum R-${VERSION}.tar.gz| awk '{print $1}'`
+# CHECKSUM=`md5sum R-beta_2024-10-20_r87250.tar.gz  | awk '{print $1}'`
 
 if [[ "$MD5" == "$CHECKSUM" ]]
 then
-    # tar xvzf R-${VERSION}.tar.gz
-    tar -xvf R-beta_2024-10-20_r87250.tar.gz
-    # cd R-${VERSION}
-    cd R-beta
+    tar xvzf R-${VERSION}.tar.gz
+    # tar -xvf R-beta_2024-10-20_r87250.tar.gz
+    cd R-${VERSION}
+    # cd R-beta
    ./configure -C --prefix=${INSTALL_PREFIX} --with-recommended-packages --with-x \
       --with-readline=yes --enable-R-shlib \
       --with-blas="-L /shared/ucl/apps/openblas/0.3.13-serial/gnu-10.2.0/lib -lopenblas" \
