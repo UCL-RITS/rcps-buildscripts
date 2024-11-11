@@ -19,7 +19,7 @@ APPNAME=${APPNAME:-gdal}
 VERSION=${VERSION:-3.10.0}
 COMPILER_TAG=${COMPILER_TAG:-gnu-10.2.0}
 INSTALL_PREFIX=${INSTALL_PREFIX:-/shared/ucl/apps/$APPNAME/${VERSION}_proj-8/$COMPILER_TAG}
-MD5=${MD5:-fd82c580ec9e16a0a46cd176243a8a56}
+MD5=${MD5:-7d199cbd2e95dfb7ccdacd0cd7fb8597}
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/OSGeo/gdal/releases/download/v${VERSION}/gdal-${VERSION}.tar.gz}
 HDF5=${HDF5:-/shared/ucl/apps/HDF/5-1.10.6/serial/gnu-10.2.0/}
 # choose whether to build with an existing PROJ.4, as PROJ.4 requires gdal to build...
