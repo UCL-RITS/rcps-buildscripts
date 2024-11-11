@@ -52,8 +52,8 @@ fi
 
 export PATH=$INSTALL_PREFIX/bin:$PATH
 
-mkdir -p /dev/shm/$APPNAME_$VERSION
-temp_dir=`mktemp -d -p /dev/shm/$APPNAME_$VERSION`
+mkdir -p /dev/shm/${APPNAME}_$VERSION
+temp_dir=`mktemp -d -p /dev/shm/${APPNAME}_$VERSION`
 
 cd $temp_dir
 
