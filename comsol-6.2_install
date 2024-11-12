@@ -35,7 +35,7 @@ make_build_env --tmp-root="/dev/shm"
 
 cd "$build_dir"
 
-manifest sha256:add974342304536884d103d173279017cd0280503bbdf75fd067b622c8a02587 "$installer_zip_path"
+manifest sha256:677f97e14fd159da3e73614963678bb9629e1b15165144a4a2062c1e529ef71a "$installer_zip_path"
 
 unzip "$installer_zip_path"
 
