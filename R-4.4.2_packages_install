@@ -103,8 +103,8 @@ require freetype/2.8.1/gnu-4.9.2
 require graphicsmagick/1.3.21
 require python3/3.9-gnu-10.2.0
 require sqlite/3.36.0/gnu-10.2.0
-require proj.4/8.1.1/gnu-10.2.0
-require gdal/3.3.2/gnu-10.2.0
+require proj.4/9.2.0/gnu-10.2.0
+require gdal/3.10.0/gnu-10.2.0
 require geos/3.9.1/gnu-10.2.0
 require gmt/6.2.0/gnu-10.2.0
 
@@ -165,7 +165,7 @@ R --no-save < $R_input
 
 # No longer on CRAN current - July 2013
 
-# Removed for R 4.2.0 as fails to compile.
+# Removed for R 4.2.0  as fails to compile.
 # R CMD INSTALL -l $RLIB_MAIN ${LOCALDIR}/Design_2.3-0-ucl.tar.gz
 
 # So build of RCurl picks up currect version of libcurl
