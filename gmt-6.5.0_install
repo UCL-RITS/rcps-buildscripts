@@ -25,6 +25,7 @@ require cmake/3.21.1
 require git/2.32.0
 require perl/5.22.0
 require python3/3.9-gnu-10.2.0
+require curl/7.86.0/gnu-4.9.2
 require hdf/5-1.10.6/gnu-10.2.0
 require netcdf/4.9.2/gnu-10.2.0
 require sqlite/3.36.0/gnu-10.2.0
