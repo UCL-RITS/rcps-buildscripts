@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing NWChem
+#
+# Built with Intel MPI and MKL. 
+# Builds for architecture - need to build on oldest host.
+
+NAME=${NAME:-nwchem}
+VERSION=${VERSION:-7.2.3}
+REVISION=${REVISION:-d690e065}
+INSTALL_PREFIX=${INSTALL_PREFIX:-"/shared/ucl/apps/$NAME/$VERSION-$REVISION/$COMPILER_TAG"}
+SHA256=${SHA256:-8800196cf85771264f3bc9c5aa8bc24410a95ec1acc3f515e1d08dd7ca82c5fd}
+SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/nwchemgit/nwchem/releases/download/v7.2.3-release/nwchem-7.2.3-release.revision-d690e065-src.2024-08-27.tar.bz2}
+SRC_DIR=${SRC_DIR:-"nwchem-$VERSION"}
+
+# Python 3 is required for the build
+PYTHONHOME=${PYTHONHOME:-/shared/ucl/apps/python/3.9.6/gnu-10.2.0}
+PYTHONVERSION=${PYTHONVERSION:-3.9}
+
+set -e
+
+# load modules for building
+for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+module purge
+require gcc-libs
+require compilers/intel/2024.0.1
+require mpi/intel/2021.11/intel
+require python/3.9.6-gnu-10.2.0
+
+mkdir -p "/dev/shm/$NAME"
+temp_dir=$(mktemp -d -p "/dev/shm/${NAME}")
+
+cd "$temp_dir"
+
+wget "$SRC_ARCHIVE"
+archive=$(basename "${SRC_ARCHIVE}")
+
+echo "Checking hashes:"
+sha256sum -c <<<"$SHA256  $archive"
+
+tar -xvf "$archive"
+
+# NWChem wants its variables exported.
+export FC="ifort"
+export CC="icx"
+
+export NWCHEM_TOP="$temp_dir/$SRC_DIR"
+export NWCHEM_TARGET="LINUX64"
+export NWCHEM_MODULES="all python gwmol"
+export NWCHEM_LONG_PATHS="Y"
+export LARGE_FILES="TRUE"
+# NOIO recommended on clusters
+export USE_NOIO="TRUE"
+# Turn off hardware optimisations
+#export USE_HWOPT=n
+
+export USE_OPENMP="y"
+export USE_MPI="y"
+export USE_MPIF="y"
+export USE_MPIF4="y"
+export MPI_LOC="$MPI_HOME"
+# can run contrib/distro-tools/getmpidefs_nwchem to get these
+#export MPI_INCLUDE="-I$MPI_HOME/intel64/include" (deprecated)
+#export MPI_LIB="-L$MPI_HOME/intel64/lib/release_mt -L$MPI_HOME/intel64/lib" (deprecated)
+#export LIBMPI="-lmpifort -lmpi -lmpigi -ldl -lrt -lpthread" (deprecated)
+
+export MPI_F90="mpif90"
+export MPI_CC="mpicc"
+export MPI_CXX="mpicxx"
+
+# Docs: "On Intel True Scale and Omni Path systems, MPI-PR is more reliable than OPENIB or MPI-SPAWN"
+export ARMCI_NETWORK="MPI-PR"
+export MSG_COMMS="MPI"
+
+export PYTHONHOME
+export PYTHONVERSION
+
+export BLASOPT="${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"
+export LAPACK_LIB="${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a"
+export BLAS_SIZE=8
+export USE_SCALAPACK="y"
+export SCALAPACK_SIZE=8
+export SCALAPACK="-L${MKLROOT}/lib/intel64 -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lmkl_blacs_intelmpi_ilp64 -lpthread -lm"
+
+# make nwchem
+cd "$NWCHEM_TOP/src"
+make nwchem_config 2>&1 | tee ../nwchem_config.log
+make -j 2>&1 | tee ../nwchem_make.log
+
+# install
+mkdir -p "$INSTALL_PREFIX/bin"
+cp "$NWCHEM_TOP/bin/${NWCHEM_TARGET}/nwchem" "$INSTALL_PREFIX/bin"
+chmod 755 "$INSTALL_PREFIX/bin/nwchem"
+cd "$NWCHEM_TOP/src/"
+cp -r data "$INSTALL_PREFIX"
+cd "$NWCHEM_TOP/src/basis"
+cp -r libraries "$INSTALL_PREFIX/data"
+cd "$NWCHEM_TOP/src/nwpw"
+cp -r libraryps "$INSTALL_PREFIX/data"
+chmod -R a+rx "$INSTALL_PREFIX/data"
+cp -r "$NWCHEM_TOP/examples" "$INSTALL_PREFIX"
+
+# create .nwchemrc
+cat <<EOT >> $INSTALL_PREFIX/.nwchemrc
+nwchem_basis_library $INSTALL_PREFIX/data/libraries/
+nwchem_nwpw_library $INSTALL_PREFIX/data/libraryps/
+ffield amber
+amber_1 $INSTALL_PREFIX/data/amber_s/
+amber_2 $INSTALL_PREFIX/data/amber_q/
+amber_3 $INSTALL_PREFIX/data/amber_x/
+amber_4 $INSTALL_PREFIX/data/amber_u/
+spce    $INSTALL_PREFIX/data/solvents/spce.rst
+charmm_s $INSTALL_PREFIX/data/charmm_s/
+charmm_x $INSTALL_PREFIX/data/charmm_x/
+EOT
+
