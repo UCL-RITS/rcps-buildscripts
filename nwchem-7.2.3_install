@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 ###############################################
-# Installing NWChem
+# Installing NWChem 7.2.3
 #
 # Built with Intel MPI and MKL. 
 # Builds for architecture - need to build on oldest host.
+
+set -e
 
 NAME=${NAME:-nwchem}
 VERSION=${VERSION:-7.2.3}
@@ -14,14 +16,8 @@ SHA256=${SHA256:-8800196cf85771264f3bc9c5aa8bc24410a95ec1acc3f515e1d08dd7ca82c5f
 SRC_ARCHIVE=${SRC_ARCHIVE:-https://github.com/nwchemgit/nwchem/releases/download/v7.2.3-release/nwchem-7.2.3-release.revision-d690e065-src.2024-08-27.tar.bz2}
 SRC_DIR=${SRC_DIR:-"nwchem-$VERSION"}
 
-# Python 3 is required for the build
-PYTHONHOME=${PYTHONHOME:-/shared/ucl/apps/python/3.9.6/gnu-10.2.0}
-PYTHONVERSION=${PYTHONVERSION:-3.9}
-
-set -e
-
 # load modules for building
-for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require}_inc.sh; do . $i; done
+source includes/source_includes.sh
 module purge
 require gcc-libs
 require compilers/intel/2024.0.1
@@ -73,8 +69,9 @@ export MPI_CXX="mpicxx"
 export ARMCI_NETWORK="MPI-PR"
 export MSG_COMMS="MPI"
 
-export PYTHONHOME
-export PYTHONVERSION
+# Setting Python environment variables
+export PYTHONHOME="/shared/ucl/apps/python/3.9.6/gnu-10.2.0"
+export PYTHONVERSION="${PYTHON_VERSION_TAG}"
 
 export BLASOPT="${MKLROOT}/lib/intel64/libmkl_blas95_ilp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_ilp64 -lmkl_core -lmkl_sequential -lpthread -lm"
 export LAPACK_LIB="${MKLROOT}/lib/intel64/libmkl_lapack95_ilp64.a"
@@ -114,4 +111,3 @@ spce    $INSTALL_PREFIX/data/solvents/spce.rst
 charmm_s $INSTALL_PREFIX/data/charmm_s/
 charmm_x $INSTALL_PREFIX/data/charmm_x/
 EOT
-
