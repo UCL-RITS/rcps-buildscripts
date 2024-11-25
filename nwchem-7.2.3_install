@@ -24,10 +24,9 @@ require compilers/intel/2024.0.1
 require mpi/intel/2021.11/intel
 require python/3.9.6-gnu-10.2.0
 
-mkdir -p "/dev/shm/$NAME"
-temp_dir=$(mktemp -d -p "/dev/shm/${NAME}")
+make_build_env ""
 
-cd "$temp_dir"
+cd "$build_dir"
 
 wget "$SRC_ARCHIVE"
 archive=$(basename "${SRC_ARCHIVE}")
@@ -41,7 +40,7 @@ tar -xvf "$archive"
 export FC="ifort"
 export CC="icx"
 
-export NWCHEM_TOP="$temp_dir/$SRC_DIR"
+export NWCHEM_TOP="$build_dir/$SRC_DIR"
 export NWCHEM_TARGET="LINUX64"
 export NWCHEM_MODULES="all python gwmol"
 export NWCHEM_LONG_PATHS="Y"
