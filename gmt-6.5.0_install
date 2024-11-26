@@ -92,7 +92,7 @@ then
   cd cmake
   cp ConfigUserTemplate.cmake ConfigUser.cmake
   cd ../build
-  cmake -Wno-dev -DGEOS_CONFIG=${GEOS_CONFIG_LOC} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.9/gnu-10.2.0 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP=TRUE ..
+  cmake -Wno-dev -DGEOS_CONFIG=${GEOS_CONFIG_LOC} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DCURL_ROOT=/shared/ucl/apps/curl/7.86.0/gnu-4.9.2 -DFFTW3_ROOT=/shared/ucl/apps/fftw/3.3.9/gnu-10.2.0 -DDCW_ROOT=$DATA_PREFIX/dcw-gmt-${DCW_VERSION} -DGSHHG_ROOT=$DATA_PREFIX/gshhg-gmt-${GSHHG_VERSION} -DGMT_OPENMP=TRUE ..
 
   make 
   make install
