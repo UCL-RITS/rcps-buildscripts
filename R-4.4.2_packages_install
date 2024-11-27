@@ -106,7 +106,7 @@ require sqlite/3.36.0/gnu-10.2.0
 require proj.4/9.2.0/gnu-10.2.0
 require gdal/3.3.3/gnu-10.2.0
 require geos/3.9.1/gnu-10.2.0
-require gmt/6.2.0/gnu-10.2.0
+require gmt/6.5.0/gnu-10.2.0
 
 # Can no longer use external V8 - must set DOWNLOAD_STATIC_LIBV8=1 before 
 # installling the V8 package
