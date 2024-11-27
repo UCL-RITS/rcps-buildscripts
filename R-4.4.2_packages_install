@@ -136,7 +136,7 @@ temp_dir='/home/ccspapp/Software/R/Packages'
 echo "Building in $temp_dir ..."
 cd $temp_dir
 module list
-read -p "Press [Enter] key to start ..."
+# read -p "Press [Enter] key to start ..."
 
 cd $temp_dir
 mkdir -p $RLIB_DB
