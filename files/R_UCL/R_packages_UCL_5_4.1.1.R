@@ -13,6 +13,7 @@
 # Updated October 2023 - to add arrow and VIM packages.
 # Updated march 2024 to add quanteda.textstats and quanteda.textmodels
 # Updated June 2024 to try and resolve the V8 problem
+# R 4.4.2 attempting to fix V8 by reverting to an older version
 
 mainLib <- Sys.getenv ("RLIB_MAIN");
 dbLib <- Sys.getenv ("RLIB_DB");
@@ -166,8 +167,14 @@ install.packages("curl", lib=mainLib, repos=repros);
 # install.packages ("V8", lib=mainLib, repos=repros, configure.vars=v8conf);
 #
 # Updated for R 4.4.0 to use static V8
-Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1);
-install.packages ("V8", lib=mainLib, repos=repros);
+#Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1);
+#install.packages ("V8", lib=mainLib, repos=repros);
+
+# for R 4.4.2 this might work:
+
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/V8/V8_5.0.1.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
+
 
 udunits2Conf <- '--with-udunits2-include=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/include --with-udunits2-lib=/shared/ucl/apps/udunits/2.2.28/gnu-10.2.0/lib';
 install.packages ("udunits2", lib=mainLib, repos=repros, configure.args=udunits2Conf);
