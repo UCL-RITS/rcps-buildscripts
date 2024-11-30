@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+###############################################
+# Installing spark
+#
+# by James Hetherington, 2016
+#
+
+APPNAME=${APPNAME:-spark}
+VERSION=${VERSION:-2.0.1}
+# We do not need Hadoop. But the built jars "binaries" contain a Hadoop version.
+HADOOPVERSION=${HADOOPVERSION:-2.7}
+INSTALL_ZONE=/home/ucgajhe/software/
+# INSTALL will be to /shared/ucl/apps/
+INSTALL_PREFIX=${INSTALL_PREFIX:-$INSTALL_ZONE/$APPNAME/$VERSION}
+# TEMPDIR will be on /dev/shm
+TEMP_ZONE=/home/ucgajhe/software/shm
+
+SHA256=${SHA256:-3d017807650f41377118a736e2f2298cd0146a593e7243a28c2ed72a88b9a043}
+SRC_ARCHIVE=${SRC_ARCHIVE:-http://mirror.catn.com/pub/apache/$APPNAME/$APPNAME-$VERSION/$APPNAME-$VERSION-bin-hadoop${HADOOPVERSION}.tgz}
+
+set -e
+
+export PATH=$INSTALL_PREFIX/bin:$PATH
+
+echo Install prefix : $INSTALL_PREFIX
+
+mkdir -p $TEMP_ZONE/$APPNAME
+temp_dir=`mktemp -d -p $TEMP_ZONE/$APPNAME`
+
+cd $temp_dir
+
+wget -O ${APPNAME}-${VERSION}.tgz $SRC_ARCHIVE
+
+CHECKSUM=`sha256sum ${APPNAME}-${VERSION}.tgz |  awk '{print $1}'`
+
+if [ "$SHA256" == "$CHECKSUM" ]
+then
+  mkdir -p $INSTALL_PREFIX
+  cd $INSTALL_PREFIX
+  tar -xzvf $temp_dir/${APPNAME}-${VERSION}.tgz
+  mv spark-${VERSION}-bin-hadoop${HADOOPVERSION}/* .
+  rmdir spark-${VERSION}-bin-hadoop${HADOOPVERSION}
+  wget -O bin/sparkrun https://raw.githubusercontent.com/jamespjh/rcps-buildscripts/master/spark-files/sparkrun
+  chmod a+x bin/sparkrun
+else
+  echo "Hash mismatch."
+  echo "Expected: $SHA256"
+  echo "Got: $CHECKSUM"
+fi
