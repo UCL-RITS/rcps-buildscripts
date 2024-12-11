@@ -57,11 +57,13 @@ echo "Use: $INSTALL_PREFIX/AnsysEM as the install location for ELECTRONICS."
 echo ""
 echo "FLUIDSTRUCTURES ..."
 cd FLUIDSTRUCTURES
-./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk 
+# ./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX
 # ./INSTALL
 echo "PREPPOST ..."
 cd ../PREPPOST
-./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk
+# ./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX -licserverinfo 2325:1055:lic-ansys.ucl.ac.uk
+./INSTALL -nochecks -silent -install_dir $INSTALL_PREFIX 
 echo "ELECTRONICS ..."
 cd ../ELECTRONICS/Electronics_231_linx64
 echo "Couldn't get silent install to work so use GUI and:"
