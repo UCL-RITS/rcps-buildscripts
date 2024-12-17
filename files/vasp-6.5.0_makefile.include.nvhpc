@@ -1,0 +1,91 @@
+# Default precompiler options
+CPP_OPTIONS = -DHOST=\"LinuxNV\" \
+              -DMPI -DMPI_BLOCK=8000 -Duse_collective \
+              -DscaLAPACK \
+              -DCACHE_SIZE=4000 \
+              -Davoidalloc \
+              -Dvasp6 \
+              -Duse_bse_te \
+              -Dtbdyn \
+              -Dqd_emulate \
+              -Dfock_dblbuf \
+              -D_OPENACC \
+              -DUSENCCL -DUSENCCLP2P
+
+CPP         = nvfortran -Mpreprocess -Mfree -Mextend -E $(CPP_OPTIONS) $*$(FUFFIX)  > $*$(SUFFIX)
+
+# N.B.: you might need to change the cuda-version here
+#       to one that comes with your NVIDIA-HPC SDK
+FC          = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.5
+FCL         = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.5 -L/shared/ucl/apps/gcc/4.9.2/lib64 -L$(NVROOT)/compilers/lib -c++libs
+
+FREE        = -Mfree
+
+FFLAGS      = -Mbackslash -Mlarge_arrays
+
+OFLAG       = -fast
+
+DEBUG       = -Mfree -O0 -traceback
+
+OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
+
+LLIBS       = -cudalib=cublas,cusolver,cufft,nccl -cuda
+
+# Redefine the standard list of O1 and O2 objects
+SOURCE_O1  := pade_fit.o
+SOURCE_O2  := pead.o
+
+# For what used to be vasp.5.lib
+CPP_LIB     = $(CPP)
+FC_LIB      = nvfortran
+CC_LIB      = nvc -w
+CFLAGS_LIB  = -O
+FFLAGS_LIB  = -O1 -Mfixed
+FREE_LIB    = $(FREE)
+
+OBJECTS_LIB = linpack_double.o
+
+# For the parser library
+CXX_PARS    = nvc++ --no_warnings
+
+##
+## Customize as of this point! Of course you may change the preceding
+## part of this file as well if you like, but it should rarely be
+## necessary ...
+##
+
+# Specify your NV HPC-SDK installation (mandatory)
+#... first try to set it automatically
+NVROOT      =$(shell which nvfortran | awk -F /compilers/bin/nvfortran '{ print $$1 }')
+
+# If the above fails, then NVROOT needs to be set manually
+#NVHPC      ?= /opt/nvidia/hpc_sdk
+#NVVERSION   = 21.11
+#NVROOT      = $(NVHPC)/Linux_x86_64/$(NVVERSION)
+
+# Software emulation of quadruple precsion (mandatory)
+QD         ?= $(NVROOT)/compilers/extras/qd
+LLIBS      += -L$(QD)/lib -lqdmod -lqd
+INCS       += -I$(QD)/include/qd
+
+# BLAS and LAPACK (mandatory)
+LLIBS      += -lblas -llapack
+
+# scaLAPACK (mandatory)
+LLIBS      += -Mscalapack
+
+# FFTW (mandatory)
+FFTW_ROOT  ?= /shared/ucl/apps/fftw/3.3.10/nvidia-2022-22.1
+LLIBS      += -L$(FFTW_ROOT)/lib -lfftw3
+INCS       += -I$(FFTW_ROOT)/include
+
+# HDF5-support (optional but strongly recommended)
+CPP_OPTIONS+= -DVASP_HDF5
+HDF5_ROOT  ?= /shared/ucl/apps/hdf/5-1.10.5/gnu-4.9.2
+LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
+INCS       += -I$(HDF5_ROOT)/include
+
+# For the VASP-2-Wannier90 interface (optional)
+#CPP_OPTIONS    += -DVASP2WANNIER90
+#WANNIER90_ROOT ?= /path/to/your/wannier90/installation
+#LLIBS          += -L$(WANNIER90_ROOT)/lib -lwannier
