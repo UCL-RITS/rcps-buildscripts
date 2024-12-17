@@ -8,7 +8,7 @@
 set -e
 
 package_name="vasp"
-package_version="6.5.0-18Dec2024"
+package_version="6.5.0-17Dec2024"
 package_variant="gpu"
 
 for i in $(dirname -- "$0" 2>/dev/null)/includes/{module_maker,require,tools}_inc.sh; do . $i; done
@@ -24,7 +24,7 @@ _env_setup() {
 
     make_build_env
 
-    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20241218}"
+    package_store="${PKG_STORE:-/shared/ucl/apps/pkg-store/VASP-20241217}"
     package_file="vasp.6.5.0.tgz"
     unpack_dir="vasp.6.5.0"
     ucl_makefile="/shared/ucl/apps/build_scripts/files/vasp-6.5.0_makefile.include.nvhpc"
